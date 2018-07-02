@@ -1,29 +1,91 @@
-'use strict';
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+import 'isomorphic-fetch';
 import * as vscode from 'vscode';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+import { createClient, Jira } from './api';
+import { ActivateIssueCommand } from './commands/activate-issue';
+import { AddCommentCommand } from './commands/add-comment';
+import { BrowseMyIssuesCommand } from './commands/browse-my-issues';
+import { ListMyIssuesCommand } from './commands/list-my-issues';
+import { SetupCredentialsCommand } from './commands/setup-credentials';
+import { TransitionIssueCommand } from './commands/transition-issue';
+import { IssueLinkProvider } from './document-link-provider';
+import state from './state';
+import { StatusBarManager } from './status-bar';
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "jira-plugin" is now active!');
+export const CREDENTIALS_SEPARATOR = '##';
 
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
-        // The code you place here will be executed every time your command is executed
+let context: vscode.ExtensionContext;
+let channel: vscode.OutputChannel;
+let baseUrl: string | undefined;
 
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
-    });
+export function activate(_context: vscode.ExtensionContext): void {
+  context = _context;
+  state.workspaceState = context.workspaceState;
+  channel = vscode.window.createOutputChannel('JIRA');
+  context.subscriptions.push(channel);
 
-    context.subscriptions.push(disposable);
+  const config = vscode.workspace.getConfiguration('jira');
+  baseUrl = config.get<string>('baseUrl');
+  const projectNames = config.get('projectNames', '').split(',');
+
+  const jiraLinkProvider = new IssueLinkProvider();
+  vscode.languages.registerDocumentLinkProvider('*', jiraLinkProvider);
+
+  if (baseUrl) {
+    const credentials: string | undefined = context.globalState.get(`vscode-jira:${baseUrl}`);
+    if (credentials) {
+      const connect = async() => {
+        const [username, password] = credentials.split(CREDENTIALS_SEPARATOR);
+        state.jira = (await connectToJira())!;
+        state.update();
+      };
+      connect().catch(() => {
+        vscode.window.showErrorMessage('Failed to connect to jira');
+      });
+    }
+  }
+
+  const commands = [
+    new ActivateIssueCommand(),
+    new BrowseMyIssuesCommand(),
+    new ListMyIssuesCommand(),
+    new SetupCredentialsCommand(context, baseUrl),
+    new TransitionIssueCommand(),
+    new AddCommentCommand()
+  ];
+  context.subscriptions.push(...commands.map(
+    command => vscode.commands.registerCommand(command.id, command.run)));
+  context.subscriptions.push(new StatusBarManager());
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {
+export function checkEnabled(): boolean {
+  const config = vscode.workspace.getConfiguration('jira');
+  if (!state.jira || !config.has('baseUrl') || !config.has('projectNames')) {
+    vscode.window.showInformationMessage(
+      'No JIRA client configured. Setup baseUrl, projectNames, username and password');
+    return false;
+  }
+  return true;
+}
+
+export async function connectToJira(): Promise<Jira | undefined> {
+  const credentials: string | undefined = context.globalState.get(`vscode-jira:${baseUrl}`);
+  if (credentials && baseUrl) {
+    try {
+      const [username, password] = credentials.split(CREDENTIALS_SEPARATOR);
+      const client = createClient(baseUrl, username, password);
+      const serverInfo = await client.serverInfo();
+      if (serverInfo.versionNumbers[0] < 5) {
+        vscode.window.showInformationMessage(
+          `Unsupported JIRA version '${serverInfo.version}'. Must be at least 5.0.0`);
+        return;
+      }
+      channel.appendLine(`Connected to JIRA server at '${baseUrl}'`);
+      return client;
+    } catch (e) {
+      channel.appendLine(`Failed to contact JIRA server using '${baseUrl}'. Please check url and credentials`);
+      channel.appendLine(e.message);
+    }
+  }
+  return undefined;
 }

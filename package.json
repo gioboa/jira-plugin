@@ -1,53 +1,98 @@
 {
-    "name": "jira-plugin",
-    "displayName": "jira-plugin",
-    "description": "jira plugin",
-    "version": "0.0.1",
-    "publisher": "jira-plugin",
-    "engines": {
-        "vscode": "^1.24.0"
+  "name": "jira-plugin",
+  "displayName": "jira-plugin",
+  "description": "jira plugin",
+  "version": "0.0.1",
+  "publisher": "jira-plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gioboa/vscode-jira-plugin.git"
+  },
+  "keywords": [
+    "Jira",
+    "vsCode"
+  ],
+  "author": "gioboa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gioboa/vscode-jira-plugin/issues"
+  },
+  "homepage": "https://github.com/gioboa/vscode-jira-plugin#readme",
+  "engines": {
+    "vscode": "^1.24.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "JIRA configuration",
+      "properties": {
+        "jira.baseUrl": {
+          "type": "string",
+          "description": "Base URL to the JIRA instance (e.g. https://your.base-to-jira.com/)",
+          "default": ""
+        },
+        "jira.projectNames": {
+          "type": "string",
+          "description": "Project KEY of your JIRA project to scan for (could be a comma separated list of names)",
+          "default": ""
+        }
+      }
     },
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onCommand:extension.sayHello"
-    ],
-    "main": "./out/extension",
-    "contributes": {
-        "commands": [
-            {
-                "command": "extension.sayHello",
-                "title": "Hello World"
-            }
-        ]
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
-    },
-    "devDependencies": {
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.6",
-        "tslint": "^5.8.0",
-        "@types/node": "^7.0.43",
-        "@types/mocha": "^2.2.42"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/gioboa/vscode-jira-plugin.git"
-    },
-    "keywords": [
-      "Jira",
-      "vsCode",
-    ],
-    "author": "gioboa",
-    "license": "MIT",
-    "bugs": {
-      "url": "https://github.com/gioboa/vscode-jira-plugin/issues"
-    },
-    "homepage": "https://github.com/gioboa/vscode-jira-plugin#readme",
+    "commands": [
+      {
+        "command": "vscode-jira.setupCredentials",
+        "title": "Setup credentials...",
+        "category": "JIRA"
+      },
+      {
+        "command": "vscode-jira.browseMyIssues",
+        "title": "Browse my issues...",
+        "category": "JIRA"
+      },
+      {
+        "command": "vscode-jira.activateIssues",
+        "title": "Activate an issues...",
+        "category": "JIRA"
+      },
+      {
+        "command": "vscode-jira.transitionIssues",
+        "title": "Update active issue state...",
+        "category": "JIRA"
+      },
+      {
+        "command": "vscode-jira.addComment",
+        "title": "Add comment to active issue...",
+        "category": "JIRA"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.7",
+    "mocha": "^4.0.1",
+    "@types/node": "^8.0.53",
+    "@types/mocha": "^2.2.44",
+    "husky": "^0.14.3",
+    "standard-version": "^4.2.0",
+    "tslint": "^5.8.0"
+  },
+  "dependencies": {
+    "decko": "^1.2.0",
+    "isomorphic-fetch": "2.2.1",
+    "pretend": "^1.1.0"
+  }
 }
