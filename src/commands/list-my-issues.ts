@@ -9,7 +9,7 @@ import state from '../state';
 
 export class ListMyIssuesCommand implements Command<Issue | undefined | null> {
 
-  public id = 'vscode-jira.listMyIssues';
+  public id = 'jira-plugin.listMyIssues';
 
   private get baseUrl(): string {
     return getConfiguration().baseUrl;

@@ -7,7 +7,7 @@ import { getConfiguration } from '../configuration';
 
 export class BrowseMyIssuesCommand implements Command {
 
-  public id = 'vscode-jira.browseMyIssues';
+  public id = 'jira-plugin.browseMyIssues';
 
   private get baseUrl(): string {
     return getConfiguration().baseUrl;
@@ -15,7 +15,7 @@ export class BrowseMyIssuesCommand implements Command {
 
   @bind
   public async run(): Promise<void> {
-    const issue = await vscode.commands.executeCommand<Issue | undefined>('vscode-jira.listMyIssues');
+    const issue = await vscode.commands.executeCommand<Issue | undefined>('jira-plugin.listMyIssues');
     if (issue) {
       const url = `${this.baseUrl}/browse/${issue.key}`;
       await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));

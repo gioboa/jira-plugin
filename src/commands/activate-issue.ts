@@ -7,7 +7,7 @@ import state, { ActiveIssue, getActiveIssue, setActiveIssue } from '../state';
 
 export class ActivateIssueCommand implements Command {
 
-  public id = 'vscode-jira.activateIssues';
+  public id = 'jira-plugin.activateIssues';
 
   @bind
   public async run(preselected: Issue | null): Promise<void> {
@@ -23,7 +23,7 @@ export class ActivateIssueCommand implements Command {
     }
     const activateIssue = getActiveIssue();
     const name = activateIssue ? `Deactivate ${activateIssue.key}` : undefined;
-    return await vscode.commands.executeCommand<Issue | undefined | null>('vscode-jira.listMyIssues', name);
+    return await vscode.commands.executeCommand<Issue | undefined | null>('jira-plugin.listMyIssues', name);
   }
 
 }

@@ -7,7 +7,7 @@ import state from '../state';
 
 export class SetupCredentialsCommand implements Command {
 
-  public id = 'vscode-jira.setupCredentials';
+  public id = 'jira-plugin.setupCredentials';
 
   private context: vscode.ExtensionContext;
 

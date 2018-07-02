@@ -29,11 +29,11 @@ export class StatusBarManager {
       const issue = await state.jira.getIssue(activeIssue.key);
       this.item.text = `$(issue-opened) ${activeIssue.key} ${issue.fields.status.name}`;
       this.item.tooltip = 'Click to transition issue...';
-      this.item.command = 'vscode-jira.transitionIssues';
+      this.item.command = 'jira-plugin.transitionIssues';
     } else {
       this.item.text = '$(issue-opened)';
       this.item.tooltip = 'Click to activate issue...';
-      this.item.command = 'vscode-jira.activateIssues';
+      this.item.command = 'jira-plugin.activateIssues';
     }
   }
 

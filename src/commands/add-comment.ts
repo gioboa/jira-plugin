@@ -9,7 +9,7 @@ import state, { ActiveIssue, getActiveIssue } from '../state';
 
 export class AddCommentCommand implements Command {
 
-  public id = 'vscode-jira.addComment';
+  public id = 'jira-plugin.addComment';
 
   private get baseUrl(): string {
     return getConfiguration().baseUrl;

@@ -47,27 +47,27 @@
     },
     "commands": [
       {
-        "command": "vscode-jira.setupCredentials",
+        "command": "jira-plugin.setupCredentials",
         "title": "Setup credentials...",
         "category": "JIRA"
       },
       {
-        "command": "vscode-jira.browseMyIssues",
+        "command": "jira-plugin.browseMyIssues",
         "title": "Browse my issues...",
         "category": "JIRA"
       },
       {
-        "command": "vscode-jira.activateIssues",
+        "command": "jira-plugin.activateIssues",
         "title": "Activate an issues...",
         "category": "JIRA"
       },
       {
-        "command": "vscode-jira.transitionIssues",
+        "command": "jira-plugin.transitionIssues",
         "title": "Update active issue state...",
         "category": "JIRA"
       },
       {
-        "command": "vscode-jira.addComment",
+        "command": "jira-plugin.addComment",
         "title": "Add comment to active issue...",
         "category": "JIRA"
       }

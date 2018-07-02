@@ -8,7 +8,7 @@ import state, { ActiveIssue, getActiveIssue } from '../state';
 
 export class TransitionIssueCommand implements Command {
 
-  public id = 'vscode-jira.transitionIssues';
+  public id = 'jira-plugin.transitionIssues';
 
   @bind
   public async run(withDeactivation = true): Promise<void> {
@@ -19,7 +19,7 @@ export class TransitionIssueCommand implements Command {
     if (activeIssue) {
       const selected = await this.selectTransition(withDeactivation, activeIssue);
       if (selected === null) {
-        await vscode.commands.executeCommand('vscode-jira.activateIssues', null);
+        await vscode.commands.executeCommand('jira-plugin.activateIssues', null);
       } else  if (selected !== undefined) {
         await state.jira.doTransition(activeIssue.key, {
           transition: {
@@ -63,7 +63,7 @@ export class TransitionIssueCommand implements Command {
   private async deactivateWhenDone(activeIssue: ActiveIssue): Promise<void> {
     const result = await state.jira.search({jql: `issue = "${activeIssue.key}" AND resolution = Resolved`});
     if ((result.issues || []).length > 0) {
-      vscode.commands.executeCommand('vscode-jira.activateIssues', null);
+      vscode.commands.executeCommand('jira-plugin.activateIssues', null);
     }
   }
 
