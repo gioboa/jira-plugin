@@ -14,9 +14,7 @@ const state_1 = require("./state");
 class StatusBarManager {
     constructor() {
         this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-        state_1.default.subscriber.push(() => {
-            this.updateStatusBar('');
-        });
+        setTimeout(() => this.updateStatusBar(''), 2000);
     }
     updateStatusBar(currentProject) {
         return __awaiter(this, void 0, void 0, function* () {

@@ -1,29 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const configuration_1 = require("./configuration");
 const state = {
     jira: undefined,
-    subscriber: [],
-    update() {
-        this.subscriber.forEach(subscriber => subscriber());
-    }
+    context: undefined
 };
 exports.default = state;
-function getActiveIssue() {
-    if (state.workspaceState) {
-        return state.workspaceState.get('vscode-jira:active-issue');
-    }
-    return undefined;
-}
-exports.getActiveIssue = getActiveIssue;
-function setActiveIssue(issue) {
-    if (state.workspaceState) {
-        state.workspaceState.update('vscode-jira:active-issue', issue
-            ? {
-                key: issue.key
-            }
-            : undefined);
-        state.update();
-    }
-}
-exports.setActiveIssue = setActiveIssue;
+exports.canExecuteJiraAPI = () => {
+    return state.jira && configuration_1.configIsCorrect(state.context);
+};
 //# sourceMappingURL=state.js.map

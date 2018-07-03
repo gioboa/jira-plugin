@@ -1,42 +1,19 @@
 import * as vscode from 'vscode';
-import { Jira, Issue } from './api.model';
+import { Jira } from './api.model';
+import { configIsCorrect } from './configuration';
 
 export interface State {
   jira: Jira;
-  workspaceState?: vscode.Memento;
-  subscriber: (() => void)[];
-  update(): void;
-}
-
-export interface ActiveIssue {
-  key: string;
+  context?: vscode.ExtensionContext;
 }
 
 const state: State = {
   jira: undefined as any,
-  subscriber: [],
-  update(): void {
-    this.subscriber.forEach(subscriber => subscriber());
-  }
+  context: undefined
 };
 
 export default state;
 
-export function getActiveIssue(): ActiveIssue | undefined {
-  if (state.workspaceState) {
-    return state.workspaceState.get('vscode-jira:active-issue');
-  }
-  return undefined;
-}
-
-export function setActiveIssue(issue: Issue | null): void {
-  if (state.workspaceState) {
-    state.workspaceState.update('vscode-jira:active-issue', issue
-      ? {
-          key: issue.key
-        }
-      : undefined
-    );
-    state.update();
-  }
-}
+export const canExecuteJiraAPI = (): boolean => {
+  return state.jira && configIsCorrect(state.context);
+};

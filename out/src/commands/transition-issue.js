@@ -23,7 +23,7 @@ const extension_1 = require("../extension");
 const state_1 = require("../state");
 class TransitionIssueCommand {
     constructor() {
-        this.id = 'jira-plugin.transitionIssues';
+        this.id = 'vscode-jira.transitionIssues';
     }
     run(withDeactivation = true) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +34,7 @@ class TransitionIssueCommand {
             if (activeIssue) {
                 const selected = yield this.selectTransition(withDeactivation, activeIssue);
                 if (selected === null) {
-                    yield vscode.commands.executeCommand('jira-plugin.activateIssues', null);
+                    yield vscode.commands.executeCommand('vscode-jira.activateIssues', null);
                 }
                 else if (selected !== undefined) {
                     yield state_1.default.jira.doTransition(activeIssue.key, {
@@ -77,7 +77,7 @@ class TransitionIssueCommand {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield state_1.default.jira.search({ jql: `issue = "${activeIssue.key}" AND resolution = Resolved` });
             if ((result.issues || []).length > 0) {
-                vscode.commands.executeCommand('jira-plugin.activateIssues', null);
+                vscode.commands.executeCommand('vscode-jira.activateIssues', null);
             }
         });
     }

@@ -19,19 +19,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const vscode = require("vscode");
-const configuration_1 = require("../configuration");
+const state_1 = require("../state");
 const utils_1 = require("../utils");
-class BrowseMyIssuesCommand {
+class IssueNewTransitionCommand {
     constructor() {
-        this.id = 'jira-plugin.browseMyIssues';
+        this.id = 'jira-plugin.issueNewTransition';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issue = yield utils_1.selectIssue();
-            if (issue) {
-                const url = `${configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL)}/browse/${issue}`;
-                yield vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
+            if (state_1.canExecuteJiraAPI()) {
+                const issueKey = yield utils_1.selectIssue();
+                if (issueKey) {
+                    const newTransition = yield this.selectTransition(issueKey);
+                    if (newTransition) {
+                        const result = yield state_1.default.jira.doTransition(issueKey, {
+                            transition: {
+                                id: newTransition.id
+                            }
+                        });
+                        console.log(result);
+                    }
+                }
             }
+        });
+    }
+    selectTransition(issueKey) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const transitions = yield state_1.default.jira.getTransitions(issueKey);
+            const picks = transitions.transitions.map(transition => ({
+                label: transition.name,
+                description: '',
+                transition
+            }));
+            const selected = yield vscode.window.showQuickPick(picks, {
+                placeHolder: `Select transition to execute for ${issueKey}`,
+                matchOnDescription: true
+            });
+            return selected ? selected.transition : undefined;
         });
     }
 }
@@ -40,6 +64,6 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], BrowseMyIssuesCommand.prototype, "run", null);
-exports.BrowseMyIssuesCommand = BrowseMyIssuesCommand;
-//# sourceMappingURL=browse-my-issues.js.map
+], IssueNewTransitionCommand.prototype, "run", null);
+exports.IssueNewTransitionCommand = IssueNewTransitionCommand;
+//# sourceMappingURL=issue-change-status.js.map

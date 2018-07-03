@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { WorkspaceConfiguration } from 'vscode';
-import { CREDENTIALS_SEPARATOR } from './constants';
+
+export const CREDENTIALS_SEPARATOR = '##';
 
 export const CONFIG = {
   BASE_URL: 'baseUrl',
@@ -14,23 +15,32 @@ export interface Configuration extends WorkspaceConfiguration {
   currentProject?: string;
 }
 
-export function getConfiguration(): Configuration {
+export const configIsCorrect = (context: vscode.ExtensionContext | undefined): boolean => {
+  if (!context) {
+    return false;
+  }
+  const [username, password] = getGlobalStateConfiguration(context).split(CREDENTIALS_SEPARATOR);
+  const config = getConfiguration();
+  return config.baseUrl && username && password;
+};
+
+export const getConfiguration = (): Configuration => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration('jira');
   if (!config) {
     throw new Error('No configuration found. Probably an error in vscode');
   }
   return config;
-}
+};
 
-export function getConfigurationByKey(entry: string): string | undefined {
+export const getConfigurationByKey = (entry: string): string | undefined => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration('jira');
   if (!config) {
     throw new Error('No configuration found. Probably an error in vscode');
   }
   return config.get(entry);
-}
+};
 
-export function setConfigurationByKey(entry: string, value: string | undefined): Thenable<void> {
+export const setConfigurationByKey = (entry: string, value: string | undefined): Thenable<void> => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration('jira');
   if (!config) {
     throw new Error('No configuration found. Probably an error in vscode');
@@ -39,14 +49,14 @@ export function setConfigurationByKey(entry: string, value: string | undefined):
     value = value.substring(0, value.length - 1);
   }
   return config.update(entry, value || '', true);
-}
+};
 
-export function setGlobalStateConfiguration(context: vscode.ExtensionContext, password: string | undefined): Thenable<void> {
+export const setGlobalStateConfiguration = (context: vscode.ExtensionContext, password: string | undefined): Thenable<void> => {
   const config = getConfiguration();
   return context.globalState.update(`jira-plugin:${config.baseUrl}`, `${config.username}${CREDENTIALS_SEPARATOR}${password || ''}`);
-}
+};
 
-export function getGlobalStateConfiguration(context: vscode.ExtensionContext): any {
+export const getGlobalStateConfiguration = (context: vscode.ExtensionContext): any => {
   const config = getConfiguration();
   return context.globalState.get(`jira-plugin:${config.baseUrl}`);
-}
+};

@@ -3,10 +3,10 @@ import * as vscode from 'vscode';
 import { createClient } from './api';
 import { Jira } from './api.model';
 import { BrowseMyIssuesCommand } from './commands/browse-my-issues';
+import { IssueNewTransitionCommand } from './commands/issue-change-status';
 import { ChangeCurrentProjectCommand } from './commands/set-current-project';
 import { SetupCredentialsCommand } from './commands/setup-credentials';
-import { CONFIG, getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
-import { CREDENTIALS_SEPARATOR } from './constants';
+import { CONFIG, CREDENTIALS_SEPARATOR, getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
 import { IssueLinkProvider } from './document-link-provider';
 import state from './state';
 import { StatusBarManager } from './status-bar';
@@ -14,9 +14,7 @@ import { StatusBarManager } from './status-bar';
 let context: vscode.ExtensionContext;
 let channel: vscode.OutputChannel;
 
-export function activate(_context: vscode.ExtensionContext): void {
-  context = _context;
-  state.workspaceState = context.workspaceState;
+export const activate = (context: vscode.ExtensionContext): void => {
   channel = vscode.window.createOutputChannel('JIRA');
   context.subscriptions.push(channel);
 
@@ -26,7 +24,7 @@ export function activate(_context: vscode.ExtensionContext): void {
   if (getConfigurationByKey(CONFIG.BASE_URL)) {
     const connect = async () => {
       state.jira = (await connectToJira(context))!;
-      state.update();
+      state.context = context;
     };
     connect().catch(() => {
       vscode.window.showErrorMessage('Failed to connect to jira');
@@ -34,26 +32,25 @@ export function activate(_context: vscode.ExtensionContext): void {
   }
 
   const statusBar = new StatusBarManager();
-  const commands = [new SetupCredentialsCommand(context), new ChangeCurrentProjectCommand(statusBar), new BrowseMyIssuesCommand()];
+  const commands = [new SetupCredentialsCommand(context), new ChangeCurrentProjectCommand(statusBar), new BrowseMyIssuesCommand(), new IssueNewTransitionCommand()];
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
   context.subscriptions.push(statusBar);
-}
+};
 
-export function checkEnabled(): boolean {
+export const checkEnabled = (): boolean => {
   const config = vscode.workspace.getConfiguration('jira');
   if (!state.jira || !config.has('baseUrl') || !config.has('projectNames')) {
     vscode.window.showInformationMessage('No JIRA client configured. Setup baseUrl, projectNames, username and password');
     return false;
   }
   return true;
-}
+};
 
-export async function connectToJira(ceontext: vscode.ExtensionContext): Promise<Jira | undefined> {
-  const baseUrl = getConfigurationByKey(CONFIG.BASE_URL);
-  const globalConfig = getGlobalStateConfiguration(context);
-  if (baseUrl && globalConfig) {
+export const connectToJira = async (context: vscode.ExtensionContext): Promise<Jira | undefined> => {
+  const baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
+  const [username, password] = getGlobalStateConfiguration(context).split(CREDENTIALS_SEPARATOR);
+  if (!!baseUrl && !!username && !!password) {
     try {
-      const [username, password] = globalConfig.split(CREDENTIALS_SEPARATOR);
       const client = createClient(baseUrl, username, password);
       const serverInfo = await client.serverInfo();
       if (serverInfo.versionNumbers[0] < 5) {
@@ -68,4 +65,4 @@ export async function connectToJira(ceontext: vscode.ExtensionContext): Promise<
     }
   }
   return undefined;
-}
+};

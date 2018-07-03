@@ -3,9 +3,10 @@ export interface Jira {
   search(params: { jql: string }): Promise<Issues>;
   getProjects(): Promise<Project[]>;
   getStatuses(): Promise<Status[]>;
+  getTransitions(issue: string): Promise<Transitions>;
+  doTransition(issue: string, body: DoTransitionBody): Promise<void>;
+
   // getIssue(issue: string): Promise<Issue>;
-  // getTransitions(issue: string): Promise<Transitions>;
-  // doTransition(issue: string, body: DoTransitionBody): Promise<void>;
   // addComment(issue: string, body: AddCommentBody): Promise<AddCommentResponse>;
 }
 
@@ -50,28 +51,28 @@ export interface Status {
   statusCategory: any;
 }
 
+export interface Transitions {
+  transitions: Transition[];
+}
+
+export interface Transition {
+  id: string;
+  name: string;
+  to: {
+    name: string;
+  };
+}
+
+export interface DoTransitionBody {
+  transition: {
+    id: string;
+  };
+}
+
 // export interface AddCommentBody {
 //   body: string;
 // }
 
 // export interface AddCommentResponse {
 //   id: string;
-// }
-
-// export interface Transitions {
-//   transitions: Transition[];
-// }
-
-// export interface Transition {
-//   id: string;
-//   name: string;
-//   to: {
-//     name: string;
-//   };
-// }
-
-// export interface DoTransitionBody {
-//   transition: {
-//     id: string;
-//   };
 // }

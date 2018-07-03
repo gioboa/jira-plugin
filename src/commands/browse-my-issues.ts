@@ -1,44 +1,18 @@
 import { bind } from 'decko';
 import * as vscode from 'vscode';
-import { Issue } from '../api.model';
 import { Command } from '../command';
 import { CONFIG, getConfigurationByKey } from '../configuration';
-import state from '../state';
-import { selectStatus } from '../utils';
+import { selectIssue } from '../utils';
 
-export class BrowseMyIssuesCommand implements Command<Issue | undefined | null> {
+export class BrowseMyIssuesCommand implements Command {
   public id = 'jira-plugin.browseMyIssues';
 
   @bind
-  public async run(): Promise<Issue | undefined | null> {
-    const currentProject = getConfigurationByKey(CONFIG.CURRENT_PROJECT);
-    const status = await selectStatus();
-    if (!!status) {
-      const issues = await state.jira.search({
-        jql: `project in (${currentProject}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`
-      });
-      const picks = (issues.issues || []).map((issue: Issue) => {
-        return {
-          issue,
-          label: issue.key,
-          description: issue.fields.summary,
-          detail: issue.fields.description
-        };
-      });
-      if (picks.length > 0) {
-        const selected = await vscode.window.showQuickPick(picks, {
-          matchOnDescription: true,
-          matchOnDetail: true,
-          placeHolder: 'Select an issue'
-        });
-        if (selected) {
-          const url = `${getConfigurationByKey(CONFIG.BASE_URL)}/browse/${selected}`;
-          await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
-        }
-      } else {
-        vscode.window.showInformationMessage(`No issues found: project - ${currentProject} | status - ${status}`);
-      }
+  public async run(): Promise<void> {
+    const issue = await selectIssue();
+    if (issue) {
+      const url = `${getConfigurationByKey(CONFIG.BASE_URL)}/browse/${issue}`;
+      await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
     }
-    return undefined;
   }
 }

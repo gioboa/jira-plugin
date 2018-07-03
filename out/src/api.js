@@ -18,34 +18,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const pretend_1 = require("pretend");
-function createClient(endpoint, username, password) {
+exports.createClient = (endpoint, username, password) => {
     return pretend_1.Pretend.builder()
         .interceptor(impl.logger())
         .basicAuthentication(username, password)
         .requestInterceptor(impl.contentType())
         .decode(impl.decoder())
         .target(impl.JiraBlueprint, endpoint);
-}
-exports.createClient = createClient;
+};
 var impl;
 (function (impl) {
-    function logger() {
+    impl.logger = () => {
         return (chain, request) => __awaiter(this, void 0, void 0, function* () {
             // console.log('request: ', request);
             const response = yield chain(request);
             // console.log('response', response);
             return response;
         });
-    }
-    impl.logger = logger;
-    function contentType() {
+    };
+    impl.contentType = () => {
         return request => {
             request.options.headers.set('Content-Type', 'application/json');
             return request;
         };
-    }
-    impl.contentType = contentType;
-    function decoder() {
+    };
+    impl.decoder = () => {
         return response => {
             if (response.status === 204) {
                 // no-content
@@ -53,8 +50,7 @@ var impl;
             }
             return response.json();
         };
-    }
-    impl.decoder = decoder;
+    };
     class JiraBlueprint {
         serverInfo() {
             /* */
@@ -66,6 +62,12 @@ var impl;
             /* */
         }
         getProjects() {
+            /* */
+        }
+        getTransitions() {
+            /* */
+        }
+        doTransition() {
             /* */
         }
     }
@@ -93,6 +95,18 @@ var impl;
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "getProjects", null);
+    __decorate([
+        pretend_1.Get('/rest/api/2/issue/:issue/transitions'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", Object)
+    ], JiraBlueprint.prototype, "getTransitions", null);
+    __decorate([
+        pretend_1.Post('/rest/api/2/issue/:issue/transitions'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", Object)
+    ], JiraBlueprint.prototype, "doTransition", null);
     impl.JiraBlueprint = JiraBlueprint;
 })(impl || (impl = {}));
 //# sourceMappingURL=api.js.map
