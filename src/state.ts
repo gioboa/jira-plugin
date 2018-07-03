@@ -1,15 +1,19 @@
 import * as vscode from 'vscode';
-import { Jira } from './api.model';
+import { Jira, Project, Status } from './api.model';
 import { configIsCorrect } from './configuration';
 
 export interface State {
   jira: Jira;
   context?: vscode.ExtensionContext;
+  statuses: Status[];
+  projects: Project[];
 }
 
 const state: State = {
   jira: undefined as any,
-  context: undefined
+  context: undefined,
+  statuses: [],
+  projects: []
 };
 
 export default state;

@@ -13,8 +13,7 @@ const configuration_1 = require("./configuration");
 const state_1 = require("./state");
 exports.selectProject = () => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
-        const projects = yield state_1.default.jira.getProjects();
-        const picks = projects.map(project => ({
+        const picks = state_1.default.projects.map(project => ({
             label: project.key,
             description: project.name
         }));
@@ -25,8 +24,7 @@ exports.selectProject = () => __awaiter(this, void 0, void 0, function* () {
 });
 exports.selectStatus = () => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
-        const statuses = yield state_1.default.jira.getStatuses();
-        const picks = statuses.map(status => ({
+        const picks = state_1.default.statuses.map(status => ({
             label: status.name,
             description: status.description
         }));

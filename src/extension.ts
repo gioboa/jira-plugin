@@ -25,6 +25,8 @@ export const activate = (context: vscode.ExtensionContext): void => {
     const connect = async () => {
       state.jira = (await connectToJira(context))!;
       state.context = context;
+      state.statuses = await state.jira.getStatuses();
+      state.projects = await state.jira.getProjects();
     };
     connect().catch(() => {
       vscode.window.showErrorMessage('Failed to connect to jira');

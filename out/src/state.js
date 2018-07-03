@@ -3,7 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const configuration_1 = require("./configuration");
 const state = {
     jira: undefined,
-    context: undefined
+    context: undefined,
+    statuses: [],
+    projects: []
 };
 exports.default = state;
 exports.canExecuteJiraAPI = () => {

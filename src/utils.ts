@@ -1,12 +1,11 @@
 import * as vscode from 'vscode';
-import { Issue, Project, Status } from './api.model';
+import { Issue } from './api.model';
 import { CONFIG, getConfigurationByKey } from './configuration';
 import state, { canExecuteJiraAPI } from './state';
 
 export const selectProject = async (): Promise<string> => {
   if (canExecuteJiraAPI()) {
-    const projects: Project[] = await state.jira.getProjects();
-    const picks = projects.map(project => ({
+    const picks = state.projects.map(project => ({
       label: project.key,
       description: project.name
     }));
@@ -18,8 +17,7 @@ export const selectProject = async (): Promise<string> => {
 
 export const selectStatus = async (): Promise<string> => {
   if (canExecuteJiraAPI()) {
-    const statuses: Status[] = await state.jira.getStatuses();
-    const picks = statuses.map(status => ({
+    const picks = state.statuses.map(status => ({
       label: status.name,
       description: status.description
     }));

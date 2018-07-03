@@ -70,6 +70,11 @@
         "command": "jira-plugin.issueNewTransition",
         "title": "New transition for issue...",
         "category": "JIRA"
+      },
+      {
+        "command": "jira-plugin.changeIssueAssignee",
+        "title": "Change assignee...",
+        "category": "JIRA"
       }
     ]
   },

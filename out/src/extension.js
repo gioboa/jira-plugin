@@ -30,6 +30,8 @@ exports.activate = (context) => {
         const connect = () => __awaiter(this, void 0, void 0, function* () {
             state_1.default.jira = (yield exports.connectToJira(context));
             state_1.default.context = context;
+            state_1.default.statuses = yield state_1.default.jira.getStatuses();
+            state_1.default.projects = yield state_1.default.jira.getProjects();
         });
         connect().catch(() => {
             vscode.window.showErrorMessage('Failed to connect to jira');
