@@ -17,9 +17,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const pretend_1 = require("pretend");
+const src_1 = require("pretend/dist/src");
 exports.createClient = (endpoint, username, password) => {
-    return pretend_1.Pretend.builder()
+    return src_1.Pretend.builder()
         .interceptor(impl.logger())
         .basicAuthentication(username, password)
         .requestInterceptor(impl.contentType())
@@ -72,37 +72,37 @@ var impl;
         }
     }
     __decorate([
-        pretend_1.Get('/rest/api/2/serverInfo'),
+        src_1.Get('/rest/api/2/serverInfo'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "serverInfo", null);
     __decorate([
-        pretend_1.Get('/rest/api/latest/status'),
+        src_1.Get('/rest/api/latest/status'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "getStatuses", null);
     __decorate([
-        pretend_1.Post('/rest/api/2/search'),
+        src_1.Post('/rest/api/2/search'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "search", null);
     __decorate([
-        pretend_1.Get('/rest/api/2/project'),
+        src_1.Get('/rest/api/2/project'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "getProjects", null);
     __decorate([
-        pretend_1.Get('/rest/api/2/issue/:issue/transitions'),
+        src_1.Get('/rest/api/2/issue/:issue/transitions'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "getTransitions", null);
     __decorate([
-        pretend_1.Post('/rest/api/2/issue/:issue/transitions'),
+        src_1.Post('/rest/api/2/issue/:issue/transitions'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)

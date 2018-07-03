@@ -12,7 +12,7 @@ require("isomorphic-fetch");
 const vscode = require("vscode");
 const api_1 = require("./api");
 const browse_my_issues_1 = require("./commands/browse-my-issues");
-const issue_change_status_1 = require("./commands/issue-change-status");
+const issue_new_transition_1 = require("./commands/issue-new-transition");
 const set_current_project_1 = require("./commands/set-current-project");
 const setup_credentials_1 = require("./commands/setup-credentials");
 const configuration_1 = require("./configuration");
@@ -36,7 +36,7 @@ exports.activate = (context) => {
         });
     }
     const statusBar = new status_bar_1.StatusBarManager();
-    const commands = [new setup_credentials_1.SetupCredentialsCommand(context), new set_current_project_1.ChangeCurrentProjectCommand(statusBar), new browse_my_issues_1.BrowseMyIssuesCommand(), new issue_change_status_1.IssueNewTransitionCommand()];
+    const commands = [new setup_credentials_1.SetupCredentialsCommand(context), new set_current_project_1.ChangeCurrentProjectCommand(statusBar), new browse_my_issues_1.BrowseMyIssuesCommand(), new issue_new_transition_1.IssueNewTransitionCommand()];
     context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
     context.subscriptions.push(statusBar);
 };

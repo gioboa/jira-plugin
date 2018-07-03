@@ -1,4 +1,4 @@
-import { Get, Interceptor, IPretendDecoder, IPretendRequestInterceptor, Post, Pretend } from 'pretend';
+import { Get, Interceptor, IPretendDecoder, IPretendRequestInterceptor, Post, Pretend } from 'pretend/dist/src';
 import { Jira } from './api.model';
 
 export const createClient = (endpoint: string, username: string, password: string): Jira => {

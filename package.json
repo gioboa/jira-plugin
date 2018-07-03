@@ -68,7 +68,7 @@
       },
       {
         "command": "jira-plugin.issueNewTransition",
-        "title": "Change issue status...",
+        "title": "New transition for issue...",
         "category": "JIRA"
       }
     ]

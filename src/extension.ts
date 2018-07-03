@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { createClient } from './api';
 import { Jira } from './api.model';
 import { BrowseMyIssuesCommand } from './commands/browse-my-issues';
-import { IssueNewTransitionCommand } from './commands/issue-change-status';
+import { IssueNewTransitionCommand } from './commands/issue-new-transition';
 import { ChangeCurrentProjectCommand } from './commands/set-current-project';
 import { SetupCredentialsCommand } from './commands/setup-credentials';
 import { CONFIG, CREDENTIALS_SEPARATOR, getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
