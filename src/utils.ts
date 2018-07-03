@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import { Project } from './api';
-import { STATUSES } from './constants';
+import { Project, Status } from './api';
 import state from './state';
 
 export const selectProject = async (): Promise<string> => {
@@ -14,10 +13,11 @@ export const selectProject = async (): Promise<string> => {
 };
 
 export const selectStatus = async (): Promise<string> => {
-  const picks = STATUSES.map(status => ({
-    label: status,
-    description: ''
+  const statuses: Status[] = await state.jira.getStatuses();
+  const picks = statuses.map(status => ({
+    label: status.name,
+    description: status.description
   }));
-  const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Set status`, matchOnDescription: true });
+  const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Filter by STATUS`, matchOnDescription: true });
   return selected ? selected.label : '';
 };

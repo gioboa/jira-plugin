@@ -8,6 +8,7 @@ export interface Jira {
   doTransition(issue: string, body: DoTransitionBody): Promise<void>;
   addComment(issue: string, body: AddCommentBody): Promise<AddCommentResponse>;
   getProjects(): Promise<Project[]>;
+  getStatuses(): Promise<Status[]>;
 }
 
 export interface AddCommentBody {
@@ -66,6 +67,15 @@ export interface Project {
   self: string;
   id: string;
   name: string;
+}
+
+export interface Status {
+  self: string;
+  description: string;
+  iconUrl: string;
+  name: string;
+  id: string;
+  statusCategory: any;
 }
 
 export function createClient(endpoint: string, username: string, password: string): Jira {
@@ -132,6 +142,11 @@ namespace impl {
 
     @Get('/rest/api/2/project')
     public getProjects(): any {
+      /* */
+    }
+
+    @Get('/rest/api/latest/status')
+    public getStatuses(): any {
       /* */
     }
 

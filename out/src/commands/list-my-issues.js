@@ -32,7 +32,7 @@ class ListMyIssuesCommand {
             const status = yield utils_1.selectStatus();
             if (!!status) {
                 const issues = yield state_1.default.jira.search({
-                    jql: `project in (${currentProject}) AND status = ${status} AND assignee in (currentUser()) ORDER BY updated DESC`
+                    jql: `project in (${currentProject}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`
                 });
                 const picks = (issues.issues || []).map(issue => {
                     return {

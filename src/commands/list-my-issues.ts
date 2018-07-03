@@ -15,7 +15,7 @@ export class ListMyIssuesCommand implements Command<Issue | undefined | null> {
     const status = await selectStatus();
     if (!!status) {
       const issues = await state.jira.search({
-        jql: `project in (${currentProject}) AND status = ${status} AND assignee in (currentUser()) ORDER BY updated DESC`
+        jql: `project in (${currentProject}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`
       });
       const picks = (issues.issues || []).map(issue => {
         return {

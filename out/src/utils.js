@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const constants_1 = require("./constants");
 const state_1 = require("./state");
 exports.selectProject = () => __awaiter(this, void 0, void 0, function* () {
     const projects = yield state_1.default.jira.getProjects();
@@ -21,11 +20,12 @@ exports.selectProject = () => __awaiter(this, void 0, void 0, function* () {
     return selected ? selected.label : '';
 });
 exports.selectStatus = () => __awaiter(this, void 0, void 0, function* () {
-    const picks = constants_1.STATUSES.map(status => ({
-        label: status,
-        description: ''
+    const statuses = yield state_1.default.jira.getStatuses();
+    const picks = statuses.map(status => ({
+        label: status.name,
+        description: status.description
     }));
-    const selected = yield vscode.window.showQuickPick(picks, { placeHolder: `Set status`, matchOnDescription: true });
+    const selected = yield vscode.window.showQuickPick(picks, { placeHolder: `Filter by STATUS`, matchOnDescription: true });
     return selected ? selected.label : '';
 });
 //# sourceMappingURL=utils.js.map
