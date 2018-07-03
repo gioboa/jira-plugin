@@ -1,6 +1,6 @@
 import { bind } from 'decko';
 import * as vscode from 'vscode';
-import { Issue } from '../api';
+import { Issue } from '../api.model';
 import { Command } from '../command';
 import { CONFIG, getConfigurationByKey } from '../configuration';
 import state from '../state';
@@ -17,7 +17,7 @@ export class ListMyIssuesCommand implements Command<Issue | undefined | null> {
       const issues = await state.jira.search({
         jql: `project in (${currentProject}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`
       });
-      const picks = (issues.issues || []).map(issue => {
+      const picks = (issues.issues || []).map((issue: Issue) => {
         return {
           issue,
           label: issue.key,
@@ -32,7 +32,7 @@ export class ListMyIssuesCommand implements Command<Issue | undefined | null> {
           placeHolder: 'Select an issue'
         });
         if (selected) {
-          const url = `${getConfigurationByKey(CONFIG.BASE_URL)}/browse/${selected.label}`;
+          const url = `${getConfigurationByKey(CONFIG.BASE_URL)}/browse/${selected}`;
           await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
         }
       } else {

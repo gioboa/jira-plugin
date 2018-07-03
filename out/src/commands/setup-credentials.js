@@ -22,8 +22,8 @@ const vscode = require("vscode");
 const configuration_1 = require("../configuration");
 class SetupCredentialsCommand {
     constructor(context) {
-        this.id = 'jira-plugin.setupCredentials';
         this.context = context;
+        this.id = 'jira-plugin.setupCredentials';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {

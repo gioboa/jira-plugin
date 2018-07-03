@@ -9,41 +9,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const configuration_1 = require("./configuration");
 const state_1 = require("./state");
 class StatusBarManager {
     constructor() {
         this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-        this.item.text = '$(issue-opened)';
         state_1.default.subscriber.push(() => {
-            this.updateStatus();
+            this.updateStatusBar('');
         });
-        this.interval = setInterval(() => {
-            this.updateStatus();
-        }, 1000 * 60 * 5);
     }
-    updateStatus() {
+    updateStatusBar(currentProject) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!state_1.default.jira) {
                 return;
             }
-            this.item.show();
-            const activeIssue = state_1.getActiveIssue();
-            if (activeIssue) {
-                const issue = yield state_1.default.jira.getIssue(activeIssue.key);
-                this.item.text = `$(issue-opened) ${activeIssue.key} ${issue.fields.status.name}`;
-                this.item.tooltip = 'Click to transition issue...';
-                this.item.command = 'jira-plugin.transitionIssues';
+            if (!currentProject) {
+                currentProject = (yield configuration_1.getConfigurationByKey(configuration_1.CONFIG.CURRENT_PROJECT)) || '';
+            }
+            if (!!currentProject) {
+                this.item.text = `JIRA current project -> ${currentProject}`;
             }
             else {
-                this.item.text = '$(issue-opened)';
-                this.item.tooltip = 'Click to activate issue...';
-                this.item.command = 'jira-plugin.activateIssues';
+                this.item.text = `JIRA no project selected`;
             }
+            this.item.show();
         });
     }
     dispose() {
         this.item.dispose();
-        clearInterval(this.interval);
     }
 }
 exports.StatusBarManager = StatusBarManager;

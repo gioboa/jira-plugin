@@ -1,18 +1,18 @@
 import 'isomorphic-fetch';
 import * as vscode from 'vscode';
-import { createClient, Jira } from './api';
+import { createClient } from './api';
+import { Jira } from './api.model';
 import { ListMyIssuesCommand } from './commands/list-my-issues';
 import { ChangeCurrentProjectCommand } from './commands/set-current-project';
 import { SetupCredentialsCommand } from './commands/setup-credentials';
 import { CONFIG, getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
+import { CREDENTIALS_SEPARATOR } from './constants';
 import { IssueLinkProvider } from './document-link-provider';
 import state from './state';
 import { StatusBarManager } from './status-bar';
-import { CREDENTIALS_SEPARATOR } from './constants';
 
 let context: vscode.ExtensionContext;
 let channel: vscode.OutputChannel;
-let baseUrl: string | undefined;
 
 export function activate(_context: vscode.ExtensionContext): void {
   context = _context;
@@ -33,9 +33,10 @@ export function activate(_context: vscode.ExtensionContext): void {
     });
   }
 
-  const commands = [new SetupCredentialsCommand(context), new ChangeCurrentProjectCommand(), new ListMyIssuesCommand()];
+  const statusBar = new StatusBarManager();
+  const commands = [new SetupCredentialsCommand(context), new ChangeCurrentProjectCommand(statusBar), new ListMyIssuesCommand()];
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
-  context.subscriptions.push(new StatusBarManager());
+  context.subscriptions.push(statusBar);
 }
 
 export function checkEnabled(): boolean {

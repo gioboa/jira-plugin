@@ -5,11 +5,8 @@ import { CONFIG, getConfigurationByKey, setConfigurationByKey, setGlobalStateCon
 
 export class SetupCredentialsCommand implements Command {
   public id = 'jira-plugin.setupCredentials';
-  private context: vscode.ExtensionContext;
-
-  constructor(context: vscode.ExtensionContext) {
-    this.context = context;
-  }
+  
+  constructor(private context: vscode.ExtensionContext) {}
 
   @bind
   public async run(): Promise<void> {

@@ -21,12 +21,15 @@ const decko_1 = require("decko");
 const configuration_1 = require("../configuration");
 const utils_1 = require("../utils");
 class ChangeCurrentProjectCommand {
-    constructor() {
+    constructor(statusBar) {
+        this.statusBar = statusBar;
         this.id = 'jira-plugin.changeCurrentProject';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            configuration_1.setConfigurationByKey(configuration_1.CONFIG.CURRENT_PROJECT, yield utils_1.selectProject());
+            const currentProject = yield utils_1.selectProject();
+            configuration_1.setConfigurationByKey(configuration_1.CONFIG.CURRENT_PROJECT, currentProject);
+            this.statusBar.updateStatusBar(currentProject);
         });
     }
 }

@@ -1,82 +1,5 @@
 import { Get, Interceptor, IPretendDecoder, IPretendRequestInterceptor, Post, Pretend } from 'pretend';
-
-export interface Jira {
-  serverInfo(): Promise<ServerInfo>;
-  search(params: { jql: string }): Promise<Issues>;
-  getIssue(issue: string): Promise<Issue>;
-  getTransitions(issue: string): Promise<Transitions>;
-  doTransition(issue: string, body: DoTransitionBody): Promise<void>;
-  addComment(issue: string, body: AddCommentBody): Promise<AddCommentResponse>;
-  getProjects(): Promise<Project[]>;
-  getStatuses(): Promise<Status[]>;
-}
-
-export interface AddCommentBody {
-  body: string;
-}
-
-export interface AddCommentResponse {
-  id: string;
-}
-
-export interface ServerInfo {
-  version: string;
-  versionNumbers: number[];
-}
-
-export interface Issues {
-  issues: Issue[] | undefined;
-  maxResults: number;
-  startAt: number;
-  total: number;
-}
-
-export interface Issue {
-  id: string;
-  key: string;
-  fields: {
-    summary: string;
-    description?: string;
-    status: {
-      name: string;
-    };
-  };
-}
-
-export interface Transitions {
-  transitions: Transition[];
-}
-
-export interface Transition {
-  id: string;
-  name: string;
-  to: {
-    name: string;
-  };
-}
-
-export interface DoTransitionBody {
-  transition: {
-    id: string;
-  };
-}
-
-export interface Project {
-  key: string;
-  expand: string;
-  self: string;
-  id: string;
-  name: string;
-}
-
-export interface Status {
-  self: string;
-  description: string;
-  iconUrl: string;
-  name: string;
-  id: string;
-  statusCategory: any;
-}
+import { Jira } from './api.model';
 
 export function createClient(endpoint: string, username: string, password: string): Jira {
   return Pretend.builder()
@@ -120,23 +43,13 @@ namespace impl {
       /* */
     }
 
+    @Get('/rest/api/latest/status')
+    public getStatuses(): any {
+      /* */
+    }
+
     @Post('/rest/api/2/search')
     public search(): any {
-      /* */
-    }
-
-    @Get('/rest/api/2/issue/:issue')
-    public getIssue(): any {
-      /* */
-    }
-
-    @Get('/rest/api/2/issue/:issue/transitions')
-    public getTransitions(): any {
-      /* */
-    }
-
-    @Post('/rest/api/2/issue/:issue/transitions')
-    public doTransition(): any {
       /* */
     }
 
@@ -145,14 +58,24 @@ namespace impl {
       /* */
     }
 
-    @Get('/rest/api/latest/status')
-    public getStatuses(): any {
-      /* */
-    }
+    // @Get('/rest/api/2/issue/:issue')
+    // public getIssue(): any {
+    //   /* */
+    // }
 
-    @Post('/rest/api/2/issue/:issue/comment')
-    public addComment(): any {
-      /* */
-    }
+    // @Get('/rest/api/2/issue/:issue/transitions')
+    // public getTransitions(): any {
+    //   /* */
+    // }
+
+    // @Post('/rest/api/2/issue/:issue/transitions')
+    // public doTransition(): any {
+    //   /* */
+    // }
+
+    // @Post('/rest/api/2/issue/:issue/comment')
+    // public addComment(): any {
+    //   /* */
+    // }
   }
 }

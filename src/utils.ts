@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Project, Status } from './api';
+import { Project, Status } from './api.model';
 import state from './state';
 
 export const selectProject = async (): Promise<string> => {

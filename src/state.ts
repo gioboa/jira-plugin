@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Jira, Issue } from './api';
+import { Jira, Issue } from './api.model';
 
 export interface State {
   jira: Jira;

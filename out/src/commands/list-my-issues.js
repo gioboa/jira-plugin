@@ -34,7 +34,7 @@ class ListMyIssuesCommand {
                 const issues = yield state_1.default.jira.search({
                     jql: `project in (${currentProject}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`
                 });
-                const picks = (issues.issues || []).map(issue => {
+                const picks = (issues.issues || []).map((issue) => {
                     return {
                         issue,
                         label: issue.key,
@@ -49,7 +49,7 @@ class ListMyIssuesCommand {
                         placeHolder: 'Select an issue'
                     });
                     if (selected) {
-                        const url = `${configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL)}/browse/${selected.label}`;
+                        const url = `${configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL)}/browse/${selected}`;
                         yield vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
                     }
                 }

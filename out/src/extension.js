@@ -15,13 +15,12 @@ const list_my_issues_1 = require("./commands/list-my-issues");
 const set_current_project_1 = require("./commands/set-current-project");
 const setup_credentials_1 = require("./commands/setup-credentials");
 const configuration_1 = require("./configuration");
+const constants_1 = require("./constants");
 const document_link_provider_1 = require("./document-link-provider");
 const state_1 = require("./state");
 const status_bar_1 = require("./status-bar");
-const constants_1 = require("./constants");
 let context;
 let channel;
-let baseUrl;
 function activate(_context) {
     context = _context;
     state_1.default.workspaceState = context.workspaceState;
@@ -38,9 +37,10 @@ function activate(_context) {
             vscode.window.showErrorMessage('Failed to connect to jira');
         });
     }
-    const commands = [new setup_credentials_1.SetupCredentialsCommand(context), new set_current_project_1.ChangeCurrentProjectCommand(), new list_my_issues_1.ListMyIssuesCommand()];
+    const statusBar = new status_bar_1.StatusBarManager();
+    const commands = [new setup_credentials_1.SetupCredentialsCommand(context), new set_current_project_1.ChangeCurrentProjectCommand(statusBar), new list_my_issues_1.ListMyIssuesCommand()];
     context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
-    context.subscriptions.push(new status_bar_1.StatusBarManager());
+    context.subscriptions.push(statusBar);
 }
 exports.activate = activate;
 function checkEnabled() {

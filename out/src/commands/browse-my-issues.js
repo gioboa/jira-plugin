@@ -20,20 +20,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const vscode = require("vscode");
 const configuration_1 = require("../configuration");
-class BrowseMyIssuesCommand {
+const state_1 = require("../state");
+const utils_1 = require("../utils");
+class ListMyIssuesCommand {
     constructor() {
-        this.id = 'jira-plugin.browseMyIssues';
-    }
-    get baseUrl() {
-        return configuration_1.getConfiguration().baseUrl;
+        this.id = 'jira-plugin.listMyIssues';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issue = yield vscode.commands.executeCommand('jira-plugin.listMyIssues');
-            if (issue) {
-                const url = `${this.baseUrl}/browse/${issue.key}`;
-                yield vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
+            const currentProject = configuration_1.getConfigurationByKey(configuration_1.CONFIG.CURRENT_PROJECT);
+            const status = yield utils_1.selectStatus();
+            if (!!status) {
+                const issues = yield state_1.default.jira.search({
+                    jql: `project in (${currentProject}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`
+                });
+                const picks = (issues.issues || []).map(issue => {
+                    return {
+                        issue,
+                        label: issue.key,
+                        description: issue.fields.summary,
+                        detail: issue.fields.description
+                    };
+                });
+                if (picks.length > 0) {
+                    const selected = yield vscode.window.showQuickPick(picks, {
+                        matchOnDescription: true,
+                        matchOnDetail: true,
+                        placeHolder: 'Select an issue'
+                    });
+                    if (selected) {
+                        const url = `${configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL)}/browse/${selected.label}`;
+                        yield vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
+                    }
+                }
+                else {
+                    vscode.window.showInformationMessage(`No issues found: project - ${currentProject} | status - ${status}`);
+                }
             }
+            return undefined;
         });
     }
 }
@@ -42,6 +66,6 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], BrowseMyIssuesCommand.prototype, "run", null);
-exports.BrowseMyIssuesCommand = BrowseMyIssuesCommand;
+], ListMyIssuesCommand.prototype, "run", null);
+exports.ListMyIssuesCommand = ListMyIssuesCommand;
 //# sourceMappingURL=browse-my-issues.js.map

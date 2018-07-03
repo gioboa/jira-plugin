@@ -59,25 +59,13 @@ var impl;
         serverInfo() {
             /* */
         }
-        search() {
-            /* */
-        }
-        getIssue() {
-            /* */
-        }
-        getTransitions() {
-            /* */
-        }
-        doTransition() {
-            /* */
-        }
-        getProjects() {
-            /* */
-        }
         getStatuses() {
             /* */
         }
-        addComment() {
+        search() {
+            /* */
+        }
+        getProjects() {
             /* */
         }
     }
@@ -88,47 +76,23 @@ var impl;
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "serverInfo", null);
     __decorate([
-        pretend_1.Post('/rest/api/2/search'),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", []),
-        __metadata("design:returntype", Object)
-    ], JiraBlueprint.prototype, "search", null);
-    __decorate([
-        pretend_1.Get('/rest/api/2/issue/:issue'),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", []),
-        __metadata("design:returntype", Object)
-    ], JiraBlueprint.prototype, "getIssue", null);
-    __decorate([
-        pretend_1.Get('/rest/api/2/issue/:issue/transitions'),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", []),
-        __metadata("design:returntype", Object)
-    ], JiraBlueprint.prototype, "getTransitions", null);
-    __decorate([
-        pretend_1.Post('/rest/api/2/issue/:issue/transitions'),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", []),
-        __metadata("design:returntype", Object)
-    ], JiraBlueprint.prototype, "doTransition", null);
-    __decorate([
-        pretend_1.Get('/rest/api/2/project'),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", []),
-        __metadata("design:returntype", Object)
-    ], JiraBlueprint.prototype, "getProjects", null);
-    __decorate([
         pretend_1.Get('/rest/api/latest/status'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "getStatuses", null);
     __decorate([
-        pretend_1.Post('/rest/api/2/issue/:issue/comment'),
+        pretend_1.Post('/rest/api/2/search'),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
-    ], JiraBlueprint.prototype, "addComment", null);
+    ], JiraBlueprint.prototype, "search", null);
+    __decorate([
+        pretend_1.Get('/rest/api/2/project'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", Object)
+    ], JiraBlueprint.prototype, "getProjects", null);
     impl.JiraBlueprint = JiraBlueprint;
 })(impl || (impl = {}));
 //# sourceMappingURL=api.js.map
