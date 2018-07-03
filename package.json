@@ -38,7 +38,12 @@
           "description": "Base URL to the JIRA instance (e.g. https://your.base-to-jira.com/)",
           "default": ""
         },
-        "jira.projectNames": {
+        "jira.username": {
+          "type": "string",
+          "description": "Project KEY of your JIRA project to scan for (could be a comma separated list of names)",
+          "default": ""
+        },
+        "jira.activeProject": {
           "type": "string",
           "description": "Project KEY of your JIRA project to scan for (could be a comma separated list of names)",
           "default": ""

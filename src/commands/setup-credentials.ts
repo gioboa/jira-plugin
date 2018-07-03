@@ -1,48 +1,27 @@
 import { bind } from 'decko';
 import * as vscode from 'vscode';
-
 import { Command } from '../command';
-import { connectToJira, CREDENTIALS_SEPARATOR } from '../extension';
-import state from '../state';
+import { CONFIG, getConfigurationByKey, setConfigurationByKey, setGlobalStateConfiguration } from '../configuration';
 
 export class SetupCredentialsCommand implements Command {
-
   public id = 'jira-plugin.setupCredentials';
-
   private context: vscode.ExtensionContext;
 
-  private baseUrl: string | undefined;
-
-  constructor(context: vscode.ExtensionContext, baseUrl: string | undefined) {
+  constructor(context: vscode.ExtensionContext) {
     this.context = context;
-    this.baseUrl = baseUrl;
   }
 
   @bind
   public async run(): Promise<void> {
-    if (!this.baseUrl) {
-      vscode.window.showInformationMessage('No JIRA client configured. Setup baseUrl first');
-      return;
+    const baseUrl = getConfigurationByKey(CONFIG.URL);
+    if (baseUrl) {
+      const res = await vscode.window.showQuickPick(['Yes', 'No'], { placeHolder: 'Config already exist. Reset config?' });
+      if (res === 'No') {
+        return;
+      }
     }
-    const username = await vscode.window.showInputBox({
-      ignoreFocusOut: true,
-      placeHolder: 'Your JIRA username'
-    });
-    if (!username) {
-      return;
-    }
-    const password = await vscode.window.showInputBox({
-      ignoreFocusOut: true,
-      password: true,
-      placeHolder: 'Your JIRA password'
-    });
-    if (!password) {
-      return;
-    }
-    await this.context.globalState.update(`vscode-jira:${this.baseUrl}`,
-      `${username}${CREDENTIALS_SEPARATOR}${password}`);
-    state.jira = (await connectToJira())!;
-    state.update();
+    setConfigurationByKey(CONFIG.URL, await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA url' }));
+    setConfigurationByKey(CONFIG.USERNAME, await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA username' }));
+    setGlobalStateConfiguration(this.context, await vscode.window.showInputBox({ ignoreFocusOut: true, password: true, placeHolder: 'Your JIRA password' }));
   }
-
 }

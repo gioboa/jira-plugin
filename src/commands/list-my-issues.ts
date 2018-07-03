@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 
 import { Issue } from '../api';
 import { Command } from '../command';
-import { getConfiguration } from '../configuration';
+import { getConfiguration, getConfigurationByKey, CONFIG } from '../configuration';
 import { checkEnabled } from '../extension';
 import state from '../state';
 
@@ -11,7 +11,7 @@ export class ListMyIssuesCommand implements Command<Issue | undefined | null> {
 
   public id = 'jira-plugin.listMyIssues';
 
-  private get baseUrl(): string {
+  private get baseUrl(): string | undefined {
     return getConfiguration().baseUrl;
   }
 

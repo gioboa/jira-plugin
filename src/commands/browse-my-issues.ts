@@ -9,9 +9,10 @@ export class BrowseMyIssuesCommand implements Command {
 
   public id = 'jira-plugin.browseMyIssues';
 
-  private get baseUrl(): string {
+  private get baseUrl(): string | undefined {
     return getConfiguration().baseUrl;
   }
+
 
   @bind
   public async run(): Promise<void> {

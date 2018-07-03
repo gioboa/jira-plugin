@@ -1,6 +1,5 @@
 import 'isomorphic-fetch';
 import * as vscode from 'vscode';
-
 import { createClient, Jira } from './api';
 import { ActivateIssueCommand } from './commands/activate-issue';
 import { AddCommentCommand } from './commands/add-comment';
@@ -34,7 +33,7 @@ export function activate(_context: vscode.ExtensionContext): void {
   if (baseUrl) {
     const credentials: string | undefined = context.globalState.get(`vscode-jira:${baseUrl}`);
     if (credentials) {
-      const connect = async() => {
+      const connect = async () => {
         const [username, password] = credentials.split(CREDENTIALS_SEPARATOR);
         state.jira = (await connectToJira())!;
         state.update();
@@ -45,24 +44,15 @@ export function activate(_context: vscode.ExtensionContext): void {
     }
   }
 
-  const commands = [
-    new ActivateIssueCommand(),
-    new BrowseMyIssuesCommand(),
-    new ListMyIssuesCommand(),
-    new SetupCredentialsCommand(context, baseUrl),
-    new TransitionIssueCommand(),
-    new AddCommentCommand()
-  ];
-  context.subscriptions.push(...commands.map(
-    command => vscode.commands.registerCommand(command.id, command.run)));
+  const commands = [new ActivateIssueCommand(), new BrowseMyIssuesCommand(), new ListMyIssuesCommand(), new SetupCredentialsCommand(context), new TransitionIssueCommand(), new AddCommentCommand()];
+  context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
   context.subscriptions.push(new StatusBarManager());
 }
 
 export function checkEnabled(): boolean {
   const config = vscode.workspace.getConfiguration('jira');
   if (!state.jira || !config.has('baseUrl') || !config.has('projectNames')) {
-    vscode.window.showInformationMessage(
-      'No JIRA client configured. Setup baseUrl, projectNames, username and password');
+    vscode.window.showInformationMessage('No JIRA client configured. Setup baseUrl, projectNames, username and password');
     return false;
   }
   return true;
@@ -76,8 +66,7 @@ export async function connectToJira(): Promise<Jira | undefined> {
       const client = createClient(baseUrl, username, password);
       const serverInfo = await client.serverInfo();
       if (serverInfo.versionNumbers[0] < 5) {
-        vscode.window.showInformationMessage(
-          `Unsupported JIRA version '${serverInfo.version}'. Must be at least 5.0.0`);
+        vscode.window.showInformationMessage(`Unsupported JIRA version '${serverInfo.version}'. Must be at least 5.0.0`);
         return;
       }
       channel.appendLine(`Connected to JIRA server at '${baseUrl}'`);

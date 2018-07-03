@@ -11,9 +11,10 @@ export class AddCommentCommand implements Command {
 
   public id = 'jira-plugin.addComment';
 
-  private get baseUrl(): string {
+  private get baseUrl(): string | undefined {
     return getConfiguration().baseUrl;
   }
+
 
   @bind
   public async run(text?: string): Promise<void> {
