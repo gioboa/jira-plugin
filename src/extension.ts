@@ -1,7 +1,7 @@
 import 'isomorphic-fetch';
 import * as vscode from 'vscode';
 import { createClient, Jira } from './api';
-import { SetActiveProjectCommand } from './commands/set-active-project';
+import { ChangeCurrentProjectCommand } from './commands/set-current-project';
 import { SetupCredentialsCommand } from './commands/setup-credentials';
 import { CONFIG, CREDENTIALS_SEPARATOR, getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
 import { IssueLinkProvider } from './document-link-provider';
@@ -31,7 +31,7 @@ export function activate(_context: vscode.ExtensionContext): void {
     });
   }
 
-  const commands = [new SetupCredentialsCommand(context), new SetActiveProjectCommand(context)];
+  const commands = [new SetupCredentialsCommand(context), new ChangeCurrentProjectCommand()];
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
   context.subscriptions.push(new StatusBarManager());
 }

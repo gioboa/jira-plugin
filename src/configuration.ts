@@ -4,7 +4,7 @@ import { WorkspaceConfiguration } from 'vscode';
 export const CONFIG = {
   BASE_URL: 'baseUrl',
   USERNAME: 'username',
-  ACTIVE_PROJECT: 'activeProject'
+  CURRENT_PROJECT: 'currentProject'
 };
 
 export const CREDENTIALS_SEPARATOR = '##';
@@ -12,7 +12,7 @@ export const CREDENTIALS_SEPARATOR = '##';
 export interface Configuration extends WorkspaceConfiguration {
   baseUrl?: string;
   username?: string;
-  activeProject?: string;
+  currentProject?: string;
 }
 
 export function getConfiguration(): Configuration {

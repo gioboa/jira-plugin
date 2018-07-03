@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("isomorphic-fetch");
 const vscode = require("vscode");
 const api_1 = require("./api");
-const set_active_project_1 = require("./commands/set-active-project");
+const set_current_project_1 = require("./commands/set-current-project");
 const setup_credentials_1 = require("./commands/setup-credentials");
 const configuration_1 = require("./configuration");
 const document_link_provider_1 = require("./document-link-provider");
@@ -36,7 +36,7 @@ function activate(_context) {
             vscode.window.showErrorMessage('Failed to connect to jira');
         });
     }
-    const commands = [new setup_credentials_1.SetupCredentialsCommand(context), new set_active_project_1.SetActiveProjectCommand(context)];
+    const commands = [new setup_credentials_1.SetupCredentialsCommand(context), new set_current_project_1.ChangeCurrentProjectCommand()];
     context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
     context.subscriptions.push(new status_bar_1.StatusBarManager());
 }

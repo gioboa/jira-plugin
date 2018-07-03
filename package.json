@@ -43,7 +43,7 @@
           "description": "Project KEY of your JIRA project to scan for (could be a comma separated list of names)",
           "default": ""
         },
-        "jira.activeProject": {
+        "jira.currentProject": {
           "type": "string",
           "description": "Project KEY of your JIRA project to scan for (could be a comma separated list of names)",
           "default": ""
@@ -57,28 +57,8 @@
         "category": "JIRA"
       },
       {
-        "command": "jira-plugin.setActiveProject",
-        "title": "Set active project...",
-        "category": "JIRA"
-      },
-      {
-        "command": "jira-plugin.browseMyIssues",
-        "title": "Browse my issues...",
-        "category": "JIRA"
-      },
-      {
-        "command": "jira-plugin.activateIssues",
-        "title": "Activate an issues...",
-        "category": "JIRA"
-      },
-      {
-        "command": "jira-plugin.transitionIssues",
-        "title": "Update active issue state...",
-        "category": "JIRA"
-      },
-      {
-        "command": "jira-plugin.addComment",
-        "title": "Add comment to active issue...",
+        "command": "jira-plugin.changeCurrentProject",
+        "title": "Change current project...",
         "category": "JIRA"
       }
     ]

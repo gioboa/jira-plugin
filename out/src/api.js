@@ -56,12 +56,27 @@ var impl;
     }
     impl.decoder = decoder;
     class JiraBlueprint {
-        serverInfo() { }
-        search() { }
-        getIssue() { }
-        getTransitions() { }
-        doTransition() { }
-        addComment() { }
+        serverInfo() {
+            /* */
+        }
+        search() {
+            /* */
+        }
+        getIssue() {
+            /* */
+        }
+        getTransitions() {
+            /* */
+        }
+        doTransition() {
+            /* */
+        }
+        getProjects() {
+            /* */
+        }
+        addComment() {
+            /* */
+        }
     }
     __decorate([
         pretend_1.Get('/rest/api/2/serverInfo'),
@@ -93,6 +108,12 @@ var impl;
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "doTransition", null);
+    __decorate([
+        pretend_1.Get('/rest/api/2/project'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", Object)
+    ], JiraBlueprint.prototype, "getProjects", null);
     __decorate([
         pretend_1.Post('/rest/api/2/issue/:issue/comment'),
         __metadata("design:type", Function),

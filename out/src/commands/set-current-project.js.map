@@ -1,0 +1,1 @@
+{"version":3,"file":"set-current-project.js","sourceRoot":"","sources":["../../../src/commands/set-current-project.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;AAAA,iCAA6B;AAE7B,oDAAiE;AACjE,oCAAyC;AAEzC;IAGE;QAFO,OAAE,GAAG,kCAAkC,CAAC;IAEhC,CAAC;IAGH,GAAG;;YACd,qCAAqB,CAAC,sBAAM,CAAC,eAAe,EAAE,MAAM,qBAAa,EAAE,CAAC,CAAC;QACvE,CAAC;KAAA;CACF;AAHC;IADC,YAAI;;;;sDAGJ;AARH,kEASC"}

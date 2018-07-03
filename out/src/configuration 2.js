@@ -4,7 +4,7 @@ const vscode = require("vscode");
 exports.CONFIG = {
     BASE_URL: 'baseUrl',
     USERNAME: 'username',
-    CURRENT_PROJECT: 'currentProject'
+    ACTIVE_PROJECT: 'activeProject'
 };
 exports.CREDENTIALS_SEPARATOR = '##';
 function getConfiguration() {
@@ -44,4 +44,4 @@ function getGlobalStateConfiguration(context) {
     return context.globalState.get(`jira-plugin:${config.baseUrl}`);
 }
 exports.getGlobalStateConfiguration = getGlobalStateConfiguration;
-//# sourceMappingURL=configuration.js.map
+//# sourceMappingURL=configuration 2.js.map

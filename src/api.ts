@@ -1,12 +1,13 @@
-import { Pretend, Get, Post, Interceptor, IPretendRequestInterceptor, IPretendDecoder } from 'pretend';
+import { Get, Interceptor, IPretendDecoder, IPretendRequestInterceptor, Post, Pretend } from 'pretend';
 
 export interface Jira {
   serverInfo(): Promise<ServerInfo>;
-  search(params: {jql: string}): Promise<Issues>;
+  search(params: { jql: string }): Promise<Issues>;
   getIssue(issue: string): Promise<Issue>;
   getTransitions(issue: string): Promise<Transitions>;
   doTransition(issue: string, body: DoTransitionBody): Promise<void>;
   addComment(issue: string, body: AddCommentBody): Promise<AddCommentResponse>;
+  getProjects(): Promise<Project[]>;
 }
 
 export interface AddCommentBody {
@@ -37,7 +38,7 @@ export interface Issue {
     description?: string;
     status: {
       name: string;
-    }
+    };
   };
 }
 
@@ -59,6 +60,14 @@ export interface DoTransitionBody {
   };
 }
 
+export interface Project {
+  key: string;
+  expand: string;
+  self: string;
+  id: string;
+  name: string;
+}
+
 export function createClient(endpoint: string, username: string, password: string): Jira {
   return Pretend.builder()
     .interceptor(impl.logger())
@@ -69,9 +78,8 @@ export function createClient(endpoint: string, username: string, password: strin
 }
 
 namespace impl {
-
   export function logger(): Interceptor {
-    return async(chain, request) => {
+    return async (chain, request) => {
       // console.log('request: ', request);
       const response = await chain(request);
       // console.log('response', response);
@@ -97,24 +105,39 @@ namespace impl {
   }
 
   export class JiraBlueprint implements Jira {
-
     @Get('/rest/api/2/serverInfo')
-    public serverInfo(): any {/* */}
+    public serverInfo(): any {
+      /* */
+    }
 
     @Post('/rest/api/2/search')
-    public search(): any {/* */}
+    public search(): any {
+      /* */
+    }
 
     @Get('/rest/api/2/issue/:issue')
-    public getIssue(): any {/* */}
+    public getIssue(): any {
+      /* */
+    }
 
     @Get('/rest/api/2/issue/:issue/transitions')
-    public getTransitions(): any {/* */}
+    public getTransitions(): any {
+      /* */
+    }
 
     @Post('/rest/api/2/issue/:issue/transitions')
-    public doTransition(): any {/* */}
+    public doTransition(): any {
+      /* */
+    }
+
+    @Get('/rest/api/2/project')
+    public getProjects(): any {
+      /* */
+    }
 
     @Post('/rest/api/2/issue/:issue/comment')
-    public addComment(): any {/* */}
-
+    public addComment(): any {
+      /* */
+    }
   }
 }

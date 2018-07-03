@@ -18,23 +18,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
-const vscode = require("vscode");
 const configuration_1 = require("../configuration");
-const state_1 = require("../state");
-class SetActiveProjectCommand {
-    constructor(context) {
-        this.id = 'jira-plugin.setActiveProject';
-        this.context = context;
+const utils_1 = require("../utils");
+class ChangeCurrentProjectCommand {
+    constructor() {
+        this.id = 'jira-plugin.changeCurrentProject';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const projects = yield state_1.default.jira.getProjects();
-            const picks = projects.map(project => ({
-                label: project.key,
-                description: project.name
-            }));
-            const selected = yield vscode.window.showQuickPick(picks, { placeHolder: `Set current project`, matchOnDescription: true });
-            configuration_1.setConfigurationByKey(configuration_1.CONFIG.ACTIVE_PROJECT, selected ? selected.label : '');
+            configuration_1.setConfigurationByKey(configuration_1.CONFIG.CURRENT_PROJECT, yield utils_1.selectProject());
         });
     }
 }
@@ -43,6 +35,6 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], SetActiveProjectCommand.prototype, "run", null);
-exports.SetActiveProjectCommand = SetActiveProjectCommand;
-//# sourceMappingURL=set-active-project.js.map
+], ChangeCurrentProjectCommand.prototype, "run", null);
+exports.ChangeCurrentProjectCommand = ChangeCurrentProjectCommand;
+//# sourceMappingURL=set-current-project.js.map
