@@ -36,6 +36,9 @@ export function setConfigurationByKey(entry: string, value: string | undefined):
   if (!config) {
     throw new Error('No configuration found. Probably an error in vscode');
   }
+  if (entry === CONFIG.BASE_URL && value && value.substring(value.length - 1) === '/') {
+    value = value.substring(0, value.length - 1);
+  }
   return config.update(entry, value || '', true);
 }
 
