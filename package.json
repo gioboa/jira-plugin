@@ -57,6 +57,11 @@
         "category": "JIRA"
       },
       {
+        "command": "jira-plugin.setActiveProject",
+        "title": "Set active project...",
+        "category": "JIRA"
+      },
+      {
         "command": "jira-plugin.browseMyIssues",
         "title": "Browse my issues...",
         "category": "JIRA"
