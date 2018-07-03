@@ -6,8 +6,8 @@ import { CONFIG, getConfigurationByKey } from '../configuration';
 import state from '../state';
 import { selectStatus } from '../utils';
 
-export class ListMyIssuesCommand implements Command<Issue | undefined | null> {
-  public id = 'jira-plugin.listMyIssues';
+export class BrowseMyIssuesCommand implements Command<Issue | undefined | null> {
+  public id = 'jira-plugin.browseMyIssues';
 
   @bind
   public async run(): Promise<Issue | undefined | null> {

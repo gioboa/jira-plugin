@@ -22,9 +22,9 @@ const vscode = require("vscode");
 const configuration_1 = require("../configuration");
 const state_1 = require("../state");
 const utils_1 = require("../utils");
-class ListMyIssuesCommand {
+class BrowseMyIssuesCommand {
     constructor() {
-        this.id = 'jira-plugin.listMyIssues';
+        this.id = 'jira-plugin.browseMyIssues';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +34,7 @@ class ListMyIssuesCommand {
                 const issues = yield state_1.default.jira.search({
                     jql: `project in (${currentProject}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`
                 });
-                const picks = (issues.issues || []).map(issue => {
+                const picks = (issues.issues || []).map((issue) => {
                     return {
                         issue,
                         label: issue.key,
@@ -49,7 +49,7 @@ class ListMyIssuesCommand {
                         placeHolder: 'Select an issue'
                     });
                     if (selected) {
-                        const url = `${configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL)}/browse/${selected.label}`;
+                        const url = `${configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL)}/browse/${selected}`;
                         yield vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
                     }
                 }
@@ -66,6 +66,6 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], ListMyIssuesCommand.prototype, "run", null);
-exports.ListMyIssuesCommand = ListMyIssuesCommand;
+], BrowseMyIssuesCommand.prototype, "run", null);
+exports.BrowseMyIssuesCommand = BrowseMyIssuesCommand;
 //# sourceMappingURL=browse-my-issues.js.map

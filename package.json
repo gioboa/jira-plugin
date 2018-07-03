@@ -62,7 +62,7 @@
         "category": "JIRA"
       },
       {
-        "command": "jira-plugin.listMyIssues",
+        "command": "jira-plugin.browseMyIssues",
         "title": "My issue list...",
         "category": "JIRA"
       }
