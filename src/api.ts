@@ -1,4 +1,4 @@
-import { Get, Interceptor, IPretendDecoder, IPretendRequestInterceptor, Post, Pretend } from 'pretend/dist/src';
+import { Get, Interceptor, IPretendDecoder, IPretendRequestInterceptor, Post, Pretend, Put } from 'pretend/dist/src';
 import { Jira } from './api.model';
 
 export const createClient = (endpoint: string, username: string, password: string): Jira => {
@@ -65,6 +65,16 @@ namespace impl {
 
     @Post('/rest/api/2/issue/:issue/transitions')
     public doTransition(): any {
+      /* */
+    }
+
+    @Get('/rest/api/2/user/assignable/:param')
+    public getAssignees(): any {
+      /* */
+    }
+
+    @Put('/rest/api/2/issue/:issue/assignee')
+    public assignIssue(): any {
       /* */
     }
 

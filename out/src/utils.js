@@ -64,4 +64,22 @@ exports.selectIssue = () => __awaiter(this, void 0, void 0, function* () {
     }
     return undefined;
 });
+exports.selectAssignee = () => __awaiter(this, void 0, void 0, function* () {
+    const project = configuration_1.getConfigurationByKey(configuration_1.CONFIG.CURRENT_PROJECT) || '';
+    const assignees = yield state_1.default.jira.getAssignees(`search?project=${project}`);
+    const picks = (assignees || []).filter((assignee) => assignee.active === true).map((assignee) => {
+        return {
+            label: assignee.key,
+            description: assignee.displayName,
+            detail: '',
+            assignee
+        };
+    });
+    const selected = yield vscode.window.showQuickPick(picks, {
+        matchOnDescription: true,
+        matchOnDetail: true,
+        placeHolder: 'Select an issue'
+    });
+    return selected ? selected.assignee.key : '';
+});
 //# sourceMappingURL=utils.js.map

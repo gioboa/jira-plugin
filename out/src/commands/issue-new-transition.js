@@ -37,7 +37,6 @@ class IssueNewTransitionCommand {
                                 id: newTransition.id
                             }
                         });
-                        console.log(result);
                     }
                 }
             }

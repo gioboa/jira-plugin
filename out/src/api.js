@@ -70,6 +70,12 @@ var impl;
         doTransition() {
             /* */
         }
+        getAssignees() {
+            /* */
+        }
+        assignIssue() {
+            /* */
+        }
     }
     __decorate([
         src_1.Get('/rest/api/2/serverInfo'),
@@ -107,6 +113,18 @@ var impl;
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "doTransition", null);
+    __decorate([
+        src_1.Get('/rest/api/2/user/assignable/:param'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", Object)
+    ], JiraBlueprint.prototype, "getAssignees", null);
+    __decorate([
+        src_1.Put('/rest/api/2/issue/:issue/assignee'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", Object)
+    ], JiraBlueprint.prototype, "assignIssue", null);
     impl.JiraBlueprint = JiraBlueprint;
 })(impl || (impl = {}));
 //# sourceMappingURL=api.js.map

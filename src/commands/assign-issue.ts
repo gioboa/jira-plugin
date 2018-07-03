@@ -1,14 +1,19 @@
 import { bind } from 'decko';
-import * as vscode from 'vscode';
 import { Command } from '../command';
+import state from '../state';
+import { selectAssignee, selectIssue } from '../utils';
 
 export class ChangeIssueAssigneeCommand implements Command {
   public id = 'jira-plugin.changeIssueAssignee';
-  
-  constructor(private context: vscode.ExtensionContext) {}
 
   @bind
   public async run(): Promise<void> {
-    //
+    const issueKey = await selectIssue();
+    if (issueKey) {
+      const assignee = await selectAssignee();
+      const res = await state.jira.assignIssue(issueKey, {
+        name: assignee
+      });
+    }
   }
 }

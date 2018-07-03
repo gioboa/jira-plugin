@@ -18,14 +18,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
+const state_1 = require("../state");
+const utils_1 = require("../utils");
 class ChangeIssueAssigneeCommand {
-    constructor(context) {
-        this.context = context;
+    constructor() {
         this.id = 'jira-plugin.changeIssueAssignee';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            //
+            const issueKey = yield utils_1.selectIssue();
+            if (issueKey) {
+                const assignee = yield utils_1.selectAssignee();
+                const res = yield state_1.default.jira.assignIssue(issueKey, {
+                    name: assignee
+                });
+            }
         });
     }
 }

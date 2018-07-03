@@ -2,6 +2,7 @@ import 'isomorphic-fetch';
 import * as vscode from 'vscode';
 import { createClient } from './api';
 import { Jira } from './api.model';
+import { ChangeIssueAssigneeCommand } from './commands/assign-issue';
 import { BrowseMyIssuesCommand } from './commands/browse-my-issues';
 import { IssueNewTransitionCommand } from './commands/issue-new-transition';
 import { ChangeCurrentProjectCommand } from './commands/set-current-project';
@@ -34,7 +35,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
   }
 
   const statusBar = new StatusBarManager();
-  const commands = [new SetupCredentialsCommand(context), new ChangeCurrentProjectCommand(statusBar), new BrowseMyIssuesCommand(), new IssueNewTransitionCommand()];
+  const commands = [new SetupCredentialsCommand(context), new ChangeCurrentProjectCommand(statusBar), new BrowseMyIssuesCommand(), new IssueNewTransitionCommand(), new ChangeIssueAssigneeCommand()];
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
   context.subscriptions.push(statusBar);
 };

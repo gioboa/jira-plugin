@@ -5,7 +5,8 @@ export interface Jira {
   getStatuses(): Promise<Status[]>;
   getTransitions(issue: string): Promise<Transitions>;
   doTransition(issue: string, body: DoTransitionBody): Promise<void>;
-
+  getAssignees(param: string): Promise<Assignee[]>;
+  assignIssue(issue: string, body: AssignIssueBody): Promise<void>;
   // getIssue(issue: string): Promise<Issue>;
   // addComment(issue: string, body: AddCommentBody): Promise<AddCommentResponse>;
 }
@@ -67,6 +68,17 @@ export interface DoTransitionBody {
   transition: {
     id: string;
   };
+}
+
+export interface Assignee {
+  key: string;
+  name: string;
+  displayName: string;
+  active: boolean;
+}
+
+export interface AssignIssueBody {
+  name: string;
 }
 
 // export interface AddCommentBody {

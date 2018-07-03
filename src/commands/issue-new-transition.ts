@@ -20,7 +20,6 @@ export class IssueNewTransitionCommand implements Command {
               id: newTransition.id
             }
           });
-          console.log(result);
         }
       }
     }
