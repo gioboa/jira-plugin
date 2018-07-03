@@ -1,13 +1,12 @@
 import * as vscode from 'vscode';
 import { WorkspaceConfiguration } from 'vscode';
+import { CREDENTIALS_SEPARATOR } from './constants';
 
 export const CONFIG = {
   BASE_URL: 'baseUrl',
   USERNAME: 'username',
   CURRENT_PROJECT: 'currentProject'
 };
-
-export const CREDENTIALS_SEPARATOR = '##';
 
 export interface Configuration extends WorkspaceConfiguration {
   baseUrl?: string;

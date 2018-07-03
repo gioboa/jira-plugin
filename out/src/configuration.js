@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const constants_1 = require("./constants");
 exports.CONFIG = {
     BASE_URL: 'baseUrl',
     USERNAME: 'username',
     CURRENT_PROJECT: 'currentProject'
 };
-exports.CREDENTIALS_SEPARATOR = '##';
 function getConfiguration() {
     const config = vscode.workspace.getConfiguration('jira');
     if (!config) {
@@ -36,7 +36,7 @@ function setConfigurationByKey(entry, value) {
 exports.setConfigurationByKey = setConfigurationByKey;
 function setGlobalStateConfiguration(context, password) {
     const config = getConfiguration();
-    return context.globalState.update(`jira-plugin:${config.baseUrl}`, `${config.username}${exports.CREDENTIALS_SEPARATOR}${password || ''}`);
+    return context.globalState.update(`jira-plugin:${config.baseUrl}`, `${config.username}${constants_1.CREDENTIALS_SEPARATOR}${password || ''}`);
 }
 exports.setGlobalStateConfiguration = setGlobalStateConfiguration;
 function getGlobalStateConfiguration(context) {

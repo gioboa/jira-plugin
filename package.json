@@ -60,6 +60,11 @@
         "command": "jira-plugin.changeCurrentProject",
         "title": "Change current project...",
         "category": "JIRA"
+      },
+      {
+        "command": "jira-plugin.listMyIssues",
+        "title": "My issue list...",
+        "category": "JIRA"
       }
     ]
   },
