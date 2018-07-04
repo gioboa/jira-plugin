@@ -17,11 +17,19 @@ After that you have to setup the working project. ("Set working project" command
 
 <b>n.b:</b> If you need to browse issues for various project you have to launch the command to perform the switch.<br><br>
 
+## Config
+
+The extension store credentials in VS Code settings.
+![Settings](images/settings.png)
+
+<b>n.b:</b> the extension store the password in VS Code internal storage so it's safe and hidden. :wink: <br><br>
+
 ## Features
 
 ![Commands](images/commands.gif)
 
-<br>
+<br><br>
+
 - <b>Issue by id</b><br>
   With this command you can search and view a issue by id.<br><br>
 - <b>My issues filtered by status</b><br>
