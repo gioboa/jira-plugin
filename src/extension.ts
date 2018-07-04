@@ -3,8 +3,8 @@ import * as vscode from 'vscode';
 import { createClient } from './api';
 import { Jira } from './api.model';
 import { ChangeIssueAssigneeCommand } from './commands/change-issue-assignee';
-import { IssueByIdCommand } from './commands/issue-by-id';
 import { ChangeIssueStatusCommand } from './commands/change-issue-status';
+import { IssueByIdCommand } from './commands/issue-by-id';
 import { IssuesByStatusAssigneeCommand } from './commands/issues-by-status-assignee';
 import { MyIssuesByStatusCommand } from './commands/my-issues-by-status';
 import { SetCurrentProjectCommand } from './commands/set-current-project';
@@ -14,7 +14,6 @@ import { IssueLinkProvider } from './document-link-provider';
 import state from './state';
 import { StatusBarManager } from './status-bar';
 
-let context: vscode.ExtensionContext;
 let channel: vscode.OutputChannel;
 
 export const activate = (context: vscode.ExtensionContext): void => {
@@ -48,15 +47,6 @@ export const activate = (context: vscode.ExtensionContext): void => {
   ];
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
   context.subscriptions.push(statusBar);
-};
-
-export const checkEnabled = (): boolean => {
-  const config = vscode.workspace.getConfiguration('jira');
-  if (!state.jira || !config.has('baseUrl') || !config.has('projectNames')) {
-    vscode.window.showInformationMessage('No JIRA client configured. Setup baseUrl, projectNames, username and password');
-    return false;
-  }
-  return true;
 };
 
 export const connectToJira = async (context: vscode.ExtensionContext): Promise<Jira | undefined> => {

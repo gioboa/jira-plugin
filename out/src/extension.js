@@ -12,8 +12,8 @@ require("isomorphic-fetch");
 const vscode = require("vscode");
 const api_1 = require("./api");
 const change_issue_assignee_1 = require("./commands/change-issue-assignee");
-const issue_by_id_1 = require("./commands/issue-by-id");
 const change_issue_status_1 = require("./commands/change-issue-status");
+const issue_by_id_1 = require("./commands/issue-by-id");
 const issues_by_status_assignee_1 = require("./commands/issues-by-status-assignee");
 const my_issues_by_status_1 = require("./commands/my-issues-by-status");
 const set_current_project_1 = require("./commands/set-current-project");
@@ -22,7 +22,6 @@ const configuration_1 = require("./configuration");
 const document_link_provider_1 = require("./document-link-provider");
 const state_1 = require("./state");
 const status_bar_1 = require("./status-bar");
-let context;
 let channel;
 exports.activate = (context) => {
     channel = vscode.window.createOutputChannel('JIRA');
@@ -52,14 +51,6 @@ exports.activate = (context) => {
     ];
     context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
     context.subscriptions.push(statusBar);
-};
-exports.checkEnabled = () => {
-    const config = vscode.workspace.getConfiguration('jira');
-    if (!state_1.default.jira || !config.has('baseUrl') || !config.has('projectNames')) {
-        vscode.window.showInformationMessage('No JIRA client configured. Setup baseUrl, projectNames, username and password');
-        return false;
-    }
-    return true;
 };
 exports.connectToJira = (context) => __awaiter(this, void 0, void 0, function* () {
     const baseUrl = configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL) || '';
