@@ -12,8 +12,8 @@ const setup_credentials_1 = require("./commands/setup-credentials");
 const constants_1 = require("./shared/constants");
 const document_link_provider_1 = require("./shared/document-link-provider");
 const status_bar_1 = require("./shared/status-bar");
-const utils_1 = require("./shared/utils");
 const state_1 = require("./state/state");
+const utilities_1 = require("./shared/utilities");
 let channel;
 exports.activate = (context) => {
     channel = vscode.window.createOutputChannel(constants_1.CONFIG_NAME.toUpperCase());
@@ -24,7 +24,7 @@ exports.activate = (context) => {
     state_1.default.context = context;
     state_1.default.channel = channel;
     state_1.default.statusBar = statusBar;
-    utils_1.executeConnectionToJira();
+    utilities_1.executeConnectionToJira();
     const commands = [
         new setup_credentials_1.SetupCredentialsCommand(),
         new set_working_project_1.SetWorkingProjectCommand(),

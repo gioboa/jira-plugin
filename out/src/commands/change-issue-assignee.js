@@ -18,8 +18,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
-const vscode = require("vscode");
 const state_1 = require("../state/state");
+const constants_1 = require("../shared/constants");
 const utilities_1 = require("../shared/utilities");
 class ChangeIssueAssigneeCommand {
     constructor() {
@@ -27,16 +27,16 @@ class ChangeIssueAssigneeCommand {
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issueKey = yield utilities_1.selectIssue(utilities_1.SEARCH_MODE.ID);
+            const issueKey = yield utilities_1.selectIssue(constants_1.SEARCH_MODE.ID);
             if (issueKey) {
                 const assignee = yield utilities_1.selectAssignee();
-                if (assignee !== utilities_1.UNASSIGNED) {
+                if (assignee !== constants_1.UNASSIGNED) {
                     const res = yield state_1.default.jira.assignIssue(issueKey, {
                         name: assignee
                     });
                 }
                 else {
-                    vscode.window.showInformationMessage(`It's no possible to assign the issue to the user Unassigned`);
+                    throw new Error(`It's no possible to assign the issue to the user Unassigned`);
                 }
             }
         });

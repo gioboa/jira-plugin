@@ -19,8 +19,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const vscode = require("vscode");
-const state_1 = require("../state/state");
 const utilities_1 = require("../shared/utilities");
+const state_1 = require("../state/state");
+const constants_1 = require("../shared/constants");
 class ChangeIssueStatusCommand {
     constructor() {
         this.id = 'jira-plugin.changeIssueStatusCommand';
@@ -28,7 +29,7 @@ class ChangeIssueStatusCommand {
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             if (state_1.canExecuteJiraAPI()) {
-                const issueKey = yield utilities_1.selectIssue(utilities_1.SEARCH_MODE.ID);
+                const issueKey = yield utilities_1.selectIssue(constants_1.SEARCH_MODE.ID);
                 if (issueKey) {
                     const newTransition = yield this.selectTransition(issueKey);
                     if (newTransition) {

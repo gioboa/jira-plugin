@@ -1,9 +1,10 @@
 import { bind } from 'decko';
 import * as vscode from 'vscode';
 import { Transition } from '../http/api.model';
+import { selectIssue } from '../shared/utilities';
 import state, { canExecuteJiraAPI } from '../state/state';
-import { SEARCH_MODE, selectIssue } from '../shared/utilities';
-import { Command } from './command';
+import { Command } from './shared/command';
+import { SEARCH_MODE } from '../shared/constants';
 
 export class ChangeIssueStatusCommand implements Command {
   public id = 'jira-plugin.changeIssueStatusCommand';

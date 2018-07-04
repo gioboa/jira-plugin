@@ -1,9 +1,9 @@
 import { bind } from 'decko';
 import * as vscode from 'vscode';
-import { SEARCH_MODE, selectIssue } from '../shared/utilities';
-import { Command } from './command';
 import { getConfigurationByKey } from '../shared/configuration';
-import { CONFIG } from '../shared/constants';
+import { CONFIG, SEARCH_MODE } from '../shared/constants';
+import {  selectIssue } from '../shared/utilities';
+import { Command } from './shared/command';
 
 export class IssueByIdCommand implements Command {
   public id = 'jira-plugin.issueByIdCommand';

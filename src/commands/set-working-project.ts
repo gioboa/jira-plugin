@@ -1,9 +1,9 @@
 import { bind } from 'decko';
 import { setConfigurationByKey } from '../shared/configuration';
 import { CONFIG } from '../shared/constants';
-import { selectProject } from '../shared/utilities';
 import state from '../state/state';
-import { Command } from './command';
+import { Command } from './shared/command';
+import { selectProject } from '../shared/utilities';
 
 export class SetWorkingProjectCommand implements Command {
   public id = 'jira-plugin.setWorkingProjectCommand';

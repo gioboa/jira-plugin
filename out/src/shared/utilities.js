@@ -9,15 +9,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const api_1 = require("../http/api");
 const state_1 = require("../state/state");
 const configuration_1 = require("./configuration");
 const constants_1 = require("./constants");
-exports.SEARCH_MODE = {
-    ID: 'ID',
-    STATUS: 'STATUS',
-    STATUS_ASSIGNEE: 'STATUS_ASSIGNEE'
+exports.executeConnectionToJira = () => {
+    if (configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL)) {
+        const connect = () => __awaiter(this, void 0, void 0, function* () {
+            state_1.default.jira = (yield exports.connectToJira());
+            state_1.default.statusBar.updateStatusBar('');
+            state_1.default.statuses = yield state_1.default.jira.getStatuses();
+            state_1.default.projects = yield state_1.default.jira.getProjects();
+        });
+        connect().catch(() => {
+            vscode.window.showErrorMessage('Failed to connect to jira');
+        });
+    }
 };
-exports.UNASSIGNED = 'Unassigned';
+exports.connectToJira = () => __awaiter(this, void 0, void 0, function* () {
+    const baseUrl = configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL) || '';
+    const [username, password] = configuration_1.getGlobalStateConfiguration().split(constants_1.CREDENTIALS_SEPARATOR);
+    if (!!baseUrl && !!username && !!password) {
+        try {
+            const client = api_1.createClient(baseUrl, username, password);
+            const serverInfo = yield client.serverInfo();
+            if (serverInfo.versionNumbers[0] < 5) {
+                vscode.window.showInformationMessage(`Unsupported JIRA version '${serverInfo.version}'. Must be at least 5.0.0`);
+                return;
+            }
+            state_1.default.channel.appendLine(`Connected to JIRA server at '${baseUrl}'`);
+            return client;
+        }
+        catch (e) {
+            state_1.default.channel.appendLine(`Failed to contact JIRA server using '${baseUrl}'. Please check url and credentials`);
+            state_1.default.channel.appendLine(e.message);
+        }
+    }
+    return undefined;
+});
 exports.selectProject = () => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
         const picks = state_1.default.projects.map(project => ({
@@ -49,25 +78,25 @@ const selectID = () => __awaiter(this, void 0, void 0, function* () {
 });
 const createJQL = (mode, project) => __awaiter(this, void 0, void 0, function* () {
     switch (mode) {
-        case exports.SEARCH_MODE.ID: {
+        case constants_1.SEARCH_MODE.ID: {
             const id = yield selectID();
             if (!!id) {
                 return `id = '${project}-${id}' ORDER BY updated DESC`;
             }
             return undefined;
         }
-        case exports.SEARCH_MODE.STATUS: {
+        case constants_1.SEARCH_MODE.STATUS: {
             const status = yield exports.selectStatus();
             if (!!status) {
                 return `project in (${project}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`;
             }
             return undefined;
         }
-        case exports.SEARCH_MODE.STATUS_ASSIGNEE: {
+        case constants_1.SEARCH_MODE.STATUS_ASSIGNEE: {
             const status = yield exports.selectStatus();
             const assignee = yield exports.selectAssignee();
             if (!!status && !!assignee) {
-                return `project in (${project}) AND status = '${status}' AND assignee = ${assignee !== exports.UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`;
+                return `project in (${project}) AND status = '${status}' AND assignee = ${assignee !== constants_1.UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`;
             }
             return undefined;
         }
@@ -98,15 +127,15 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
                     return selected ? selected.label : undefined;
                 }
                 else {
-                    vscode.window.showInformationMessage(`No issues found in this project: ${project}`);
+                    vscode.window.showInformationMessage(`No issues found for ${project} project`);
                 }
             }
             else {
-                vscode.window.showInformationMessage(`No issues found. Wrong parameter`);
+                throw new Error(`Wrong parameter. No issues found for ${project} project.`);
             }
         }
         else {
-            vscode.window.showInformationMessage(`Current project not correct, please select one valid project`);
+            throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
         }
     }
     return undefined;
@@ -123,8 +152,8 @@ exports.selectAssignee = () => __awaiter(this, void 0, void 0, function* () {
             };
         });
         picks.push({
-            label: exports.UNASSIGNED,
-            description: exports.UNASSIGNED,
+            label: constants_1.UNASSIGNED,
+            description: constants_1.UNASSIGNED,
             detail: ''
         });
         const selected = yield vscode.window.showQuickPick(picks, {
@@ -135,8 +164,7 @@ exports.selectAssignee = () => __awaiter(this, void 0, void 0, function* () {
         return selected ? selected.label : '';
     }
     else {
-        vscode.window.showInformationMessage(`Current project not correct, please select one valid project`);
+        throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
     }
-    return '';
 });
 //# sourceMappingURL=utilities.js.map

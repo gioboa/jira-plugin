@@ -2,8 +2,8 @@ import { bind } from 'decko';
 import * as vscode from 'vscode';
 import { getConfigurationByKey, setConfigurationByKey, setGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG } from '../shared/constants';
-import { executeConnectionToJira } from '../shared/utils';
-import { Command } from './command';
+import { Command } from './shared/command';
+import { executeConnectionToJira } from '../shared/utilities';
 
 export class SetupCredentialsCommand implements Command {
   public id = 'jira-plugin.setupCredentialsCommand';

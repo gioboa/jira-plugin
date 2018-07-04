@@ -28,7 +28,7 @@ class IssuesByStatusAssigneeCommand {
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issue = yield utilities_1.selectIssue(utilities_1.SEARCH_MODE.STATUS_ASSIGNEE);
+            const issue = yield utilities_1.selectIssue(constants_1.SEARCH_MODE.STATUS_ASSIGNEE);
             if (issue) {
                 const url = `${configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL)}/browse/${issue}`;
                 yield vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));

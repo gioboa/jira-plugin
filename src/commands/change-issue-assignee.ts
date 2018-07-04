@@ -1,8 +1,9 @@
 import { bind } from 'decko';
 import * as vscode from 'vscode';
-import { Command } from './command';
 import state from '../state/state';
-import { SEARCH_MODE, selectAssignee, selectIssue, UNASSIGNED } from '../shared/utilities';
+import { Command } from './shared/command';
+import { SEARCH_MODE, UNASSIGNED } from '../shared/constants';
+import { selectIssue, selectAssignee } from '../shared/utilities';
 
 export class ChangeIssueAssigneeCommand implements Command {
   public id = 'jira-plugin.changeIssueAssigneeCommand';
@@ -17,7 +18,7 @@ export class ChangeIssueAssigneeCommand implements Command {
           name: assignee
         });
       } else {
-        vscode.window.showInformationMessage(`It's no possible to assign the issue to the user Unassigned`);
+        throw new Error(`It's no possible to assign the issue to the user Unassigned`);
       }
     }
   }

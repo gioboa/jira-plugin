@@ -20,8 +20,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const configuration_1 = require("../shared/configuration");
 const constants_1 = require("../shared/constants");
-const utilities_1 = require("../shared/utilities");
 const state_1 = require("../state/state");
+const utilities_1 = require("../shared/utilities");
 class SetWorkingProjectCommand {
     constructor() {
         this.id = 'jira-plugin.setWorkingProjectCommand';

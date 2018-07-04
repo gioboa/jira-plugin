@@ -47,7 +47,7 @@ exports.connectToJira = () => __awaiter(this, void 0, void 0, function* () {
             return client;
         }
         catch (e) {
-            state_1.default.channel.appendLine(`Failed to contact JIRA server using '${baseUrl}'. Please check url and credentials`);
+            state_1.default.channel.appendLine(`Failed to contact JIRA server using '${baseUrl}'. Please check URL and credentials`);
             state_1.default.channel.appendLine(e.message);
         }
     }

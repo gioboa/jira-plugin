@@ -10,8 +10,8 @@ import { SetupCredentialsCommand } from './commands/setup-credentials';
 import { CONFIG_NAME } from './shared/constants';
 import { IssueLinkProvider } from './shared/document-link-provider';
 import { StatusBarManager } from './shared/status-bar';
-import { executeConnectionToJira } from './shared/utils';
 import state from './state/state';
+import { executeConnectionToJira } from './shared/utilities';
 
 let channel: vscode.OutputChannel;
 

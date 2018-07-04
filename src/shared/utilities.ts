@@ -1,16 +1,44 @@
 import * as vscode from 'vscode';
+import { createClient } from '../http/api';
+import { Assignee, Issue, Jira, Project } from '../http/api.model';
 import state, { canExecuteJiraAPI } from '../state/state';
-import { getConfigurationByKey } from './configuration';
-import { Project, Issue, Assignee } from '../http/api.model';
-import { CONFIG } from './constants';
+import { getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
+import { CONFIG, CREDENTIALS_SEPARATOR, SEARCH_MODE, UNASSIGNED } from './constants';
 
-export const SEARCH_MODE = {
-  ID: 'ID',
-  STATUS: 'STATUS',
-  STATUS_ASSIGNEE: 'STATUS_ASSIGNEE'
+export const executeConnectionToJira = (): void => {
+  if (getConfigurationByKey(CONFIG.BASE_URL)) {
+    const connect = async () => {
+      state.jira = (await connectToJira())!;
+      state.statusBar.updateStatusBar('');
+      state.statuses = await state.jira.getStatuses();
+      state.projects = await state.jira.getProjects();
+    };
+    connect().catch(() => {
+      vscode.window.showErrorMessage('Failed to connect to jira');
+    });
+  }
 };
 
-export const UNASSIGNED = 'Unassigned';
+export const connectToJira = async (): Promise<Jira | undefined> => {
+  const baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
+  const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
+  if (!!baseUrl && !!username && !!password) {
+    try {
+      const client = createClient(baseUrl, username, password);
+      const serverInfo = await client.serverInfo();
+      if (serverInfo.versionNumbers[0] < 5) {
+        vscode.window.showInformationMessage(`Unsupported JIRA version '${serverInfo.version}'. Must be at least 5.0.0`);
+        return;
+      }
+      state.channel.appendLine(`Connected to JIRA server at '${baseUrl}'`);
+      return client;
+    } catch (e) {
+      state.channel.appendLine(`Failed to contact JIRA server using '${baseUrl}'. Please check url and credentials`);
+      state.channel.appendLine(e.message);
+    }
+  }
+  return undefined;
+};
 
 export const selectProject = async (): Promise<string> => {
   if (canExecuteJiraAPI()) {
@@ -96,13 +124,13 @@ export const selectIssue = async (mode: string): Promise<string | undefined> => 
           });
           return selected ? selected.label : undefined;
         } else {
-          vscode.window.showInformationMessage(`No issues found in this project: ${project}`);
+          vscode.window.showInformationMessage(`No issues found for ${project} project`);
         }
       } else {
-        vscode.window.showInformationMessage(`No issues found. Wrong parameter`);
+        throw new Error(`Wrong parameter. No issues found for ${project} project.`);
       }
     } else {
-      vscode.window.showInformationMessage(`Current project not correct, please select one valid project`);
+      throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
     }
   }
   return undefined;
@@ -131,7 +159,6 @@ export const selectAssignee = async (): Promise<string> => {
     });
     return selected ? selected.label : '';
   } else {
-    vscode.window.showInformationMessage(`Current project not correct, please select one valid project`);
+    throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
   }
-  return '';
 };
