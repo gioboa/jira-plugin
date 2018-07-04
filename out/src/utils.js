@@ -118,27 +118,20 @@ exports.selectAssignee = () => __awaiter(this, void 0, void 0, function* () {
             return {
                 label: assignee.key,
                 description: assignee.displayName,
-                detail: '',
-                assignee
+                detail: ''
             };
         });
         picks.push({
             label: exports.UNASSIGNED,
             description: exports.UNASSIGNED,
-            detail: '',
-            assignee: {
-                key: exports.UNASSIGNED,
-                name: exports.UNASSIGNED,
-                displayName: exports.UNASSIGNED,
-                active: true
-            }
+            detail: ''
         });
         const selected = yield vscode.window.showQuickPick(picks, {
             matchOnDescription: true,
             matchOnDetail: true,
             placeHolder: 'Select an issue'
         });
-        return selected ? selected.assignee.key : '';
+        return selected ? selected.label : '';
     }
     else {
         vscode.window.showInformationMessage(`Current project not correct, please select one valid project`);

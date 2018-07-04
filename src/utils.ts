@@ -115,27 +115,20 @@ export const selectAssignee = async (): Promise<string> => {
       return {
         label: assignee.key,
         description: assignee.displayName,
-        detail: '',
-        assignee
+        detail: ''
       };
     });
     picks.push({
       label: UNASSIGNED,
       description: UNASSIGNED,
-      detail: '',
-      assignee: {
-        key: UNASSIGNED,
-        name: UNASSIGNED,
-        displayName: UNASSIGNED,
-        active: true
-      }
+      detail: ''
     });
     const selected = await vscode.window.showQuickPick(picks, {
       matchOnDescription: true,
       matchOnDetail: true,
       placeHolder: 'Select an issue'
     });
-    return selected ? selected.assignee.key : '';
+    return selected ? selected.label : '';
   } else {
     vscode.window.showInformationMessage(`Current project not correct, please select one valid project`);
   }
