@@ -10,17 +10,17 @@ export class StatusBarManager {
     this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
   }
 
-  public async updateStatusBar(currentProject: string): Promise<void> {
+  public async updateStatusBar(project: string): Promise<void> {
     if (!state.jira) {
       return;
     }
-    if (!currentProject) {
-      currentProject = (await getConfigurationByKey(CONFIG.CURRENT_PROJECT)) || '';
+    if (!project) {
+      project = (await getConfigurationByKey(CONFIG.WORKING_PROJECT)) || '';
     }
-    if (!!currentProject) {
-      this.item.text = `JIRA current project -> ${currentProject}`;
+    if (!!project) {
+      this.item.text = `Jira-plugin: working project -> ${project}`;
     } else {
-      this.item.text = `JIRA no project selected`;
+      this.item.text = `Jira-plugin: no project selected`;
     }
     this.item.show();
   }

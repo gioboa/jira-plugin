@@ -10,8 +10,8 @@ export class SetWorkingProjectCommand implements Command {
 
   @bind
   public async run(): Promise<void> {
-    const currentProject = await selectProject();
-    setConfigurationByKey(CONFIG.CURRENT_PROJECT, currentProject);
-    state.statusBar.updateStatusBar(currentProject);
+    const project = await selectProject();
+    setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
+    state.statusBar.updateStatusBar(project);
   }
 }

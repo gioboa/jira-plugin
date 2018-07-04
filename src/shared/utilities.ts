@@ -46,7 +46,7 @@ export const selectProject = async (): Promise<string> => {
       label: project.key,
       description: project.name
     }));
-    const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Set current project`, matchOnDescription: true });
+    const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Set working project`, matchOnDescription: true });
     return selected ? selected.label : '';
   }
   return '';
@@ -103,7 +103,7 @@ const createJQL = async (mode: string, project: string): Promise<string | undefi
 
 export const selectIssue = async (mode: string): Promise<string | undefined> => {
   if (canExecuteJiraAPI()) {
-    const project = getConfigurationByKey(CONFIG.CURRENT_PROJECT);
+    const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
     if (verifyCurrentProject(project)) {
       const jql = await createJQL(mode, project || '');
       if (!!jql) {
@@ -137,7 +137,7 @@ export const selectIssue = async (mode: string): Promise<string | undefined> => 
 };
 
 export const selectAssignee = async (): Promise<string> => {
-  const project = getConfigurationByKey(CONFIG.CURRENT_PROJECT) || '';
+  const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
     const assignees = await state.jira.getAssignees(`search?project=${project}`);
     const picks = (assignees || []).filter((assignee: Assignee) => assignee.active === true).map((assignee: Assignee) => {

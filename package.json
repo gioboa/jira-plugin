@@ -4,7 +4,7 @@
   "description": "JIRA integration for vscode",
   "version": "0.0.1",
   "publisher": "gioboa",
-  "icon": "./images/icon.png",
+  "icon": "images/icon.png",
   "galleryBanner": {
     "color": "#3B4859",
     "theme": "dark"
@@ -55,7 +55,7 @@
           "description": "Your JIRA username",
           "default": ""
         },
-        "jira-plugin.currentProject": {
+        "jira-plugin.workingProject": {
           "type": "string",
           "description": "JIRA working project",
           "default": ""
@@ -70,7 +70,7 @@
       },
       {
         "command": "jira-plugin.setWorkingProjectCommand",
-        "title": "Set current project",
+        "title": "Set working project",
         "category": "Jira-plugin"
       },
       {
