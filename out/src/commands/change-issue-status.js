@@ -65,4 +65,4 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ChangeIssueStatusCommand.prototype, "run", null);
 exports.ChangeIssueStatusCommand = ChangeIssueStatusCommand;
-//# sourceMappingURL=issue-change-status.js.map
+//# sourceMappingURL=change-issue-status.js.map

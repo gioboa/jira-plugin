@@ -40,12 +40,12 @@
         },
         "jira.username": {
           "type": "string",
-          "description": "Project KEY of your JIRA project to scan for (could be a comma separated list of names)",
+          "description": "JIRA username",
           "default": ""
         },
         "jira.currentProject": {
           "type": "string",
-          "description": "Project KEY of your JIRA project to scan for (could be a comma separated list of names)",
+          "description": "JIRA current project",
           "default": ""
         }
       }
@@ -77,13 +77,13 @@
         "category": "JIRA"
       },
       {
-        "command": "jira-plugin.issueNewTransitionCommand",
-        "title": "New transition for issue",
+        "command": "jira-plugin.changeIssueStatusCommand",
+        "title": "Change issue status (filter: id)",
         "category": "JIRA"
       },
       {
         "command": "jira-plugin.changeIssueAssigneeCommand",
-        "title": "Change issue assignee",
+        "title": "Change issue assignee (filter: id)",
         "category": "JIRA"
       }
     ]

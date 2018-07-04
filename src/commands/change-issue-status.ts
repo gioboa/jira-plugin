@@ -3,10 +3,10 @@ import * as vscode from 'vscode';
 import { Transition } from '../api.model';
 import { Command } from '../command';
 import state, { canExecuteJiraAPI } from '../state';
-import { selectIssue, SEARCH_MODE } from '../utils';
+import { SEARCH_MODE, selectIssue } from '../utils';
 
-export class IssueNewTransitionCommand implements Command {
-  public id = 'jira-plugin.issueNewTransitionCommand';
+export class ChangeIssueStatusCommand implements Command {
+  public id = 'jira-plugin.changeIssueStatusCommand';
 
   @bind
   public async run(): Promise<void> {

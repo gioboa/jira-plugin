@@ -2,9 +2,9 @@ import 'isomorphic-fetch';
 import * as vscode from 'vscode';
 import { createClient } from './api';
 import { Jira } from './api.model';
-import { ChangeIssueAssigneeCommand } from './commands/assign-issue';
+import { ChangeIssueAssigneeCommand } from './commands/change-issue-assignee';
 import { IssueByIdCommand } from './commands/issue-by-id';
-import { IssueNewTransitionCommand } from './commands/issue-new-transition';
+import { ChangeIssueStatusCommand } from './commands/change-issue-status';
 import { IssuesByStatusAssigneeCommand } from './commands/issues-by-status-assignee';
 import { MyIssuesByStatusCommand } from './commands/my-issues-by-status';
 import { SetCurrentProjectCommand } from './commands/set-current-project';
@@ -43,7 +43,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
     new MyIssuesByStatusCommand(),
     new IssuesByStatusAssigneeCommand(),
     new IssueByIdCommand(),
-    new IssueNewTransitionCommand(),
+    new ChangeIssueStatusCommand(),
     new ChangeIssueAssigneeCommand()
   ];
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));

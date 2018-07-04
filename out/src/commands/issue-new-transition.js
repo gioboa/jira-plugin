@@ -21,9 +21,9 @@ const decko_1 = require("decko");
 const vscode = require("vscode");
 const state_1 = require("../state");
 const utils_1 = require("../utils");
-class IssueNewTransitionCommand {
+class IssueChangeStatusCommand {
     constructor() {
-        this.id = 'jira-plugin.issueNewTransitionCommand';
+        this.id = 'jira-plugin.issueChangeStatusCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -63,6 +63,6 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], IssueNewTransitionCommand.prototype, "run", null);
-exports.IssueNewTransitionCommand = IssueNewTransitionCommand;
+], IssueChangeStatusCommand.prototype, "run", null);
+exports.IssueChangeStatusCommand = IssueChangeStatusCommand;
 //# sourceMappingURL=issue-new-transition.js.map

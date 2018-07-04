@@ -21,40 +21,24 @@ const decko_1 = require("decko");
 const vscode = require("vscode");
 const state_1 = require("../state");
 const utils_1 = require("../utils");
-class ChangeIssueStatusCommand {
+class ChangeIssueAssigneeCommand {
     constructor() {
-        this.id = 'jira-plugin.changeIssueStatusCommand';
+        this.id = 'jira-plugin.changeIssueAssigneeCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (state_1.canExecuteJiraAPI()) {
-                const issueKey = yield utils_1.selectIssue(utils_1.SEARCH_MODE.ID);
-                if (issueKey) {
-                    const newTransition = yield this.selectTransition(issueKey);
-                    if (newTransition) {
-                        const result = yield state_1.default.jira.doTransition(issueKey, {
-                            transition: {
-                                id: newTransition.id
-                            }
-                        });
-                    }
+            const issueKey = yield utils_1.selectIssue(utils_1.SEARCH_MODE.ID);
+            if (issueKey) {
+                const assignee = yield utils_1.selectAssignee();
+                if (assignee !== utils_1.UNASSIGNED) {
+                    const res = yield state_1.default.jira.assignIssue(issueKey, {
+                        name: assignee
+                    });
+                }
+                else {
+                    vscode.window.showInformationMessage(`It's no possible to assign the issue to the user Unassigned`);
                 }
             }
-        });
-    }
-    selectTransition(issueKey) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const transitions = yield state_1.default.jira.getTransitions(issueKey);
-            const picks = transitions.transitions.map(transition => ({
-                label: transition.name,
-                description: '',
-                transition
-            }));
-            const selected = yield vscode.window.showQuickPick(picks, {
-                placeHolder: `Select transition to execute for ${issueKey}`,
-                matchOnDescription: true
-            });
-            return selected ? selected.transition : undefined;
         });
     }
 }
@@ -63,6 +47,6 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], ChangeIssueStatusCommand.prototype, "run", null);
-exports.ChangeIssueStatusCommand = ChangeIssueStatusCommand;
-//# sourceMappingURL=issue-change-status.js.map
+], ChangeIssueAssigneeCommand.prototype, "run", null);
+exports.ChangeIssueAssigneeCommand = ChangeIssueAssigneeCommand;
+//# sourceMappingURL=change-issue-assignee.js.map

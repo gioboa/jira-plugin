@@ -11,9 +11,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("isomorphic-fetch");
 const vscode = require("vscode");
 const api_1 = require("./api");
-const assign_issue_1 = require("./commands/assign-issue");
+const change_issue_assignee_1 = require("./commands/change-issue-assignee");
 const issue_by_id_1 = require("./commands/issue-by-id");
-const issue_new_transition_1 = require("./commands/issue-new-transition");
+const change_issue_status_1 = require("./commands/change-issue-status");
 const issues_by_status_assignee_1 = require("./commands/issues-by-status-assignee");
 const my_issues_by_status_1 = require("./commands/my-issues-by-status");
 const set_current_project_1 = require("./commands/set-current-project");
@@ -47,8 +47,8 @@ exports.activate = (context) => {
         new my_issues_by_status_1.MyIssuesByStatusCommand(),
         new issues_by_status_assignee_1.IssuesByStatusAssigneeCommand(),
         new issue_by_id_1.IssueByIdCommand(),
-        new issue_new_transition_1.IssueNewTransitionCommand(),
-        new assign_issue_1.ChangeIssueAssigneeCommand()
+        new change_issue_status_1.ChangeIssueStatusCommand(),
+        new change_issue_assignee_1.ChangeIssueAssigneeCommand()
     ];
     context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
     context.subscriptions.push(statusBar);
