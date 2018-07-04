@@ -11,6 +11,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const configuration_1 = require("./configuration");
 const state_1 = require("./state");
+exports.SEARCH_MODE = {
+    ID: 'ID',
+    STATUS: 'STATUS',
+    STATUS_ASSIGNEE: 'STATUS_ASSIGNEE'
+};
 exports.selectProject = () => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
         const picks = state_1.default.projects.map(project => ({
@@ -33,53 +38,99 @@ exports.selectStatus = () => __awaiter(this, void 0, void 0, function* () {
     }
     return '';
 });
-exports.selectIssue = () => __awaiter(this, void 0, void 0, function* () {
+const verifyCurrentProject = (project) => {
+    return !!project && state_1.default.projects.filter((prj) => prj.key === project).length > 0;
+};
+const selectID = () => __awaiter(this, void 0, void 0, function* () {
+    const id = yield vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert JIRA ID (only the number)' });
+    return id && !isNaN(parseInt(id)) ? parseInt(id).toString() : undefined;
+});
+const createJQL = (mode, project) => __awaiter(this, void 0, void 0, function* () {
+    switch (mode) {
+        case exports.SEARCH_MODE.ID: {
+            const id = yield selectID();
+            if (!!id) {
+                return `id = '${project}-${id}' ORDER BY updated DESC`;
+            }
+            return undefined;
+        }
+        case exports.SEARCH_MODE.STATUS: {
+            const status = yield exports.selectStatus();
+            if (!!status) {
+                return `project in (${project}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`;
+            }
+            return undefined;
+        }
+        case exports.SEARCH_MODE.STATUS_ASSIGNEE: {
+            const status = yield exports.selectStatus();
+            const assignee = yield exports.selectAssignee();
+            if (!!status && !!assignee) {
+                return `project in (${project}) AND status = '${status}' AND assignee = '${assignee}' ORDER BY updated DESC`;
+            }
+            return undefined;
+        }
+    }
+    return undefined;
+});
+exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
-        const currentProject = configuration_1.getConfigurationByKey(configuration_1.CONFIG.CURRENT_PROJECT);
-        const status = yield exports.selectStatus();
-        if (!!status) {
-            const issues = yield state_1.default.jira.search({
-                jql: `project in (${currentProject}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`
-            });
-            const picks = (issues.issues || []).map((issue) => {
-                return {
-                    issue,
-                    label: issue.key,
-                    description: issue.fields.summary,
-                    detail: issue.fields.description
-                };
-            });
-            if (picks.length > 0) {
-                const selected = yield vscode.window.showQuickPick(picks, {
-                    matchOnDescription: true,
-                    matchOnDetail: true,
-                    placeHolder: 'Select an issue'
+        const project = configuration_1.getConfigurationByKey(configuration_1.CONFIG.CURRENT_PROJECT);
+        if (verifyCurrentProject(project)) {
+            const jql = yield createJQL(mode, project || '');
+            if (!!jql) {
+                const issues = yield state_1.default.jira.search({ jql });
+                const picks = (issues.issues || []).map((issue) => {
+                    return {
+                        issue,
+                        label: issue.key,
+                        description: issue.fields.summary,
+                        detail: issue.fields.description
+                    };
                 });
-                return selected ? selected.label : undefined;
+                if (picks.length > 0) {
+                    const selected = yield vscode.window.showQuickPick(picks, {
+                        matchOnDescription: true,
+                        matchOnDetail: true,
+                        placeHolder: 'Select an issue'
+                    });
+                    return selected ? selected.label : undefined;
+                }
+                else {
+                    vscode.window.showInformationMessage(`No issues found in this project: ${project}`);
+                }
             }
             else {
-                vscode.window.showInformationMessage(`No issues found: project - ${currentProject} | status - ${status}`);
+                vscode.window.showInformationMessage(`No issues found. Wrong parameter`);
             }
+        }
+        else {
+            vscode.window.showInformationMessage(`Current project not correct, please select one valid project`);
         }
     }
     return undefined;
 });
 exports.selectAssignee = () => __awaiter(this, void 0, void 0, function* () {
     const project = configuration_1.getConfigurationByKey(configuration_1.CONFIG.CURRENT_PROJECT) || '';
-    const assignees = yield state_1.default.jira.getAssignees(`search?project=${project}`);
-    const picks = (assignees || []).filter((assignee) => assignee.active === true).map((assignee) => {
-        return {
-            label: assignee.key,
-            description: assignee.displayName,
-            detail: '',
-            assignee
-        };
-    });
-    const selected = yield vscode.window.showQuickPick(picks, {
-        matchOnDescription: true,
-        matchOnDetail: true,
-        placeHolder: 'Select an issue'
-    });
-    return selected ? selected.assignee.key : '';
+    if (verifyCurrentProject(project)) {
+        const assignees = yield state_1.default.jira.getAssignees(`search?project=${project}`);
+        const picks = (assignees || []).filter((assignee) => assignee.active === true).map((assignee) => {
+            return {
+                label: assignee.key,
+                description: assignee.displayName,
+                detail: '',
+                assignee
+            };
+        });
+        const selected = yield vscode.window.showQuickPick(picks, {
+            matchOnDescription: true,
+            matchOnDetail: true,
+            placeHolder: 'Select an issue'
+        });
+        return selected ? selected.assignee.key : '';
+    }
+    else {
+        vscode.window.showInformationMessage(`Current project not correct, please select one valid project`);
+    }
+    return '';
 });
 //# sourceMappingURL=utils.js.map

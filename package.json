@@ -52,28 +52,38 @@
     },
     "commands": [
       {
-        "command": "jira-plugin.setupCredentials",
-        "title": "Setup credentials...",
+        "command": "jira-plugin.setupCredentialsCommand",
+        "title": "Setup credentials",
         "category": "JIRA"
       },
       {
-        "command": "jira-plugin.changeCurrentProject",
-        "title": "Change current project...",
+        "command": "jira-plugin.setCurrentProjectCommand",
+        "title": "Set current project",
         "category": "JIRA"
       },
       {
-        "command": "jira-plugin.browseMyIssues",
-        "title": "My issue list...",
+        "command": "jira-plugin.issueByIdCommand",
+        "title": "Issue by id",
         "category": "JIRA"
       },
       {
-        "command": "jira-plugin.issueNewTransition",
-        "title": "New transition for issue...",
+        "command": "jira-plugin.myIssuesByStatusCommand",
+        "title": "My issues filtered by status",
         "category": "JIRA"
       },
       {
-        "command": "jira-plugin.changeIssueAssignee",
-        "title": "Change assignee...",
+        "command": "jira-plugin.issuesByStatusAssigneeCommand",
+        "title": "Issues filtered by status and assignee",
+        "category": "JIRA"
+      },
+      {
+        "command": "jira-plugin.issueNewTransitionCommand",
+        "title": "New transition for issue",
+        "category": "JIRA"
+      },
+      {
+        "command": "jira-plugin.changeIssueAssigneeCommand",
+        "title": "Change issue assignee",
         "category": "JIRA"
       }
     ]

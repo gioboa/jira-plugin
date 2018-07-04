@@ -20,10 +20,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const configuration_1 = require("../configuration");
 const utils_1 = require("../utils");
-class ChangeCurrentProjectCommand {
+class SetCurrentProjectCommand {
     constructor(statusBar) {
         this.statusBar = statusBar;
-        this.id = 'jira-plugin.changeCurrentProject';
+        this.id = 'jira-plugin.setCurrentProjectCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -38,6 +38,6 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], ChangeCurrentProjectCommand.prototype, "run", null);
-exports.ChangeCurrentProjectCommand = ChangeCurrentProjectCommand;
+], SetCurrentProjectCommand.prototype, "run", null);
+exports.SetCurrentProjectCommand = SetCurrentProjectCommand;
 //# sourceMappingURL=set-current-project.js.map

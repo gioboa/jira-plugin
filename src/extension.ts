@@ -3,9 +3,11 @@ import * as vscode from 'vscode';
 import { createClient } from './api';
 import { Jira } from './api.model';
 import { ChangeIssueAssigneeCommand } from './commands/assign-issue';
-import { BrowseMyIssuesCommand } from './commands/browse-my-issues';
+import { IssueByIdCommand } from './commands/issue-by-id';
 import { IssueNewTransitionCommand } from './commands/issue-new-transition';
-import { ChangeCurrentProjectCommand } from './commands/set-current-project';
+import { IssuesByStatusAssigneeCommand } from './commands/issues-by-status-assignee';
+import { MyIssuesByStatusCommand } from './commands/my-issues-by-status';
+import { SetCurrentProjectCommand } from './commands/set-current-project';
 import { SetupCredentialsCommand } from './commands/setup-credentials';
 import { CONFIG, CREDENTIALS_SEPARATOR, getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
 import { IssueLinkProvider } from './document-link-provider';
@@ -35,7 +37,15 @@ export const activate = (context: vscode.ExtensionContext): void => {
   }
 
   const statusBar = new StatusBarManager();
-  const commands = [new SetupCredentialsCommand(context), new ChangeCurrentProjectCommand(statusBar), new BrowseMyIssuesCommand(), new IssueNewTransitionCommand(), new ChangeIssueAssigneeCommand()];
+  const commands = [
+    new SetupCredentialsCommand(context),
+    new SetCurrentProjectCommand(statusBar),
+    new MyIssuesByStatusCommand(),
+    new IssuesByStatusAssigneeCommand(),
+    new IssueByIdCommand(),
+    new IssueNewTransitionCommand(),
+    new ChangeIssueAssigneeCommand()
+  ];
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
   context.subscriptions.push(statusBar);
 };

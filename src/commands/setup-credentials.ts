@@ -4,8 +4,8 @@ import { Command } from '../command';
 import { CONFIG, getConfigurationByKey, setConfigurationByKey, setGlobalStateConfiguration } from '../configuration';
 
 export class SetupCredentialsCommand implements Command {
-  public id = 'jira-plugin.setupCredentials';
-  
+  public id = 'jira-plugin.setupCredentialsCommand';
+
   constructor(private context: vscode.ExtensionContext) {}
 
   @bind

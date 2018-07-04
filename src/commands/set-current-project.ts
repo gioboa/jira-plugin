@@ -5,8 +5,8 @@ import { StatusBarManager } from '../status-bar';
 import { selectProject, selectStatus } from '../utils';
 import state from '../state';
 
-export class ChangeCurrentProjectCommand implements Command {
-  public id = 'jira-plugin.changeCurrentProject';
+export class SetCurrentProjectCommand implements Command {
+  public id = 'jira-plugin.setCurrentProjectCommand';
 
   constructor(private statusBar: StatusBarManager) {}
 

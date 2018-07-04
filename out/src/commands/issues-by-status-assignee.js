@@ -18,20 +18,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
-const state_1 = require("../state");
+const vscode = require("vscode");
+const configuration_1 = require("../configuration");
 const utils_1 = require("../utils");
-class ChangeIssueAssigneeCommand {
+class IssuesByStatusAssigneeCommand {
     constructor() {
-        this.id = 'jira-plugin.changeIssueAssigneeCommand';
+        this.id = 'jira-plugin.issuesByStatusAssigneeCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issueKey = yield utils_1.selectIssue(utils_1.SEARCH_MODE.ID);
-            if (issueKey) {
-                const assignee = yield utils_1.selectAssignee();
-                const res = yield state_1.default.jira.assignIssue(issueKey, {
-                    name: assignee
-                });
+            const issue = yield utils_1.selectIssue(utils_1.SEARCH_MODE.STATUS_ASSIGNEE);
+            if (issue) {
+                const url = `${configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL)}/browse/${issue}`;
+                yield vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
             }
         });
     }
@@ -41,6 +40,6 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], ChangeIssueAssigneeCommand.prototype, "run", null);
-exports.ChangeIssueAssigneeCommand = ChangeIssueAssigneeCommand;
-//# sourceMappingURL=assign-issue.js.map
+], IssuesByStatusAssigneeCommand.prototype, "run", null);
+exports.IssuesByStatusAssigneeCommand = IssuesByStatusAssigneeCommand;
+//# sourceMappingURL=issues-by-status-assignee.js.map

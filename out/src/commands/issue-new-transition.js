@@ -23,12 +23,12 @@ const state_1 = require("../state");
 const utils_1 = require("../utils");
 class IssueNewTransitionCommand {
     constructor() {
-        this.id = 'jira-plugin.issueNewTransition';
+        this.id = 'jira-plugin.issueNewTransitionCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             if (state_1.canExecuteJiraAPI()) {
-                const issueKey = yield utils_1.selectIssue();
+                const issueKey = yield utils_1.selectIssue(utils_1.SEARCH_MODE.ID);
                 if (issueKey) {
                     const newTransition = yield this.selectTransition(issueKey);
                     if (newTransition) {

@@ -3,15 +3,15 @@ import * as vscode from 'vscode';
 import { Transition } from '../api.model';
 import { Command } from '../command';
 import state, { canExecuteJiraAPI } from '../state';
-import { selectIssue } from '../utils';
+import { selectIssue, SEARCH_MODE } from '../utils';
 
 export class IssueNewTransitionCommand implements Command {
-  public id = 'jira-plugin.issueNewTransition';
+  public id = 'jira-plugin.issueNewTransitionCommand';
 
   @bind
   public async run(): Promise<void> {
     if (canExecuteJiraAPI()) {
-      const issueKey = await selectIssue();
+      const issueKey = await selectIssue(SEARCH_MODE.ID);
       if (issueKey) {
         const newTransition = await this.selectTransition(issueKey);
         if (newTransition) {
