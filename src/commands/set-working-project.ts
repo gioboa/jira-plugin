@@ -5,8 +5,8 @@ import { selectProject } from '../shared/utilities';
 import state from '../state/state';
 import { Command } from './command';
 
-export class SetCurrentProjectCommand implements Command {
-  public id = 'jira-plugin.setCurrentProjectCommand';
+export class SetWorkingProjectCommand implements Command {
+  public id = 'jira-plugin.setWorkingProjectCommand';
 
   @bind
   public async run(): Promise<void> {

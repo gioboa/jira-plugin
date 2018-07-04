@@ -7,7 +7,7 @@ const change_issue_status_1 = require("./commands/change-issue-status");
 const issue_by_id_1 = require("./commands/issue-by-id");
 const issues_by_status_assignee_1 = require("./commands/issues-by-status-assignee");
 const my_issues_by_status_1 = require("./commands/my-issues-by-status");
-const set_current_project_1 = require("./commands/set-current-project");
+const set_working_project_1 = require("./commands/set-working-project");
 const setup_credentials_1 = require("./commands/setup-credentials");
 const constants_1 = require("./shared/constants");
 const document_link_provider_1 = require("./shared/document-link-provider");
@@ -27,7 +27,7 @@ exports.activate = (context) => {
     utils_1.executeConnectionToJira();
     const commands = [
         new setup_credentials_1.SetupCredentialsCommand(),
-        new set_current_project_1.SetCurrentProjectCommand(),
+        new set_working_project_1.SetWorkingProjectCommand(),
         new my_issues_by_status_1.MyIssuesByStatusCommand(),
         new issues_by_status_assignee_1.IssuesByStatusAssigneeCommand(),
         new issue_by_id_1.IssueByIdCommand(),

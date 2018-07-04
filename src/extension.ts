@@ -5,7 +5,7 @@ import { ChangeIssueStatusCommand } from './commands/change-issue-status';
 import { IssueByIdCommand } from './commands/issue-by-id';
 import { IssuesByStatusAssigneeCommand } from './commands/issues-by-status-assignee';
 import { MyIssuesByStatusCommand } from './commands/my-issues-by-status';
-import { SetCurrentProjectCommand } from './commands/set-current-project';
+import { SetWorkingProjectCommand } from './commands/set-working-project';
 import { SetupCredentialsCommand } from './commands/setup-credentials';
 import { CONFIG_NAME } from './shared/constants';
 import { IssueLinkProvider } from './shared/document-link-provider';
@@ -30,7 +30,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
 
   const commands = [
     new SetupCredentialsCommand(),
-    new SetCurrentProjectCommand(),
+    new SetWorkingProjectCommand(),
     new MyIssuesByStatusCommand(),
     new IssuesByStatusAssigneeCommand(),
     new IssueByIdCommand(),

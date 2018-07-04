@@ -57,7 +57,7 @@
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.setCurrentProjectCommand",
+        "command": "jira-plugin.setWorkingProjectCommand",
         "title": "Set current project",
         "category": "Jira-plugin"
       },
