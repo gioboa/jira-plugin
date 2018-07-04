@@ -6,7 +6,7 @@
   "publisher": "jira-plugin",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gioboa/vscode-jira-plugin.git"
+    "url": "git+https://github.com/gioboa/jira-plugin.git"
   },
   "keywords": [
     "Jira",
@@ -15,9 +15,9 @@
   "author": "gioboa",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gioboa/vscode-jira-plugin/issues"
+    "url": "https://github.com/gioboa/jira-plugin/issues"
   },
-  "homepage": "https://github.com/gioboa/vscode-jira-plugin#readme",
+  "homepage": "https://github.com/gioboa/jira-plugin#readme",
   "engines": {
     "vscode": "^1.24.0"
   },

@@ -1,17 +1,19 @@
 import * as vscode from 'vscode';
+import { Jira, Project, Status } from '../http/api.model';
 import { configIsCorrect } from '../shared/configuration';
-import { Jira, Status, Project } from '../http/api.model';
 
 export interface State {
+  context: vscode.ExtensionContext;
+  channel: vscode.OutputChannel;
   jira: Jira;
-  context?: vscode.ExtensionContext;
   statuses: Status[];
   projects: Project[];
 }
 
 const state: State = {
   jira: undefined as any,
-  context: undefined,
+  context: undefined as any,
+  channel: undefined as any,
   statuses: [],
   projects: []
 };
@@ -19,5 +21,5 @@ const state: State = {
 export default state;
 
 export const canExecuteJiraAPI = (): boolean => {
-  return state.jira && configIsCorrect(state.context);
+  return state.jira && configIsCorrect();
 };

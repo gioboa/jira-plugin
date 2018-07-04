@@ -4,11 +4,12 @@ const configuration_1 = require("../shared/configuration");
 const state = {
     jira: undefined,
     context: undefined,
+    channel: undefined,
     statuses: [],
     projects: []
 };
 exports.default = state;
 exports.canExecuteJiraAPI = () => {
-    return state.jira && configuration_1.configIsCorrect(state.context);
+    return state.jira && configuration_1.configIsCorrect();
 };
 //# sourceMappingURL=state.js.map

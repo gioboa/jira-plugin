@@ -7,8 +7,6 @@ import { Command } from './command';
 export class SetupCredentialsCommand implements Command {
   public id = 'jira-plugin.setupCredentialsCommand';
 
-  constructor(private context: vscode.ExtensionContext) {}
-
   @bind
   public async run(): Promise<void> {
     const baseUrl = getConfigurationByKey(CONFIG.BASE_URL);
@@ -20,6 +18,6 @@ export class SetupCredentialsCommand implements Command {
     }
     setConfigurationByKey(CONFIG.BASE_URL, await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA url' }));
     setConfigurationByKey(CONFIG.USERNAME, await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA username' }));
-    setGlobalStateConfiguration(this.context, await vscode.window.showInputBox({ ignoreFocusOut: true, password: true, placeHolder: 'Your JIRA password' }));
+    setGlobalStateConfiguration(await vscode.window.showInputBox({ ignoreFocusOut: true, password: true, placeHolder: 'Your JIRA password' }));
   }
 }

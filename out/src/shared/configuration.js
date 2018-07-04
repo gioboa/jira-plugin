@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const state_1 = require("../state/state");
 const constants_1 = require("./constants");
-exports.configIsCorrect = (context) => {
+exports.configIsCorrect = () => {
     if (!context) {
         return false;
     }
-    const [username, password] = exports.getGlobalStateConfiguration(context).split(constants_1.CREDENTIALS_SEPARATOR);
+    const [username, password] = exports.getGlobalStateConfiguration().split(constants_1.CREDENTIALS_SEPARATOR);
     const config = exports.getConfiguration();
     return config.baseUrl && username && password;
 };
@@ -34,12 +35,12 @@ exports.setConfigurationByKey = (entry, value) => {
     }
     return config.update(entry, value || '', true);
 };
-exports.setGlobalStateConfiguration = (context, password) => {
+exports.setGlobalStateConfiguration = (password) => {
     const config = exports.getConfiguration();
-    return context.globalState.update(`jira-plugin:${config.baseUrl}`, `${config.username}${constants_1.CREDENTIALS_SEPARATOR}${password || ''}`);
+    return state_1.default.context.globalState.update(`jira-plugin:${config.baseUrl}`, `${config.username}${constants_1.CREDENTIALS_SEPARATOR}${password || ''}`);
 };
-exports.getGlobalStateConfiguration = (context) => {
+exports.getGlobalStateConfiguration = () => {
     const config = exports.getConfiguration();
-    return context.globalState.get(`jira-plugin:${config.baseUrl}`);
+    return state_1.default.context.globalState.get(`jira-plugin:${config.baseUrl}`);
 };
 //# sourceMappingURL=configuration.js.map

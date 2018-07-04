@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
-import { Assignee, Issue, Project } from '../http/api.model';
+import { createClient } from '../http/api';
+import { Assignee, Issue, Jira, Project } from '../http/api.model';
 import state, { canExecuteJiraAPI } from '../state/state';
-import { getConfigurationByKey } from './configuration';
-import { CONFIG } from './constants';
+import { getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
+import { CONFIG, CREDENTIALS_SEPARATOR } from './constants';
 
 export const SEARCH_MODE = {
   ID: 'ID',
@@ -11,6 +12,40 @@ export const SEARCH_MODE = {
 };
 
 export const UNASSIGNED = 'Unassigned';
+
+export const executeConnectionToJira = (): void => {
+  if (getConfigurationByKey(CONFIG.BASE_URL)) {
+    const connect = async () => {
+      state.jira = (await connectToJira())!;
+      state.statuses = await state.jira.getStatuses();
+      state.projects = await state.jira.getProjects();
+    };
+    connect().catch(() => {
+      vscode.window.showErrorMessage('Failed to connect to jira');
+    });
+  }
+};
+
+export const connectToJira = async (): Promise<Jira | undefined> => {
+  const baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
+  const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
+  if (!!baseUrl && !!username && !!password) {
+    try {
+      const client = createClient(baseUrl, username, password);
+      const serverInfo = await client.serverInfo();
+      if (serverInfo.versionNumbers[0] < 5) {
+        vscode.window.showInformationMessage(`Unsupported JIRA version '${serverInfo.version}'. Must be at least 5.0.0`);
+        return;
+      }
+      state.channel.appendLine(`Connected to JIRA server at '${baseUrl}'`);
+      return client;
+    } catch (e) {
+      state.channel.appendLine(`Failed to contact JIRA server using '${baseUrl}'. Please check url and credentials`);
+      state.channel.appendLine(e.message);
+    }
+  }
+  return undefined;
+};
 
 export const selectProject = async (): Promise<string> => {
   if (canExecuteJiraAPI()) {

@@ -1,12 +1,13 @@
 import * as vscode from 'vscode';
+import state from '../state/state';
 import { Configuration } from './configuration.model';
-import { CREDENTIALS_SEPARATOR, CONFIG } from './constants';
+import { CONFIG, CREDENTIALS_SEPARATOR } from './constants';
 
-export const configIsCorrect = (context: vscode.ExtensionContext | undefined): boolean => {
+export const configIsCorrect = (): boolean => {
   if (!context) {
     return false;
   }
-  const [username, password] = getGlobalStateConfiguration(context).split(CREDENTIALS_SEPARATOR);
+  const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
   const config = getConfiguration();
   return config.baseUrl && username && password;
 };
@@ -38,12 +39,12 @@ export const setConfigurationByKey = (entry: string, value: string | undefined):
   return config.update(entry, value || '', true);
 };
 
-export const setGlobalStateConfiguration = (context: vscode.ExtensionContext, password: string | undefined): Thenable<void> => {
+export const setGlobalStateConfiguration = (password: string | undefined): Thenable<void> => {
   const config = getConfiguration();
-  return context.globalState.update(`jira-plugin:${config.baseUrl}`, `${config.username}${CREDENTIALS_SEPARATOR}${password || ''}`);
+  return state.context.globalState.update(`jira-plugin:${config.baseUrl}`, `${config.username}${CREDENTIALS_SEPARATOR}${password || ''}`);
 };
 
-export const getGlobalStateConfiguration = (context: vscode.ExtensionContext): any => {
+export const getGlobalStateConfiguration = (): any => {
   const config = getConfiguration();
-  return context.globalState.get(`jira-plugin:${config.baseUrl}`);
+  return state.context.globalState.get(`jira-plugin:${config.baseUrl}`);
 };

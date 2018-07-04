@@ -22,8 +22,7 @@ const vscode = require("vscode");
 const configuration_1 = require("../shared/configuration");
 const constants_1 = require("../shared/constants");
 class SetupCredentialsCommand {
-    constructor(context) {
-        this.context = context;
+    constructor() {
         this.id = 'jira-plugin.setupCredentialsCommand';
     }
     run() {
@@ -37,7 +36,7 @@ class SetupCredentialsCommand {
             }
             configuration_1.setConfigurationByKey(constants_1.CONFIG.BASE_URL, yield vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA url' }));
             configuration_1.setConfigurationByKey(constants_1.CONFIG.USERNAME, yield vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA username' }));
-            configuration_1.setGlobalStateConfiguration(this.context, yield vscode.window.showInputBox({ ignoreFocusOut: true, password: true, placeHolder: 'Your JIRA password' }));
+            configuration_1.setGlobalStateConfiguration(yield vscode.window.showInputBox({ ignoreFocusOut: true, password: true, placeHolder: 'Your JIRA password' }));
         });
     }
 }

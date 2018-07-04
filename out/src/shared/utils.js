@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const api_1 = require("../http/api");
 const state_1 = require("../state/state");
 const configuration_1 = require("./configuration");
 const constants_1 = require("./constants");
@@ -18,6 +19,39 @@ exports.SEARCH_MODE = {
     STATUS_ASSIGNEE: 'STATUS_ASSIGNEE'
 };
 exports.UNASSIGNED = 'Unassigned';
+exports.executeConnectionToJira = () => {
+    if (configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL)) {
+        const connect = () => __awaiter(this, void 0, void 0, function* () {
+            state_1.default.jira = (yield exports.connectToJira());
+            state_1.default.statuses = yield state_1.default.jira.getStatuses();
+            state_1.default.projects = yield state_1.default.jira.getProjects();
+        });
+        connect().catch(() => {
+            vscode.window.showErrorMessage('Failed to connect to jira');
+        });
+    }
+};
+exports.connectToJira = () => __awaiter(this, void 0, void 0, function* () {
+    const baseUrl = configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL) || '';
+    const [username, password] = configuration_1.getGlobalStateConfiguration().split(constants_1.CREDENTIALS_SEPARATOR);
+    if (!!baseUrl && !!username && !!password) {
+        try {
+            const client = api_1.createClient(baseUrl, username, password);
+            const serverInfo = yield client.serverInfo();
+            if (serverInfo.versionNumbers[0] < 5) {
+                vscode.window.showInformationMessage(`Unsupported JIRA version '${serverInfo.version}'. Must be at least 5.0.0`);
+                return;
+            }
+            state_1.default.channel.appendLine(`Connected to JIRA server at '${baseUrl}'`);
+            return client;
+        }
+        catch (e) {
+            state_1.default.channel.appendLine(`Failed to contact JIRA server using '${baseUrl}'. Please check url and credentials`);
+            state_1.default.channel.appendLine(e.message);
+        }
+    }
+    return undefined;
+});
 exports.selectProject = () => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
         const picks = state_1.default.projects.map(project => ({
