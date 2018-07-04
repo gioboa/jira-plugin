@@ -44,7 +44,7 @@ The extension store credentials in VS Code settings.<br><br>
 
 ## Status bar
 
-In the status bar the extension show the current working project. <br>
+In the status bar the extension show the working project. <br>
 
 ![StatusBar](images/status-bar.png)
 
