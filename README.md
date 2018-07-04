@@ -1,16 +1,25 @@
 # jira-plugin README
 
 <br>Inspired by [vscode-jira](https://github.com/KnisterPeter/vscode-jira) I decided to create my own JIRA plugin for VS Code.
-I added more functionality and I'm happy to will implement more.<br><br>
+I'm happy to will implement more features.<br><br>
+
+## Install
+
+ext install jira-plugin<br><br>
 
 ## Setup
 
 First of all your have to launch "Setup credentials" command to configure the plugin.<br>
 The Jira base URL is needed and also your credentials.<br>
 After that you have to setup the working project. ("Set working project" command)<br><br>
+
+![Setup](images/setup.gif)
+
 <b>n.b:</b> If you need to browse issues for various project you have to launch the command to perform the switch.<br><br>
 
 ## Features
+
+![Commands](images/commands.gif)
 
 <br>
 - <b>Issue by id</b><br>
@@ -23,3 +32,7 @@ After that you have to setup the working project. ("Set working project" command
   With this command you can change an issue status. In the filter you have to specify the id. <br><br>
 - <b>Change issue assignee (filter: id)</b><br>
   With this command you can change an issue assignee. In the filter you have to specify the id.<br><br>
+
+## Resources
+
+Based on [JIRA APIs](https://developer.atlassian.com/cloud/jira/platform/rest/)

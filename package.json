@@ -4,7 +4,7 @@
   "description": "JIRA integration for vscode",
   "version": "0.0.1",
   "publisher": "gioboa",
-  "icon": "icon.png",
+  "icon": "./images/icon.png",
   "galleryBanner": {
     "color": "#3B4859",
     "theme": "dark"
@@ -47,7 +47,7 @@
       "properties": {
         "jira-plugin.baseUrl": {
           "type": "string",
-          "description": "Your JIRA base URL (e.g. https://your_jira_base_url.com/)",
+          "description": "Your JIRA base URL (e.g. https://your_jira_base_url.com)",
           "default": ""
         },
         "jira-plugin.username": {
