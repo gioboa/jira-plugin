@@ -5,7 +5,7 @@ I added more functionality and I'm happy to will implement more.<br><br>
 
 ## Setup
 
-First of all your have to lunch "Setup credentials" command to configure the plugin.<br>
+First of all your have to launch "Setup credentials" command to configure the plugin.<br>
 The Jira base URL is needed and also your credentials.<br>
 After that you have to setup the working project. ("Set working project" command)<br><br>
 <b>n.b:</b> If you need to browse issues for various project you have to launch the command to perform the switch.<br><br>
