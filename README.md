@@ -7,28 +7,29 @@ I'm happy to will implement more features.<br><br>
 
 ext install jira-plugin<br><br>
 
+## Usage
+
+From the command palette Ctrl-Shift-P (Windows, Linux) or Cmd-Shift-P (OSX) under <b>Jira-plugin</b> you have all the extension commands.<br><br>
+
 ## Setup
 
 First of all your have to launch "Setup credentials" command to configure the plugin.<br>
 The Jira base URL is needed and also your credentials.<br>
 After that you have to setup the working project. ("Set working project" command)<br><br>
+<b>n.b:</b> If you need to browse issues for various project you have to launch the command to perform the switch.<br>
 
 ![Setup](images/setup.gif)
 
-<b>n.b:</b> If you need to browse issues for various project you have to launch the command to perform the switch.<br><br>
-
 ## Config
 
-The extension store credentials in VS Code settings.
-![Settings](images/settings.png)
+The extension store credentials in VS Code settings.<br><br>
+<b>n.b:</b> the extension store the password in VS Code internal storage so it's safe and hidden. :wink: <br>
 
-<b>n.b:</b> the extension store the password in VS Code internal storage so it's safe and hidden. :wink: <br><br>
+![Settings](images/settings.png)
 
 ## Features
 
 ![Commands](images/commands.gif)
-
-<br><br>
 
 - <b>Issue by id</b><br>
   With this command you can search and view a issue by id.<br><br>
