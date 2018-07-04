@@ -5,6 +5,7 @@ const state = {
     jira: undefined,
     context: undefined,
     channel: undefined,
+    statusBar: undefined,
     statuses: [],
     projects: []
 };

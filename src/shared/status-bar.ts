@@ -8,7 +8,6 @@ export class StatusBarManager {
 
   constructor() {
     this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-    setTimeout(() => this.updateStatusBar(''), 2000);
   }
 
   public async updateStatusBar(currentProject: string): Promise<void> {

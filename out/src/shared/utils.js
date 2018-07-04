@@ -23,6 +23,7 @@ exports.executeConnectionToJira = () => {
     if (configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL)) {
         const connect = () => __awaiter(this, void 0, void 0, function* () {
             state_1.default.jira = (yield exports.connectToJira());
+            state_1.default.statusBar.updateStatusBar('');
             state_1.default.statuses = yield state_1.default.jira.getStatuses();
             state_1.default.projects = yield state_1.default.jira.getProjects();
         });

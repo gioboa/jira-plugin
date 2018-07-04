@@ -33,19 +33,19 @@
       "type": "object",
       "title": "JIRA configuration",
       "properties": {
-        "jira.baseUrl": {
+        "jira-plugin.baseUrl": {
           "type": "string",
-          "description": "Base URL to the JIRA instance (e.g. https://your.base-to-jira.com/)",
+          "description": "Your JIRA base URL (e.g. https://your_jira_base_url.com/)",
           "default": ""
         },
-        "jira.username": {
+        "jira-plugin.username": {
           "type": "string",
-          "description": "JIRA username",
+          "description": "Your JIRA username",
           "default": ""
         },
-        "jira.currentProject": {
+        "jira-plugin.currentProject": {
           "type": "string",
-          "description": "JIRA current project",
+          "description": "JIRA working project",
           "default": ""
         }
       }
@@ -54,37 +54,37 @@
       {
         "command": "jira-plugin.setupCredentialsCommand",
         "title": "Setup credentials",
-        "category": "JIRA"
+        "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.setCurrentProjectCommand",
         "title": "Set current project",
-        "category": "JIRA"
+        "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.issueByIdCommand",
         "title": "Issue by id",
-        "category": "JIRA"
+        "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.myIssuesByStatusCommand",
         "title": "My issues filtered by status",
-        "category": "JIRA"
+        "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.issuesByStatusAssigneeCommand",
         "title": "Issues filtered by status and assignee",
-        "category": "JIRA"
+        "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.changeIssueStatusCommand",
         "title": "Change issue status (filter: id)",
-        "category": "JIRA"
+        "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.changeIssueAssigneeCommand",
         "title": "Change issue assignee (filter: id)",
-        "category": "JIRA"
+        "category": "Jira-plugin"
       }
     ]
   },
@@ -96,18 +96,16 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.7",
-    "mocha": "^4.0.1",
+    "typescript": "^2.9.2",
+    "vscode": "^1.1.18",
+    "mocha": "^5.2.0",
     "@types/node": "^8.0.53",
-    "@types/mocha": "^2.2.44",
-    "husky": "^0.14.3",
-    "standard-version": "^4.2.0",
-    "tslint": "^5.8.0"
+    "@types/mocha": "^5.2.4",
+    "tslint": "^5.10.0"
   },
   "dependencies": {
     "decko": "^1.2.0",
     "isomorphic-fetch": "2.2.1",
-    "pretend": "^1.1.0"
+    "pretend": "^1.5.1"
   }
 }

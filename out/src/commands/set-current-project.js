@@ -21,16 +21,16 @@ const decko_1 = require("decko");
 const configuration_1 = require("../shared/configuration");
 const constants_1 = require("../shared/constants");
 const utilities_1 = require("../shared/utilities");
+const state_1 = require("../state/state");
 class SetCurrentProjectCommand {
-    constructor(statusBar) {
-        this.statusBar = statusBar;
+    constructor() {
         this.id = 'jira-plugin.setCurrentProjectCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             const currentProject = yield utilities_1.selectProject();
             configuration_1.setConfigurationByKey(constants_1.CONFIG.CURRENT_PROJECT, currentProject);
-            this.statusBar.updateStatusBar(currentProject);
+            state_1.default.statusBar.updateStatusBar(currentProject);
         });
     }
 }

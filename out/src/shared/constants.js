@@ -6,4 +6,5 @@ exports.CONFIG = {
     USERNAME: 'username',
     CURRENT_PROJECT: 'currentProject'
 };
+exports.CONFIG_NAME = 'jira-plugin';
 //# sourceMappingURL=constants.js.map

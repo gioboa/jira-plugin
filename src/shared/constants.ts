@@ -5,3 +5,5 @@ export const CONFIG = {
   USERNAME: 'username',
   CURRENT_PROJECT: 'currentProject'
 };
+
+export const CONFIG_NAME = 'jira-plugin';
