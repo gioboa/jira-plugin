@@ -5,15 +5,14 @@ I added more functionality and I'm happy to will implement more.<br><br>
 
 ## Setup
 
-First of all your have to lunch Setup credentials command to configure the plugin.
-The Jira base URL is needed and also your credentials.<br><br>
+First of all your have to lunch "Setup credentials" command to configure the plugin.<br>
+The Jira base URL is needed and also your credentials.<br>
+After that you have to setup the working project. ("Set working project" command)<br><br>
+<b>n.b:</b> If you need to browse issues for various project you have to launch the command to perform the switch.<br><br>
 
 ## Features
 
-<b>Set working project</b><br>
-This command allow you to change the working project.<br>
-If you need to browse issues for various project you have to launch this particular command.<br><br>
-
+<br>
 - <b>Issue by id</b><br>
   With this command you can search and view a issue by id.<br><br>
 - <b>My issues filtered by status</b><br>
