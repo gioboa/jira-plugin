@@ -19,7 +19,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const vscode = require("vscode");
-const configuration_1 = require("../configuration");
+const configuration_1 = require("../shared/configuration");
+const constants_1 = require("../shared/constants");
 class SetupCredentialsCommand {
     constructor(context) {
         this.context = context;
@@ -27,15 +28,15 @@ class SetupCredentialsCommand {
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const baseUrl = configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL);
+            const baseUrl = configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL);
             if (baseUrl) {
                 const res = yield vscode.window.showQuickPick(['Yes', 'No'], { placeHolder: 'Config already exist. Reset config?' });
                 if (res === 'No') {
                     return;
                 }
             }
-            configuration_1.setConfigurationByKey(configuration_1.CONFIG.BASE_URL, yield vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA url' }));
-            configuration_1.setConfigurationByKey(configuration_1.CONFIG.USERNAME, yield vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA username' }));
+            configuration_1.setConfigurationByKey(constants_1.CONFIG.BASE_URL, yield vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA url' }));
+            configuration_1.setConfigurationByKey(constants_1.CONFIG.USERNAME, yield vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA username' }));
             configuration_1.setGlobalStateConfiguration(this.context, yield vscode.window.showInputBox({ ignoreFocusOut: true, password: true, placeHolder: 'Your JIRA password' }));
         });
     }

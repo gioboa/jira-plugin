@@ -1,9 +1,9 @@
 import { bind } from 'decko';
-import { Command } from '../command';
-import { CONFIG, setConfigurationByKey } from '../configuration';
-import { StatusBarManager } from '../status-bar';
-import { selectProject, selectStatus } from '../utils';
-import state from '../state';
+import { setConfigurationByKey } from '../shared/configuration';
+import { CONFIG } from '../shared/constants';
+import { StatusBarManager } from '../shared/status-bar';
+import { selectProject } from '../shared/utilities';
+import { Command } from './command';
 
 export class SetCurrentProjectCommand implements Command {
   public id = 'jira-plugin.setCurrentProjectCommand';
@@ -13,8 +13,7 @@ export class SetCurrentProjectCommand implements Command {
   @bind
   public async run(): Promise<void> {
     const currentProject = await selectProject();
-    setConfigurationByKey(CONFIG.CURRENT_PROJECT, currentProject);    
+    setConfigurationByKey(CONFIG.CURRENT_PROJECT, currentProject);
     this.statusBar.updateStatusBar(currentProject);
-
   }
 }

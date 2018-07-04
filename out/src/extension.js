@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 require("isomorphic-fetch");
 const vscode = require("vscode");
-const api_1 = require("./api");
 const change_issue_assignee_1 = require("./commands/change-issue-assignee");
 const change_issue_status_1 = require("./commands/change-issue-status");
 const issue_by_id_1 = require("./commands/issue-by-id");
@@ -18,17 +17,19 @@ const issues_by_status_assignee_1 = require("./commands/issues-by-status-assigne
 const my_issues_by_status_1 = require("./commands/my-issues-by-status");
 const set_current_project_1 = require("./commands/set-current-project");
 const setup_credentials_1 = require("./commands/setup-credentials");
-const configuration_1 = require("./configuration");
-const document_link_provider_1 = require("./document-link-provider");
-const state_1 = require("./state");
-const status_bar_1 = require("./status-bar");
+const document_link_provider_1 = require("./shared/document-link-provider");
+const state_1 = require("./state/state");
+const status_bar_1 = require("./shared/status-bar");
+const configuration_1 = require("./shared/configuration");
+const constants_1 = require("./shared/constants");
+const api_1 = require("./http/api");
 let channel;
 exports.activate = (context) => {
     channel = vscode.window.createOutputChannel('JIRA');
     context.subscriptions.push(channel);
     const jiraLinkProvider = new document_link_provider_1.IssueLinkProvider();
     vscode.languages.registerDocumentLinkProvider('*', jiraLinkProvider);
-    if (configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL)) {
+    if (configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL)) {
         const connect = () => __awaiter(this, void 0, void 0, function* () {
             state_1.default.jira = (yield exports.connectToJira(context));
             state_1.default.context = context;
@@ -53,8 +54,8 @@ exports.activate = (context) => {
     context.subscriptions.push(statusBar);
 };
 exports.connectToJira = (context) => __awaiter(this, void 0, void 0, function* () {
-    const baseUrl = configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL) || '';
-    const [username, password] = configuration_1.getGlobalStateConfiguration(context).split(configuration_1.CREDENTIALS_SEPARATOR);
+    const baseUrl = configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL) || '';
+    const [username, password] = configuration_1.getGlobalStateConfiguration(context).split(constants_1.CREDENTIALS_SEPARATOR);
     if (!!baseUrl && !!username && !!password) {
         try {
             const client = api_1.createClient(baseUrl, username, password);

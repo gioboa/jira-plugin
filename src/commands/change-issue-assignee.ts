@@ -1,8 +1,8 @@
 import { bind } from 'decko';
 import * as vscode from 'vscode';
-import { Command } from '../command';
-import state from '../state';
-import { SEARCH_MODE, selectAssignee, selectIssue, UNASSIGNED } from '../utils';
+import { Command } from './command';
+import state from '../state/state';
+import { SEARCH_MODE, selectAssignee, selectIssue, UNASSIGNED } from '../shared/utilities';
 
 export class ChangeIssueAssigneeCommand implements Command {
   public id = 'jira-plugin.changeIssueAssigneeCommand';

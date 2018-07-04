@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { Jira, Project, Status } from './api.model';
-import { configIsCorrect } from './configuration';
+import { configIsCorrect } from '../shared/configuration';
+import { Jira, Status, Project } from '../http/api.model';
 
 export interface State {
   jira: Jira;

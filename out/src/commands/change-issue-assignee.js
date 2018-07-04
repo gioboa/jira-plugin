@@ -19,18 +19,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const vscode = require("vscode");
-const state_1 = require("../state");
-const utils_1 = require("../utils");
+const state_1 = require("../state/state");
+const utilities_1 = require("../shared/utilities");
 class ChangeIssueAssigneeCommand {
     constructor() {
         this.id = 'jira-plugin.changeIssueAssigneeCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issueKey = yield utils_1.selectIssue(utils_1.SEARCH_MODE.ID);
+            const issueKey = yield utilities_1.selectIssue(utilities_1.SEARCH_MODE.ID);
             if (issueKey) {
-                const assignee = yield utils_1.selectAssignee();
-                if (assignee !== utils_1.UNASSIGNED) {
+                const assignee = yield utilities_1.selectAssignee();
+                if (assignee !== utilities_1.UNASSIGNED) {
                     const res = yield state_1.default.jira.assignIssue(issueKey, {
                         name: assignee
                     });

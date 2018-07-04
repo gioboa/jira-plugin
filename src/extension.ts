@@ -1,7 +1,5 @@
 import 'isomorphic-fetch';
 import * as vscode from 'vscode';
-import { createClient } from './api';
-import { Jira } from './api.model';
 import { ChangeIssueAssigneeCommand } from './commands/change-issue-assignee';
 import { ChangeIssueStatusCommand } from './commands/change-issue-status';
 import { IssueByIdCommand } from './commands/issue-by-id';
@@ -9,10 +7,13 @@ import { IssuesByStatusAssigneeCommand } from './commands/issues-by-status-assig
 import { MyIssuesByStatusCommand } from './commands/my-issues-by-status';
 import { SetCurrentProjectCommand } from './commands/set-current-project';
 import { SetupCredentialsCommand } from './commands/setup-credentials';
-import { CONFIG, CREDENTIALS_SEPARATOR, getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
-import { IssueLinkProvider } from './document-link-provider';
-import state from './state';
-import { StatusBarManager } from './status-bar';
+import { IssueLinkProvider } from './shared/document-link-provider';
+import state from './state/state';
+import { StatusBarManager } from './shared/status-bar';
+import { getConfigurationByKey, getGlobalStateConfiguration } from './shared/configuration';
+import { CONFIG, CREDENTIALS_SEPARATOR } from './shared/constants';
+import { createClient } from './http/api';
+import { Jira } from './http/api.model';
 
 let channel: vscode.OutputChannel;
 

@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const configuration_1 = require("./configuration");
-const state_1 = require("./state");
+const configuration_1 = require("./shared/configuration");
+const state_1 = require("./state/state");
 exports.SEARCH_MODE = {
     ID: 'ID',
     STATUS: 'STATUS',

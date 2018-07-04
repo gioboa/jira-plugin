@@ -1,19 +1,6 @@
 import * as vscode from 'vscode';
-import { WorkspaceConfiguration } from 'vscode';
-
-export const CREDENTIALS_SEPARATOR = '##';
-
-export const CONFIG = {
-  BASE_URL: 'baseUrl',
-  USERNAME: 'username',
-  CURRENT_PROJECT: 'currentProject'
-};
-
-export interface Configuration extends WorkspaceConfiguration {
-  baseUrl?: string;
-  username?: string;
-  currentProject?: string;
-}
+import { Configuration } from './configuration.model';
+import { CREDENTIALS_SEPARATOR, CONFIG } from './constants';
 
 export const configIsCorrect = (context: vscode.ExtensionContext | undefined): boolean => {
   if (!context) {

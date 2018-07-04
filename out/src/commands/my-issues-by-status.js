@@ -19,17 +19,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const vscode = require("vscode");
-const configuration_1 = require("../configuration");
-const utils_1 = require("../utils");
+const configuration_1 = require("../shared/configuration");
+const constants_1 = require("../shared/constants");
+const utilities_1 = require("../shared/utilities");
 class MyIssuesByStatusCommand {
     constructor() {
         this.id = 'jira-plugin.myIssuesByStatusCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issue = yield utils_1.selectIssue(utils_1.SEARCH_MODE.STATUS);
+            const issue = yield utilities_1.selectIssue(utilities_1.SEARCH_MODE.STATUS);
             if (issue) {
-                const url = `${configuration_1.getConfigurationByKey(configuration_1.CONFIG.BASE_URL)}/browse/${issue}`;
+                const url = `${configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL)}/browse/${issue}`;
                 yield vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
             }
         });

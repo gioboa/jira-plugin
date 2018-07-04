@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
-import { Assignee, Issue, Project } from './api.model';
-import { CONFIG, getConfigurationByKey } from './configuration';
-import state, { canExecuteJiraAPI } from './state';
+import state, { canExecuteJiraAPI } from '../state/state';
+import { getConfigurationByKey } from './configuration';
+import { Project, Issue, Assignee } from '../http/api.model';
+import { CONFIG } from './constants';
 
 export const SEARCH_MODE = {
   ID: 'ID',

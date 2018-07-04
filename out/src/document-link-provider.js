@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const configuration_1 = require("./configuration");
+const configuration_1 = require("./shared/configuration");
 class IssueLinkProvider {
     get baseUrl() {
         return configuration_1.getConfiguration().baseUrl;

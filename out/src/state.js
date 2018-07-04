@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const configuration_1 = require("./configuration");
+const configuration_1 = require("./shared/configuration");
 const state = {
     jira: undefined,
     context: undefined,

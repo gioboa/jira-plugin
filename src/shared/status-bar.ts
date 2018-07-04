@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { CONFIG, getConfigurationByKey } from './configuration';
-import state from './state';
+import state from '../state/state';
+import { getConfigurationByKey } from './configuration';
+import { CONFIG } from './constants';
 
 export class StatusBarManager {
   private item: vscode.StatusBarItem;

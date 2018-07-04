@@ -18,8 +18,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
-const configuration_1 = require("../configuration");
-const utils_1 = require("../utils");
+const configuration_1 = require("../shared/configuration");
+const constants_1 = require("../shared/constants");
+const utilities_1 = require("../shared/utilities");
 class SetCurrentProjectCommand {
     constructor(statusBar) {
         this.statusBar = statusBar;
@@ -27,8 +28,8 @@ class SetCurrentProjectCommand {
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const currentProject = yield utils_1.selectProject();
-            configuration_1.setConfigurationByKey(configuration_1.CONFIG.CURRENT_PROJECT, currentProject);
+            const currentProject = yield utilities_1.selectProject();
+            configuration_1.setConfigurationByKey(constants_1.CONFIG.CURRENT_PROJECT, currentProject);
             this.statusBar.updateStatusBar(currentProject);
         });
     }
