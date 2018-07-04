@@ -1,9 +1,14 @@
 {
   "name": "jira-plugin",
-  "displayName": "jira-plugin",
-  "description": "jira plugin",
+  "displayName": "Jira Plugin",
+  "description": "JIRA integration for vscode",
   "version": "0.0.1",
-  "publisher": "jira-plugin",
+  "publisher": "gioboa",
+  "icon": "images/cloud.png",
+  "galleryBanner": {
+    "color": "#3B4859",
+    "theme": "dark"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gioboa/jira-plugin.git"
