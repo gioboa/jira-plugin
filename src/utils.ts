@@ -9,6 +9,8 @@ export const SEARCH_MODE = {
   STATUS_ASSIGNEE: 'STATUS_ASSIGNEE'
 };
 
+export const UNASSIGNED = 'Unassigned';
+
 export const selectProject = async (): Promise<string> => {
   if (canExecuteJiraAPI()) {
     const picks = state.projects.map(project => ({
@@ -62,7 +64,7 @@ const createJQL = async (mode: string, project: string): Promise<string | undefi
       const status = await selectStatus();
       const assignee = await selectAssignee();
       if (!!status && !!assignee) {
-        return `project in (${project}) AND status = '${status}' AND assignee = '${assignee}' ORDER BY updated DESC`;
+        return `project in (${project}) AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`;
       }
       return undefined;
     }
@@ -116,6 +118,17 @@ export const selectAssignee = async (): Promise<string> => {
         detail: '',
         assignee
       };
+    });
+    picks.push({
+      label: UNASSIGNED,
+      description: UNASSIGNED,
+      detail: '',
+      assignee: {
+        key: UNASSIGNED,
+        name: UNASSIGNED,
+        displayName: UNASSIGNED,
+        active: true
+      }
     });
     const selected = await vscode.window.showQuickPick(picks, {
       matchOnDescription: true,
