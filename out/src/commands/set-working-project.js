@@ -28,9 +28,9 @@ class SetWorkingProjectCommand {
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const currentProject = yield utilities_1.selectProject();
-            configuration_1.setConfigurationByKey(constants_1.CONFIG.CURRENT_PROJECT, currentProject);
-            state_1.default.statusBar.updateStatusBar(currentProject);
+            const project = yield utilities_1.selectProject();
+            configuration_1.setConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT, project);
+            state_1.default.statusBar.updateStatusBar(project);
         });
     }
 }

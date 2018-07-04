@@ -42,6 +42,12 @@ The extension store credentials in VS Code settings.<br><br>
 - <b>Change issue assignee (filter: id)</b><br>
   With this command you can change an issue assignee. In the filter you have to specify the id.<br><br>
 
+## Status bar
+
+In the status bar the extension show the current working project. <br>
+
+![StatusBar](images/status-bar.png)
+
 ## Resources
 
 Based on [JIRA APIs](https://developer.atlassian.com/cloud/jira/platform/rest/)

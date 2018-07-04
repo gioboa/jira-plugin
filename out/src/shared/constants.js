@@ -4,7 +4,7 @@ exports.CREDENTIALS_SEPARATOR = '##';
 exports.CONFIG = {
     BASE_URL: 'baseUrl',
     USERNAME: 'username',
-    CURRENT_PROJECT: 'currentProject'
+    WORKING_PROJECT: 'workingProject'
 };
 exports.CONFIG_NAME = 'jira-plugin';
 exports.SEARCH_MODE = {

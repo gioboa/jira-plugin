@@ -20,7 +20,7 @@ export class StatusBarManager {
     if (!!project) {
       this.item.text = `Jira-plugin: working project -> ${project}`;
     } else {
-      this.item.text = `Jira-plugin: no project selected`;
+      this.item.text = `Jira-plugin: no working project`;
     }
     this.item.show();
   }

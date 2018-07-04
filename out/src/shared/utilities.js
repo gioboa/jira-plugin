@@ -53,7 +53,7 @@ exports.selectProject = () => __awaiter(this, void 0, void 0, function* () {
             label: project.key,
             description: project.name
         }));
-        const selected = yield vscode.window.showQuickPick(picks, { placeHolder: `Set current project`, matchOnDescription: true });
+        const selected = yield vscode.window.showQuickPick(picks, { placeHolder: `Set working project`, matchOnDescription: true });
         return selected ? selected.label : '';
     }
     return '';
@@ -105,7 +105,7 @@ const createJQL = (mode, project) => __awaiter(this, void 0, void 0, function* (
 });
 exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
-        const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.CURRENT_PROJECT);
+        const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
             const jql = yield createJQL(mode, project || '');
             if (!!jql) {
@@ -141,7 +141,7 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
     return undefined;
 });
 exports.selectAssignee = () => __awaiter(this, void 0, void 0, function* () {
-    const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.CURRENT_PROJECT) || '';
+    const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
         const assignees = yield state_1.default.jira.getAssignees(`search?project=${project}`);
         const picks = (assignees || []).filter((assignee) => assignee.active === true).map((assignee) => {
