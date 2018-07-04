@@ -4,7 +4,7 @@
   "description": "JIRA integration for vscode",
   "version": "0.0.1",
   "publisher": "gioboa",
-  "icon": "images/cloud.png",
+  "icon": "icon.png",
   "galleryBanner": {
     "color": "#3B4859",
     "theme": "dark"
@@ -33,6 +33,13 @@
     "*"
   ],
   "main": "./out/src/extension",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
   "contributes": {
     "configuration": {
       "type": "object",
@@ -92,13 +99,6 @@
         "category": "Jira-plugin"
       }
     ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
     "typescript": "^2.9.2",
