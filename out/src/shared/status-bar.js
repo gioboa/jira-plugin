@@ -28,7 +28,7 @@ class StatusBarManager {
                 this.item.text = `Jira-plugin: working project -> ${project}`;
             }
             else {
-                this.item.text = `Jira-plugin: no working project`;
+                this.item.text = `Jira-plugin: NO working project`;
             }
             this.item.show();
         });
