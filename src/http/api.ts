@@ -78,13 +78,13 @@ namespace impl {
       /* */
     }
 
+    @Post('/rest/api/2/issue/:issue/comment')
+    public addNewComment(): any {
+      /* */
+    }
+
     // @Get('/rest/api/2/issue/:issue')
     // public getIssue(): any {
-    //   /* */
-    // }
-
-    // @Post('/rest/api/2/issue/:issue/comment')
-    // public addComment(): any {
     //   /* */
     // }
   }

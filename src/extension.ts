@@ -12,6 +12,7 @@ import { IssueLinkProvider } from './shared/document-link-provider';
 import { StatusBarManager } from './shared/status-bar';
 import state from './state/state';
 import { executeConnectionToJira } from './shared/utilities';
+import { IssueAddCommentCommand } from './commands/issue-add-comment';
 
 let channel: vscode.OutputChannel;
 
@@ -35,7 +36,8 @@ export const activate = (context: vscode.ExtensionContext): void => {
     new IssuesByStatusAssigneeCommand(),
     new IssueByIdCommand(),
     new ChangeIssueStatusCommand(),
-    new ChangeIssueAssigneeCommand()
+    new ChangeIssueAssigneeCommand(),
+    new IssueAddCommentCommand(),
   ];
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
   context.subscriptions.push(statusBar);

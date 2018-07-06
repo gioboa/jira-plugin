@@ -14,6 +14,7 @@ const document_link_provider_1 = require("./shared/document-link-provider");
 const status_bar_1 = require("./shared/status-bar");
 const state_1 = require("./state/state");
 const utilities_1 = require("./shared/utilities");
+const issue_add_comment_1 = require("./commands/issue-add-comment");
 let channel;
 exports.activate = (context) => {
     channel = vscode.window.createOutputChannel(constants_1.CONFIG_NAME.toUpperCase());
@@ -32,7 +33,8 @@ exports.activate = (context) => {
         new issues_by_status_assignee_1.IssuesByStatusAssigneeCommand(),
         new issue_by_id_1.IssueByIdCommand(),
         new change_issue_status_1.ChangeIssueStatusCommand(),
-        new change_issue_assignee_1.ChangeIssueAssigneeCommand()
+        new change_issue_assignee_1.ChangeIssueAssigneeCommand(),
+        new issue_add_comment_1.IssueAddCommentCommand(),
     ];
     context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
     context.subscriptions.push(statusBar);

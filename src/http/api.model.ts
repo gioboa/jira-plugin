@@ -7,8 +7,8 @@ export interface Jira {
   doTransition(issue: string, body: DoTransitionBody): Promise<void>;
   getAssignees(param: string): Promise<Assignee[]>;
   assignIssue(issue: string, body: AssignIssueBody): Promise<void>;
+  addNewComment(issue: string, body: AddCommentBody): Promise<AddCommentResponse>;
   // getIssue(issue: string): Promise<Issue>;
-  // addComment(issue: string, body: AddCommentBody): Promise<AddCommentResponse>;
 }
 
 export interface ServerInfo {
@@ -81,10 +81,10 @@ export interface AssignIssueBody {
   name: string;
 }
 
-// export interface AddCommentBody {
-//   body: string;
-// }
+export interface AddCommentBody {
+  body: string;
+}
 
-// export interface AddCommentResponse {
-//   id: string;
-// }
+export interface AddCommentResponse {
+  id: string;
+}

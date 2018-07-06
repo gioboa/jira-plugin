@@ -90,12 +90,17 @@
       },
       {
         "command": "jira-plugin.changeIssueStatusCommand",
-        "title": "Change issue status (filter: id)",
+        "title": "Change issue status (filter: issue id)",
         "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.changeIssueAssigneeCommand",
-        "title": "Change issue assignee (filter: id)",
+        "title": "Change issue assignee (filter: issue  id)",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.issueAddCommentCommand",
+        "title": "Add comment (filter: issue id)",
         "category": "Jira-plugin"
       }
     ]
