@@ -10,7 +10,8 @@ exports.CONFIG_NAME = 'jira-plugin';
 exports.SEARCH_MODE = {
     ID: 'ID',
     STATUS: 'STATUS',
-    STATUS_ASSIGNEE: 'STATUS_ASSIGNEE'
+    STATUS_ASSIGNEE: 'STATUS_ASSIGNEE',
+    SUMMARY: 'summary'
 };
 exports.UNASSIGNED = 'Unassigned';
 //# sourceMappingURL=constants.js.map

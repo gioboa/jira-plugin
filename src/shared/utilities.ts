@@ -73,6 +73,10 @@ const selectID = async (): Promise<string | undefined> => {
   return id && !isNaN(parseInt(id)) ? parseInt(id).toString() : undefined;
 };
 
+const selectSummary = async (): Promise<string | undefined> => {
+  return await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert JIRA Summary' });
+};
+
 const createJQL = async (mode: string, project: string): Promise<string | undefined> => {
   switch (mode) {
     case SEARCH_MODE.ID: {
@@ -94,6 +98,13 @@ const createJQL = async (mode: string, project: string): Promise<string | undefi
       const assignee = await selectAssignee();
       if (!!status && !!assignee) {
         return `project in (${project}) AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`;
+      }
+      return undefined;
+    }
+    case SEARCH_MODE.SUMMARY: {
+      const summary = await selectSummary();
+      if (!!summary) {
+        return `project in (${project}) AND summary ~ '${summary}' ORDER BY updated DESC`;
       }
       return undefined;
     }

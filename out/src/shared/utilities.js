@@ -76,6 +76,9 @@ const selectID = () => __awaiter(this, void 0, void 0, function* () {
     const id = yield vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert JIRA ID (only the number)' });
     return id && !isNaN(parseInt(id)) ? parseInt(id).toString() : undefined;
 });
+const selectSummary = () => __awaiter(this, void 0, void 0, function* () {
+    return yield vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert JIRA Summary' });
+});
 const createJQL = (mode, project) => __awaiter(this, void 0, void 0, function* () {
     switch (mode) {
         case constants_1.SEARCH_MODE.ID: {
@@ -97,6 +100,13 @@ const createJQL = (mode, project) => __awaiter(this, void 0, void 0, function* (
             const assignee = yield exports.selectAssignee();
             if (!!status && !!assignee) {
                 return `project in (${project}) AND status = '${status}' AND assignee = ${assignee !== constants_1.UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`;
+            }
+            return undefined;
+        }
+        case constants_1.SEARCH_MODE.SUMMARY: {
+            const summary = yield selectSummary();
+            if (!!summary) {
+                return `project in (${project}) AND summary ~ '${summary}' ORDER BY updated DESC`;
             }
             return undefined;
         }

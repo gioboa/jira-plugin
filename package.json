@@ -89,6 +89,11 @@
         "category": "Jira-plugin"
       },
       {
+        "command": "jira-plugin.issuesBySummaryCommand",
+        "title": "Issues filtered by summary",
+        "category": "Jira-plugin"
+      },
+      {
         "command": "jira-plugin.changeIssueStatusCommand",
         "title": "Change issue status (filter: issue id)",
         "category": "Jira-plugin"
