@@ -113,6 +113,19 @@ const createJQL = (mode, project) => __awaiter(this, void 0, void 0, function* (
     }
     return undefined;
 });
+const createLabel = (issue, mode) => {
+    switch (mode) {
+        case constants_1.SEARCH_MODE.ID:
+            return `${issue.key} (${issue.fields.status ? issue.fields.status.name : ''})`;
+        case constants_1.SEARCH_MODE.STATUS:
+            return issue.key;
+        case constants_1.SEARCH_MODE.STATUS_ASSIGNEE:
+            return issue.key;
+        case constants_1.SEARCH_MODE.SUMMARY:
+            return `${issue.key} (${issue.fields.status ? issue.fields.status.name : ''})`;
+    }
+    return '';
+};
 exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
         const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT);
@@ -123,7 +136,7 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
                 const picks = (issues.issues || []).map((issue) => {
                     return {
                         issue,
-                        label: issue.key,
+                        label: createLabel(issue, mode),
                         description: issue.fields.summary,
                         detail: issue.fields.description
                     };

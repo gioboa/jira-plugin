@@ -112,6 +112,20 @@ const createJQL = async (mode: string, project: string): Promise<string | undefi
   return undefined;
 };
 
+const createLabel = (issue: Issue, mode: string): string => {
+  switch (mode) {
+    case SEARCH_MODE.ID:
+      return `${issue.key} (${issue.fields.status ? issue.fields.status.name : ''})`;
+    case SEARCH_MODE.STATUS:
+      return issue.key;
+    case SEARCH_MODE.STATUS_ASSIGNEE:
+      return issue.key;
+    case SEARCH_MODE.SUMMARY:
+      return `${issue.key} (${issue.fields.status ? issue.fields.status.name : ''})`;
+  }
+  return '';
+};
+
 export const selectIssue = async (mode: string): Promise<string | undefined> => {
   if (canExecuteJiraAPI()) {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
@@ -122,7 +136,7 @@ export const selectIssue = async (mode: string): Promise<string | undefined> => 
         const picks = (issues.issues || []).map((issue: Issue) => {
           return {
             issue,
-            label: issue.key,
+            label: createLabel(issue, mode),
             description: issue.fields.summary,
             detail: issue.fields.description
           };
