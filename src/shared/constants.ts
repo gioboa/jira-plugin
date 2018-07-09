@@ -16,3 +16,4 @@ export const SEARCH_MODE = {
 };
 
 export const UNASSIGNED = 'Unassigned';
+export const BACK_PICK_LABEL = '$(arrow-left) Back';
