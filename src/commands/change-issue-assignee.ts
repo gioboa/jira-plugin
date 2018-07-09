@@ -1,9 +1,8 @@
 import { bind } from 'decko';
-import * as vscode from 'vscode';
+import { SEARCH_MODE, UNASSIGNED } from '../shared/constants';
+import { selectAssignee, selectIssue } from '../shared/utilities';
 import state from '../state/state';
 import { Command } from './shared/command';
-import { SEARCH_MODE, UNASSIGNED } from '../shared/constants';
-import { selectIssue, selectAssignee } from '../shared/utilities';
 
 export class ChangeIssueAssigneeCommand implements Command {
   public id = 'jira-plugin.changeIssueAssigneeCommand';
@@ -12,7 +11,7 @@ export class ChangeIssueAssigneeCommand implements Command {
   public async run(): Promise<void> {
     const issueKey = await selectIssue(SEARCH_MODE.ID);
     if (issueKey) {
-      const assignee = await selectAssignee();
+      const assignee = await selectAssignee(false);
       if (assignee !== UNASSIGNED) {
         const res = await state.jira.assignIssue(issueKey, {
           name: assignee

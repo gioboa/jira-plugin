@@ -1,9 +1,11 @@
 import * as vscode from 'vscode';
 import { createClient } from '../http/api';
 import { Assignee, Issue, Jira, Project } from '../http/api.model';
+import BackPick from '../picks/backPick';
+import UnassignedAssigneePick from '../picks/unassignedAssigneePick';
 import state, { canExecuteJiraAPI } from '../state/state';
 import { getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
-import { CONFIG, CREDENTIALS_SEPARATOR, SEARCH_MODE, UNASSIGNED } from './constants';
+import { BACK_PICK_LABEL, CONFIG, CREDENTIALS_SEPARATOR, SEARCH_MODE, UNASSIGNED } from './constants';
 
 export const executeConnectionToJira = (): void => {
   if (getConfigurationByKey(CONFIG.BASE_URL)) {
@@ -94,8 +96,7 @@ const createJQL = async (mode: string, project: string): Promise<string | undefi
       return undefined;
     }
     case SEARCH_MODE.STATUS_ASSIGNEE: {
-      const status = await selectStatus();
-      const assignee = await selectAssignee();
+      const { status, assignee } = await selectStatusAndAssignee();
       if (!!status && !!assignee) {
         return `project in (${project}) AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`;
       }
@@ -161,28 +162,43 @@ export const selectIssue = async (mode: string): Promise<string | undefined> => 
   return undefined;
 };
 
-export const selectAssignee = async (): Promise<string> => {
+export const selectAssignee = async (back: boolean): Promise<string> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
     const assignees = await state.jira.getAssignees(`search?project=${project}`);
     const picks = (assignees || []).filter((assignee: Assignee) => assignee.active === true).map((assignee: Assignee) => {
       return {
         label: assignee.key,
-        description: assignee.displayName,
-        detail: ''
+        description: assignee.displayName
       };
     });
-    picks.push({
-      label: UNASSIGNED,
-      description: UNASSIGNED,
-      detail: ''
-    });
+    picks.unshift(new BackPick());
+    picks.push(new UnassignedAssigneePick());
     const selected = await vscode.window.showQuickPick(picks, {
       matchOnDescription: true,
       matchOnDetail: true,
       placeHolder: 'Select an issue'
     });
     return selected ? selected.label : '';
+  } else {
+    throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
+  }
+};
+
+export const selectStatusAndAssignee = async (): Promise<{ status: string; assignee: string }> => {
+  const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+  if (verifyCurrentProject(project)) {
+    let ok = false;
+    let assignee = '';
+    let status = '';
+    while (ok === false) {
+      status = await selectStatus();
+      assignee = await selectAssignee(true);
+      if (assignee !== BACK_PICK_LABEL) {
+        ok = true;
+      }
+    }
+    return { status, assignee };
   } else {
     throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
   }
