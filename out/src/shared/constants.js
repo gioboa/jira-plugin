@@ -16,7 +16,10 @@ exports.SEARCH_MODE = {
 exports.STATUS_ICONS = {
     OPEN: { text: 'OPEN', icon: '$(beaker)' },
     PROGRESS: { text: 'PROGRESS', icon: '$(flame)' },
-    DEFAULT: { text: '', icon: '$(info)' }
+    RESOLVE: { text: 'RESOLVE', icon: '$(check)' },
+    CLOSE: { text: 'CLOSE', icon: '$(x)' },
+    SUSPEND: { text: 'SUSPEND', icon: '$(alert)' },
+    DEFAULT: { text: 'DEFAULT', icon: '$(info)' }
 };
 exports.UNASSIGNED = 'Unassigned';
 exports.BACK_PICK_LABEL = '$(arrow-left) Back';

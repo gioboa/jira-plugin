@@ -3,7 +3,7 @@
     "module": "commonjs",
     "target": "es6",
     "outDir": "out",
-    "lib": ["dom", "es6"],
+    "lib": ["dom", "es2017"],
     "sourceMap": true,
     "rootDir": ".",
     "strict": true,
@@ -15,8 +15,5 @@
     "noImplicitReturns": true,
     "noImplicitThis": true
   },
-  "exclude": [
-    "node_modules",
-    ".vscode-test"
-  ]
+  "exclude": ["node_modules", ".vscode-test"]
 }

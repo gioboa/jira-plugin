@@ -50,14 +50,11 @@ exports.connectToJira = () => __awaiter(this, void 0, void 0, function* () {
 exports.addStatusIcon = (status, withDescription) => {
     let icon = constants_1.STATUS_ICONS.DEFAULT.icon;
     if (!!status) {
-        if (status.toUpperCase().indexOf(constants_1.STATUS_ICONS.OPEN.text.toUpperCase()) !== -1) {
-            icon = constants_1.STATUS_ICONS.OPEN.icon;
-        }
-        else {
-            if (status.toUpperCase().indexOf(constants_1.STATUS_ICONS.PROGRESS.text.toUpperCase()) !== -1) {
-                icon = constants_1.STATUS_ICONS.PROGRESS.icon;
+        Object.values(constants_1.STATUS_ICONS).forEach(value => {
+            if (status.toUpperCase().indexOf(value.text.toUpperCase()) !== -1) {
+                icon = value.icon;
             }
-        }
+        });
     }
     return `${icon}` + (withDescription ? `  ${status} ` : ``);
 };

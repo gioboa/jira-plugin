@@ -43,13 +43,11 @@ export const connectToJira = async (): Promise<Jira | undefined> => {
 export const addStatusIcon = (status: string, withDescription: boolean): string => {
   let icon = STATUS_ICONS.DEFAULT.icon;
   if (!!status) {
-    if (status.toUpperCase().indexOf(STATUS_ICONS.OPEN.text.toUpperCase()) !== -1) {
-      icon = STATUS_ICONS.OPEN.icon;
-    } else {
-      if (status.toUpperCase().indexOf(STATUS_ICONS.PROGRESS.text.toUpperCase()) !== -1) {
-        icon = STATUS_ICONS.PROGRESS.icon;
+    Object.values(STATUS_ICONS).forEach(value => {
+      if (status.toUpperCase().indexOf(value.text.toUpperCase()) !== -1) {
+        icon = value.icon;
       }
-    }
+    });
   }
   return `${icon}` + (withDescription ? `  ${status} ` : ``);
 };

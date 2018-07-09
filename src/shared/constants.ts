@@ -18,7 +18,10 @@ export const SEARCH_MODE = {
 export const STATUS_ICONS = {
   OPEN: { text: 'OPEN', icon: '$(beaker)' },
   PROGRESS: { text: 'PROGRESS', icon: '$(flame)' },
-  DEFAULT: { text: '', icon: '$(info)' }
+  RESOLVE: { text: 'RESOLVE', icon: '$(check)' },
+  CLOSE: { text: 'CLOSE', icon: '$(x)' },
+  SUSPEND: { text: 'SUSPEND', icon: '$(alert)' },
+  DEFAULT: { text: 'DEFAULT', icon: '$(info)' }
 };
 
 export const UNASSIGNED = 'Unassigned';
