@@ -3,7 +3,7 @@ import { setConfigurationByKey } from '../shared/configuration';
 import { CONFIG } from '../shared/constants';
 import state from '../state/state';
 import { Command } from './shared/command';
-import { selectProject } from '../shared/utilities';
+import { selectProject } from '../shared/select-utilities';
 
 export class SetWorkingProjectCommand implements Command {
   public id = 'jira-plugin.setWorkingProjectCommand';

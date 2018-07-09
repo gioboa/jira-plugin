@@ -15,5 +15,11 @@ export const SEARCH_MODE = {
   SUMMARY: 'summary'
 };
 
+export const STATUS_ICONS = {
+  OPEN: { text: 'OPEN', icon: '$(beaker)' },
+  PROGRESS: { text: 'PROGRESS', icon: '$(flame)' },
+  DEFAULT: { text: '', icon: '$(info)' }
+};
+
 export const UNASSIGNED = 'Unassigned';
 export const BACK_PICK_LABEL = '$(arrow-left) Back';

@@ -21,7 +21,7 @@ const decko_1 = require("decko");
 const vscode = require("vscode");
 const configuration_1 = require("../shared/configuration");
 const constants_1 = require("../shared/constants");
-const utilities_1 = require("../shared/utilities");
+const select_utilities_1 = require("../shared/select-utilities");
 const state_1 = require("../state/state");
 class IssueAddCommentCommand {
     constructor() {
@@ -29,7 +29,7 @@ class IssueAddCommentCommand {
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issue = yield utilities_1.selectIssue(constants_1.SEARCH_MODE.ID);
+            const issue = yield select_utilities_1.selectIssue(constants_1.SEARCH_MODE.ID);
             if (issue) {
                 const text = yield vscode.window.showInputBox({
                     ignoreFocusOut: true,

@@ -18,10 +18,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
-const vscode = require("vscode");
-const utilities_1 = require("../shared/utilities");
-const state_1 = require("../state/state");
 const constants_1 = require("../shared/constants");
+const select_utilities_1 = require("../shared/select-utilities");
+const state_1 = require("../state/state");
 class ChangeIssueStatusCommand {
     constructor() {
         this.id = 'jira-plugin.changeIssueStatusCommand';
@@ -29,33 +28,18 @@ class ChangeIssueStatusCommand {
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             if (state_1.canExecuteJiraAPI()) {
-                const issueKey = yield utilities_1.selectIssue(constants_1.SEARCH_MODE.ID);
+                const issueKey = yield select_utilities_1.selectIssue(constants_1.SEARCH_MODE.ID);
                 if (issueKey) {
-                    const newTransition = yield this.selectTransition(issueKey);
-                    if (newTransition) {
+                    const newTransitionId = yield select_utilities_1.selectTransition(issueKey);
+                    if (newTransitionId) {
                         const result = yield state_1.default.jira.doTransition(issueKey, {
                             transition: {
-                                id: newTransition.id
+                                id: newTransitionId
                             }
                         });
                     }
                 }
             }
-        });
-    }
-    selectTransition(issueKey) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const transitions = yield state_1.default.jira.getTransitions(issueKey);
-            const picks = transitions.transitions.map(transition => ({
-                label: transition.name,
-                description: '',
-                transition
-            }));
-            const selected = yield vscode.window.showQuickPick(picks, {
-                placeHolder: `Select transition to execute for ${issueKey}`,
-                matchOnDescription: true
-            });
-            return selected ? selected.transition : undefined;
         });
     }
 }

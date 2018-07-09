@@ -9,4 +9,8 @@ export default class BackPick implements QuickPickItem {
   get description(): string {
     return `Previous selection`;
   }
+
+  get pickValue(): string {
+    return BACK_PICK_LABEL;
+  }
 }

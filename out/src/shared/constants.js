@@ -13,6 +13,11 @@ exports.SEARCH_MODE = {
     STATUS_ASSIGNEE: 'STATUS_ASSIGNEE',
     SUMMARY: 'summary'
 };
+exports.STATUS_ICONS = {
+    OPEN: { text: 'OPEN', icon: '$(beaker)' },
+    PROGRESS: { text: 'PROGRESS', icon: '$(flame)' },
+    DEFAULT: { text: '', icon: '$(info)' }
+};
 exports.UNASSIGNED = 'Unassigned';
 exports.BACK_PICK_LABEL = '$(arrow-left) Back';
 //# sourceMappingURL=constants.js.map

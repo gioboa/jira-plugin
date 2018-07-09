@@ -8,6 +8,9 @@ class BackPick {
     get description() {
         return `Previous selection`;
     }
+    get pickValue() {
+        return constants_1.BACK_PICK_LABEL;
+    }
 }
 exports.default = BackPick;
 //# sourceMappingURL=backPick.js.map

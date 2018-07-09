@@ -19,7 +19,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const constants_1 = require("../shared/constants");
-const utilities_1 = require("../shared/utilities");
+const select_utilities_1 = require("../shared/select-utilities");
 const state_1 = require("../state/state");
 class ChangeIssueAssigneeCommand {
     constructor() {
@@ -27,9 +27,8 @@ class ChangeIssueAssigneeCommand {
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issueKey = yield utilities_1.selectIssue(constants_1.SEARCH_MODE.ID);
-            if (issueKey) {
-                const assignee = yield utilities_1.selectAssignee(false);
+            const { issueKey, assignee } = yield select_utilities_1.selectIssueAndAssignee();
+            if (!!status && !!assignee) {
                 if (assignee !== constants_1.UNASSIGNED) {
                     const res = yield state_1.default.jira.assignIssue(issueKey, {
                         name: assignee

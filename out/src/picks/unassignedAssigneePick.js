@@ -8,6 +8,9 @@ class UnassignedAssigneePick {
     get description() {
         return constants_1.UNASSIGNED;
     }
+    get pickValue() {
+        return constants_1.UNASSIGNED;
+    }
 }
 exports.default = UnassignedAssigneePick;
 //# sourceMappingURL=unassignedAssigneePick.js.map

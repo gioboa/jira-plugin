@@ -21,14 +21,14 @@ const decko_1 = require("decko");
 const vscode = require("vscode");
 const configuration_1 = require("../shared/configuration");
 const constants_1 = require("../shared/constants");
-const utilities_1 = require("../shared/utilities");
+const select_utilities_1 = require("../shared/select-utilities");
 class IssueByIdCommand {
     constructor() {
         this.id = 'jira-plugin.issueByIdCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issue = yield utilities_1.selectIssue(constants_1.SEARCH_MODE.ID);
+            const issue = yield select_utilities_1.selectIssue(constants_1.SEARCH_MODE.ID);
             if (issue) {
                 const url = `${configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL)}/browse/${issue}`;
                 yield vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));

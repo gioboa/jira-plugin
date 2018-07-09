@@ -9,4 +9,8 @@ export default class UnassignedAssigneePick implements QuickPickItem {
   get description(): string {
     return UNASSIGNED;
   }
+
+  get pickValue(): string {
+    return UNASSIGNED;
+  }
 }

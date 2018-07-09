@@ -2,7 +2,7 @@ import { bind } from 'decko';
 import * as vscode from 'vscode';
 import { getConfigurationByKey } from '../shared/configuration';
 import { CONFIG, SEARCH_MODE } from '../shared/constants';
-import { selectIssue } from '../shared/utilities';
+import { selectIssue } from '../shared/select-utilities';
 import { Command } from './shared/command';
 
 export class IssuesBySummaryCommand implements Command {

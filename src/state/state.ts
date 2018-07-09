@@ -26,3 +26,7 @@ export default state;
 export const canExecuteJiraAPI = (): boolean => {
   return state.jira && configIsCorrect();
 };
+
+export const verifyCurrentProject = (project: string | undefined): boolean => {
+  return !!project && state.projects.filter((prj: Project) => prj.key === project).length > 0;
+};
