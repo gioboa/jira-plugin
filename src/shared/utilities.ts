@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { createClient } from '../http/api';
-import { Issue, Jira, Project } from '../http/api.model';
+import { Issue, Jira } from '../http/api.model';
 import state from '../state/state';
 import { getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
 import { CONFIG, CREDENTIALS_SEPARATOR, SEARCH_MODE, STATUS_ICONS } from './constants';
@@ -40,7 +40,7 @@ export const connectToJira = async (): Promise<Jira | undefined> => {
   return undefined;
 };
 
-export const addStatusIcon = (status: string): string => {
+export const addStatusIcon = (status: string, withDescription: boolean): string => {
   let icon = STATUS_ICONS.DEFAULT.icon;
   if (!!status) {
     if (status.toUpperCase().indexOf(STATUS_ICONS.OPEN.text.toUpperCase()) !== -1) {
@@ -51,17 +51,17 @@ export const addStatusIcon = (status: string): string => {
       }
     }
   }
-  return `${icon} ${status}`;
+  return `${icon}` + (withDescription ? `(${status})` : ``);
 };
 
 export const createLabel = (issue: Issue, mode: string): string => {
   switch (mode) {
     case SEARCH_MODE.ID:
     case SEARCH_MODE.SUMMARY:
-      return `${addStatusIcon(issue.fields.status.name)} ${issue.key} (${issue.fields.status ? issue.fields.status.name : ''})`;
+      return `${addStatusIcon(issue.fields.status.name, false)} ${issue.key}`;
     case SEARCH_MODE.STATUS:
     case SEARCH_MODE.STATUS_ASSIGNEE:
-      return `${addStatusIcon(issue.fields.status.name)} ${issue.key}`;
+      return `${addStatusIcon(issue.fields.status.name, true)} ${issue.key}`;
     default:
       return '';
   }

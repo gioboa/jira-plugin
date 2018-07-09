@@ -47,7 +47,7 @@ exports.connectToJira = () => __awaiter(this, void 0, void 0, function* () {
     }
     return undefined;
 });
-exports.addStatusIcon = (status) => {
+exports.addStatusIcon = (status, withDescription) => {
     let icon = constants_1.STATUS_ICONS.DEFAULT.icon;
     if (!!status) {
         if (status.toUpperCase().indexOf(constants_1.STATUS_ICONS.OPEN.text.toUpperCase()) !== -1) {
@@ -59,16 +59,16 @@ exports.addStatusIcon = (status) => {
             }
         }
     }
-    return `${icon} ${status}`;
+    return `${icon}` + (withDescription ? `(${status})` : ``);
 };
 exports.createLabel = (issue, mode) => {
     switch (mode) {
         case constants_1.SEARCH_MODE.ID:
         case constants_1.SEARCH_MODE.SUMMARY:
-            return `${exports.addStatusIcon(issue.fields.status.name)} ${issue.key} (${issue.fields.status ? issue.fields.status.name : ''})`;
+            return `${exports.addStatusIcon(issue.fields.status.name, false)} ${issue.key}`;
         case constants_1.SEARCH_MODE.STATUS:
         case constants_1.SEARCH_MODE.STATUS_ASSIGNEE:
-            return `${exports.addStatusIcon(issue.fields.status.name)} ${issue.key}`;
+            return `${exports.addStatusIcon(issue.fields.status.name, true)} ${issue.key}`;
         default:
             return '';
     }
