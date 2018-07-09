@@ -100,7 +100,7 @@
       },
       {
         "command": "jira-plugin.changeIssueAssigneeCommand",
-        "title": "Change issue assignee (filter: issue  id)",
+        "title": "Change issue assignee (filter: issue id)",
         "category": "Jira-plugin"
       },
       {

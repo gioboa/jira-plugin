@@ -37,10 +37,14 @@ The extension store credentials in VS Code settings.<br><br>
   With this command you can search your issues with a particular status.<br><br>
 - <b>Issues filtered by status and assignee</b><br>
   With this command you can search issues with a particular assignee and status.<br><br>
-- <b>Change issue status (filter: id)</b><br>
+- <b>Issues filtered by summary</b><br>
+  With this command you can search issues with a particular summary.<br><br>
+- <b>Change issue status (filter: issue id)</b><br>
   With this command you can change an issue status. In the filter you have to specify the id. <br><br>
-- <b>Change issue assignee (filter: id)</b><br>
+- <b>Change issue assignee (filter: issue id)</b><br>
   With this command you can change an issue assignee. In the filter you have to specify the id.<br><br>
+- <b>Add comment (filter: issue id)</b><br>
+  With this command you can add comment. In the filter you have to specify the id.<br><br>
 
 ## Status bar
 
