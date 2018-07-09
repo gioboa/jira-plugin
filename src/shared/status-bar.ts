@@ -17,11 +17,11 @@ export class StatusBarManager {
     if (!project) {
       project = (await getConfigurationByKey(CONFIG.WORKING_PROJECT)) || '';
     }
-    if (!!project) {
-      this.item.text = `Jira-plugin: working project -> ${project}`;
-    } else {
-      this.item.text = `Jira-plugin: NO working project`;
-    }
+
+    this.item.tooltip = 'Click for set working project';
+    this.item.command = 'jira-plugin.setWorkingProjectCommand';
+    this.item.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
+
     this.item.show();
   }
 
