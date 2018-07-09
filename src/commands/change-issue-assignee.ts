@@ -10,7 +10,7 @@ export class ChangeIssueAssigneeCommand implements Command {
   @bind
   public async run(): Promise<void> {
     const { issueKey, assignee } = await selectIssueAndAssignee();
-    if (!!status && !!assignee) {
+    if (!!issueKey && !!assignee) {
       if (assignee !== UNASSIGNED) {
         const res = await state.jira.assignIssue(issueKey, {
           name: assignee

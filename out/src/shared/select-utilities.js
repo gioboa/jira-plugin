@@ -159,9 +159,9 @@ const doubleSelection = (firstSelection, secondSelection) => __awaiter(this, voi
     let firstChoise = '';
     let secondChoise = '';
     while (ok === false) {
-        firstChoise = yield selectStatus();
+        firstChoise = yield firstSelection();
         if (!!firstChoise) {
-            secondChoise = yield exports.selectAssignee(true);
+            secondChoise = yield secondSelection(true);
         }
         if (!firstChoise || secondChoise !== constants_1.BACK_PICK_LABEL) {
             ok = true;
@@ -182,7 +182,7 @@ exports.selectStatusAndAssignee = () => __awaiter(this, void 0, void 0, function
 exports.selectIssueAndAssignee = () => __awaiter(this, void 0, void 0, function* () {
     const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT) || '';
     if (state_1.verifyCurrentProject(project)) {
-        const { firstChoise, secondChoise } = yield doubleSelection(selectStatus, exports.selectAssignee);
+        const { firstChoise, secondChoise } = yield doubleSelection(() => __awaiter(this, void 0, void 0, function* () { return yield exports.selectIssue(constants_1.SEARCH_MODE.ID); }), exports.selectAssignee);
         return { issueKey: firstChoise, assignee: secondChoise };
     }
     else {

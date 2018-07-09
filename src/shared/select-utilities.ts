@@ -155,9 +155,9 @@ const doubleSelection = async (firstSelection: Function, secondSelection: Functi
   let firstChoise = '';
   let secondChoise = '';
   while (ok === false) {
-    firstChoise = await selectStatus();
+    firstChoise = await firstSelection();
     if (!!firstChoise) {
-      secondChoise = await selectAssignee(true);
+      secondChoise = await secondSelection(true);
     }
     if (!firstChoise || secondChoise !== BACK_PICK_LABEL) {
       ok = true;
@@ -179,7 +179,7 @@ export const selectStatusAndAssignee = async (): Promise<{ status: string; assig
 export const selectIssueAndAssignee = async (): Promise<{ issueKey: string; assignee: string }> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
-    const { firstChoise, secondChoise } = await doubleSelection(selectStatus, selectAssignee);
+    const { firstChoise, secondChoise } = await doubleSelection(async () => await selectIssue(SEARCH_MODE.ID), selectAssignee);
     return { issueKey: firstChoise, assignee: secondChoise };
   } else {
     throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);

@@ -28,7 +28,7 @@ class ChangeIssueAssigneeCommand {
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             const { issueKey, assignee } = yield select_utilities_1.selectIssueAndAssignee();
-            if (!!status && !!assignee) {
+            if (!!issueKey && !!assignee) {
                 if (assignee !== constants_1.UNASSIGNED) {
                     const res = yield state_1.default.jira.assignIssue(issueKey, {
                         name: assignee
