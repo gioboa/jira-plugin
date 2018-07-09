@@ -15,10 +15,15 @@ From the command palette Ctrl-Shift-P (Windows, Linux) or Cmd-Shift-P (OSX) unde
 
 First of all your have to launch "Setup credentials" command to configure the plugin.<br>
 The Jira base URL is needed and also your credentials.<br>
-After that you have to setup the working project. ("Set working project" command)<br><br>
-<b>n.b:</b> If you need to browse issues for various project you have to launch the command to perform the switch.<br>
 
 ![Setup](images/setup.gif)
+
+## Set working project
+
+After setup you have to set the working project, you can click on status-bar icon or use "Set working project" command.<br><br>
+<b>n.b:</b> If you need to browse issues for various project you have to switch the working project.<br>
+
+![Set-working-project](images/set-working-project.gif)
 
 ## Config
 
