@@ -31,7 +31,7 @@ const selectStatus = () => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
         const picks = state_1.default.statuses.map(status => ({
             pickValue: status.name,
-            label: utilities_1.addStatusIcon(status.name),
+            label: utilities_1.addStatusIcon(status.name, true),
             description: status.description
         }));
         const selected = yield vscode.window.showQuickPick(picks, { placeHolder: `Filter by STATUS`, matchOnDescription: true });

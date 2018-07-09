@@ -51,17 +51,17 @@ export const addStatusIcon = (status: string, withDescription: boolean): string 
       }
     }
   }
-  return `${icon}` + (withDescription ? `(${status})` : ``);
+  return `${icon}` + (withDescription ? `  ${status} ` : ``);
 };
 
 export const createLabel = (issue: Issue, mode: string): string => {
   switch (mode) {
     case SEARCH_MODE.ID:
     case SEARCH_MODE.SUMMARY:
-      return `${addStatusIcon(issue.fields.status.name, false)} ${issue.key}`;
+      return `${addStatusIcon(issue.fields.status.name, true)} ${issue.key}`;
     case SEARCH_MODE.STATUS:
     case SEARCH_MODE.STATUS_ASSIGNEE:
-      return `${addStatusIcon(issue.fields.status.name, true)} ${issue.key}`;
+      return `${addStatusIcon(issue.fields.status.name, false)} ${issue.key}`;
     default:
       return '';
   }

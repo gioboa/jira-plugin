@@ -59,16 +59,16 @@ exports.addStatusIcon = (status, withDescription) => {
             }
         }
     }
-    return `${icon}` + (withDescription ? `(${status})` : ``);
+    return `${icon}` + (withDescription ? `  ${status} ` : ``);
 };
 exports.createLabel = (issue, mode) => {
     switch (mode) {
         case constants_1.SEARCH_MODE.ID:
         case constants_1.SEARCH_MODE.SUMMARY:
-            return `${exports.addStatusIcon(issue.fields.status.name, false)} ${issue.key}`;
+            return `${exports.addStatusIcon(issue.fields.status.name, true)} ${issue.key}`;
         case constants_1.SEARCH_MODE.STATUS:
         case constants_1.SEARCH_MODE.STATUS_ASSIGNEE:
-            return `${exports.addStatusIcon(issue.fields.status.name, true)} ${issue.key}`;
+            return `${exports.addStatusIcon(issue.fields.status.name, false)} ${issue.key}`;
         default:
             return '';
     }

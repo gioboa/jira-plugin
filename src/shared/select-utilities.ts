@@ -24,7 +24,7 @@ const selectStatus = async (): Promise<string> => {
   if (canExecuteJiraAPI()) {
     const picks = state.statuses.map(status => ({
       pickValue: status.name,
-      label: addStatusIcon(status.name),
+      label: addStatusIcon(status.name, true),
       description: status.description
     }));
     const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Filter by STATUS`, matchOnDescription: true });
