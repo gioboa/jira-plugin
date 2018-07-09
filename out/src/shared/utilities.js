@@ -10,6 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const api_1 = require("../http/api");
+const backPick_1 = require("../picks/backPick");
+const unassignedAssigneePick_1 = require("../picks/unassignedAssigneePick");
 const state_1 = require("../state/state");
 const configuration_1 = require("./configuration");
 const constants_1 = require("./constants");
@@ -96,8 +98,7 @@ const createJQL = (mode, project) => __awaiter(this, void 0, void 0, function* (
             return undefined;
         }
         case constants_1.SEARCH_MODE.STATUS_ASSIGNEE: {
-            const status = yield exports.selectStatus();
-            const assignee = yield exports.selectAssignee();
+            const { status, assignee } = yield exports.selectStatusAndAssignee();
             if (!!status && !!assignee) {
                 return `project in (${project}) AND status = '${status}' AND assignee = ${assignee !== constants_1.UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`;
             }
@@ -163,28 +164,43 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
     }
     return undefined;
 });
-exports.selectAssignee = () => __awaiter(this, void 0, void 0, function* () {
+exports.selectAssignee = (back) => __awaiter(this, void 0, void 0, function* () {
     const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
         const assignees = yield state_1.default.jira.getAssignees(`search?project=${project}`);
         const picks = (assignees || []).filter((assignee) => assignee.active === true).map((assignee) => {
             return {
                 label: assignee.key,
-                description: assignee.displayName,
-                detail: ''
+                description: assignee.displayName
             };
         });
-        picks.push({
-            label: constants_1.UNASSIGNED,
-            description: constants_1.UNASSIGNED,
-            detail: ''
-        });
+        picks.unshift(new backPick_1.default());
+        picks.push(new unassignedAssigneePick_1.default());
         const selected = yield vscode.window.showQuickPick(picks, {
             matchOnDescription: true,
             matchOnDetail: true,
             placeHolder: 'Select an issue'
         });
         return selected ? selected.label : '';
+    }
+    else {
+        throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
+    }
+});
+exports.selectStatusAndAssignee = () => __awaiter(this, void 0, void 0, function* () {
+    const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT) || '';
+    if (verifyCurrentProject(project)) {
+        let ok = false;
+        let assignee = '';
+        let status = '';
+        while (ok === false) {
+            status = yield exports.selectStatus();
+            assignee = yield exports.selectAssignee(true);
+            if (assignee !== constants_1.BACK_PICK_LABEL) {
+                ok = true;
+            }
+        }
+        return { status, assignee };
     }
     else {
         throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);

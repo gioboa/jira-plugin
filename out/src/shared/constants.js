@@ -14,4 +14,5 @@ exports.SEARCH_MODE = {
     SUMMARY: 'summary'
 };
 exports.UNASSIGNED = 'Unassigned';
+exports.BACK_PICK_LABEL = '$(arrow-left) Back';
 //# sourceMappingURL=constants.js.map
