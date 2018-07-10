@@ -49,7 +49,7 @@ The extension store credentials in VS Code settings.<br><br>
 - <b>Change issue assignee (filter: issue id)</b><br>
   With this command you can change an issue assignee. In the filter you have to specify the id.<br><br>
 - <b>Add comment (filter: issue id)</b><br>
-  With this command you can add comment. In the filter you have to specify the id.<br><br>
+  With this command you can add comment. [@] is the placeholder for tag a user.<br><b>e.g:</b> 'This is the placeholder for tag user -> [@]'<br>In the filter you have to specify the id.<br><br>
 
 ## Status bar
 

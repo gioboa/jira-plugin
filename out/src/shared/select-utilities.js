@@ -116,7 +116,7 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
     }
     return undefined;
 });
-exports.selectAssignee = (back) => __awaiter(this, void 0, void 0, function* () {
+exports.selectAssignee = (unassigned, back) => __awaiter(this, void 0, void 0, function* () {
     const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT) || '';
     if (state_1.verifyCurrentProject(project)) {
         const assignees = yield state_1.default.jira.getAssignees(`search?project=${project}`);
@@ -127,8 +127,12 @@ exports.selectAssignee = (back) => __awaiter(this, void 0, void 0, function* () 
                 description: assignee.displayName
             };
         });
-        picks.unshift(new backPick_1.default());
-        picks.push(new unassignedAssigneePick_1.default());
+        if (back) {
+            picks.unshift(new backPick_1.default());
+        }
+        if (unassigned) {
+            picks.push(new unassignedAssigneePick_1.default());
+        }
         const selected = yield vscode.window.showQuickPick(picks, {
             matchOnDescription: true,
             matchOnDetail: true,
@@ -172,7 +176,7 @@ const doubleSelection = (firstSelection, secondSelection) => __awaiter(this, voi
 exports.selectStatusAndAssignee = () => __awaiter(this, void 0, void 0, function* () {
     const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT) || '';
     if (state_1.verifyCurrentProject(project)) {
-        const { firstChoise, secondChoise } = yield doubleSelection(selectStatus, exports.selectAssignee);
+        const { firstChoise, secondChoise } = yield doubleSelection(selectStatus, () => __awaiter(this, void 0, void 0, function* () { return yield exports.selectAssignee(true, true); }));
         return { status: firstChoise, assignee: secondChoise };
     }
     else {
@@ -182,7 +186,7 @@ exports.selectStatusAndAssignee = () => __awaiter(this, void 0, void 0, function
 exports.selectIssueAndAssignee = () => __awaiter(this, void 0, void 0, function* () {
     const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT) || '';
     if (state_1.verifyCurrentProject(project)) {
-        const { firstChoise, secondChoise } = yield doubleSelection(() => __awaiter(this, void 0, void 0, function* () { return yield exports.selectIssue(constants_1.SEARCH_MODE.ID); }), exports.selectAssignee);
+        const { firstChoise, secondChoise } = yield doubleSelection(() => __awaiter(this, void 0, void 0, function* () { return yield exports.selectIssue(constants_1.SEARCH_MODE.ID); }), () => __awaiter(this, void 0, void 0, function* () { return yield exports.selectAssignee(false, true); }));
         return { issueKey: firstChoise, assignee: secondChoise };
     }
     else {

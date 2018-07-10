@@ -111,7 +111,7 @@ export const selectIssue = async (mode: string): Promise<string | undefined> => 
   return undefined;
 };
 
-export const selectAssignee = async (back: boolean): Promise<string> => {
+export const selectAssignee = async (unassigned: boolean, back: boolean): Promise<string> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
     const assignees = await state.jira.getAssignees(`search?project=${project}`);
@@ -122,8 +122,12 @@ export const selectAssignee = async (back: boolean): Promise<string> => {
         description: assignee.displayName
       };
     });
-    picks.unshift(new BackPick());
-    picks.push(new UnassignedAssigneePick());
+    if (back) {
+      picks.unshift(new BackPick());
+    }
+    if (unassigned) {
+      picks.push(new UnassignedAssigneePick());
+    }
     const selected = await vscode.window.showQuickPick(picks, {
       matchOnDescription: true,
       matchOnDetail: true,
@@ -169,7 +173,7 @@ const doubleSelection = async (firstSelection: Function, secondSelection: Functi
 export const selectStatusAndAssignee = async (): Promise<{ status: string; assignee: string }> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
-    const { firstChoise, secondChoise } = await doubleSelection(selectStatus, selectAssignee);
+    const { firstChoise, secondChoise } = await doubleSelection(selectStatus, async () => await selectAssignee(true, true));
     return { status: firstChoise, assignee: secondChoise };
   } else {
     throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
@@ -179,7 +183,7 @@ export const selectStatusAndAssignee = async (): Promise<{ status: string; assig
 export const selectIssueAndAssignee = async (): Promise<{ issueKey: string; assignee: string }> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
-    const { firstChoise, secondChoise } = await doubleSelection(async () => await selectIssue(SEARCH_MODE.ID), selectAssignee);
+    const { firstChoise, secondChoise } = await doubleSelection(async () => await selectIssue(SEARCH_MODE.ID), async () => await selectAssignee(false, true));
     return { issueKey: firstChoise, assignee: secondChoise };
   } else {
     throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);

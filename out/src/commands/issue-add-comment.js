@@ -31,11 +31,21 @@ class IssueAddCommentCommand {
         return __awaiter(this, void 0, void 0, function* () {
             const issue = yield select_utilities_1.selectIssue(constants_1.SEARCH_MODE.ID);
             if (issue) {
-                const text = yield vscode.window.showInputBox({
+                let text = yield vscode.window.showInputBox({
                     ignoreFocusOut: true,
                     placeHolder: 'Comment text...'
                 });
                 if (!!text) {
+                    const num = (text.match(new RegExp('[@]', 'g')) || []).length;
+                    for (let i = 0; i < num; i++) {
+                        const assignee = yield select_utilities_1.selectAssignee(false, false);
+                        if (!!assignee) {
+                            text = text.replace('[@]', `[~${assignee}]`);
+                        }
+                        else {
+                            throw new Error('Abort command, wrong parameter.');
+                        }
+                    }
                     const response = yield state_1.default.jira.addNewComment(issue, { body: text });
                     const action = yield vscode.window.showInformationMessage('Created comment', 'Open in browser');
                     if (action === 'Open in browser') {
