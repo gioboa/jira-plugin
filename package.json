@@ -62,6 +62,34 @@
         }
       }
     },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "jira-explorer",
+          "title": "Jira Explorer",
+          "icon": "images/jira-explorer-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "jira-explorer": [
+        {
+          "id": "jiraExplorer",
+          "name": "Jira Explorer"
+        }
+      ],
+      "explorer": [
+        {
+          "id": "jsonOutline",
+          "name": "Json Outline",
+          "when": "jsonOutlineEnabled"
+        },
+        {
+          "id": "ftpExplorer",
+          "name": "FTP Explorer"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "jira-plugin.setupCredentialsCommand",
@@ -108,7 +136,26 @@
         "title": "Add comment (filter: issue id)",
         "category": "Jira-plugin"
       }
-    ]
+    ],
+    "menu": {
+      "view/title": [
+        {
+          "command": "nodeDependencies.refreshEntry",
+          "when": "view == nodeDependencies",
+          "group": "navigation"
+        },
+        {
+          "command": "nodeDependencies.addEntry",
+          "when": "view == nodeDependencies"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "nodeDependencies.deleteEntry",
+          "when": "view == nodeDependencies && viewItem == dependency"
+        }
+      ]
+    }
   },
   "devDependencies": {
     "typescript": "^2.9.2",

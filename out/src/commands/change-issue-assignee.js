@@ -18,24 +18,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
-const constants_1 = require("../shared/constants");
+const issue_item_1 = require("../explorer/item/issue-item");
 const select_utilities_1 = require("../shared/select-utilities");
 const state_1 = require("../state/state");
 class ChangeIssueAssigneeCommand {
     constructor() {
         this.id = 'jira-plugin.changeIssueAssigneeCommand';
     }
-    run() {
+    run(issueItem) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { issueKey, assignee } = yield select_utilities_1.selectIssueAndAssignee();
-            if (!!issueKey && !!assignee) {
-                if (assignee !== constants_1.UNASSIGNED) {
-                    const res = yield state_1.default.jira.assignIssue(issueKey, {
+            if (issueItem && issueItem.issue && state_1.canExecuteJiraAPI()) {
+                let issue = issueItem.issue;
+                let assignee = yield select_utilities_1.selectAssignee(false, false);
+                if (!!assignee) {
+                    const res = yield state_1.default.jira.assignIssue(issue.key, {
                         name: assignee
                     });
                 }
-                else {
-                    throw new Error(`It's no possible to assign the issue to the user Unassigned`);
+            }
+            else {
+                if (issueItem && issueItem.issue) {
+                    throw new Error('Please select an issue from jira-explorer');
                 }
             }
         });
@@ -44,7 +47,7 @@ class ChangeIssueAssigneeCommand {
 __decorate([
     decko_1.bind,
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [issue_item_1.IssueItem]),
     __metadata("design:returntype", Promise)
 ], ChangeIssueAssigneeCommand.prototype, "run", null);
 exports.ChangeIssueAssigneeCommand = ChangeIssueAssigneeCommand;

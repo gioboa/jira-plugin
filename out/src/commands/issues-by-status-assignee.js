@@ -18,21 +18,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
-const vscode = require("vscode");
-const configuration_1 = require("../shared/configuration");
 const constants_1 = require("../shared/constants");
 const select_utilities_1 = require("../shared/select-utilities");
 class IssuesByStatusAssigneeCommand {
     constructor() {
-        this.id = 'jira-plugin.issuesByStatusAssigneeCommand';
+        this.id = 'jira-plugin.';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const issue = yield select_utilities_1.selectIssue(constants_1.SEARCH_MODE.STATUS_ASSIGNEE);
-            if (issue) {
-                const url = `${configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL)}/browse/${issue}`;
-                yield vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
-            }
+            yield select_utilities_1.selectIssue(constants_1.SEARCH_MODE.STATUS_ASSIGNEE);
         });
     }
 }

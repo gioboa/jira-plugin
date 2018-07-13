@@ -6,8 +6,12 @@ const state = {
     context: undefined,
     channel: undefined,
     statusBar: undefined,
+    jiraExplorer: undefined,
     statuses: [],
-    projects: []
+    projects: [],
+    issues: [],
+    currentFilter: '',
+    currentJQL: ''
 };
 exports.default = state;
 exports.canExecuteJiraAPI = () => {
@@ -15,5 +19,11 @@ exports.canExecuteJiraAPI = () => {
 };
 exports.verifyCurrentProject = (project) => {
     return !!project && state.projects.filter((prj) => prj.key === project).length > 0;
+};
+exports.changeIssuesInState = (filter, jql, issues) => {
+    state.currentFilter = filter;
+    state.currentJQL = jql;
+    state.issues = issues;
+    state.jiraExplorer.refresh();
 };
 //# sourceMappingURL=state.js.map

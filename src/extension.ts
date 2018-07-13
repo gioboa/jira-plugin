@@ -9,6 +9,7 @@ import { IssuesBySummaryCommand } from './commands/issues-by-summary';
 import { MyIssuesByStatusCommand } from './commands/my-issues-by-status';
 import { SetWorkingProjectCommand } from './commands/set-working-project';
 import { SetupCredentialsCommand } from './commands/setup-credentials';
+import { JiraExplorer } from './explorer/jira-explorer';
 import { CONFIG_NAME } from './shared/constants';
 import { IssueLinkProvider } from './shared/document-link-provider';
 import { StatusBarManager } from './shared/status-bar';
@@ -29,6 +30,9 @@ export const activate = (context: vscode.ExtensionContext): void => {
   state.channel = channel;
   state.statusBar = statusBar;
   executeConnectionToJira();
+
+  const jiraExplorer = new JiraExplorer();
+  vscode.window.registerTreeDataProvider('jiraExplorer', jiraExplorer);
 
   const commands = [
     new SetupCredentialsCommand(),

@@ -8,11 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const path = require("path");
 const vscode = require("vscode");
 const api_1 = require("../http/api");
 const state_1 = require("../state/state");
 const configuration_1 = require("./configuration");
 const constants_1 = require("./constants");
+const select_utilities_1 = require("./select-utilities");
 exports.executeConnectionToJira = () => {
     if (configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL)) {
         const connect = () => __awaiter(this, void 0, void 0, function* () {
@@ -20,6 +22,7 @@ exports.executeConnectionToJira = () => {
             state_1.default.statusBar.updateStatusBar('');
             state_1.default.statuses = yield state_1.default.jira.getStatuses();
             state_1.default.projects = yield state_1.default.jira.getProjects();
+            select_utilities_1.selectIssue(constants_1.SEARCH_MODE.ALL);
         });
         connect().catch(() => {
             vscode.window.showErrorMessage('Failed to connect to jira');
@@ -58,16 +61,7 @@ exports.addStatusIcon = (status, withDescription) => {
     }
     return `${icon}` + (withDescription ? `  ${status} ` : ``);
 };
-exports.createLabel = (issue, mode) => {
-    switch (mode) {
-        case constants_1.SEARCH_MODE.ID:
-        case constants_1.SEARCH_MODE.SUMMARY:
-            return `${exports.addStatusIcon(issue.fields.status.name, true)} ${issue.key}`;
-        case constants_1.SEARCH_MODE.STATUS:
-        case constants_1.SEARCH_MODE.STATUS_ASSIGNEE:
-            return `${exports.addStatusIcon(issue.fields.status.name, false)} ${issue.key}`;
-        default:
-            return '';
-    }
+exports.getIconsPath = (fileName) => {
+    return path.join(__filename, '..', '..', '..', '..', 'images', 'icons', fileName);
 };
 //# sourceMappingURL=utilities.js.map
