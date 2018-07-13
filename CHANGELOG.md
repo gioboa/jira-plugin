@@ -1,3 +1,10 @@
+
+## 0.3.0
+
+### Features
+
+- change UI experience, the issue list now is inside the JIRA: EXPLORER
+
 ## 0.2.0
 
 ### Features

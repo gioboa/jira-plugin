@@ -1,6 +1,7 @@
 import { bind } from 'decko';
 import { IssueItem } from '../explorer/item/issue-item';
-import { selectAssignee } from '../shared/select-utilities';
+import { SEARCH_MODE } from '../shared/constants';
+import { selectAssignee, selectIssue } from '../shared/select-utilities';
 import state, { canExecuteJiraAPI } from '../state/state';
 import { Command } from './shared/command';
 
@@ -16,6 +17,7 @@ export class ChangeIssueAssigneeCommand implements Command {
         const res = await state.jira.assignIssue(issue.key, {
           name: assignee
         });
+        selectIssue(SEARCH_MODE.REFRESH);
       }
     } else {
       if (canExecuteJiraAPI()) {

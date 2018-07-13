@@ -2,8 +2,8 @@ import { bind } from 'decko';
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { getConfigurationByKey } from '../shared/configuration';
-import { CONFIG } from '../shared/constants';
-import { selectAssignee } from '../shared/select-utilities';
+import { CONFIG, SEARCH_MODE } from '../shared/constants';
+import { selectAssignee, selectIssue } from '../shared/select-utilities';
 import state, { canExecuteJiraAPI } from '../state/state';
 import { Command } from './shared/command';
 
@@ -29,6 +29,7 @@ export class IssueAddCommentCommand implements Command {
           }
         }
         const response = await state.jira.addNewComment(issue.key, { body: text });
+        selectIssue(SEARCH_MODE.REFRESH);
         const action = await vscode.window.showInformationMessage('Created comment', 'Open in browser');
         if (action === 'Open in browser') {
           const baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';

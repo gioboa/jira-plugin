@@ -93,7 +93,7 @@ export const selectIssue = async (mode: string): Promise<void> => {
         if (!!issues && !!issues.issues && issues.issues.length > 0) {
           changeIssuesInState(filter, jql, issues.issues);
         } else {
-          changeIssuesInState('', '', []);
+          changeIssuesInState(filter, jql, []);
           vscode.window.showInformationMessage(`No issues found for ${project} project`);
         }
       } else {

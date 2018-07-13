@@ -17,4 +17,4 @@ class FilterInfoItem extends vscode.TreeItem {
     }
 }
 exports.FilterInfoItem = FilterInfoItem;
-//# sourceMappingURL=filter-INFO-item.js.map
+//# sourceMappingURL=filter-info-item.js.map

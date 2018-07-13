@@ -2,7 +2,7 @@
   "name": "jira-plugin",
   "displayName": "Jira Plugin",
   "description": "JIRA integration for vscode",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "gioboa",
   "icon": "images/icons/icon.png",
   "galleryBanner": {
@@ -134,8 +134,8 @@
         "command": "jira-plugin.refresh",
         "title": "Refresh",
         "icon": {
-          "light": "images/icons/light/sync.png",
-          "dark": "images/icons/dark/sync.png"
+          "light": "images/icons/light/refresh.svg",
+          "dark": "images/icons/dark/refresh.svg"
         }
       }
     ],

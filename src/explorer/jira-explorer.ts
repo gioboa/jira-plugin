@@ -34,18 +34,16 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
             arguments: [`${issue.key}`]
           })
       );
-      items.unshift(new DividerItem());
-      items.unshift(new FilterInfoItem(project || '', state.currentFilter, state.issues.length));
+      items.unshift(new FilterInfoItem(project || '', state.currentFilter, state.issues.length), new DividerItem());
       if (state.issues.length === 50) {
-        items.push(new DividerItem());
-        items.push(new LimitInfoItem());
+        items.push(new DividerItem(), new LimitInfoItem());
       }
       return items;
     } else {
       if (state.currentFilter === LOADING.text) {
         return [new LoadingItem()];
       }
-      return [new NoResultItem(project || '')];
+      return [new FilterInfoItem(project || '', state.currentFilter, state.issues.length), new DividerItem(), new NoResultItem(project || '')];
     }
   }
 }

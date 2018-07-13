@@ -1,6 +1,7 @@
 import { bind } from 'decko';
 import { IssueItem } from '../explorer/item/issue-item';
-import { selectTransition } from '../shared/select-utilities';
+import { SEARCH_MODE } from '../shared/constants';
+import { selectIssue, selectTransition } from '../shared/select-utilities';
 import state, { canExecuteJiraAPI } from '../state/state';
 import { Command } from './shared/command';
 
@@ -18,6 +19,7 @@ export class ChangeIssueStatusCommand implements Command {
             id: newTransitionId
           }
         });
+        selectIssue(SEARCH_MODE.REFRESH);
       }
     } else {
       if (canExecuteJiraAPI()) {

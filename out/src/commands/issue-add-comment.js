@@ -48,6 +48,7 @@ class IssueAddCommentCommand {
                         }
                     }
                     const response = yield state_1.default.jira.addNewComment(issue.key, { body: text });
+                    select_utilities_1.selectIssue(constants_1.SEARCH_MODE.REFRESH);
                     const action = yield vscode.window.showInformationMessage('Created comment', 'Open in browser');
                     if (action === 'Open in browser') {
                         const baseUrl = configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL) || '';

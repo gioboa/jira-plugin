@@ -40,11 +40,9 @@ class JiraExplorer {
                     title: 'Open issue in the browser',
                     arguments: [`${issue.key}`]
                 }));
-                items.unshift(new divider_item_1.DividerItem());
-                items.unshift(new filter_info_item_1.FilterInfoItem(project || '', state_1.default.currentFilter, state_1.default.issues.length));
+                items.unshift(new filter_info_item_1.FilterInfoItem(project || '', state_1.default.currentFilter, state_1.default.issues.length), new divider_item_1.DividerItem());
                 if (state_1.default.issues.length === 50) {
-                    items.push(new divider_item_1.DividerItem());
-                    items.push(new limit_info_1.LimitInfoItem());
+                    items.push(new divider_item_1.DividerItem(), new limit_info_1.LimitInfoItem());
                 }
                 return items;
             }
@@ -52,7 +50,7 @@ class JiraExplorer {
                 if (state_1.default.currentFilter === constants_1.LOADING.text) {
                     return [new loading_item_1.LoadingItem()];
                 }
-                return [new no_result_item_1.NoResultItem(project || '')];
+                return [new filter_info_item_1.FilterInfoItem(project || '', state_1.default.currentFilter, state_1.default.issues.length), new divider_item_1.DividerItem(), new no_result_item_1.NoResultItem(project || '')];
             }
         });
     }

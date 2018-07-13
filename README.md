@@ -51,6 +51,12 @@ The extension store credentials in VS Code settings.<br><br>
 - **Add comment (filter: issue id)**<br>
   With this command you can add comment. [@] is the placeholder for tag a user.<br>**e.g:** 'This is the placeholder for tag user -> [@]'<br>In the filter you have to specify the id.<br><br>
 
+## Explorer
+
+- In the explorer you can use all the extension command
+
+![Explorer](images/readme/explorer.gif)
+
 ## Status bar
 
 In the status bar the extension show the working project. <br>
