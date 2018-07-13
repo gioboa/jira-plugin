@@ -79,6 +79,9 @@ const getFilterAndJQL = (mode, project) => __awaiter(this, void 0, void 0, funct
             }
             break;
         }
+        case constants_1.SEARCH_MODE.REFRESH: {
+            return [state_1.default.currentFilter, state_1.default.currentJQL];
+        }
     }
     return ['', ''];
 });
@@ -86,8 +89,8 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
         const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT);
         if (state_1.verifyCurrentProject(project)) {
-            state_1.changeIssuesInState('', '', []);
             const [filter, jql] = yield getFilterAndJQL(mode, project || '');
+            state_1.changeIssuesInState(constants_1.LOADING.text, '', []);
             if (!!jql) {
                 const issues = yield state_1.default.jira.search({ jql });
                 if (!!issues && !!issues.issues && issues.issues.length > 0) {
@@ -98,12 +101,17 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
                 }
             }
             else {
+                state_1.changeIssuesInState('', '', []);
                 throw new Error(`Wrong parameter. No issues found for ${project} project.`);
             }
         }
         else {
+            state_1.changeIssuesInState('', '', []);
             throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
         }
+    }
+    else {
+        state_1.changeIssuesInState('', '', []);
     }
 });
 exports.selectAssignee = (unassigned, back) => __awaiter(this, void 0, void 0, function* () {

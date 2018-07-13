@@ -38,7 +38,7 @@ class ChangeIssueAssigneeCommand {
             }
             else {
                 if (issueItem && issueItem.issue) {
-                    throw new Error('Please select an issue from jira-explorer');
+                    throw new Error('Use this command from JIRA: EXPLORER');
                 }
             }
         });

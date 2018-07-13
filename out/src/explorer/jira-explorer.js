@@ -16,6 +16,7 @@ const divider_item_1 = require("./item/divider-item");
 const filter_info_item_1 = require("./item/filter-info-item");
 const issue_item_1 = require("./item/issue-item");
 const limit_info_1 = require("./item/limit-info");
+const loading_item_1 = require("./item/loading-item");
 const no_result_item_1 = require("./item/no-result-item");
 class JiraExplorer {
     constructor() {
@@ -23,7 +24,9 @@ class JiraExplorer {
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
     }
     refresh() {
-        this._onDidChangeTreeData.fire();
+        return __awaiter(this, void 0, void 0, function* () {
+            this._onDidChangeTreeData.fire();
+        });
     }
     getTreeItem(element) {
         return element;
@@ -46,6 +49,9 @@ class JiraExplorer {
                 return items;
             }
             else {
+                if (state_1.default.currentFilter === constants_1.LOADING.text) {
+                    return [new loading_item_1.LoadingItem()];
+                }
                 return [new no_result_item_1.NoResultItem(project || '')];
             }
         });

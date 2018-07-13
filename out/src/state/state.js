@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const configuration_1 = require("../shared/configuration");
+const constants_1 = require("../shared/constants");
 const state = {
     jira: undefined,
     context: undefined,
@@ -10,7 +11,7 @@ const state = {
     statuses: [],
     projects: [],
     issues: [],
-    currentFilter: '',
+    currentFilter: constants_1.LOADING.text,
     currentJQL: ''
 };
 exports.default = state;

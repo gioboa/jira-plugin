@@ -12,7 +12,8 @@ exports.SEARCH_MODE = {
     ID: 'ID',
     STATUS: 'STATUS',
     STATUS_ASSIGNEE: 'STATUS_ASSIGNEE',
-    SUMMARY: 'SUMMARY'
+    SUMMARY: 'SUMMARY',
+    REFRESH: 'REFRESH'
 };
 exports.STATUS_ICONS = {
     OPEN: { text: 'OPEN', icon: '$(beaker)', file: 'beaker.png' },
@@ -22,6 +23,8 @@ exports.STATUS_ICONS = {
     SUSPEND: { text: 'SUSPEND', icon: '$(alert)', file: 'alert.png' },
     DEFAULT: { text: 'DEFAULT', icon: '$(info)', file: 'info.png' }
 };
+exports.LOADING = { text: 'LOADING', file: 'cloud.png' };
+exports.DIVIDER = { text: 'LOADING', file: 'divider.png' };
 exports.UNASSIGNED = 'Unassigned';
 exports.BACK_PICK_LABEL = '$(arrow-left) Back';
 //# sourceMappingURL=constants.js.map

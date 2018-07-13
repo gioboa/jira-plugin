@@ -37,7 +37,7 @@ exports.activate = (context) => {
         new issue_add_comment_1.IssueAddCommentCommand(),
         new open_issue_1.OpenIssueCommand()
     ];
-    context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.refresh', () => jiraExplorer.refresh()));
+    context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.refresh', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.REFRESH)));
     context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.allIssuesCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.ALL)));
     context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.myIssuesByStatusCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.STATUS)));
     context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesByStatusAssigneeCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.STATUS_ASSIGNEE)));
