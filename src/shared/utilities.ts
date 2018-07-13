@@ -1,9 +1,11 @@
+import * as path from 'path';
 import * as vscode from 'vscode';
 import { createClient } from '../http/api';
-import { Issue, Jira } from '../http/api.model';
+import { Jira } from '../http/api.model';
 import state from '../state/state';
 import { getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
 import { CONFIG, CREDENTIALS_SEPARATOR, SEARCH_MODE, STATUS_ICONS } from './constants';
+import { selectIssue } from './select-utilities';
 
 export const executeConnectionToJira = (): void => {
   if (getConfigurationByKey(CONFIG.BASE_URL)) {
@@ -12,6 +14,7 @@ export const executeConnectionToJira = (): void => {
       state.statusBar.updateStatusBar('');
       state.statuses = await state.jira.getStatuses();
       state.projects = await state.jira.getProjects();
+      selectIssue(SEARCH_MODE.ALL);
     };
     connect().catch(() => {
       vscode.window.showErrorMessage('Failed to connect to jira');
@@ -52,15 +55,6 @@ export const addStatusIcon = (status: string, withDescription: boolean): string 
   return `${icon}` + (withDescription ? `  ${status} ` : ``);
 };
 
-export const createLabel = (issue: Issue, mode: string): string => {
-  switch (mode) {
-    case SEARCH_MODE.ID:
-    case SEARCH_MODE.SUMMARY:
-      return `${addStatusIcon(issue.fields.status.name, true)} ${issue.key}`;
-    case SEARCH_MODE.STATUS:
-    case SEARCH_MODE.STATUS_ASSIGNEE:
-      return `${addStatusIcon(issue.fields.status.name, false)} ${issue.key}`;
-    default:
-      return '';
-  }
+export const getIconsPath = (fileName: string): string => {
+  return path.join(__filename, '..', '..', '..', '..', 'images', 'icons', fileName);
 };

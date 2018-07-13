@@ -1,22 +1,25 @@
 import { bind } from 'decko';
-import { UNASSIGNED } from '../shared/constants';
-import { selectIssueAndAssignee } from '../shared/select-utilities';
-import state from '../state/state';
+import { IssueItem } from '../explorer/item/issue-item';
+import { selectAssignee } from '../shared/select-utilities';
+import state, { canExecuteJiraAPI } from '../state/state';
 import { Command } from './shared/command';
 
 export class ChangeIssueAssigneeCommand implements Command {
   public id = 'jira-plugin.changeIssueAssigneeCommand';
 
   @bind
-  public async run(): Promise<void> {
-    const { issueKey, assignee } = await selectIssueAndAssignee();
-    if (!!issueKey && !!assignee) {
-      if (assignee !== UNASSIGNED) {
-        const res = await state.jira.assignIssue(issueKey, {
+  public async run(issueItem: IssueItem): Promise<void> {
+    if (issueItem && issueItem.issue && canExecuteJiraAPI()) {
+      let issue = issueItem.issue;
+      let assignee = await selectAssignee(false, false);
+      if (!!assignee) {
+        const res = await state.jira.assignIssue(issue.key, {
           name: assignee
         });
-      } else {
-        throw new Error(`It's no possible to assign the issue to the user Unassigned`);
+      }
+    } else {
+      if (canExecuteJiraAPI()) {
+        throw new Error('Use this command from JIRA: EXPLORER');
       }
     }
   }

@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
-import { Assignee, Issue } from '../http/api.model';
+import { Assignee } from '../http/api.model';
 import BackPick from '../picks/backPick';
 import UnassignedAssigneePick from '../picks/unassignedAssigneePick';
-import state, { canExecuteJiraAPI, verifyCurrentProject } from '../state/state';
+import state, { canExecuteJiraAPI, changeIssuesInState, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
-import { BACK_PICK_LABEL, CONFIG, SEARCH_MODE, UNASSIGNED } from './constants';
-import { addStatusIcon, createLabel } from './utilities';
+import { BACK_PICK_LABEL, CONFIG, LOADING, SEARCH_MODE, UNASSIGNED } from './constants';
+import { addStatusIcon } from './utilities';
 
 export const selectProject = async (): Promise<string> => {
   if (canExecuteJiraAPI()) {
@@ -42,73 +42,71 @@ const selectSummary = async (): Promise<string | undefined> => {
   return await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert JIRA Summary' });
 };
 
-const createJQL = async (mode: string, project: string): Promise<string | undefined> => {
+const getFilterAndJQL = async (mode: string, project: string): Promise<string[]> => {
   switch (mode) {
+    case SEARCH_MODE.ALL: {
+      return [`ALL ISSUES`, `project = ${project} ORDER BY updated DESC`];
+    }
     case SEARCH_MODE.ID: {
       const id = await selectID();
       if (!!id) {
-        return `id = '${project}-${id}' ORDER BY updated DESC`;
+        return [`ID: ${id}`, `id = '${project}-${id}' ORDER BY updated DESC`];
       }
-      return undefined;
+      break;
     }
     case SEARCH_MODE.STATUS: {
       const status = await selectStatus();
       if (!!status) {
-        return `project in (${project}) AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`;
+        return [`STATUS: ${status}`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`];
       }
-      return undefined;
+      break;
     }
     case SEARCH_MODE.STATUS_ASSIGNEE: {
       const { status, assignee } = await selectStatusAndAssignee();
       if (!!status && !!assignee) {
-        return `project in (${project}) AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`;
+        return [`STATUS: ${status} ASSIGNEE ${assignee}`, `project = ${project} AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`];
       }
-      return undefined;
+      break;
     }
     case SEARCH_MODE.SUMMARY: {
       const summary = await selectSummary();
       if (!!summary) {
-        return `project in (${project}) AND summary ~ '${summary}' ORDER BY updated DESC`;
+        return [`SUMMARY: ${summary}`, `project in (${project}) AND summary ~ '${summary}' ORDER BY updated DESC`];
       }
-      return undefined;
+      break;
+    }
+    case SEARCH_MODE.REFRESH: {
+      return [state.currentFilter, state.currentJQL];
     }
   }
-  return undefined;
+  return ['', ''];
 };
 
-export const selectIssue = async (mode: string): Promise<string | undefined> => {
+export const selectIssue = async (mode: string): Promise<void> => {
   if (canExecuteJiraAPI()) {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
     if (verifyCurrentProject(project)) {
-      const jql = await createJQL(mode, project || '');
+      const [filter, jql] = await getFilterAndJQL(mode, project || '');
+      changeIssuesInState(LOADING.text, '', []);
       if (!!jql) {
         const issues = await state.jira.search({ jql });
-        const picks = (issues.issues || []).map((issue: Issue) => {
-          return {
-            pickValue: issue.key,
-            label: createLabel(issue, mode),
-            description: issue.fields.summary,
-            detail: issue.fields.description
-          };
-        });
-        if (picks.length > 0) {
-          const selected = await vscode.window.showQuickPick(picks, {
-            matchOnDescription: true,
-            matchOnDetail: true,
-            placeHolder: 'Select an issue'
-          });
-          return selected ? selected.pickValue : undefined;
+        if (!!issues && !!issues.issues && issues.issues.length > 0) {
+          changeIssuesInState(filter, jql, issues.issues);
         } else {
+          changeIssuesInState('', '', []);
           vscode.window.showInformationMessage(`No issues found for ${project} project`);
         }
       } else {
+        changeIssuesInState('', '', []);
         throw new Error(`Wrong parameter. No issues found for ${project} project.`);
       }
     } else {
+      changeIssuesInState('', '', []);
       throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
     }
+  } else {
+    changeIssuesInState('', '', []);
   }
-  return undefined;
 };
 
 export const selectAssignee = async (unassigned: boolean, back: boolean): Promise<string> => {
@@ -175,16 +173,6 @@ export const selectStatusAndAssignee = async (): Promise<{ status: string; assig
   if (verifyCurrentProject(project)) {
     const { firstChoise, secondChoise } = await doubleSelection(selectStatus, async () => await selectAssignee(true, true));
     return { status: firstChoise, assignee: secondChoise };
-  } else {
-    throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
-  }
-};
-
-export const selectIssueAndAssignee = async (): Promise<{ issueKey: string; assignee: string }> => {
-  const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
-  if (verifyCurrentProject(project)) {
-    const { firstChoise, secondChoise } = await doubleSelection(async () => await selectIssue(SEARCH_MODE.ID), async () => await selectAssignee(false, true));
-    return { issueKey: firstChoise, assignee: secondChoise };
   } else {
     throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
   }

@@ -37,7 +37,7 @@ class ChangeIssueAssigneeCommand {
                 }
             }
             else {
-                if (issueItem && issueItem.issue) {
+                if (state_1.canExecuteJiraAPI()) {
                     throw new Error('Use this command from JIRA: EXPLORER');
                 }
             }

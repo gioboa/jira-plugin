@@ -97,6 +97,7 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
                     state_1.changeIssuesInState(filter, jql, issues.issues);
                 }
                 else {
+                    state_1.changeIssuesInState('', '', []);
                     vscode.window.showInformationMessage(`No issues found for ${project} project`);
                 }
             }

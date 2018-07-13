@@ -9,20 +9,25 @@ export const CONFIG = {
 export const CONFIG_NAME = 'jira-plugin';
 
 export const SEARCH_MODE = {
+  ALL: 'ALL',
   ID: 'ID',
   STATUS: 'STATUS',
   STATUS_ASSIGNEE: 'STATUS_ASSIGNEE',
-  SUMMARY: 'summary'
+  SUMMARY: 'SUMMARY',
+  REFRESH: 'REFRESH'
 };
 
 export const STATUS_ICONS = {
-  OPEN: { text: 'OPEN', icon: '$(beaker)' },
-  PROGRESS: { text: 'PROGRESS', icon: '$(flame)' },
-  RESOLVE: { text: 'RESOLVE', icon: '$(check)' },
-  CLOSE: { text: 'CLOSE', icon: '$(x)' },
-  SUSPEND: { text: 'SUSPEND', icon: '$(alert)' },
-  DEFAULT: { text: 'DEFAULT', icon: '$(info)' }
+  OPEN: { text: 'OPEN', icon: '$(beaker)', file: 'beaker.png' },
+  PROGRESS: { text: 'PROGRESS', icon: '$(flame)', file: 'flame.png' },
+  RESOLVE: { text: 'RESOLVE', icon: '$(check)', file: 'check.png' },
+  CLOSE: { text: 'CLOSE', icon: '$(x)', file: 'x.png' },
+  SUSPEND: { text: 'SUSPEND', icon: '$(alert)', file: 'alert.png' },
+  DEFAULT: { text: 'DEFAULT', icon: '$(info)', file: 'info.png' }
 };
 
+
+export const LOADING = { text: 'LOADING', file: 'cloud.png' }
+export const DIVIDER = { text: 'LOADING', file: 'divider.png' }
 export const UNASSIGNED = 'Unassigned';
 export const BACK_PICK_LABEL = '$(arrow-left) Back';

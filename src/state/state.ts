@@ -1,15 +1,21 @@
 import * as vscode from 'vscode';
-import { Jira, Project, Status } from '../http/api.model';
+import { JiraExplorer } from '../explorer/jira-explorer';
+import { Issue, Jira, Project, Status } from '../http/api.model';
 import { configIsCorrect } from '../shared/configuration';
+import { LOADING } from '../shared/constants';
 import { StatusBarManager } from '../shared/status-bar';
 
 export interface State {
   context: vscode.ExtensionContext;
   channel: vscode.OutputChannel;
   statusBar: StatusBarManager;
+  jiraExplorer: JiraExplorer;
   jira: Jira;
   statuses: Status[];
   projects: Project[];
+  issues: Issue[];
+  currentFilter: string;
+  currentJQL: string;
 }
 
 const state: State = {
@@ -17,8 +23,12 @@ const state: State = {
   context: undefined as any,
   channel: undefined as any,
   statusBar: undefined as any,
+  jiraExplorer: undefined as any,
   statuses: [],
-  projects: []
+  projects: [],
+  issues: [],
+  currentFilter: LOADING.text,
+  currentJQL: ''
 };
 
 export default state;
@@ -29,4 +39,11 @@ export const canExecuteJiraAPI = (): boolean => {
 
 export const verifyCurrentProject = (project: string | undefined): boolean => {
   return !!project && state.projects.filter((prj: Project) => prj.key === project).length > 0;
+};
+
+export const changeIssuesInState = (filter: string, jql: string, issues: Issue[]): void => {
+  state.currentFilter = filter;
+  state.currentJQL = jql;
+  state.issues = issues;
+  state.jiraExplorer.refresh();
 };

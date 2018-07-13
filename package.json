@@ -4,7 +4,7 @@
   "description": "JIRA integration for vscode",
   "version": "0.2.0",
   "publisher": "gioboa",
-  "icon": "images/icon.png",
+  "icon": "images/icons/icon.png",
   "galleryBanner": {
     "color": "#3B4859",
     "theme": "dark"
@@ -65,28 +65,17 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "jira-explorer",
-          "title": "Jira Explorer",
-          "icon": "images/jira-explorer-icon.svg"
+          "id": "jiraExplorer",
+          "title": "JIRA",
+          "icon": "images/icons/jira-explorer-icon.svg"
         }
       ]
     },
     "views": {
-      "jira-explorer": [
+      "jiraExplorer": [
         {
           "id": "jiraExplorer",
-          "name": "Jira Explorer"
-        }
-      ],
-      "explorer": [
-        {
-          "id": "jsonOutline",
-          "name": "Json Outline",
-          "when": "jsonOutlineEnabled"
-        },
-        {
-          "id": "ftpExplorer",
-          "name": "FTP Explorer"
+          "name": "EXPLORER"
         }
       ]
     },
@@ -99,6 +88,11 @@
       {
         "command": "jira-plugin.setWorkingProjectCommand",
         "title": "Set working project",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.allIssuesCommand",
+        "title": "All issues",
         "category": "Jira-plugin"
       },
       {
@@ -123,36 +117,68 @@
       },
       {
         "command": "jira-plugin.changeIssueStatusCommand",
-        "title": "Change issue status (filter: issue id)",
+        "title": "Change issue status",
         "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.changeIssueAssigneeCommand",
-        "title": "Change issue assignee (filter: issue id)",
+        "title": "Change issue assignee",
         "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.issueAddCommentCommand",
-        "title": "Add comment (filter: issue id)",
+        "title": "Add comment",
         "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.refresh",
+        "title": "Refresh",
+        "icon": {
+          "light": "images/icons/light/sync.png",
+          "dark": "images/icons/dark/sync.png"
+        }
       }
     ],
-    "menu": {
+    "menus": {
       "view/title": [
         {
-          "command": "nodeDependencies.refreshEntry",
-          "when": "view == nodeDependencies",
-          "group": "navigation"
+          "command": "jira-plugin.allIssuesCommand",
+          "when": "view == jiraExplorer"
         },
         {
-          "command": "nodeDependencies.addEntry",
-          "when": "view == nodeDependencies"
+          "command": "jira-plugin.issueByIdCommand",
+          "when": "view == jiraExplorer"
+        },
+        {
+          "command": "jira-plugin.myIssuesByStatusCommand",
+          "when": "view == jiraExplorer"
+        },
+        {
+          "command": "jira-plugin.issuesByStatusAssigneeCommand",
+          "when": "view == jiraExplorer"
+        },
+        {
+          "command": "jira-plugin.issuesBySummaryCommand",
+          "when": "view == jiraExplorer"
+        },
+        {
+          "command": "jira-plugin.refresh",
+          "when": "view == jiraExplorer",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "nodeDependencies.deleteEntry",
-          "when": "view == nodeDependencies && viewItem == dependency"
+          "command": "jira-plugin.changeIssueStatusCommand",
+          "when": "view == jiraExplorer && viewItem == IssueItem"
+        },
+        {
+          "command": "jira-plugin.issueAddCommentCommand",
+          "when": "view == jiraExplorer && viewItem == IssueItem"
+        },
+        {
+          "command": "jira-plugin.changeIssueAssigneeCommand",
+          "when": "view == jiraExplorer && viewItem == IssueItem"
         }
       ]
     }
