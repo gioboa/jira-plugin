@@ -16,25 +16,25 @@ From the command palette Ctrl-Shift-P (Windows, Linux) or Cmd-Shift-P (OSX) unde
 First of all your have to launch "Setup credentials" command to configure the plugin.<br>
 The Jira base URL is needed and also your credentials.<br>
 
-![Setup](images/setup.gif)
+![Setup](images/readme/setup.gif)
 
 ## Set working project
 
 After setup you have to set the working project, you can click on status-bar icon or use "Set working project" command.<br><br>
 **n.b:** If you need to browse issues for various project you have to switch the working project.<br>
 
-![Set-working-project](images/set-working-project.gif)
+![Set-working-project](images/readme/set-working-project.gif)
 
 ## Config
 
 The extension store credentials in VS Code settings.<br><br>
 **n.b:** the extension store the password in VS Code internal storage so it's safe and hidden. :wink: <br>
 
-![Settings](images/settings.png)
+![Settings](images/readme/settings.png)
 
 ## Features
 
-![Commands](images/commands.gif)
+![Commands](images/readme/commands.gif)
 
 - **Issue by id**<br>
   With this command you can search and view a issue by id.<br><br>
@@ -55,7 +55,7 @@ The extension store credentials in VS Code settings.<br><br>
 
 In the status bar the extension show the working project. <br>
 
-![StatusBar](images/status-bar.png)
+![StatusBar](images/readme/status-bar.png)
 
 ## Resources
 
