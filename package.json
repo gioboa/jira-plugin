@@ -187,7 +187,7 @@
     "typescript": "^2.9.2",
     "vscode": "^1.1.18",
     "mocha": "^5.2.0",
-    "@types/node": "^8.0.53",
+    "@types/node": "^10.5.2",
     "@types/mocha": "^5.2.4",
     "tslint": "^5.10.0"
   },
