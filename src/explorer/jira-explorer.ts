@@ -25,8 +25,9 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
 
   async getChildren(element?: IssueItem): Promise<any[]> {
     let project = await getConfigurationByKey(CONFIG.WORKING_PROJECT);
-    if (state.issues.length > 0) {
-      const items: any[] = state.issues.map(
+    const issues = state.issues;
+    if (issues.length > 0) {
+      const items: any[] = issues.map(
         issue =>
           new IssueItem(issue, {
             command: 'jira-plugin.openIssueCommand',
@@ -34,8 +35,8 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
             arguments: [`${issue.key}`]
           })
       );
-      items.unshift(new FilterInfoItem(project || '', state.currentFilter, state.issues.length), new DividerItem());
-      if (state.issues.length === 50) {
+      items.unshift(new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem());
+      if (issues.length === 50) {
         items.push(new DividerItem(), new LimitInfoItem());
       }
       return items;
@@ -43,7 +44,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
       if (state.currentFilter === LOADING.text) {
         return [new LoadingItem()];
       }
-      return [new FilterInfoItem(project || '', state.currentFilter, state.issues.length), new DividerItem(), new NoResultItem(project || '')];
+      return [new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem(), new NoResultItem(project || '')];
     }
   }
 }

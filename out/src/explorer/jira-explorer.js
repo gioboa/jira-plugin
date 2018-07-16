@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const issue_mock_1 = require("../../test/issue.mock");
 const configuration_1 = require("../shared/configuration");
 const constants_1 = require("../shared/constants");
 const state_1 = require("../state/state");
@@ -34,14 +35,16 @@ class JiraExplorer {
     getChildren(element) {
         return __awaiter(this, void 0, void 0, function* () {
             let project = yield configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT);
-            if (state_1.default.issues.length > 0) {
-                const items = state_1.default.issues.map(issue => new issue_item_1.IssueItem(issue, {
+            // const issues = state.issues;
+            const issues = issue_mock_1.mockIssues;
+            if (issues.length > 0) {
+                const items = issues.map(issue => new issue_item_1.IssueItem(issue, {
                     command: 'jira-plugin.openIssueCommand',
                     title: 'Open issue in the browser',
                     arguments: [`${issue.key}`]
                 }));
-                items.unshift(new filter_info_item_1.FilterInfoItem(project || '', state_1.default.currentFilter, state_1.default.issues.length), new divider_item_1.DividerItem());
-                if (state_1.default.issues.length === 50) {
+                items.unshift(new filter_info_item_1.FilterInfoItem(project || '', state_1.default.currentFilter, issues.length), new divider_item_1.DividerItem());
+                if (issues.length === 50) {
                     items.push(new divider_item_1.DividerItem(), new limit_info_1.LimitInfoItem());
                 }
                 return items;
@@ -50,7 +53,7 @@ class JiraExplorer {
                 if (state_1.default.currentFilter === constants_1.LOADING.text) {
                     return [new loading_item_1.LoadingItem()];
                 }
-                return [new filter_info_item_1.FilterInfoItem(project || '', state_1.default.currentFilter, state_1.default.issues.length), new divider_item_1.DividerItem(), new no_result_item_1.NoResultItem(project || '')];
+                return [new filter_info_item_1.FilterInfoItem(project || '', state_1.default.currentFilter, issues.length), new divider_item_1.DividerItem(), new no_result_item_1.NoResultItem(project || '')];
             }
         });
     }
