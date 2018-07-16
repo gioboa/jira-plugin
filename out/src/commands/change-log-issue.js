@@ -18,19 +18,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
-const configuration_1 = require("../shared/configuration");
+const vscode = require("vscode");
+const no_log_issue_pick_1 = require("../picks/no-log-issue-pick");
 const constants_1 = require("../shared/constants");
-const state_1 = require("../state/state");
 const select_utilities_1 = require("../shared/select-utilities");
-class SetWorkingProjectCommand {
+const state_1 = require("../state/state");
+class ChangeLogIssueCommand {
     constructor() {
-        this.id = 'jira-plugin.setWorkingProjectCommand';
+        this.id = 'jira-plugin.changeLogIssueCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const project = yield select_utilities_1.selectProject();
-            configuration_1.setConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT, project);
-            state_1.default.statusBar.updateWorkingProjectItem(project);
+            const newIssue = yield select_utilities_1.selectChangeLogIssue();
+            const activeIssue = state_1.default.logIssue || new no_log_issue_pick_1.default().pickValue;
+            if (!!newIssue && activeIssue.key !== newIssue.key) {
+                let action;
+                if (newIssue.key !== constants_1.NO_LOG_ISSUE.key) {
+                    action = yield vscode.window.showInformationMessage(`START LOG: ${newIssue.key} - ${newIssue.fields.summary}?`, constants_1.YES, constants_1.NO);
+                }
+                else {
+                    action = yield vscode.window.showInformationMessage(`STOP LOG: ${activeIssue.key} - ${activeIssue.fields.summary}?`, constants_1.YES, constants_1.NO);
+                }
+                if (action === constants_1.YES) {
+                    state_1.changeLogIssue(newIssue);
+                }
+            }
+            // if (action === 'Open in browser') {
+            //   const baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
+            //   const url = `${baseUrl}/browse/${issue.key}` + `?focusedCommentId=${response.id}` + `&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel` + `#comment-${response.id}`;
+            //   await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
+            // }
+            // changeActiveIssue(activeIssue);
         });
     }
 }
@@ -39,6 +57,6 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], SetWorkingProjectCommand.prototype, "run", null);
-exports.SetWorkingProjectCommand = SetWorkingProjectCommand;
-//# sourceMappingURL=set-working-project.js.map
+], ChangeLogIssueCommand.prototype, "run", null);
+exports.ChangeLogIssueCommand = ChangeLogIssueCommand;
+//# sourceMappingURL=change-log-issue.js.map

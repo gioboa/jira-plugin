@@ -86,11 +86,6 @@
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.setWorkingProjectCommand",
-        "title": "Set working project",
-        "category": "Jira-plugin"
-      },
-      {
         "command": "jira-plugin.allIssuesCommand",
         "title": "All issues",
         "category": "Jira-plugin"

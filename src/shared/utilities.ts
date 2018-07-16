@@ -11,7 +11,7 @@ export const executeConnectionToJira = (): void => {
   if (getConfigurationByKey(CONFIG.BASE_URL)) {
     const connect = async () => {
       state.jira = (await connectToJira())!;
-      state.statusBar.updateStatusBar('');
+      state.statusBar.updateWorkingProjectItem('');
       state.statuses = await state.jira.getStatuses();
       state.projects = await state.jira.getProjects();
       selectIssue(SEARCH_MODE.ALL);

@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const issue_mock_1 = require("../../test/issue.mock");
 const configuration_1 = require("../shared/configuration");
 const constants_1 = require("../shared/constants");
 const state_1 = require("../state/state");
@@ -35,8 +34,7 @@ class JiraExplorer {
     getChildren(element) {
         return __awaiter(this, void 0, void 0, function* () {
             let project = yield configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT);
-            // const issues = state.issues;
-            const issues = issue_mock_1.mockIssues;
+            const issues = state_1.default.issues;
             if (issues.length > 0) {
                 const items = issues.map(issue => new issue_item_1.IssueItem(issue, {
                     command: 'jira-plugin.openIssueCommand',

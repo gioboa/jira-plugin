@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
-const backPick_1 = require("../picks/backPick");
-const unassignedAssigneePick_1 = require("../picks/unassignedAssigneePick");
+const back_pick_1 = require("../picks/back-pick");
+const no_log_issue_pick_1 = require("../picks/no-log-issue-pick");
+const unassigned_assignee_pick_1 = require("../picks/unassigned-assignee-pick");
 const state_1 = require("../state/state");
 const configuration_1 = require("./configuration");
 const constants_1 = require("./constants");
@@ -82,6 +83,9 @@ const getFilterAndJQL = (mode, project) => __awaiter(this, void 0, void 0, funct
         case constants_1.SEARCH_MODE.REFRESH: {
             return [state_1.default.currentFilter, state_1.default.currentJQL];
         }
+        case constants_1.SEARCH_MODE.MY_IN_PROGRESS_ISSUES: {
+            return [`STATUS: In progress`, `project = ${project} AND status = 'In progress' AND assignee in (currentUser()) ORDER BY updated DESC`];
+        }
     }
     return ['', ''];
 });
@@ -115,6 +119,31 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
         state_1.changeIssuesInState('', '', []);
     }
 });
+exports.selectChangeIssueLogging = () => __awaiter(this, void 0, void 0, function* () {
+    if (state_1.canExecuteJiraAPI()) {
+        const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT);
+        if (state_1.verifyCurrentProject(project)) {
+            const [filter, jql] = yield getFilterAndJQL(constants_1.SEARCH_MODE.MY_IN_PROGRESS_ISSUES, project || '');
+            if (!!jql) {
+                const issues = yield state_1.default.jira.search({ jql });
+                if (issues.issues && issues.issues.length > 0) {
+                    const picks = issues.issues.map(issue => ({
+                        pickValue: issue,
+                        label: utilities_1.addStatusIcon(issue.fields.status.name, false) + ` ${issue.fields.summary}`,
+                        description: ''
+                    }));
+                    picks.unshift(new no_log_issue_pick_1.default());
+                    const selected = yield vscode.window.showQuickPick(picks, { placeHolder: `Select Issue`, matchOnDescription: true });
+                    return selected ? selected.pickValue : undefined;
+                }
+                else {
+                    vscode.window.showInformationMessage(`No 'In Progress' issues found for your user in ${project} project`);
+                }
+            }
+        }
+    }
+    return undefined;
+});
 exports.selectAssignee = (unassigned, back) => __awaiter(this, void 0, void 0, function* () {
     const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT) || '';
     if (state_1.verifyCurrentProject(project)) {
@@ -127,10 +156,10 @@ exports.selectAssignee = (unassigned, back) => __awaiter(this, void 0, void 0, f
             };
         });
         if (back) {
-            picks.unshift(new backPick_1.default());
+            picks.unshift(new back_pick_1.default());
         }
         if (unassigned) {
-            picks.push(new unassignedAssigneePick_1.default());
+            picks.push(new unassigned_assignee_pick_1.default());
         }
         const selected = yield vscode.window.showQuickPick(picks, {
             matchOnDescription: true,

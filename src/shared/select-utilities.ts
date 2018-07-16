@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
-import { Assignee } from '../http/api.model';
-import BackPick from '../picks/backPick';
-import UnassignedAssigneePick from '../picks/unassignedAssigneePick';
+import { Assignee, Issue } from '../http/api.model';
+import BackPick from '../picks/back-pick';
+import NoIssueLoggingPick from '../picks/no-log-issue-pick';
+import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeIssuesInState, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
 import { BACK_PICK_LABEL, CONFIG, LOADING, SEARCH_MODE, UNASSIGNED } from './constants';
@@ -78,6 +79,9 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     case SEARCH_MODE.REFRESH: {
       return [state.currentFilter, state.currentJQL];
     }
+    case SEARCH_MODE.MY_IN_PROGRESS_ISSUES: {
+      return [`STATUS: In progress`, `project = ${project} AND status = 'In progress' AND assignee in (currentUser()) ORDER BY updated DESC`];
+    }
   }
   return ['', ''];
 };
@@ -107,6 +111,31 @@ export const selectIssue = async (mode: string): Promise<void> => {
   } else {
     changeIssuesInState('', '', []);
   }
+};
+
+export const selectChangeIssueLogging = async (): Promise<Issue | undefined> => {
+  if (canExecuteJiraAPI()) {
+    const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
+    if (verifyCurrentProject(project)) {
+      const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_IN_PROGRESS_ISSUES, project || '');
+      if (!!jql) {
+        const issues = await state.jira.search({ jql });
+        if (issues.issues && issues.issues.length > 0) {
+          const picks = issues.issues.map(issue => ({
+            pickValue: issue,
+            label: addStatusIcon(issue.fields.status.name, false) + ` ${issue.fields.summary}`,
+            description: ''
+          }));
+          picks.unshift(new NoIssueLoggingPick());
+          const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Select Issue`, matchOnDescription: true });
+          return selected ? selected.pickValue : undefined;
+        } else {
+          vscode.window.showInformationMessage(`No 'In Progress' issues found for your user in ${project} project`);
+        }
+      }
+    }
+  }
+  return undefined;
 };
 
 export const selectAssignee = async (unassigned: boolean, back: boolean): Promise<string> => {

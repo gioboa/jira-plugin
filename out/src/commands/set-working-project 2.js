@@ -30,7 +30,7 @@ class SetWorkingProjectCommand {
         return __awaiter(this, void 0, void 0, function* () {
             const project = yield select_utilities_1.selectProject();
             configuration_1.setConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT, project);
-            state_1.default.statusBar.updateWorkingProjectItem(project);
+            state_1.default.statusBar.updateStatusBar(project);
         });
     }
 }
@@ -41,4 +41,4 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SetWorkingProjectCommand.prototype, "run", null);
 exports.SetWorkingProjectCommand = SetWorkingProjectCommand;
-//# sourceMappingURL=set-working-project.js.map
+//# sourceMappingURL=set-working-project 2.js.map

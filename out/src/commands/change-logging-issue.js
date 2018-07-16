@@ -18,19 +18,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
-const configuration_1 = require("../shared/configuration");
+const vscode = require("vscode");
+const no_log_issue_pick_1 = require("../picks/no-log-issue-pick");
 const constants_1 = require("../shared/constants");
-const state_1 = require("../state/state");
 const select_utilities_1 = require("../shared/select-utilities");
-class SetWorkingProjectCommand {
+const state_1 = require("../state/state");
+class ChangeIssueLoggingCommand {
     constructor() {
-        this.id = 'jira-plugin.setWorkingProjectCommand';
+        this.id = 'jira-plugin.changeIssueLoggingCommand';
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            const project = yield select_utilities_1.selectProject();
-            configuration_1.setConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT, project);
-            state_1.default.statusBar.updateWorkingProjectItem(project);
+            const newIssue = yield select_utilities_1.selectChangeIssueLogging();
+            const activeIssue = state_1.default.issueLogging || new no_log_issue_pick_1.default().pickValue;
+            if (!!newIssue && activeIssue.key !== newIssue.key) {
+                let action;
+                if (newIssue.key !== constants_1.NO_ISSUE_LOGGING.key) {
+                    action = yield vscode.window.showInformationMessage(`START LOG: ${newIssue.key} - ${newIssue.fields.summary}?`, constants_1.YES, constants_1.NO);
+                }
+                else {
+                    action = yield vscode.window.showInformationMessage(`STOP LOG: ${activeIssue.key} - ${activeIssue.fields.summary}?`, constants_1.YES, constants_1.NO);
+                }
+                if (action === constants_1.YES) {
+                    state_1.changeIssueLogging(newIssue);
+                }
+            }
         });
     }
 }
@@ -39,6 +51,6 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], SetWorkingProjectCommand.prototype, "run", null);
-exports.SetWorkingProjectCommand = SetWorkingProjectCommand;
-//# sourceMappingURL=set-working-project.js.map
+], ChangeIssueLoggingCommand.prototype, "run", null);
+exports.ChangeIssueLoggingCommand = ChangeIssueLoggingCommand;
+//# sourceMappingURL=change-logging-issue.js.map

@@ -12,6 +12,6 @@ export class SetWorkingProjectCommand implements Command {
   public async run(): Promise<void> {
     const project = await selectProject();
     setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
-    state.statusBar.updateStatusBar(project);
+    state.statusBar.updateWorkingProjectItem(project);
   }
 }
