@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const no_log_issue_pick_1 = require("../picks/no-log-issue-pick");
+const no_working_issue_pick_1 = require("../picks/no-working-issue-pick");
 const configuration_1 = require("../shared/configuration");
 const constants_1 = require("../shared/constants");
 const state = {
@@ -14,7 +14,7 @@ const state = {
     issues: [],
     currentFilter: constants_1.LOADING.text,
     currentJQL: '',
-    issueLogging: new no_log_issue_pick_1.default().pickValue
+    workingIssue: new no_working_issue_pick_1.default().pickValue
 };
 exports.default = state;
 exports.canExecuteJiraAPI = () => {
@@ -29,8 +29,8 @@ exports.changeIssuesInState = (filter, jql, issues) => {
     state.issues = issues;
     state.jiraExplorer.refresh();
 };
-exports.changeIssueLogging = (newActiveIssue) => {
-    state.issueLogging = newActiveIssue;
-    state.statusBar.updateIssueLoggingItem();
+exports.changeWorkingIssue = (newActiveIssue) => {
+    state.workingIssue = newActiveIssue;
+    state.statusBar.updateWorkingIssueItem();
 };
 //# sourceMappingURL=state.js.map

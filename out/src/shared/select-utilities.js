@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const back_pick_1 = require("../picks/back-pick");
-const no_log_issue_pick_1 = require("../picks/no-log-issue-pick");
+const no_working_issue_pick_1 = require("../picks/no-working-issue-pick");
 const unassigned_assignee_pick_1 = require("../picks/unassigned-assignee-pick");
 const state_1 = require("../state/state");
 const configuration_1 = require("./configuration");
@@ -119,7 +119,7 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
         state_1.changeIssuesInState('', '', []);
     }
 });
-exports.selectChangeIssueLogging = () => __awaiter(this, void 0, void 0, function* () {
+exports.selectChangeWorkingIssue = () => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {
         const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT);
         if (state_1.verifyCurrentProject(project)) {
@@ -132,7 +132,7 @@ exports.selectChangeIssueLogging = () => __awaiter(this, void 0, void 0, functio
                         label: utilities_1.addStatusIcon(issue.fields.status.name, false) + ` ${issue.fields.summary}`,
                         description: ''
                     }));
-                    picks.unshift(new no_log_issue_pick_1.default());
+                    picks.unshift(new no_working_issue_pick_1.default());
                     const selected = yield vscode.window.showQuickPick(picks, { placeHolder: `Select Issue`, matchOnDescription: true });
                     return selected ? selected.pickValue : undefined;
                 }

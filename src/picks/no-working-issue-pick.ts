@@ -1,10 +1,10 @@
 import { QuickPickItem } from 'vscode';
 import { Issue } from '../http/api.model';
-import { NO_ISSUE_LOGGING } from '../shared/constants';
+import { NO_WORKING_ISSUE } from '../shared/constants';
 
-export default class NoIssueLoggingPick implements QuickPickItem {
+export default class NoWorkingIssuePick implements QuickPickItem {
   get label(): string {
-    return `$(x) ${NO_ISSUE_LOGGING.text}`;
+    return `$(x) ${NO_WORKING_ISSUE.text}`;
   }
 
   get description(): string {
@@ -14,7 +14,7 @@ export default class NoIssueLoggingPick implements QuickPickItem {
   get pickValue(): Issue {
     return {
       id: '',
-      key: NO_ISSUE_LOGGING.key,
+      key: NO_WORKING_ISSUE.key,
       fields: {
         summary: '',
         status: {

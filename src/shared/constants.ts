@@ -33,5 +33,5 @@ export const STATUS_ICONS = {
 export const LOADING = { text: 'LOADING', file: 'cloud.png' };
 export const DIVIDER = { text: 'LOADING', file: 'divider.png' };
 export const UNASSIGNED = 'Unassigned';
-export const NO_ISSUE_LOGGING = { text: 'No logging', key: 'NO_ISSUE_LOGGING' };
+export const NO_WORKING_ISSUE = { text: 'No working issue', key: 'NO_WORKING_ISSUE' };
 export const BACK_PICK_LABEL = '$(arrow-left) Back';

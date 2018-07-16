@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { Assignee, Issue } from '../http/api.model';
 import BackPick from '../picks/back-pick';
-import NoIssueLoggingPick from '../picks/no-log-issue-pick';
+import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeIssuesInState, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
@@ -113,7 +113,7 @@ export const selectIssue = async (mode: string): Promise<void> => {
   }
 };
 
-export const selectChangeIssueLogging = async (): Promise<Issue | undefined> => {
+export const selectChangeWorkingIssue = async (): Promise<Issue | undefined> => {
   if (canExecuteJiraAPI()) {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
     if (verifyCurrentProject(project)) {
@@ -126,7 +126,7 @@ export const selectChangeIssueLogging = async (): Promise<Issue | undefined> => 
             label: addStatusIcon(issue.fields.status.name, false) + ` ${issue.fields.summary}`,
             description: ''
           }));
-          picks.unshift(new NoIssueLoggingPick());
+          picks.unshift(new NoWorkingIssuePick());
           const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Select Issue`, matchOnDescription: true });
           return selected ? selected.pickValue : undefined;
         } else {

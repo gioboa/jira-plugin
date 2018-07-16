@@ -19,7 +19,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const vscode = require("vscode");
-const no_log_issue_pick_1 = require("../picks/no-log-issue-pick");
+const no_working_issue_pick_1 = require("../picks/no-working-issue-pick");
 const constants_1 = require("../shared/constants");
 const select_utilities_1 = require("../shared/select-utilities");
 const state_1 = require("../state/state");
@@ -30,14 +30,14 @@ class SetWorkingIssueCommand {
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             const newIssue = yield select_utilities_1.selectChangeWorkingIssue();
-            const activeIssue = state_1.default.workingIssue || new no_log_issue_pick_1.default().pickValue;
+            const activeIssue = state_1.default.workingIssue || new no_working_issue_pick_1.default().pickValue;
             if (!!newIssue && activeIssue.key !== newIssue.key) {
                 let action;
                 if (newIssue.key !== constants_1.NO_WORKING_ISSUE.key) {
-                    action = yield vscode.window.showInformationMessage(`START LOG: ${newIssue.key} - ${newIssue.fields.summary}?`, constants_1.YES, constants_1.NO);
+                    action = yield vscode.window.showInformationMessage(`NEW WORKING ISSUE: ${newIssue.key} - ${newIssue.fields.summary}?`, constants_1.YES, constants_1.NO);
                 }
                 else {
-                    action = yield vscode.window.showInformationMessage(`STOP LOG: ${activeIssue.key} - ${activeIssue.fields.summary}?`, constants_1.YES, constants_1.NO);
+                    action = yield vscode.window.showInformationMessage(`REMOVE WORKING ISSUE: ${activeIssue.key} - ${activeIssue.fields.summary}?`, constants_1.YES, constants_1.NO);
                 }
                 if (action === constants_1.YES) {
                     state_1.changeWorkingIssue(newIssue);
@@ -53,4 +53,4 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SetWorkingIssueCommand.prototype, "run", null);
 exports.SetWorkingIssueCommand = SetWorkingIssueCommand;
-//# sourceMappingURL=change-logging-issue.js.map
+//# sourceMappingURL=set-working-issue.js.map

@@ -1,8 +1,8 @@
 import 'isomorphic-fetch';
 import * as vscode from 'vscode';
-import { ChangeIssueLoggingCommand } from './commands/change-logging-issue';
 import { ChangeIssueAssigneeCommand } from './commands/change-issue-assignee';
 import { ChangeIssueStatusCommand } from './commands/change-issue-status';
+import { SetWorkingIssueCommand } from './commands/set-working-issue';
 import { IssueAddCommentCommand } from './commands/issue-add-comment';
 import { OpenIssueCommand } from './commands/open-issue';
 import { SetWorkingProjectCommand } from './commands/set-working-project';
@@ -42,7 +42,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
     new ChangeIssueAssigneeCommand(),
     new IssueAddCommentCommand(),
     new OpenIssueCommand(),
-    new ChangeIssueLoggingCommand()
+    new SetWorkingIssueCommand()
   ];
 
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.refresh', () => selectIssue(SEARCH_MODE.REFRESH)));

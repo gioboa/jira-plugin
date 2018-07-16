@@ -29,6 +29,6 @@ exports.STATUS_ICONS = {
 exports.LOADING = { text: 'LOADING', file: 'cloud.png' };
 exports.DIVIDER = { text: 'LOADING', file: 'divider.png' };
 exports.UNASSIGNED = 'Unassigned';
-exports.NO_ISSUE_LOGGING = { text: 'No logging', key: 'NO_ISSUE_LOGGING' };
+exports.NO_WORKING_ISSUE = { text: 'No working issue', key: 'NO_WORKING_ISSUE' };
 exports.BACK_PICK_LABEL = '$(arrow-left) Back';
 //# sourceMappingURL=constants.js.map

@@ -22,4 +22,4 @@ class NoWorkingIssuePick {
     }
 }
 exports.default = NoWorkingIssuePick;
-//# sourceMappingURL=no-log-issue-pick.js.map
+//# sourceMappingURL=no-working-issue-pick.js.map
