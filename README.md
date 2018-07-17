@@ -45,11 +45,11 @@ The extension store credentials in VS Code settings.<br><br>
 - **Issues filtered by summary**<br>
   With this command you can search issues with a particular summary.<br><br>
 - **Change issue status (filter: issue id)**<br>
-  With this command you can change an issue status. In the filter you have to specify the id. <br><br>
+  With this command you can change an issue status.<br><br>
 - **Change issue assignee (filter: issue id)**<br>
-  With this command you can change an issue assignee. In the filter you have to specify the id.<br><br>
+  With this command you can change an issue assignee.<br><br>
 - **Add comment (filter: issue id)**<br>
-  With this command you can add comment. [@] is the placeholder for tag a user.<br>**e.g:** 'This is the placeholder for tag user -> [@]'<br>In the filter you have to specify the id.<br><br>
+  With this command you can add comment. [@] is the placeholder for tag a user.<br>**e.g:** 'This is the placeholder for tag user -> [@]'<br><br>
 
 ## Explorer
 
