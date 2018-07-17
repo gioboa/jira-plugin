@@ -44,11 +44,11 @@ The extension store credentials in VS Code settings.<br><br>
   With this command you can search issues with a particular assignee and status.<br><br>
 - **Issues filtered by summary**<br>
   With this command you can search issues with a particular summary.<br><br>
-- **Change issue status (filter: issue id)**<br>
+- **Change issue status**<br>
   With this command you can change an issue status.<br><br>
-- **Change issue assignee (filter: issue id)**<br>
+- **Change issue assignee**<br>
   With this command you can change an issue assignee.<br><br>
-- **Add comment (filter: issue id)**<br>
+- **Add comment**<br>
   With this command you can add comment. [@] is the placeholder for tag a user.<br>**e.g:** 'This is the placeholder for tag user -> [@]'<br><br>
 
 ## Explorer
@@ -59,9 +59,21 @@ The extension store credentials in VS Code settings.<br><br>
 
 ## Status bar
 
-In the status bar the extension show the working project. <br>
+### Working project
+
+- The extension in the status bar show the **working project**, you can also change it from here.
 
 ![StatusBar](images/readme/status-bar.png)
+
+### Working issue
+
+- The extension in the status bar show the **working issue**, you can also change it from here. <br>
+  You can choose working issue from your **In Progress** issues. <br>
+  The extension trace the time spended on the working issue and you can also create the worklog in Jira for the activity. <br>
+  Jira worklog allow only time in minute so the extension round your activity time. <br>
+  The extension **every 60 second** store in iternal storage the current working activity so if you close and reopen VS Code the extension retrive (if needed) the pending working issue.
+
+![Working issue](images/readme/working-issue.gif)
 
 ## Resources
 
