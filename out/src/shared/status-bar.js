@@ -12,6 +12,7 @@ const vscode = require("vscode");
 const state_1 = require("../state/state");
 const configuration_1 = require("./configuration");
 const constants_1 = require("./constants");
+const utilities_1 = require("./utilities");
 class StatusBarManager {
     constructor() {
         this.workingIssueItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
@@ -32,6 +33,9 @@ class StatusBarManager {
             this.updateWorkingIssueItem(true);
         });
     }
+    workingIssueItemText(workingIssue) {
+        return (`$(watch) ` + (workingIssue.issue.key !== constants_1.NO_WORKING_ISSUE.key ? `Working Issue: - ${workingIssue.issue.key || ''} ${utilities_1.secondsToHHMMSS(workingIssue.timePerSecond) || ''}` : constants_1.NO_WORKING_ISSUE.text));
+    }
     updateWorkingIssueItem(checkGlobalStore) {
         let issue;
         if (checkGlobalStore) {
@@ -49,7 +53,7 @@ class StatusBarManager {
         else {
             configuration_1.setGlobalWorkingIssue(state_1.default.context, undefined);
         }
-        this.workingIssueItem.text = `$(watch) ` + (state_1.default.workingIssue.issue.key !== constants_1.NO_WORKING_ISSUE.key ? `Working Issue: - ${state_1.default.workingIssue.issue.key || ''}` : constants_1.NO_WORKING_ISSUE.text);
+        this.workingIssueItem.text = this.workingIssueItemText(state_1.default.workingIssue);
         this.workingIssueItem.tooltip = 'Set working issue';
         this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';
         this.workingIssueItem.show();
@@ -64,6 +68,7 @@ class StatusBarManager {
         this.intervalId = setInterval(() => {
             if (vscode.window.state.focused) {
                 state_1.incrementStateWorkingIssueTimePerSecond();
+                this.workingIssueItem.text = this.workingIssueItemText(state_1.default.workingIssue);
             }
         }, 1000);
     }

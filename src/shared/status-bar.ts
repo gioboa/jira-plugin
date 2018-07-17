@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
+import { IWorkingIssue } from '../http/api.model';
 import state, { incrementStateWorkingIssueTimePerSecond } from '../state/state';
 import { getConfigurationByKey, getGlobalWorkingIssue, setGlobalWorkingIssue } from './configuration';
 import { CONFIG, NO_WORKING_ISSUE } from './constants';
+import { secondsToHHMMSS } from './utilities';
 
 export class StatusBarManager {
   private workingProjectItem: vscode.StatusBarItem;
@@ -28,6 +30,12 @@ export class StatusBarManager {
     this.updateWorkingIssueItem(true);
   }
 
+  private workingIssueItemText(workingIssue: IWorkingIssue): string {
+    return (
+      `$(watch) ` + (workingIssue.issue.key !== NO_WORKING_ISSUE.key ? `Working Issue: - ${workingIssue.issue.key || ''} ${secondsToHHMMSS(workingIssue.timePerSecond) || ''}` : NO_WORKING_ISSUE.text)
+    );
+  }
+
   public updateWorkingIssueItem(checkGlobalStore: boolean): void {
     let issue;
     if (checkGlobalStore) {
@@ -45,7 +53,7 @@ export class StatusBarManager {
     } else {
       setGlobalWorkingIssue(state.context, undefined);
     }
-    this.workingIssueItem.text = `$(watch) ` + (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key ? `Working Issue: - ${state.workingIssue.issue.key || ''}` : NO_WORKING_ISSUE.text);
+    this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
     this.workingIssueItem.tooltip = 'Set working issue';
     this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';
     this.workingIssueItem.show();
@@ -62,6 +70,7 @@ export class StatusBarManager {
     this.intervalId = setInterval(() => {
       if (vscode.window.state.focused) {
         incrementStateWorkingIssueTimePerSecond();
+        this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
       }
     }, 1000);
   }

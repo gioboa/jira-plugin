@@ -32,7 +32,7 @@ export class SetWorkingIssueCommand implements Command {
       const issue = workingIssues.find(issue => issue.key === storedWorkingIssue.issue.key);
       if (!!issue) {
         state.workingIssue = storedWorkingIssue;
-        vscode.window.showInformationMessage(`REOPEN PENDING WORKING ISSUE: ${state.workingIssue.issue.key} | timeSpent: ${secondsToHHMMSS(state.workingIssue.timePerSecond)}`);
+        vscode.window.showInformationMessage(`PENDING WORKING ISSUE: ${state.workingIssue.issue.key} | timeSpent: ${secondsToHHMMSS(state.workingIssue.timePerSecond)}`);
         changeStateWorkingIssue(state.workingIssue.issue, state.workingIssue.timePerSecond);
       } else {
         changeStateWorkingIssue(new NoWorkingIssuePick().pickValue, 0);
@@ -43,7 +43,7 @@ export class SetWorkingIssueCommand implements Command {
       if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
         if (workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
           let action = await vscode.window.showInformationMessage(
-            `NEW WORKING ISSUE: Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${secondsToHHMMSS(workingIssue.timePerSecond)} ?`,
+            `Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${secondsToHHMMSS(workingIssue.timePerSecond)} ?`,
             YES_WITH_COMMENT,
             YES,
             NO

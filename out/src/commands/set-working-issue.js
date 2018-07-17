@@ -50,7 +50,7 @@ class SetWorkingIssueCommand {
                 const issue = workingIssues.find(issue => issue.key === storedWorkingIssue.issue.key);
                 if (!!issue) {
                     state_1.default.workingIssue = storedWorkingIssue;
-                    vscode.window.showInformationMessage(`REOPEN PENDING WORKING ISSUE: ${state_1.default.workingIssue.issue.key} | timeSpent: ${utilities_1.secondsToHHMMSS(state_1.default.workingIssue.timePerSecond)}`);
+                    vscode.window.showInformationMessage(`PENDING WORKING ISSUE: ${state_1.default.workingIssue.issue.key} | timeSpent: ${utilities_1.secondsToHHMMSS(state_1.default.workingIssue.timePerSecond)}`);
                     state_1.changeStateWorkingIssue(state_1.default.workingIssue.issue, state_1.default.workingIssue.timePerSecond);
                 }
                 else {
@@ -62,7 +62,7 @@ class SetWorkingIssueCommand {
                 const newIssue = yield select_utilities_1.selectChangeWorkingIssue();
                 if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
                     if (workingIssue.issue.key !== constants_1.NO_WORKING_ISSUE.key) {
-                        let action = yield vscode.window.showInformationMessage(`NEW WORKING ISSUE: Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${utilities_1.secondsToHHMMSS(workingIssue.timePerSecond)} ?`, constants_1.YES_WITH_COMMENT, constants_1.YES, constants_1.NO);
+                        let action = yield vscode.window.showInformationMessage(`Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${utilities_1.secondsToHHMMSS(workingIssue.timePerSecond)} ?`, constants_1.YES_WITH_COMMENT, constants_1.YES, constants_1.NO);
                         yield this.menageResponse(action || constants_1.NO);
                     }
                     state_1.changeStateWorkingIssue(newIssue, 0);
