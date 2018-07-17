@@ -62,6 +62,7 @@ class SetWorkingIssueCommand {
                 const newIssue = yield select_utilities_1.selectChangeWorkingIssue();
                 if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
                     if (workingIssue.issue.key !== constants_1.NO_WORKING_ISSUE.key) {
+                        state_1.default.statusBar.clearWorkingIssueInterval();
                         let action = yield vscode.window.showInformationMessage(`Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${utilities_1.secondsToHHMMSS(workingIssue.timePerSecond)} ?`, constants_1.YES_WITH_COMMENT, constants_1.YES, constants_1.NO);
                         yield this.menageResponse(action || constants_1.NO);
                     }

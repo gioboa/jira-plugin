@@ -1,3 +1,13 @@
+## 0.4.0
+
+### Features
+
+- (status bar) add working issue functionality <br>
+- possibility to insert Jira worklog for the working issue
+
+### Bug Fixes
+
+- add ALL ISSUE call after switch working project
 
 ## 0.3.0
 

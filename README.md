@@ -69,7 +69,7 @@ The extension store credentials in VS Code settings.<br><br>
 
 - The extension in the status bar show the **working issue**, you can also change it from here. <br>
   You can choose working issue from your **In Progress** issues. <br>
-  The extension trace the time spended on the working issue and you can also create the worklog in Jira for the activity. <br>
+  The extension trace the time spended on the working issue and you can also create the Jira worklog for the activity. <br>
   Jira worklog allow only time in minute so the extension round your activity time. <br>
   The extension **every 60 second** store in iternal storage the current working activity so if you close and reopen VS Code the extension retrive (if needed) the pending working issue.
 
