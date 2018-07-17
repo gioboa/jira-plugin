@@ -42,6 +42,7 @@ export class SetWorkingIssueCommand implements Command {
       const newIssue = await selectChangeWorkingIssue();
       if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
         if (workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
+          state.statusBar.clearWorkingIssueInterval();
           let action = await vscode.window.showInformationMessage(
             `Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${secondsToHHMMSS(workingIssue.timePerSecond)} ?`,
             YES_WITH_COMMENT,
