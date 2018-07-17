@@ -22,25 +22,50 @@ const vscode = require("vscode");
 const no_working_issue_pick_1 = require("../picks/no-working-issue-pick");
 const constants_1 = require("../shared/constants");
 const select_utilities_1 = require("../shared/select-utilities");
+const utilities_1 = require("../shared/utilities");
 const state_1 = require("../state/state");
 class SetWorkingIssueCommand {
     constructor() {
         this.id = 'jira-plugin.setWorkingIssueCommand';
     }
-    run() {
+    menageResponse(response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newIssue = yield select_utilities_1.selectChangeWorkingIssue();
-            const activeIssue = state_1.default.workingIssue || new no_working_issue_pick_1.default().pickValue;
-            if (!!newIssue && activeIssue.key !== newIssue.key) {
-                let action;
-                if (newIssue.key !== constants_1.NO_WORKING_ISSUE.key) {
-                    action = yield vscode.window.showInformationMessage(`NEW WORKING ISSUE: ${newIssue.key} - ${newIssue.fields.summary}?`, constants_1.YES, constants_1.NO);
+            if (response === constants_1.NO) {
+                return;
+            }
+            let comment;
+            if (response === constants_1.YES_WITH_COMMENT) {
+                comment = yield vscode.window.showInputBox({
+                    ignoreFocusOut: true,
+                    placeHolder: 'Add worklog comment...'
+                });
+            }
+            yield vscode.commands.executeCommand('jira-plugin.issueAddWorklogCommand', state_1.default.workingIssue.issue.key, state_1.default.workingIssue.timePerSecond, comment || '');
+        });
+    }
+    run(storedWorkingIssue) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!!storedWorkingIssue) {
+                const workingIssues = yield select_utilities_1.selectWorkingIssues();
+                const issue = workingIssues.find(issue => issue.key === storedWorkingIssue.issue.key);
+                if (!!issue) {
+                    state_1.default.workingIssue = storedWorkingIssue;
+                    vscode.window.showInformationMessage(`REOPEN PENDING WORKING ISSUE: ${state_1.default.workingIssue.issue.key} | timeSpent: ${utilities_1.secondsToHHMMSS(state_1.default.workingIssue.timePerSecond)}`);
+                    state_1.changeStateWorkingIssue(state_1.default.workingIssue.issue, state_1.default.workingIssue.timePerSecond);
                 }
                 else {
-                    action = yield vscode.window.showInformationMessage(`REMOVE WORKING ISSUE: ${activeIssue.key} - ${activeIssue.fields.summary}?`, constants_1.YES, constants_1.NO);
+                    state_1.changeStateWorkingIssue(new no_working_issue_pick_1.default().pickValue, 0);
                 }
-                if (action === constants_1.YES) {
-                    state_1.changeWorkingIssue(newIssue);
+            }
+            else {
+                const workingIssue = state_1.default.workingIssue || new no_working_issue_pick_1.default().pickValue;
+                const newIssue = yield select_utilities_1.selectChangeWorkingIssue();
+                if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
+                    if (workingIssue.issue.key !== constants_1.NO_WORKING_ISSUE.key) {
+                        let action = yield vscode.window.showInformationMessage(`NEW WORKING ISSUE: Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${utilities_1.secondsToHHMMSS(workingIssue.timePerSecond)} ?`, constants_1.YES_WITH_COMMENT, constants_1.YES, constants_1.NO);
+                        yield this.menageResponse(action || constants_1.NO);
+                    }
+                    state_1.changeStateWorkingIssue(newIssue, 0);
                 }
             }
         });
@@ -49,7 +74,7 @@ class SetWorkingIssueCommand {
 __decorate([
     decko_1.bind,
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SetWorkingIssueCommand.prototype, "run", null);
 exports.SetWorkingIssueCommand = SetWorkingIssueCommand;

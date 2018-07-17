@@ -4,17 +4,16 @@ import { createClient } from '../http/api';
 import { Jira } from '../http/api.model';
 import state from '../state/state';
 import { getConfigurationByKey, getGlobalStateConfiguration } from './configuration';
-import { CONFIG, CREDENTIALS_SEPARATOR, SEARCH_MODE, STATUS_ICONS } from './constants';
-import { selectIssue } from './select-utilities';
+import { CONFIG, CREDENTIALS_SEPARATOR, STATUS_ICONS } from './constants';
 
 export const executeConnectionToJira = (): void => {
   if (getConfigurationByKey(CONFIG.BASE_URL)) {
     const connect = async () => {
       state.jira = (await connectToJira())!;
-      state.statusBar.updateWorkingProjectItem('');
       state.statuses = await state.jira.getStatuses();
       state.projects = await state.jira.getProjects();
-      selectIssue(SEARCH_MODE.ALL);
+      state.statusBar.updateWorkingProjectItem('');
+      await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
     };
     connect().catch(() => {
       vscode.window.showErrorMessage('Failed to connect to jira');
@@ -57,4 +56,11 @@ export const addStatusIcon = (status: string, withDescription: boolean): string 
 
 export const getIconsPath = (fileName: string): string => {
   return path.join(__filename, '..', '..', '..', '..', 'images', 'icons', fileName);
+};
+
+export const secondsToHHMMSS = (sec: number): string => {
+  let hours = Math.floor(sec / 3600);
+  let minutes = Math.floor((sec - hours * 3600) / 60);
+  let seconds = sec - hours * 3600 - minutes * 60;
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };

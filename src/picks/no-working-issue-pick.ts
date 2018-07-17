@@ -1,5 +1,5 @@
 import { QuickPickItem } from 'vscode';
-import { Issue } from '../http/api.model';
+import { IIssue } from '../http/api.model';
 import { NO_WORKING_ISSUE } from '../shared/constants';
 
 export default class NoWorkingIssuePick implements QuickPickItem {
@@ -11,7 +11,7 @@ export default class NoWorkingIssuePick implements QuickPickItem {
     return '';
   }
 
-  get pickValue(): Issue {
+  get pickValue(): IIssue {
     return {
       id: '',
       key: NO_WORKING_ISSUE.key,

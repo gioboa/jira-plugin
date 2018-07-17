@@ -19,30 +19,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
 const vscode = require("vscode");
-const issue_item_1 = require("../explorer/item/issue-item");
+const no_working_issue_pick_1 = require("../picks/no-working-issue-pick");
+const constants_1 = require("../shared/constants");
 const select_utilities_1 = require("../shared/select-utilities");
 const state_1 = require("../state/state");
-class ChangeIssueAssigneeCommand {
+class SetWorkingIssueCommand {
     constructor() {
-        this.id = 'jira-plugin.changeIssueAssigneeCommand';
+        this.id = 'jira-plugin.setWorkingIssueCommand';
     }
-    run(issueItem) {
+    run() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (issueItem && issueItem.issue && state_1.canExecuteJiraAPI()) {
-                let issue = issueItem.issue;
-                if (!state_1.isWorkingIssue(issue.key)) {
-                    let assignee = yield select_utilities_1.selectAssignee(false, false);
-                    if (!!assignee) {
-                        const res = yield state_1.default.jira.assignIssue(issue.key, {
-                            name: assignee
-                        });
-                        yield vscode.commands.executeCommand('jira-plugin.refresh');
-                    }
+            const newIssue = yield select_utilities_1.selectChangeWorkingIssue();
+            const activeIssue = state_1.default.workingIssue || new no_working_issue_pick_1.default().pickValue;
+            if (!!newIssue && activeIssue.key !== newIssue.key) {
+                let action;
+                if (newIssue.key !== constants_1.NO_WORKING_ISSUE.key) {
+                    action = yield vscode.window.showInformationMessage(`NEW WORKING ISSUE: ${newIssue.key} - ${newIssue.fields.summary}?`, constants_1.YES_WITH_COMMENT, constants_1.YES, constants_1.NO);
                 }
-            }
-            else {
-                if (state_1.canExecuteJiraAPI()) {
-                    throw new Error('Use this command from JIRA: EXPLORER');
+                else {
+                    action = yield vscode.window.showInformationMessage(`REMOVE WORKING ISSUE: ${activeIssue.key} - ${activeIssue.fields.summary}?`, constants_1.YES_WITH_COMMENT, constants_1.YES, constants_1.NO);
+                }
+                if (action === constants_1.YES) {
+                    if (activeIssue.key !== constants_1.NO_WORKING_ISSUE.key) {
+                        const response = yield state_1.default.jira.addWorkLog(activeIssue.key, { timeSpentSeconds: 300 });
+                    }
+                    state_1.changeWorkingIssue(newIssue);
                 }
             }
         });
@@ -51,8 +52,8 @@ class ChangeIssueAssigneeCommand {
 __decorate([
     decko_1.bind,
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [issue_item_1.IssueItem]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], ChangeIssueAssigneeCommand.prototype, "run", null);
-exports.ChangeIssueAssigneeCommand = ChangeIssueAssigneeCommand;
-//# sourceMappingURL=change-issue-assignee.js.map
+], SetWorkingIssueCommand.prototype, "run", null);
+exports.SetWorkingIssueCommand = SetWorkingIssueCommand;
+//# sourceMappingURL=set-working-issue 2.js.map

@@ -18,8 +18,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
+const vscode = require("vscode");
 const issue_item_1 = require("../explorer/item/issue-item");
-const constants_1 = require("../shared/constants");
 const select_utilities_1 = require("../shared/select-utilities");
 const state_1 = require("../state/state");
 class ChangeIssueStatusCommand {
@@ -30,14 +30,16 @@ class ChangeIssueStatusCommand {
         return __awaiter(this, void 0, void 0, function* () {
             if (issueItem && issueItem.issue && state_1.canExecuteJiraAPI()) {
                 let issue = issueItem.issue;
-                const newTransitionId = yield select_utilities_1.selectTransition(issue.key);
-                if (newTransitionId) {
-                    const result = yield state_1.default.jira.doTransition(issue.key, {
-                        transition: {
-                            id: newTransitionId
-                        }
-                    });
-                    select_utilities_1.selectIssue(constants_1.SEARCH_MODE.REFRESH);
+                if (!state_1.isWorkingIssue(issue.key)) {
+                    const newTransitionId = yield select_utilities_1.selectTransition(issue.key);
+                    if (newTransitionId) {
+                        const result = yield state_1.default.jira.doTransition(issue.key, {
+                            transition: {
+                                id: newTransitionId
+                            }
+                        });
+                        yield vscode.commands.executeCommand('jira-plugin.refresh');
+                    }
                 }
             }
             else {

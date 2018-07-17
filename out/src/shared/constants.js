@@ -7,7 +7,9 @@ exports.CONFIG = {
     WORKING_PROJECT: 'workingProject'
 };
 exports.CONFIG_NAME = 'jira-plugin';
+exports.CONFIG_WORKING_ISSUE = 'working-issue';
 exports.YES = 'Yes';
+exports.YES_WITH_COMMENT = 'Yes with comment';
 exports.NO = 'No';
 exports.SEARCH_MODE = {
     ALL: 'ALL',

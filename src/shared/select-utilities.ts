@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import { Assignee, Issue } from '../http/api.model';
+import { IAssignee, IIssue } from '../http/api.model';
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
-import state, { canExecuteJiraAPI, changeIssuesInState, verifyCurrentProject } from '../state/state';
+import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
 import { BACK_PICK_LABEL, CONFIG, LOADING, SEARCH_MODE, UNASSIGNED } from './constants';
 import { addStatusIcon } from './utilities';
@@ -91,29 +91,44 @@ export const selectIssue = async (mode: string): Promise<void> => {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
     if (verifyCurrentProject(project)) {
       const [filter, jql] = await getFilterAndJQL(mode, project || '');
-      changeIssuesInState(LOADING.text, '', []);
+      changeStateIssues(LOADING.text, '', []);
       if (!!jql) {
         const issues = await state.jira.search({ jql });
         if (!!issues && !!issues.issues && issues.issues.length > 0) {
-          changeIssuesInState(filter, jql, issues.issues);
+          changeStateIssues(filter, jql, issues.issues);
         } else {
-          changeIssuesInState(filter, jql, []);
+          changeStateIssues(filter, jql, []);
           vscode.window.showInformationMessage(`No issues found for ${project} project`);
         }
       } else {
-        changeIssuesInState('', '', []);
+        changeStateIssues('', '', []);
         throw new Error(`Wrong parameter. No issues found for ${project} project.`);
       }
     } else {
-      changeIssuesInState('', '', []);
+      changeStateIssues('', '', []);
       throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
     }
   } else {
-    changeIssuesInState('', '', []);
+    changeStateIssues('', '', []);
   }
 };
 
-export const selectChangeWorkingIssue = async (): Promise<Issue | undefined> => {
+export const selectWorkingIssues = async (): Promise<IIssue[]> => {
+  let issues: IIssue[] = [];
+  if (canExecuteJiraAPI()) {
+    const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
+    if (verifyCurrentProject(project)) {
+      const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_IN_PROGRESS_ISSUES, project || '');
+      if (!!jql) {
+        const result = await state.jira.search({ jql });
+        issues = result.issues || [];
+      }
+    }
+  }
+  return issues;
+};
+
+export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> => {
   if (canExecuteJiraAPI()) {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
     if (verifyCurrentProject(project)) {
@@ -142,7 +157,7 @@ export const selectAssignee = async (unassigned: boolean, back: boolean): Promis
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
     const assignees = await state.jira.getAssignees(`search?project=${project}`);
-    const picks = (assignees || []).filter((assignee: Assignee) => assignee.active === true).map((assignee: Assignee) => {
+    const picks = (assignees || []).filter((assignee: IAssignee) => assignee.active === true).map((assignee: IAssignee) => {
       return {
         pickValue: assignee.key,
         label: assignee.key,

@@ -40,4 +40,12 @@ exports.getGlobalStateConfiguration = () => {
     const config = exports.getConfiguration();
     return state_1.default.context.globalState.get(`${constants_1.CONFIG_NAME}:${config.baseUrl}`);
 };
+exports.setGlobalWorkingIssue = (context, workingIssue) => {
+    const config = exports.getConfiguration();
+    return context.globalState.update(`${constants_1.CONFIG_NAME}:${config.baseUrl}:${constants_1.CONFIG_WORKING_ISSUE}:${config.workingProject}`, !!workingIssue ? JSON.stringify(workingIssue) : undefined);
+};
+exports.getGlobalWorkingIssue = (context) => {
+    const config = exports.getConfiguration();
+    return context.globalState.get(`${constants_1.CONFIG_NAME}:${config.baseUrl}:${constants_1.CONFIG_WORKING_ISSUE}:${config.workingProject}`);
+};
 //# sourceMappingURL=configuration.js.map

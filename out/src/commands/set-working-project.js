@@ -18,10 +18,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
+const vscode = require("vscode");
 const configuration_1 = require("../shared/configuration");
 const constants_1 = require("../shared/constants");
-const state_1 = require("../state/state");
 const select_utilities_1 = require("../shared/select-utilities");
+const state_1 = require("../state/state");
 class SetWorkingProjectCommand {
     constructor() {
         this.id = 'jira-plugin.setWorkingProjectCommand';
@@ -31,6 +32,7 @@ class SetWorkingProjectCommand {
             const project = yield select_utilities_1.selectProject();
             configuration_1.setConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT, project);
             state_1.default.statusBar.updateWorkingProjectItem(project);
+            yield vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
         });
     }
 }

@@ -1,29 +1,29 @@
 export interface Jira {
-  serverInfo(): Promise<ServerInfo>;
-  search(params: { jql: string }): Promise<Issues>;
-  getProjects(): Promise<Project[]>;
-  getStatuses(): Promise<Status[]>;
-  getTransitions(issue: string): Promise<Transitions>;
-  doTransition(issue: string, body: DoTransitionBody): Promise<void>;
-  getAssignees(param: string): Promise<Assignee[]>;
-  assignIssue(issue: string, body: AssignIssueBody): Promise<void>;
-  addNewComment(issue: string, body: AddCommentBody): Promise<AddCommentResponse>;
-  // getIssue(issue: string): Promise<Issue>;
+  serverInfo(): Promise<IServerInfo>;
+  search(params: { jql: string }): Promise<IIssues>;
+  getProjects(): Promise<IProject[]>;
+  getStatuses(): Promise<IStatus[]>;
+  getTransitions(issue: string): Promise<ITransitions>;
+  doTransition(issue: string, body: IDoTransition): Promise<void>;
+  getAssignees(param: string): Promise<IAssignee[]>;
+  assignIssue(issue: string, body: IAssignIssue): Promise<void>;
+  addNewComment(issue: string, body: IAddComment): Promise<IAddCommentResponse>;
+  addWorkLog(issue: string, body: IAddWorkLog): Promise<void>;
 }
 
-export interface ServerInfo {
+export interface IServerInfo {
   version: string;
   versionNumbers: number[];
 }
 
-export interface Issues {
-  issues: Issue[] | undefined;
+export interface IIssues {
+  issues: IIssue[] | undefined;
   maxResults: number;
   startAt: number;
   total: number;
 }
 
-export interface Issue {
+export interface IIssue {
   id: string;
   key: string;
   fields: {
@@ -35,7 +35,7 @@ export interface Issue {
   };
 }
 
-export interface Project {
+export interface IProject {
   key: string;
   expand: string;
   self: string;
@@ -43,7 +43,7 @@ export interface Project {
   name: string;
 }
 
-export interface Status {
+export interface IStatus {
   self: string;
   description: string;
   iconUrl: string;
@@ -52,11 +52,11 @@ export interface Status {
   statusCategory: any;
 }
 
-export interface Transitions {
-  transitions: Transition[];
+export interface ITransitions {
+  transitions: ITransition[];
 }
 
-export interface Transition {
+export interface ITransition {
   id: string;
   name: string;
   to: {
@@ -64,27 +64,37 @@ export interface Transition {
   };
 }
 
-export interface DoTransitionBody {
+export interface IDoTransition {
   transition: {
     id: string;
   };
 }
 
-export interface Assignee {
+export interface IAssignee {
   key: string;
   name: string;
   displayName: string;
   active: boolean;
 }
 
-export interface AssignIssueBody {
+export interface IAssignIssue {
   name: string;
 }
 
-export interface AddCommentBody {
+export interface IAddComment {
   body: string;
 }
 
-export interface AddCommentResponse {
+export interface IAddCommentResponse {
   id: string;
+}
+
+export interface IWorkingIssue {
+  issue: IIssue;
+  timePerSecond: number;
+}
+
+export interface IAddWorkLog {
+  timeSpentSeconds: number;
+  comment?: string;
 }

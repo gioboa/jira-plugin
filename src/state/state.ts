@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import { JiraExplorer } from '../explorer/jira-explorer';
-import { Issue, Jira, Project, Status } from '../http/api.model';
+import { IIssue, IProject, IStatus, IWorkingIssue, Jira } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
-import { configIsCorrect } from '../shared/configuration';
-import { LOADING } from '../shared/constants';
+import { configIsCorrect, setGlobalWorkingIssue } from '../shared/configuration';
+import { LOADING, NO_WORKING_ISSUE } from '../shared/constants';
 import { StatusBarManager } from '../shared/status-bar';
 
 export interface State {
@@ -12,12 +12,12 @@ export interface State {
   statusBar: StatusBarManager;
   jiraExplorer: JiraExplorer;
   jira: Jira;
-  statuses: Status[];
-  projects: Project[];
-  issues: Issue[];
+  statuses: IStatus[];
+  projects: IProject[];
+  issues: IIssue[];
   currentFilter: string;
   currentJQL: string;
-  workingIssue: Issue;
+  workingIssue: IWorkingIssue;
 }
 
 const state: State = {
@@ -31,7 +31,10 @@ const state: State = {
   issues: [],
   currentFilter: LOADING.text,
   currentJQL: '',
-  workingIssue: new NoWorkingIssuePick().pickValue
+  workingIssue: {
+    issue: new NoWorkingIssuePick().pickValue,
+    timePerSecond: 0
+  }
 };
 
 export default state;
@@ -41,17 +44,34 @@ export const canExecuteJiraAPI = (): boolean => {
 };
 
 export const verifyCurrentProject = (project: string | undefined): boolean => {
-  return !!project && state.projects.filter((prj: Project) => prj.key === project).length > 0;
+  return !!project && state.projects.filter((prj: IProject) => prj.key === project).length > 0;
 };
 
-export const changeIssuesInState = (filter: string, jql: string, issues: Issue[]): void => {
+export const changeStateIssues = (filter: string, jql: string, issues: IIssue[]): void => {
   state.currentFilter = filter;
   state.currentJQL = jql;
   state.issues = issues;
   state.jiraExplorer.refresh();
 };
 
-export const changeWorkingIssue = (newActiveIssue: Issue): void => {
-  state.workingIssue = newActiveIssue;
-  state.statusBar.updateWorkingIssueItem();
+export const changeStateWorkingIssue = async (issue: IIssue, timePerSecond: number): Promise<void> => {
+  state.workingIssue = { issue, timePerSecond };
+  state.statusBar.updateWorkingIssueItem(false);
+};
+
+export const incrementStateWorkingIssueTimePerSecond = (): void => {
+  state.workingIssue.timePerSecond += 1;
+  // prevent writing to much on storage
+  if (state.workingIssue.timePerSecond % 60 === 0) {
+    if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
+      setGlobalWorkingIssue(state.context, state.workingIssue);
+    }
+  }
+};
+
+export const isWorkingIssue = (issueKey: string): boolean => {
+  if (issueKey === state.workingIssue.issue.key) {
+    vscode.window.showErrorMessage(`Issue ${issueKey} has pending worklog. Resolve the conflict and retry the action.`);
+  }
+  return issueKey === state.workingIssue.issue.key;
 };

@@ -79,6 +79,9 @@ var impl;
         addNewComment() {
             /* */
         }
+        addWorkLog() {
+            /* */
+        }
     }
     __decorate([
         src_1.Get('/rest/api/2/serverInfo'),
@@ -134,6 +137,12 @@ var impl;
         __metadata("design:paramtypes", []),
         __metadata("design:returntype", Object)
     ], JiraBlueprint.prototype, "addNewComment", null);
+    __decorate([
+        src_1.Post('/rest/api/2/issue/:issue/worklog'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", Object)
+    ], JiraBlueprint.prototype, "addWorkLog", null);
     impl.JiraBlueprint = JiraBlueprint;
 })(impl || (impl = {}));
 //# sourceMappingURL=api.js.map

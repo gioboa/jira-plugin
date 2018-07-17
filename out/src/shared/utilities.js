@@ -14,15 +14,14 @@ const api_1 = require("../http/api");
 const state_1 = require("../state/state");
 const configuration_1 = require("./configuration");
 const constants_1 = require("./constants");
-const select_utilities_1 = require("./select-utilities");
 exports.executeConnectionToJira = () => {
     if (configuration_1.getConfigurationByKey(constants_1.CONFIG.BASE_URL)) {
         const connect = () => __awaiter(this, void 0, void 0, function* () {
             state_1.default.jira = (yield exports.connectToJira());
-            state_1.default.statusBar.updateWorkingProjectItem('');
             state_1.default.statuses = yield state_1.default.jira.getStatuses();
             state_1.default.projects = yield state_1.default.jira.getProjects();
-            select_utilities_1.selectIssue(constants_1.SEARCH_MODE.ALL);
+            state_1.default.statusBar.updateWorkingProjectItem('');
+            yield vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
         });
         connect().catch(() => {
             vscode.window.showErrorMessage('Failed to connect to jira');
@@ -63,5 +62,11 @@ exports.addStatusIcon = (status, withDescription) => {
 };
 exports.getIconsPath = (fileName) => {
     return path.join(__filename, '..', '..', '..', '..', 'images', 'icons', fileName);
+};
+exports.secondsToHHMMSS = (sec) => {
+    let hours = Math.floor(sec / 3600);
+    let minutes = Math.floor((sec - hours * 3600) / 60);
+    let seconds = sec - hours * 3600 - minutes * 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
 //# sourceMappingURL=utilities.js.map

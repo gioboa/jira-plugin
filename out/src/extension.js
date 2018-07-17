@@ -4,9 +4,10 @@ require("isomorphic-fetch");
 const vscode = require("vscode");
 const change_issue_assignee_1 = require("./commands/change-issue-assignee");
 const change_issue_status_1 = require("./commands/change-issue-status");
-const set_working_issue_1 = require("./commands/set-working-issue");
 const issue_add_comment_1 = require("./commands/issue-add-comment");
+const issue_add_worklog_1 = require("./commands/issue-add-worklog");
 const open_issue_1 = require("./commands/open-issue");
+const set_working_issue_1 = require("./commands/set-working-issue");
 const set_working_project_1 = require("./commands/set-working-project");
 const setup_credentials_1 = require("./commands/setup-credentials");
 const jira_explorer_1 = require("./explorer/jira-explorer");
@@ -37,7 +38,8 @@ exports.activate = (context) => {
         new change_issue_assignee_1.ChangeIssueAssigneeCommand(),
         new issue_add_comment_1.IssueAddCommentCommand(),
         new open_issue_1.OpenIssueCommand(),
-        new set_working_issue_1.SetWorkingIssueCommand()
+        new set_working_issue_1.SetWorkingIssueCommand(),
+        new issue_add_worklog_1.IssueAddWorklogCommand()
     ];
     context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.refresh', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.REFRESH)));
     context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.allIssuesCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.ALL)));

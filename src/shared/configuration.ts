@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
+import { IWorkingIssue } from '../http/api.model';
 import state from '../state/state';
 import { Configuration } from './configuration.model';
-import { CONFIG, CONFIG_NAME, CREDENTIALS_SEPARATOR } from './constants';
+import { CONFIG, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR } from './constants';
 
 export const configIsCorrect = (): boolean => {
   const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
@@ -44,4 +45,14 @@ export const setGlobalStateConfiguration = (password: string | undefined): Thena
 export const getGlobalStateConfiguration = (): any => {
   const config = getConfiguration();
   return state.context.globalState.get(`${CONFIG_NAME}:${config.baseUrl}`);
+};
+
+export const setGlobalWorkingIssue = (context: vscode.ExtensionContext, workingIssue: IWorkingIssue | undefined): Thenable<void> => {
+  const config = getConfiguration();
+  return context.globalState.update(`${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`, !!workingIssue ? JSON.stringify(workingIssue) : undefined);
+};
+
+export const getGlobalWorkingIssue = (context: vscode.ExtensionContext): any => {
+  const config = getConfiguration();
+  return context.globalState.get(`${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`);
 };

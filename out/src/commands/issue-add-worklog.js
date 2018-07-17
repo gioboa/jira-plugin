@@ -18,41 +18,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decko_1 = require("decko");
-const vscode = require("vscode");
-const issue_item_1 = require("../explorer/item/issue-item");
-const select_utilities_1 = require("../shared/select-utilities");
+const constants_1 = require("../shared/constants");
 const state_1 = require("../state/state");
-class ChangeIssueAssigneeCommand {
+class IssueAddWorklogCommand {
     constructor() {
-        this.id = 'jira-plugin.changeIssueAssigneeCommand';
+        this.id = 'jira-plugin.issueAddWorklogCommand';
     }
-    run(issueItem) {
+    run(issueKey, timeSpentSeconds, comment) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (issueItem && issueItem.issue && state_1.canExecuteJiraAPI()) {
-                let issue = issueItem.issue;
-                if (!state_1.isWorkingIssue(issue.key)) {
-                    let assignee = yield select_utilities_1.selectAssignee(false, false);
-                    if (!!assignee) {
-                        const res = yield state_1.default.jira.assignIssue(issue.key, {
-                            name: assignee
-                        });
-                        yield vscode.commands.executeCommand('jira-plugin.refresh');
-                    }
-                }
-            }
-            else {
+            if (issueKey !== constants_1.NO_WORKING_ISSUE.key) {
                 if (state_1.canExecuteJiraAPI()) {
-                    throw new Error('Use this command from JIRA: EXPLORER');
+                    const response = yield state_1.default.jira.addWorkLog(issueKey, { timeSpentSeconds: Math.ceil(timeSpentSeconds / 60) * 60, comment });
                 }
             }
         });
     }
+    dispose() { }
 }
 __decorate([
     decko_1.bind,
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [issue_item_1.IssueItem]),
+    __metadata("design:paramtypes", [String, Number, String]),
     __metadata("design:returntype", Promise)
-], ChangeIssueAssigneeCommand.prototype, "run", null);
-exports.ChangeIssueAssigneeCommand = ChangeIssueAssigneeCommand;
-//# sourceMappingURL=change-issue-assignee.js.map
+], IssueAddWorklogCommand.prototype, "run", null);
+exports.IssueAddWorklogCommand = IssueAddWorklogCommand;
+//# sourceMappingURL=issue-add-worklog.js.map

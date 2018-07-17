@@ -7,8 +7,10 @@ export const CONFIG = {
 };
 
 export const CONFIG_NAME = 'jira-plugin';
+export const CONFIG_WORKING_ISSUE = 'working-issue';
 
 export const YES = 'Yes';
+export const YES_WITH_COMMENT = 'Yes with comment';
 export const NO = 'No';
 
 export const SEARCH_MODE = {

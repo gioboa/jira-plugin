@@ -29,20 +29,50 @@ class StatusBarManager {
             this.workingProjectItem.command = 'jira-plugin.setWorkingProjectCommand';
             this.workingProjectItem.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
             this.workingProjectItem.show();
-            this.updateWorkingIssueItem();
+            this.updateWorkingIssueItem(true);
         });
     }
-    updateWorkingIssueItem() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.workingIssueItem.text = `$(watch) ` + (state_1.default.workingIssue.key !== constants_1.NO_WORKING_ISSUE.key ? `Working Issue: - ${state_1.default.workingIssue.key || ''}` : constants_1.NO_WORKING_ISSUE.text);
-            this.workingIssueItem.tooltip = 'Set working issue';
-            this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';
-            this.workingIssueItem.show();
-        });
+    updateWorkingIssueItem(checkGlobalStore) {
+        let issue;
+        if (checkGlobalStore) {
+            issue = configuration_1.getGlobalWorkingIssue(state_1.default.context);
+            if (!!issue) {
+                vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', JSON.parse(issue));
+                configuration_1.setGlobalWorkingIssue(state_1.default.context, undefined);
+                return;
+            }
+        }
+        this.clearWorkingIssueInterval();
+        if (state_1.default.workingIssue.issue.key !== constants_1.NO_WORKING_ISSUE.key) {
+            this.startWorkingIssueInterval();
+        }
+        else {
+            configuration_1.setGlobalWorkingIssue(state_1.default.context, undefined);
+        }
+        this.workingIssueItem.text = `$(watch) ` + (state_1.default.workingIssue.issue.key !== constants_1.NO_WORKING_ISSUE.key ? `Working Issue: - ${state_1.default.workingIssue.issue.key || ''}` : constants_1.NO_WORKING_ISSUE.text);
+        this.workingIssueItem.tooltip = 'Set working issue';
+        this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';
+        this.workingIssueItem.show();
+    }
+    clearWorkingIssueInterval() {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+    }
+    startWorkingIssueInterval() {
+        this.clearWorkingIssueInterval();
+        this.intervalId = setInterval(() => {
+            if (vscode.window.state.focused) {
+                state_1.incrementStateWorkingIssueTimePerSecond();
+            }
+        }, 1000);
     }
     dispose() {
-        this.workingIssueItem.dispose();
-        this.workingProjectItem.dispose();
+        return __awaiter(this, void 0, void 0, function* () {
+            this.clearWorkingIssueInterval();
+            this.workingIssueItem.dispose();
+            this.workingProjectItem.dispose();
+        });
     }
 }
 exports.StatusBarManager = StatusBarManager;

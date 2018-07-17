@@ -94,30 +94,44 @@ exports.selectIssue = (mode) => __awaiter(this, void 0, void 0, function* () {
         const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT);
         if (state_1.verifyCurrentProject(project)) {
             const [filter, jql] = yield getFilterAndJQL(mode, project || '');
-            state_1.changeIssuesInState(constants_1.LOADING.text, '', []);
+            state_1.changeStateIssues(constants_1.LOADING.text, '', []);
             if (!!jql) {
                 const issues = yield state_1.default.jira.search({ jql });
                 if (!!issues && !!issues.issues && issues.issues.length > 0) {
-                    state_1.changeIssuesInState(filter, jql, issues.issues);
+                    state_1.changeStateIssues(filter, jql, issues.issues);
                 }
                 else {
-                    state_1.changeIssuesInState(filter, jql, []);
+                    state_1.changeStateIssues(filter, jql, []);
                     vscode.window.showInformationMessage(`No issues found for ${project} project`);
                 }
             }
             else {
-                state_1.changeIssuesInState('', '', []);
+                state_1.changeStateIssues('', '', []);
                 throw new Error(`Wrong parameter. No issues found for ${project} project.`);
             }
         }
         else {
-            state_1.changeIssuesInState('', '', []);
+            state_1.changeStateIssues('', '', []);
             throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
         }
     }
     else {
-        state_1.changeIssuesInState('', '', []);
+        state_1.changeStateIssues('', '', []);
     }
+});
+exports.selectWorkingIssues = () => __awaiter(this, void 0, void 0, function* () {
+    let issues = [];
+    if (state_1.canExecuteJiraAPI()) {
+        const project = configuration_1.getConfigurationByKey(constants_1.CONFIG.WORKING_PROJECT);
+        if (state_1.verifyCurrentProject(project)) {
+            const [filter, jql] = yield getFilterAndJQL(constants_1.SEARCH_MODE.MY_IN_PROGRESS_ISSUES, project || '');
+            if (!!jql) {
+                const result = yield state_1.default.jira.search({ jql });
+                issues = result.issues || [];
+            }
+        }
+    }
+    return issues;
 });
 exports.selectChangeWorkingIssue = () => __awaiter(this, void 0, void 0, function* () {
     if (state_1.canExecuteJiraAPI()) {

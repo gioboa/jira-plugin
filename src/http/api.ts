@@ -83,9 +83,9 @@ namespace impl {
       /* */
     }
 
-    // @Get('/rest/api/2/issue/:issue')
-    // public getIssue(): any {
-    //   /* */
-    // }
+    @Post('/rest/api/2/issue/:issue/worklog')
+    public addWorkLog(): any {
+      /* */
+    }
   }
 }

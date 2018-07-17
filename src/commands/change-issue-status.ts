@@ -1,8 +1,8 @@
 import { bind } from 'decko';
+import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import { SEARCH_MODE } from '../shared/constants';
-import { selectIssue, selectTransition } from '../shared/select-utilities';
-import state, { canExecuteJiraAPI } from '../state/state';
+import { selectTransition } from '../shared/select-utilities';
+import state, { canExecuteJiraAPI, isWorkingIssue } from '../state/state';
 import { Command } from './shared/command';
 
 export class ChangeIssueStatusCommand implements Command {
@@ -12,14 +12,16 @@ export class ChangeIssueStatusCommand implements Command {
   public async run(issueItem: IssueItem): Promise<void> {
     if (issueItem && issueItem.issue && canExecuteJiraAPI()) {
       let issue = issueItem.issue;
-      const newTransitionId = await selectTransition(issue.key);
-      if (newTransitionId) {
-        const result = await state.jira.doTransition(issue.key, {
-          transition: {
-            id: newTransitionId
-          }
-        });
-        selectIssue(SEARCH_MODE.REFRESH);
+      if (!isWorkingIssue(issue.key)) {
+        const newTransitionId = await selectTransition(issue.key);
+        if (newTransitionId) {
+          const result = await state.jira.doTransition(issue.key, {
+            transition: {
+              id: newTransitionId
+            }
+          });
+          await vscode.commands.executeCommand('jira-plugin.refresh');
+        }
       }
     } else {
       if (canExecuteJiraAPI()) {

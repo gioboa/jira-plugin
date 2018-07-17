@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import { Issue } from '../../http/api.model';
+import { IIssue } from '../../http/api.model';
 import { STATUS_ICONS } from '../../shared/constants';
 import { getIconsPath } from '../../shared/utilities';
 
 export class IssueItem extends vscode.TreeItem {
-  constructor(public readonly issue: Issue, public readonly command?: vscode.Command) {
+  constructor(public readonly issue: IIssue, public readonly command?: vscode.Command) {
     super(`${issue.key} - ${issue.fields.summary}`, vscode.TreeItemCollapsibleState.None);
   }
 
