@@ -62,7 +62,14 @@ const getFilterAndJQL = (mode, project) => __awaiter(this, void 0, void 0, funct
         case constants_1.SEARCH_MODE.STATUS: {
             const status = yield selectStatus();
             if (!!status) {
-                return [`STATUS: ${status}`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`];
+                return [`STATUS: ${status}`, `project = ${project} AND status = '${status}' ORDER BY updated DESC`];
+            }
+            break;
+        }
+        case constants_1.SEARCH_MODE.MY_STATUS: {
+            const status = yield selectStatus();
+            if (!!status) {
+                return [`STATUS: ${status} ASSIGNEE "current user"`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`];
             }
             break;
         }

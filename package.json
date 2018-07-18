@@ -101,6 +101,11 @@
         "category": "Jira-plugin"
       },
       {
+        "command": "jira-plugin.issuesByStatusCommand",
+        "title": "Issues filtered by status",
+        "category": "Jira-plugin"
+      },
+      {
         "command": "jira-plugin.myIssuesByStatusCommand",
         "title": "My issues filtered by status",
         "category": "Jira-plugin"
@@ -147,6 +152,10 @@
         },
         {
           "command": "jira-plugin.issueByIdCommand",
+          "when": "view == jiraExplorer"
+        },
+        {
+          "command": "jira-plugin.issuesByStatusCommand",
           "when": "view == jiraExplorer"
         },
         {

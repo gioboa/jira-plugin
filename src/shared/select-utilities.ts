@@ -58,7 +58,14 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     case SEARCH_MODE.STATUS: {
       const status = await selectStatus();
       if (!!status) {
-        return [`STATUS: ${status}`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`];
+        return [`STATUS: ${status}`, `project = ${project} AND status = '${status}' ORDER BY updated DESC`];
+      }
+      break;
+    }
+    case SEARCH_MODE.MY_STATUS: {
+      const status = await selectStatus();
+      if (!!status) {
+        return [`STATUS: ${status} ASSIGNEE "current user"`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`];
       }
       break;
     }

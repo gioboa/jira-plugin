@@ -43,8 +43,9 @@ exports.activate = (context) => {
     ];
     context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.refresh', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.REFRESH)));
     context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.allIssuesCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.ALL)));
-    context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.myIssuesByStatusCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.STATUS)));
+    context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.myIssuesByStatusCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.MY_STATUS)));
     context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesByStatusAssigneeCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.STATUS_ASSIGNEE)));
+    context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesByStatusCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.STATUS)));
     context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issueByIdCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.ID)));
     context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesBySummaryCommand', () => select_utilities_1.selectIssue(constants_1.SEARCH_MODE.SUMMARY)));
     context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));

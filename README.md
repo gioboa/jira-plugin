@@ -32,24 +32,33 @@ The extension store credentials in VS Code settings.<br><br>
 
 ![Settings](images/readme/settings.png)
 
-## Features
+## Explorer Features
 
-![Commands](images/readme/commands.gif)
+![Explorer commands](images/readme/explorer-commands.png)
 
+- **All issues**<br>
+  With this command you can search all issues for the current project.<br><br>
 - **Issue by id**<br>
-  With this command you can search and view a issue by id.<br><br>
-- **My issues filtered by status**<br>
-  With this command you can search your issues with a particular status.<br><br>
+  With this command you can search an issue by id.<br><br>
+- **Issues filtered by status**<br>
+  With this command you can search issues with a particular status.<br><br>
 - **Issues filtered by status and assignee**<br>
   With this command you can search issues with a particular assignee and status.<br><br>
 - **Issues filtered by summary**<br>
   With this command you can search issues with a particular summary.<br><br>
-- **Change issue status**<br>
-  With this command you can change an issue status.<br><br>
-- **Change issue assignee**<br>
-  With this command you can change an issue assignee.<br><br>
+- **My issues filtered by status**<br>
+  With this command you can search your issues with a particular status.<br><br>
+
+## Item Features (right click on item)
+
+![Item Commands](images/readme/item-commands.png)
+
 - **Add comment**<br>
   With this command you can add comment. [@] is the placeholder for tag a user.<br>**e.g:** 'This is the placeholder for tag user -> [@]'<br><br>
+- **Change issue assignee**<br>
+  With this command you can change an issue assignee.<br><br>
+- **Change issue status**<br>
+  With this command you can change an issue status.<br><br>
 
 ## Explorer
 
