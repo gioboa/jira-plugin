@@ -26,8 +26,9 @@ export class StatusBarManager {
     this.workingProjectItem.command = 'jira-plugin.setWorkingProjectCommand';
     this.workingProjectItem.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
     this.workingProjectItem.show();
-
-    this.updateWorkingIssueItem(true);
+    if (getConfigurationByKey(CONFIG.ENABLE_WORKING_ISSUE)) {
+      this.updateWorkingIssueItem(true);
+    }
   }
 
   private workingIssueItemText(workingIssue: IWorkingIssue): string {

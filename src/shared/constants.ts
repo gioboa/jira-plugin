@@ -3,7 +3,8 @@ export const CREDENTIALS_SEPARATOR = '##';
 export const CONFIG = {
   BASE_URL: 'baseUrl',
   USERNAME: 'username',
-  WORKING_PROJECT: 'workingProject'
+  WORKING_PROJECT: 'workingProject',
+  ENABLE_WORKING_ISSUE: 'enableWorkingIssue'
 };
 
 export const CONFIG_NAME = 'jira-plugin';
