@@ -1,3 +1,10 @@
+## 0.5.0
+
+### Features
+
+- possibility to filter issues by status <br>
+- add config for enable/disable working issue functionality
+
 ## 0.4.0
 
 ### Features
