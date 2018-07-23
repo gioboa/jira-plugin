@@ -38,7 +38,8 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "precommit": "npm test"
   },
   "contributes": {
     "configuration": {
@@ -193,12 +194,13 @@
     }
   },
   "devDependencies": {
-    "typescript": "^2.9.2",
-    "vscode": "^1.1.18",
-    "mocha": "^5.2.0",
-    "@types/node": "^10.5.2",
     "@types/mocha": "^5.2.4",
-    "tslint": "^5.10.0"
+    "@types/node": "^10.5.2",
+    "husky": "^0.14.3",
+    "mocha": "^5.2.0",
+    "tslint": "^5.10.0",
+    "typescript": "^2.9.2",
+    "vscode": "^1.1.18"
   },
   "dependencies": {
     "decko": "^1.2.0",
