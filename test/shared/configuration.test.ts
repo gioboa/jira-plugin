@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as config from '../../src/shared/configuration';
-import { CONFIG } from '../../src/shared/constants';
+import { CONFIG, CREDENTIALS_SEPARATOR } from '../../src/shared/constants';
 
 suite('Configuration Tests', () => {
   const tests = [
@@ -57,5 +57,12 @@ suite('Configuration Tests', () => {
         assert.notEqual(entry.expected, config.getConfigurationByKey(entry.config));
       }
     });
+  });
+
+  test(`Test password config`, () => {
+    const password = 'my_password';
+    config.setGlobalStateConfiguration(password);
+    const result = config.getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR)[1];
+    assert.equal(password, result);
   });
 });

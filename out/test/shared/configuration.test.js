@@ -59,5 +59,11 @@ suite('Configuration Tests', () => {
             }
         });
     });
+    test(`Test password config`, () => {
+        const password = 'my_password';
+        config.setGlobalStateConfiguration(password);
+        const result = config.getGlobalStateConfiguration().split(constants_1.CREDENTIALS_SEPARATOR)[1];
+        assert.equal(password, result);
+    });
 });
 //# sourceMappingURL=configuration.test.js.map
