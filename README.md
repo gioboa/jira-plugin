@@ -32,7 +32,7 @@ The extension store credentials in VS Code settings.<br><br>
 
 ![Settings](images/readme/settings.png)
 
-## Explorer Features
+## Explorer commands
 
 ![Explorer commands](images/readme/explorer-commands.png)
 
@@ -49,9 +49,9 @@ The extension store credentials in VS Code settings.<br><br>
 - **My issues filtered by status**<br>
   With this command you can search your issues with a particular status.<br><br>
 
-## Item Features (right click on item)
+## Issue commands (right click on issue in explorer)
 
-![Item Commands](images/readme/item-commands.png)
+![Issue Commands](images/readme/issue-commands.png)
 
 - **Add comment**<br>
   With this command you can add comment. [@] is the placeholder for tag a user.<br>**e.g:** 'This is the placeholder for tag user -> [@]'<br><br>
@@ -87,7 +87,7 @@ The extension store credentials in VS Code settings.<br><br>
 
 ## Want to contribute?
 
-If you want to file a bug, contribute some code, or improve documentation, read up on [contributing guidelines](CONTRIBUTING.md), and check out [open issues](/issues).
+If you want to file a bug, contribute some code or improve documentation, read up on [contributing guidelines](CONTRIBUTING.md), and check out [open issues](https://github.com/gioboa/jira-plugin/issues).
 
 ## Versioning
 
