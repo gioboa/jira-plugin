@@ -84,6 +84,15 @@ The extension store credentials in VS Code settings.<br><br>
 
 ![Working issue](images/readme/working-issue.gif)
 
+## Contributing
+
+1.  Fork it!
+1.  Create your feature branch: `git checkout -b my-new-feature`
+1.  Add your changes: `git add .`
+1.  Commit your changes: `git commit -am 'Add some feature'`
+1.  Push to the branch: `git push origin my-new-feature`
+1.  Submit a pull request :sunglasses:
+
 ## Resources
 
 Based on [JIRA APIs](https://developer.atlassian.com/cloud/jira/platform/rest/)
