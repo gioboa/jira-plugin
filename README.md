@@ -84,14 +84,24 @@ The extension store credentials in VS Code settings.<br><br>
 
 ![Working issue](images/readme/working-issue.gif)
 
-## Contributing
 
-1.  Fork it!
-1.  Create your feature branch: `git checkout -b my-new-feature`
-1.  Add your changes: `git add .`
-1.  Commit your changes: `git commit -am 'Add some feature'`
-1.  Push to the branch: `git push origin my-new-feature`
-1.  Submit a pull request :sunglasses:
+## Want to contribute?
+
+If you want to file a bug, contribute some code, or improve documentation, read up on [contributing guidelines](CONTRIBUTING.md), and check out [open issues](/issues).
+
+## Versioning
+
+`jira-plugin` will be maintained under the Semantic Versioning guidelines. Releases are numbered with the following format:
+
+```
+<MAJOR>.<MINOR>.<PATCH>
+```
+
+1.  **MAJOR** versions indicate incompatible API changes,
+2.  **MINOR** versions add functionality in a backwards-compatible manner, and
+3.  **PATCH** versions introduce backwards-compatible bug fixes.
+
+For more information on SemVer, please visit [http://semver.org](http://semver.org).
 
 ## Resources
 
