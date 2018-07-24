@@ -69,8 +69,31 @@ class StatusBarManager {
         this.clearWorkingIssueInterval();
         this.intervalId = setInterval(() => {
             if (vscode.window.state.focused) {
+                // If we are coming back from a short away period catch up our logging time
+                // If the away time was > awayTime, workingIssueItem.awayTime will be -1, so we won't log time.
+                if (this.workingIssueItem.awayTime && this.workingIssueItem.awayTime > 0) {
+                    state_1.default.workingIssue.timePerSecond += this.workingIssueItem.awayTime;
+                }
+                // Clear the away timer
+                this.workingIssueItem.awayTime = 0;
+                // Update as normal
                 state_1.incrementStateWorkingIssueTimePerSecond();
                 this.workingIssueItem.text = this.workingIssueItemText(state_1.default.workingIssue);
+            } else {
+                // If we are away from the Window capture the time, if it's less than our awayTimeout
+                const awayTimeout = 20 * 60; // TODO: this value should come from in the settings file
+                if (this.workingIssueItem.awayTime >= 0) {
+                    if ((awayTimeout - this.workingIssueItem.awayTime) > 0) {
+                        this.workingIssueItem.awayTime++;
+                        // console.log('Away for '+ this.workingIssueItem.awayTime+' seconds.');
+                        console.log('Away catchup will timeout in ' + utilities_1.secondsToHHMMSS(awayTimeout - this.workingIssueItem.awayTime) ); // TODO: put ( Snooze icon + the countdown value ) in statusbar next to paused issue time
+                    } else {
+                        // We've been away longer than the away timeout, we are probably working on something else
+                        // we set the away timer to -1 to disable it until the next away period
+                        this.workingIssueItem.awayTime = -1;
+                        console.log('Away for too long... not going to log time against working issue');
+                    }
+                }
             }
         }, 1000);
     }
