@@ -1,3 +1,10 @@
+## 0.5.1
+
+### Bug Fixes
+
+- add id in working issues list + modify labels
+- modify working issue tooltip
+
 ## 0.5.0
 
 ### Features
