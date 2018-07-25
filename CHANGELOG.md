@@ -2,7 +2,7 @@
 
 ### Bug Fixes
 
-- problem with VS Code publish
+- solve problem with VS Code publish
 
 ## 0.5.1
 
