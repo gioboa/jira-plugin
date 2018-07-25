@@ -5,7 +5,8 @@ export const CONFIG = {
   USERNAME: 'username',
   WORKING_PROJECT: 'workingProject',
   ENABLE_WORKING_ISSUE: 'enableWorkingIssue',
-  TRACKING_TIME_MODE: 'trackingTimeMode'
+  TRACKING_TIME_MODE: 'trackingTimeMode',
+  WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime'
 };
 
 export const TRACKING_TIME_MODE = {

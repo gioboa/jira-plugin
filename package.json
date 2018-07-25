@@ -74,6 +74,11 @@
             "vsCodeFocus"
           ],
           "default": "always"
+        },
+        "jira-plugin.worklogMinimumTrackingTime": {
+          "type": "integer",
+          "description": "Minimum tracking time for create Jira worklog",
+          "default": 0
         }
       }
     },

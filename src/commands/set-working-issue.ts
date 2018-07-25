@@ -2,9 +2,10 @@ import { bind } from 'decko';
 import * as vscode from 'vscode';
 import { IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
-import { NO, NO_WORKING_ISSUE, YES, YES_WITH_COMMENT } from '../shared/constants';
+import { getConfigurationByKey } from '../shared/configuration';
+import { CONFIG, NO, NO_WORKING_ISSUE, YES, YES_WITH_COMMENT } from '../shared/constants';
 import { selectChangeWorkingIssue, selectWorkingIssues } from '../shared/select-utilities';
-import { secondsToHHMMSS } from '../shared/utilities';
+import { secondsToHHMMSS, secondsToMinutes } from '../shared/utilities';
 import state, { changeStateWorkingIssue } from '../state/state';
 import { Command } from './shared/command';
 
@@ -41,7 +42,7 @@ export class SetWorkingIssueCommand implements Command {
       const workingIssue = state.workingIssue || new NoWorkingIssuePick().pickValue;
       const newIssue = await selectChangeWorkingIssue();
       if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
-        if (workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
+        if (workingIssue.issue.key !== NO_WORKING_ISSUE.key && secondsToMinutes(workingIssue.timePerSecond) >= parseInt(getConfigurationByKey(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME) || '0', 10)) {
           state.statusBar.clearWorkingIssueInterval();
           let action = await vscode.window.showInformationMessage(
             `Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${secondsToHHMMSS(workingIssue.timePerSecond)} ?`,
