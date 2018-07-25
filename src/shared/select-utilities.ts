@@ -65,14 +65,14 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     case SEARCH_MODE.MY_STATUS: {
       const status = await selectStatus();
       if (!!status) {
-        return [`STATUS: ${status} ASSIGNEE "current user"`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`];
+        return [`STATUS: ${status} ASSIGNEE: you`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`];
       }
       break;
     }
     case SEARCH_MODE.STATUS_ASSIGNEE: {
       const { status, assignee } = await selectStatusAndAssignee();
       if (!!status && !!assignee) {
-        return [`STATUS: ${status} ASSIGNEE ${assignee}`, `project = ${project} AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`];
+        return [`STATUS: ${status} ASSIGNEE: ${assignee}`, `project = ${project} AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`];
       }
       break;
     }
@@ -145,11 +145,11 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
         if (issues.issues && issues.issues.length > 0) {
           const picks = issues.issues.map(issue => ({
             pickValue: issue,
-            label: addStatusIcon(issue.fields.status.name, false) + ` ${issue.fields.summary}`,
-            description: ''
+            label: addStatusIcon(issue.fields.status.name, false) + ` ${issue.key}`,
+            description: issue.fields.summary
           }));
           picks.unshift(new NoWorkingIssuePick());
-          const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Select Issue`, matchOnDescription: true });
+          const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Your in progress issues`, matchOnDescription: true });
           return selected ? selected.pickValue : undefined;
         } else {
           vscode.window.showInformationMessage(`No 'In Progress' issues found for your user in ${project} project`);
