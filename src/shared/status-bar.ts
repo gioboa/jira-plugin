@@ -31,6 +31,10 @@ export class StatusBarManager {
     }
   }
 
+  private workingIssueItemTooltip(workingIssue: IWorkingIssue): string {
+    return workingIssue.issue.key !== NO_WORKING_ISSUE.key ? workingIssue.issue.fields.summary : 'Set working issue';
+  }
+
   private workingIssueItemText(workingIssue: IWorkingIssue): string {
     return (
       `$(watch) ` + (workingIssue.issue.key !== NO_WORKING_ISSUE.key ? `Working Issue: - ${workingIssue.issue.key || ''} ${secondsToHHMMSS(workingIssue.timePerSecond) || ''}` : NO_WORKING_ISSUE.text)
@@ -54,9 +58,9 @@ export class StatusBarManager {
     } else {
       setGlobalWorkingIssue(state.context, undefined);
     }
-    this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
-    this.workingIssueItem.tooltip = 'Set working issue';
+    this.workingIssueItem.tooltip = this.workingIssueItemTooltip(state.workingIssue);
     this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';
+    this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
     this.workingIssueItem.show();
   }
 

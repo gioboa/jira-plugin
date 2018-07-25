@@ -35,6 +35,9 @@ class StatusBarManager {
             }
         });
     }
+    workingIssueItemTooltip(workingIssue) {
+        return workingIssue.issue.key !== constants_1.NO_WORKING_ISSUE.key ? workingIssue.issue.fields.summary : 'Set working issue';
+    }
     workingIssueItemText(workingIssue) {
         return (`$(watch) ` + (workingIssue.issue.key !== constants_1.NO_WORKING_ISSUE.key ? `Working Issue: - ${workingIssue.issue.key || ''} ${utilities_1.secondsToHHMMSS(workingIssue.timePerSecond) || ''}` : constants_1.NO_WORKING_ISSUE.text));
     }
@@ -55,9 +58,9 @@ class StatusBarManager {
         else {
             configuration_1.setGlobalWorkingIssue(state_1.default.context, undefined);
         }
-        this.workingIssueItem.text = this.workingIssueItemText(state_1.default.workingIssue);
-        this.workingIssueItem.tooltip = 'Set working issue';
+        this.workingIssueItem.tooltip = this.workingIssueItemTooltip(state_1.default.workingIssue);
         this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';
+        this.workingIssueItem.text = this.workingIssueItemText(state_1.default.workingIssue);
         this.workingIssueItem.show();
     }
     clearWorkingIssueInterval() {
