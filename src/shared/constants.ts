@@ -4,7 +4,13 @@ export const CONFIG = {
   BASE_URL: 'baseUrl',
   USERNAME: 'username',
   WORKING_PROJECT: 'workingProject',
-  ENABLE_WORKING_ISSUE: 'enableWorkingIssue'
+  ENABLE_WORKING_ISSUE: 'enableWorkingIssue',
+  TRACKING_TIME_MODE: 'trackingTimeMode'
+};
+
+export const TRACKING_TIME_MODE = {
+  ALWAYS: 'always',
+  VSCODE_FOCUS: 'vsCodeFocus'
 };
 
 export const CONFIG_NAME = 'jira-plugin';

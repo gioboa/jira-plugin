@@ -65,6 +65,15 @@
           "type": "boolean",
           "description": "Enable working issue functionality in status bar",
           "default": "true"
+        },
+        "jira-plugin.trackingTimeMode": {
+          "type": "string",
+          "description": "Configure how the plugin tracking time for the working issue",
+          "enum": [
+            "always",
+            "vsCodeFocus"
+          ],
+          "default": "always"
         }
       }
     },

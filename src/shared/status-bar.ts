@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { IWorkingIssue } from '../http/api.model';
 import state, { incrementStateWorkingIssueTimePerSecond } from '../state/state';
 import { getConfigurationByKey, getGlobalWorkingIssue, setGlobalWorkingIssue } from './configuration';
-import { CONFIG, NO_WORKING_ISSUE } from './constants';
+import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from './constants';
 import { secondsToHHMMSS } from './utilities';
 
 export class StatusBarManager {
@@ -73,7 +73,7 @@ export class StatusBarManager {
   public startWorkingIssueInterval(): void {
     this.clearWorkingIssueInterval();
     this.intervalId = setInterval(() => {
-      if (vscode.window.state.focused) {
+      if (vscode.window.state.focused || getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.ALWAYS) {
         incrementStateWorkingIssueTimePerSecond();
         this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
       }
