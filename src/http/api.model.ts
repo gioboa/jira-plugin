@@ -91,7 +91,7 @@ export interface IAddCommentResponse {
 
 export interface IWorkingIssue {
   issue: IIssue;
-  timePerSecond: number;
+  trackingTime: number;
 }
 
 export interface IAddWorkLog {

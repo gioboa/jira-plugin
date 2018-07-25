@@ -37,7 +37,7 @@ export class StatusBarManager {
 
   private workingIssueItemText(workingIssue: IWorkingIssue): string {
     return (
-      `$(watch) ` + (workingIssue.issue.key !== NO_WORKING_ISSUE.key ? `Working Issue: - ${workingIssue.issue.key || ''} ${secondsToHHMMSS(workingIssue.timePerSecond) || ''}` : NO_WORKING_ISSUE.text)
+      `$(watch) ` + (workingIssue.issue.key !== NO_WORKING_ISSUE.key ? `Working Issue: - ${workingIssue.issue.key || ''} ${secondsToHHMMSS(workingIssue.trackingTime) || ''}` : NO_WORKING_ISSUE.text)
     );
   }
 

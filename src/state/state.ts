@@ -33,7 +33,7 @@ const state: State = {
   currentJQL: '',
   workingIssue: {
     issue: new NoWorkingIssuePick().pickValue,
-    timePerSecond: 0
+    trackingTime: 0
   }
 };
 
@@ -54,15 +54,15 @@ export const changeStateIssues = (filter: string, jql: string, issues: IIssue[])
   state.jiraExplorer.refresh();
 };
 
-export const changeStateWorkingIssue = async (issue: IIssue, timePerSecond: number): Promise<void> => {
-  state.workingIssue = { issue, timePerSecond };
+export const changeStateWorkingIssue = async (issue: IIssue, trackingTime: number): Promise<void> => {
+  state.workingIssue = { issue, trackingTime };
   state.statusBar.updateWorkingIssueItem(false);
 };
 
 export const incrementStateWorkingIssueTimePerSecond = (): void => {
-  state.workingIssue.timePerSecond += 1;
+  state.workingIssue.trackingTime += 1;
   // prevent writing to much on storage
-  if (state.workingIssue.timePerSecond % 60 === 0) {
+  if (state.workingIssue.trackingTime % 60 === 0) {
     if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
       setGlobalWorkingIssue(state.context, state.workingIssue);
     }

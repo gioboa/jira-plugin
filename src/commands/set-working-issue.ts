@@ -23,7 +23,7 @@ export class SetWorkingIssueCommand implements Command {
         placeHolder: 'Add worklog comment...'
       });
     }
-    await vscode.commands.executeCommand('jira-plugin.issueAddWorklogCommand', state.workingIssue.issue.key, state.workingIssue.timePerSecond, comment || '');
+    await vscode.commands.executeCommand('jira-plugin.issueAddWorklogCommand', state.workingIssue.issue.key, state.workingIssue.trackingTime, comment || '');
   }
 
   @bind
@@ -33,8 +33,8 @@ export class SetWorkingIssueCommand implements Command {
       const issue = workingIssues.find(issue => issue.key === storedWorkingIssue.issue.key);
       if (!!issue) {
         state.workingIssue = storedWorkingIssue;
-        vscode.window.showInformationMessage(`PENDING WORKING ISSUE: ${state.workingIssue.issue.key} | timeSpent: ${secondsToHHMMSS(state.workingIssue.timePerSecond)}`);
-        changeStateWorkingIssue(state.workingIssue.issue, state.workingIssue.timePerSecond);
+        vscode.window.showInformationMessage(`PENDING WORKING ISSUE: ${state.workingIssue.issue.key} | timeSpent: ${secondsToHHMMSS(state.workingIssue.trackingTime)}`);
+        changeStateWorkingIssue(state.workingIssue.issue, state.workingIssue.trackingTime);
       } else {
         changeStateWorkingIssue(new NoWorkingIssuePick().pickValue, 0);
       }
@@ -42,10 +42,10 @@ export class SetWorkingIssueCommand implements Command {
       const workingIssue = state.workingIssue || new NoWorkingIssuePick().pickValue;
       const newIssue = await selectChangeWorkingIssue();
       if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
-        if (workingIssue.issue.key !== NO_WORKING_ISSUE.key && secondsToMinutes(workingIssue.timePerSecond) >= parseInt(getConfigurationByKey(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME) || '0', 10)) {
+        if (workingIssue.issue.key !== NO_WORKING_ISSUE.key && secondsToMinutes(workingIssue.trackingTime) >= parseInt(getConfigurationByKey(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME) || '0', 10)) {
           state.statusBar.clearWorkingIssueInterval();
           let action = await vscode.window.showInformationMessage(
-            `Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${secondsToHHMMSS(workingIssue.timePerSecond)} ?`,
+            `Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${secondsToHHMMSS(workingIssue.trackingTime)} ?`,
             YES_WITH_COMMENT,
             YES,
             NO
