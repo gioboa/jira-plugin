@@ -34,6 +34,7 @@
   ],
   "main": "./out/src/extension",
   "scripts": {
+    "clean-folder": "rm -rf ./out",
     "vscode:prepublish": "npm run test",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",

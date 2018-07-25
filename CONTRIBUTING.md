@@ -7,6 +7,7 @@ Your help is essential for keeping it great.
 
 1.  [Fork](https://github.com/gioboa/jira-plugin/fork) and clone the repository
 1.  Configure and install the dependencies: `npm install`
+1.  Compile code: `npm run compile`
 1.  Make sure the tests pass on your machine: `npm run test`
 1.  Create your feature branch: `git checkout -b my-new-feature`
 1.  Make your change, add tests, and make sure the tests still pass
