@@ -61,7 +61,7 @@ typings/
 .next
 
 # test
-.vscode-test
+.vscode-test/
 
 # out
-.out
+out/
