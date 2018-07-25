@@ -2,7 +2,7 @@
   "name": "jira-plugin",
   "displayName": "Jira Plugin",
   "description": "JIRA integration for vscode",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "publisher": "gioboa",
   "icon": "images/icons/icon.png",
   "galleryBanner": {
@@ -35,7 +35,7 @@
   "main": "./out/src/extension",
   "scripts": {
     "clean": "rm -rf ./out",
-    "vscode:prepublish": "npm run clean && npm run test",
+    "vscode:prepublish": "npm run clean && npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
