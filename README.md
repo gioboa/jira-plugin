@@ -3,9 +3,10 @@
 <br>Inspired by [vscode-jira](https://github.com/KnisterPeter/vscode-jira) I decided to create my own JIRA plugin for VS Code.<br>
 I'm happy to will implement more features. :blush: <br><br>
 
-## Install
+## Installation
 
-ext install jira-plugin<br><br>
+Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter.<br>
+`ext install gioboa.jira-plugin`<br><br>
 
 ## Usage
 
@@ -83,7 +84,6 @@ The extension store credentials in VS Code settings.<br><br>
   The extension **every 60 second** store in iternal storage the current working activity so if you close and reopen VS Code the extension retrive (if needed) the pending working issue.
 
 ![Working issue](images/readme/working-issue.gif)
-
 
 ## Want to contribute?
 
