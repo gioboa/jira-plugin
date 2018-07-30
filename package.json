@@ -70,11 +70,17 @@
           "type": "string",
           "description": "Configure how the plugin tracking time for the working issue",
           "enum": [
+            "hybrid",
             "always",
             "vsCodeFocus"
           ],
-          "default": "always"
+          "default": "hybrid"
         },
+        "jira-plugin.trackingTimeModeHybridTimeout": {
+          "type": "integer",
+          "description": "Number of minutes to wait for the user to return to VSCode before discarding away time in hybrid time tracking mode",
+          "default": 30
+        },        
         "jira-plugin.worklogMinimumTrackingTime": {
           "type": "integer",
           "description": "Minimum tracking time for create Jira worklog",
