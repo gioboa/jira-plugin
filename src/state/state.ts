@@ -33,7 +33,8 @@ const state: State = {
   currentJQL: '',
   workingIssue: {
     issue: new NoWorkingIssuePick().pickValue,
-    trackingTime: 0
+    trackingTime: 0,
+    awayTime: 0
   }
 };
 
@@ -55,7 +56,8 @@ export const changeStateIssues = (filter: string, jql: string, issues: IIssue[])
 };
 
 export const changeStateWorkingIssue = async (issue: IIssue, trackingTime: number): Promise<void> => {
-  state.workingIssue = { issue, trackingTime };
+  const awayTime: number = 0; // FIXME: We don't need awayTime when changing issues, not sure best way to handle this.
+  state.workingIssue = { issue, trackingTime, awayTime };
   state.statusBar.updateWorkingIssueItem(false);
 };
 
