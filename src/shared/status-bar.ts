@@ -74,7 +74,7 @@ export class StatusBarManager {
     }
   }
 
-  startWorkingIssueInterval(): void {
+  public startWorkingIssueInterval(): void {
     this.clearWorkingIssueInterval();
     this.intervalId = setInterval(() => {
         if (vscode.window.state.focused) {
