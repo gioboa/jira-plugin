@@ -4,6 +4,7 @@ import state, { incrementStateWorkingIssueTimePerSecond } from '../state/state';
 import { getConfigurationByKey, getGlobalWorkingIssue, setGlobalWorkingIssue } from './configuration';
 import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from './constants';
 import { secondsToHHMMSS } from './utilities';
+const awayTimeout = 60 * 60; // TODO: this value should come from in the settings file
 
 export class StatusBarManager {
   private workingProjectItem: vscode.StatusBarItem;
@@ -37,7 +38,10 @@ export class StatusBarManager {
 
   private workingIssueItemText(workingIssue: IWorkingIssue): string {
     return (
-      `$(watch) ` + (workingIssue.issue.key !== NO_WORKING_ISSUE.key ? `Working Issue: - ${workingIssue.issue.key || ''} ${secondsToHHMMSS(workingIssue.trackingTime) || ''}` : NO_WORKING_ISSUE.text)
+      `$(watch) ` + (workingIssue.issue.key !== NO_WORKING_ISSUE.key ? 
+          `Working Issue: - ${workingIssue.issue.key || ''} ${secondsToHHMMSS(workingIssue.trackingTime) || ''}` +
+            (workingIssue.awayTime === 0 ? `` : workingIssue.awayTime > 0 ? `($(timer_off) - ${secondsToHHMMSS(awayTimeout - workingIssue.awayTime)})` : `$(timer_off) - Away too long, issue timer paused.`) 
+          : NO_WORKING_ISSUE.text)
     );
   }
 
@@ -70,13 +74,33 @@ export class StatusBarManager {
     }
   }
 
-  public startWorkingIssueInterval(): void {
+  startWorkingIssueInterval(): void {
     this.clearWorkingIssueInterval();
     this.intervalId = setInterval(() => {
-      if (vscode.window.state.focused || getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.ALWAYS) {
-        incrementStateWorkingIssueTimePerSecond();
-        this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
-      }
+        if (vscode.window.state.focused) {
+            // If we are coming back from an away period catch up our logging time
+            // If the away time was > awayTimeout, workingIssue.awayTime will be -1, so we won't log the away time.
+            if (state.workingIssue.awayTime && state.workingIssue.awayTime > 0) {
+                state.workingIssue.trackingTime += state.workingIssue.awayTime;
+            }
+            // Clear the away timer
+            state.workingIssue.awayTime = 0;
+            // Update as normal
+            incrementStateWorkingIssueTimePerSecond();
+            this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
+        } else {
+            // If we are away from the Window capture the time, if it's less than our awayTimeout
+            if (state.workingIssue.awayTime >= 0) {
+                if ((awayTimeout - state.workingIssue.awayTime) > 0) {
+                    state.workingIssue.awayTime++;
+                } else {
+                    // We've been away longer than the away timeout, we are probably working on something else
+                    // we set the away timer to -1 to disable it until the next away period
+                    state.workingIssue.awayTime = -1;
+                    console.log('Away for too long... not going to log away time against working issue');
+                }
+            }
+        }
     }, 1000);
   }
 
