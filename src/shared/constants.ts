@@ -6,10 +6,12 @@ export const CONFIG = {
   WORKING_PROJECT: 'workingProject',
   ENABLE_WORKING_ISSUE: 'enableWorkingIssue',
   TRACKING_TIME_MODE: 'trackingTimeMode',
+  TRACKING_TIME_MODE_HYBRID_TIMEOUT: 'trackingTimeModeHybridTimeout',
   WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime'
 };
 
 export const TRACKING_TIME_MODE = {
+  HYBRID: 'hybrid',
   ALWAYS: 'always',
   VSCODE_FOCUS: 'vsCodeFocus'
 };
