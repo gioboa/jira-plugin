@@ -33,6 +33,13 @@ The extension store credentials in VS Code settings.<br><br>
 
 ![Settings](images/readme/settings.png)
 
+**n.b:** setting: `trackingTimeMode` <br>
+values:<br>
+
+1.  `hybrid` - will increment tracking time always but if VS Code remain idle more then "trackingTimeModeHybridTimeout" will discard the time addition<br>
+1.  `always` - will increment tracking time always <br>
+1.  `vsCodeFocus` - will increment tracking time only if VS Code is focused<br>
+
 ## Explorer commands
 
 ![Explorer commands](images/readme/explorer-commands.png)
