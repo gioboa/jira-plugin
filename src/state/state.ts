@@ -20,6 +20,7 @@ export interface State {
   workingIssue: IWorkingIssue;
 }
 
+// initial state
 const state: State = {
   jira: undefined as any,
   context: undefined as any,
@@ -71,6 +72,7 @@ export const incrementStateWorkingIssueTimePerSecond = (): void => {
   }
 };
 
+// verify if it's the current working issue
 export const isWorkingIssue = (issueKey: string): boolean => {
   if (issueKey === state.workingIssue.issue.key) {
     vscode.window.showErrorMessage(`Issue ${issueKey} has pending worklog. Resolve the conflict and retry the action.`);

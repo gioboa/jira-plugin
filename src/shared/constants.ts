@@ -1,5 +1,6 @@
 export const CREDENTIALS_SEPARATOR = '##';
 
+// all the plugin settings
 export const CONFIG = {
   BASE_URL: 'baseUrl',
   USERNAME: 'username',
@@ -10,6 +11,7 @@ export const CONFIG = {
   WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime'
 };
 
+// all the tracking time mode
 export const TRACKING_TIME_MODE = {
   HYBRID: 'hybrid',
   ALWAYS: 'always',
@@ -19,10 +21,12 @@ export const TRACKING_TIME_MODE = {
 export const CONFIG_NAME = 'jira-plugin';
 export const CONFIG_WORKING_ISSUE = 'working-issue';
 
+// modal answers
 export const YES = 'Yes';
 export const YES_WITH_COMMENT = 'Yes with comment';
 export const NO = 'No';
 
+// all the search types
 export const SEARCH_MODE = {
   ALL: 'ALL',
   ID: 'ID',
@@ -34,6 +38,7 @@ export const SEARCH_MODE = {
   REFRESH: 'REFRESH'
 };
 
+// status icons, used for show the correct icon
 export const STATUS_ICONS = {
   OPEN: { text: 'OPEN', icon: '$(beaker)', file: 'beaker.png' },
   PROGRESS: { text: 'PROGRESS', icon: '$(flame)', file: 'flame.png' },
@@ -44,7 +49,7 @@ export const STATUS_ICONS = {
 };
 
 export const LOADING = { text: 'LOADING', file: 'cloud.png' };
-export const DIVIDER = { text: 'LOADING', file: 'divider.png' };
+export const DIVIDER = { text: 'DIVIDER', file: 'divider.png' };
 export const UNASSIGNED = 'Unassigned';
 export const NO_WORKING_ISSUE = { text: 'No working issue', key: 'NO_WORKING_ISSUE' };
 export const BACK_PICK_LABEL = '$(arrow-left) Back';

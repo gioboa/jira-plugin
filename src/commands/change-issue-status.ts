@@ -12,9 +12,11 @@ export class ChangeIssueStatusCommand implements Command {
   public async run(issueItem: IssueItem): Promise<void> {
     if (issueItem && issueItem.issue && canExecuteJiraAPI()) {
       let issue = issueItem.issue;
+      // verify if it's the current working issue
       if (!isWorkingIssue(issue.key)) {
         const newTransitionId = await selectTransition(issue.key);
         if (newTransitionId) {
+          // call Jira API
           const result = await state.jira.doTransition(issue.key, {
             transition: {
               id: newTransitionId

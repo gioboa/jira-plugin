@@ -16,6 +16,7 @@ export class StatusBarManager {
     this.workingProjectItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 200);
   }
 
+  // setup working project item
   public async updateWorkingProjectItem(project: string): Promise<void> {
     if (!state.jira) {
       return;
@@ -43,11 +44,14 @@ export class StatusBarManager {
       : NO_WORKING_ISSUE.text;
   }
 
+  // setup working issue item
   public updateWorkingIssueItem(checkGlobalStore: boolean): void {
     let issue;
+    // verify stored working issue
     if (checkGlobalStore) {
       issue = getGlobalWorkingIssue(state.context);
       if (!!issue) {
+        // if there is a stored working issue we will use it
         vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', JSON.parse(issue));
         setGlobalWorkingIssue(state.context, undefined);
         return;
@@ -58,6 +62,7 @@ export class StatusBarManager {
     if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
       this.startWorkingIssueInterval();
     } else {
+      // if user select NO_WORKING_ISSUE clear the stored working issue
       setGlobalWorkingIssue(state.context, undefined);
     }
     this.workingIssueItem.tooltip = this.workingIssueItemTooltip(state.workingIssue);

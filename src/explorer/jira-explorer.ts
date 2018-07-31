@@ -26,6 +26,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
   async getChildren(element?: IssueItem): Promise<any[]> {
     let project = await getConfigurationByKey(CONFIG.WORKING_PROJECT);
     const issues = state.issues;
+    // generate all the item from issues saved in global state
     if (issues.length > 0) {
       const items: any[] = issues.map(
         issue =>
@@ -35,15 +36,19 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
             arguments: [`${issue.key}`]
           })
       );
+      // add in the firt possition 'filter-info-item' and then the 'divider-item'
       items.unshift(new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem());
+      // Jira block search result at 50 rows (it's a user settings)
       if (issues.length === 50) {
         items.push(new DividerItem(), new LimitInfoItem());
       }
       return items;
     } else {
+      // used for show loading item in the explorer
       if (state.currentFilter === LOADING.text) {
         return [new LoadingItem()];
       }
+      // no result
       return [new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem(), new NoResultItem(project || '')];
     }
   }

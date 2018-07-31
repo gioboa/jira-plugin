@@ -9,6 +9,7 @@ export class OpenIssueCommand implements Command {
 
   @bind
   public async run(issueId: string): Promise<void> {
+    // open the issue in the browser
     const url = `${getConfigurationByKey(CONFIG.BASE_URL)}/browse/${issueId}`;
     vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
   }

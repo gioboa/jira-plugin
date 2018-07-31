@@ -8,6 +8,7 @@ import { getConfigurationByKey } from './configuration';
 import { BACK_PICK_LABEL, CONFIG, LOADING, SEARCH_MODE, UNASSIGNED } from './constants';
 import { addStatusIcon } from './utilities';
 
+// selection for projects
 export const selectProject = async (): Promise<string> => {
   if (canExecuteJiraAPI()) {
     const picks = state.projects.map(project => ({
@@ -21,6 +22,7 @@ export const selectProject = async (): Promise<string> => {
   return '';
 };
 
+// selection for statuses
 const selectStatus = async (): Promise<string> => {
   if (canExecuteJiraAPI()) {
     const picks = state.statuses.map(status => ({
@@ -34,15 +36,18 @@ const selectStatus = async (): Promise<string> => {
   return '';
 };
 
+// input for id
 const selectID = async (): Promise<string | undefined> => {
   const id = await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert JIRA ID (only the number)' });
   return id && !isNaN(parseInt(id)) ? parseInt(id).toString() : undefined;
 };
 
+// input for summary
 const selectSummary = async (): Promise<string | undefined> => {
   return await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert JIRA Summary' });
 };
 
+// return the filter (used in filter-info-item) and the JQL
 const getFilterAndJQL = async (mode: string, project: string): Promise<string[]> => {
   switch (mode) {
     case SEARCH_MODE.ALL: {
@@ -93,6 +98,7 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
   return ['', ''];
 };
 
+// perform the search calling Jira API
 export const selectIssue = async (mode: string): Promise<void> => {
   if (canExecuteJiraAPI()) {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
@@ -100,6 +106,7 @@ export const selectIssue = async (mode: string): Promise<void> => {
       const [filter, jql] = await getFilterAndJQL(mode, project || '');
       changeStateIssues(LOADING.text, '', []);
       if (!!jql) {
+        // call Jira API with the generated JQL
         const issues = await state.jira.search({ jql });
         if (!!issues && !!issues.issues && issues.issues.length > 0) {
           changeStateIssues(filter, jql, issues.issues);
@@ -120,6 +127,7 @@ export const selectIssue = async (mode: string): Promise<void> => {
   }
 };
 
+// return working issues array
 export const selectWorkingIssues = async (): Promise<IIssue[]> => {
   let issues: IIssue[] = [];
   if (canExecuteJiraAPI()) {
@@ -135,12 +143,14 @@ export const selectWorkingIssues = async (): Promise<IIssue[]> => {
   return issues;
 };
 
+// selection for working issues
 export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> => {
   if (canExecuteJiraAPI()) {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
     if (verifyCurrentProject(project)) {
       const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_IN_PROGRESS_ISSUES, project || '');
       if (!!jql) {
+        // call Jira API
         const issues = await state.jira.search({ jql });
         if (issues.issues && issues.issues.length > 0) {
           const picks = issues.issues.map(issue => ({
@@ -160,6 +170,7 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
   return undefined;
 };
 
+// selection for assignees
 export const selectAssignee = async (unassigned: boolean, back: boolean): Promise<string> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
@@ -188,6 +199,7 @@ export const selectAssignee = async (unassigned: boolean, back: boolean): Promis
   }
 };
 
+// only the possible transitions
 export const selectTransition = async (issueKey: string): Promise<string | null | undefined> => {
   const transitions = await state.jira.getTransitions(issueKey);
   const picks = transitions.transitions.map(transition => ({

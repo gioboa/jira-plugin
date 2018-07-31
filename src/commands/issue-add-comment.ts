@@ -19,6 +19,7 @@ export class IssueAddCommentCommand implements Command {
         placeHolder: 'Comment text...'
       });
       if (!!text) {
+        // ask for assignee if there is one or more [@] in the comment
         const num = (text.match(new RegExp('[@]', 'g')) || []).length;
         for (let i = 0; i < num; i++) {
           const assignee = await selectAssignee(false, false);
@@ -28,8 +29,10 @@ export class IssueAddCommentCommand implements Command {
             throw new Error('Abort command, wrong parameter.');
           }
         }
+        // call Jira API
         const response = await state.jira.addNewComment(issue.key, { body: text });
         await vscode.commands.executeCommand('jira-plugin.refresh');
+        // modal
         const action = await vscode.window.showInformationMessage('Created comment', 'Open in browser');
         if (action === 'Open in browser') {
           const baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';

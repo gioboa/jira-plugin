@@ -10,6 +10,7 @@ export const executeConnectionToJira = (): void => {
   if (getConfigurationByKey(CONFIG.BASE_URL)) {
     const connect = async () => {
       state.jira = (await connectToJira())!;
+      // save statuses and projects in the global state
       state.statuses = await state.jira.getStatuses();
       state.projects = await state.jira.getProjects();
       state.statusBar.updateWorkingProjectItem('');
@@ -42,6 +43,7 @@ export const connectToJira = async (): Promise<Jira | undefined> => {
   return undefined;
 };
 
+// generate icon + status
 export const addStatusIcon = (status: string, withDescription: boolean): string => {
   let icon = STATUS_ICONS.DEFAULT.icon;
   if (!!status) {

@@ -13,7 +13,9 @@ export class SetWorkingProjectCommand implements Command {
   public async run(): Promise<void> {
     const project = await selectProject();
     setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
+    // update project item in the status bar
     state.statusBar.updateWorkingProjectItem(project);
+    // launch search for the new project
     await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
   }
 }
