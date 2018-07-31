@@ -1,3 +1,10 @@
+## 0.6.0
+
+### Features
+
+- **setting** add worklogMinimumTrackingTime
+- **setting** add trackingTimeMode: `hybrid` - `always` - `vsCodeFocus`
+
 ## 0.5.2
 
 ### Bug Fixes
@@ -15,14 +22,14 @@
 
 ### Features
 
-- possibility to filter issues by status <br>
+- possibility to filter issues by status
 - add config for enable/disable working issue functionality
 
 ## 0.4.0
 
 ### Features
 
-- (status bar) add working issue functionality <br>
+- (status bar) add working issue functionality
 - possibility to insert Jira worklog for the working issue
 
 ### Bug Fixes
@@ -46,9 +53,7 @@
 ### Features
 
 - add particular icon for every status
-
 - add back in multi param selection
-
 - change status bar behaviour - now you can change working project from status bar
 
 ### Bug Fixes
@@ -72,27 +77,19 @@
 ### Features
 
 - add user Unassigned
-
 - implement search by id + search by status and assignee
-
 - implement change issue assignee
-
 - working project info in status bar
-
 - possibility to list my issues
-
 - possibility to change working project
-
 - add setup credentials action
 
 ### Bug Fixes
 
 - fix in url config
-
 - fix jira-plugin connection on startup
 
 ## 0.0.1
 
 - include some basic commands
-
 - initial commit
