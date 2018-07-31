@@ -4,7 +4,7 @@ import state, { incrementStateWorkingIssueTimePerSecond } from '../state/state';
 import { getConfigurationByKey, getGlobalWorkingIssue, setGlobalWorkingIssue } from './configuration';
 import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from './constants';
 import { secondsToHHMMSS } from './utilities';
-const awayTimeout = parseInt(getConfigurationByKey(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) || '30', 10) * 60; // Default to 30 minutes 
+const awayTimeout = parseInt(getConfigurationByKey(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) || '30', 10) * 60; // Default to 30 minutes
 
 export class StatusBarManager {
   private workingProjectItem: vscode.StatusBarItem;
@@ -37,12 +37,10 @@ export class StatusBarManager {
   }
 
   private workingIssueItemText(workingIssue: IWorkingIssue): string {
-    return (
-      `$(watch) ` + (workingIssue.issue.key !== NO_WORKING_ISSUE.key ? 
-          `Working Issue: - ${workingIssue.issue.key || ''} ${secondsToHHMMSS(workingIssue.trackingTime) || ''}` 
-          + (workingIssue.awayTime === 0 ? `` : workingIssue.awayTime > 0 ? ` ($(history) ${secondsToHHMMSS(awayTimeout - workingIssue.awayTime)})` : ` ($(history) Away too long, issue timer paused)`) 
-          : NO_WORKING_ISSUE.text)
-    );
+    return workingIssue.issue.key !== NO_WORKING_ISSUE.key
+      ? `Working Issue: ${workingIssue.issue.key || ''} $(watch) ${secondsToHHMMSS(workingIssue.trackingTime) || ''}` +
+          (workingIssue.awayTime === 0 ? `` : workingIssue.awayTime > 0 ? ` $(history) ${secondsToHHMMSS(awayTimeout - workingIssue.awayTime)}` : ` $(history) Away too long, issue timer paused`)
+      : NO_WORKING_ISSUE.text;
   }
 
   public updateWorkingIssueItem(checkGlobalStore: boolean): void {
@@ -78,31 +76,31 @@ export class StatusBarManager {
   public startWorkingIssueInterval(): void {
     this.clearWorkingIssueInterval();
     this.intervalId = setInterval(() => {
-        if (vscode.window.state.focused || getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.ALWAYS) {
-            if (getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
-                // If we are coming back from an away period catch up our logging time
-                // If the away time was > awayTimeout, workingIssue.awayTime will be -1, so we won't log the away time.
-                if (state.workingIssue.awayTime && state.workingIssue.awayTime > 0) {
-                    state.workingIssue.trackingTime += state.workingIssue.awayTime;
-                }
-                // Clear the away timer
-                state.workingIssue.awayTime = 0;
-            }
-            // Update as normal
-            incrementStateWorkingIssueTimePerSecond();
-        } else if (getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
-            // If we are away from the Window capture the time, if it's less than our awayTimeout
-            if (state.workingIssue.awayTime >= 0) {
-                if ((awayTimeout - state.workingIssue.awayTime) > 0) {
-                    state.workingIssue.awayTime++;
-                } else {
-                    // We've been away longer than the away timeout, we are probably working on something else
-                    // we set the away timer to -1 to disable it until the next away period
-                    state.workingIssue.awayTime = -1;
-                }
-            }
+      if (vscode.window.state.focused || getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.ALWAYS) {
+        if (getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
+          // If we are coming back from an away period catch up our logging time
+          // If the away time was > awayTimeout, workingIssue.awayTime will be -1, so we won't log the away time.
+          if (state.workingIssue.awayTime && state.workingIssue.awayTime > 0) {
+            state.workingIssue.trackingTime += state.workingIssue.awayTime;
+          }
+          // Clear the away timer
+          state.workingIssue.awayTime = 0;
         }
-        this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
+        // Update as normal
+        incrementStateWorkingIssueTimePerSecond();
+      } else if (getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
+        // If we are away from the Window capture the time, if it's less than our awayTimeout
+        if (state.workingIssue.awayTime >= 0) {
+          if (awayTimeout - state.workingIssue.awayTime > 0) {
+            state.workingIssue.awayTime++;
+          } else {
+            // We've been away longer than the away timeout, we are probably working on something else
+            // we set the away timer to -1 to disable it until the next away period
+            state.workingIssue.awayTime = -1;
+          }
+        }
+      }
+      this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
     }, 1000);
   }
 
