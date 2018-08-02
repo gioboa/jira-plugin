@@ -3,7 +3,7 @@ import { IAssignee, IIssue } from '../http/api.model';
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
-import state, { canExecuteJiraAPI, changeStateIssues, changeStateWorkingIssue, verifyCurrentProject } from '../state/state';
+import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
 import { BACK_PICK_LABEL, CONFIG, LOADING, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
 import { addStatusIcon } from './utilities';
@@ -162,12 +162,13 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
           const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Your in progress issues`, matchOnDescription: true });
           return selected ? selected.pickValue : undefined;
         } else {
-          // limit case, there is a working issue selected but the user has no more 'In Progress' issue
-          if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
-            // set no working issue
-            changeStateWorkingIssue(new NoWorkingIssuePick().pickValue, 0);
-          }
           vscode.window.showInformationMessage(`No 'In Progress' issues found for your user in ${project} project`);
+          // limit case, there is a working issue selected but the user has no more 'In Progress' issue. i.e: change of status of the working issue
+          if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
+            const picks = [new NoWorkingIssuePick()];
+            const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Your in progress issues`, matchOnDescription: true });
+            return selected ? selected.pickValue : undefined;
+          }
         }
       }
     }
