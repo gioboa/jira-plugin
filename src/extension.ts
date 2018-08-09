@@ -1,4 +1,3 @@
-import 'isomorphic-fetch';
 import * as vscode from 'vscode';
 import { ChangeIssueAssigneeCommand } from './commands/change-issue-assignee';
 import { ChangeIssueStatusCommand } from './commands/change-issue-status';
@@ -13,12 +12,11 @@ import { CONFIG_NAME, SEARCH_MODE } from './shared/constants';
 import { IssueLinkProvider } from './shared/document-link-provider';
 import { selectIssue } from './shared/select-utilities';
 import { StatusBarManager } from './shared/status-bar';
-import { executeConnectionToJira } from './shared/utilities';
-import state from './state/state';
+import state, { connectToJira } from './state/state';
 
 let channel: vscode.OutputChannel;
 
-export const activate = (context: vscode.ExtensionContext): void => {
+export const activate = async (context: vscode.ExtensionContext): Promise<void> => {
   channel = vscode.window.createOutputChannel(CONFIG_NAME.toUpperCase());
   context.subscriptions.push(channel);
 
@@ -30,11 +28,9 @@ export const activate = (context: vscode.ExtensionContext): void => {
   state.context = context;
   state.channel = channel;
   state.statusBar = statusBar;
-  executeConnectionToJira();
-
+  await connectToJira();
   const jiraExplorer = new JiraExplorer();
   vscode.window.registerTreeDataProvider('jiraExplorer', jiraExplorer);
-
   state.jiraExplorer = jiraExplorer;
 
   const commands = [
@@ -59,4 +55,7 @@ export const activate = (context: vscode.ExtensionContext): void => {
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
 
   context.subscriptions.push(statusBar);
+
+  state.statusBar.updateWorkingProjectItem('');
+  await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
 };

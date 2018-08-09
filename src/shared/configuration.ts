@@ -25,7 +25,7 @@ export const getConfigurationByKey = (entry: string): string | undefined => {
   if (!config) {
     throw new Error('No configuration found. Probably an error in vscode');
   }
-  return config.get(entry);
+  return (<any>config).get(entry);
 };
 
 // used for set only one setting

@@ -11,7 +11,7 @@ export class IssueAddWorklogCommand implements Command {
     if (issueKey !== NO_WORKING_ISSUE.key) {
       if (canExecuteJiraAPI()) {
         // call Jira API
-        const response = await state.jira.addWorkLog(issueKey, { timeSpentSeconds: Math.ceil(timeSpentSeconds / 60) * 60, comment });
+        const response = await state.jira.addWorkLog({ issueKey: issueKey, worklog: { timeSpentSeconds: Math.ceil(timeSpentSeconds / 60) * 60, comment } });
       }
     }
   }

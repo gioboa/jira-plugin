@@ -53,3 +53,5 @@ export const DIVIDER = { text: 'DIVIDER', file: 'divider.png' };
 export const UNASSIGNED = 'Unassigned';
 export const NO_WORKING_ISSUE = { text: 'No working issue', key: 'NO_WORKING_ISSUE' };
 export const BACK_PICK_LABEL = '$(arrow-left) Back';
+
+export const MAX_RESULTS = 50;

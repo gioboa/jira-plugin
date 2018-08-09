@@ -17,9 +17,7 @@ export class ChangeIssueAssigneeCommand implements Command {
         let assignee = await selectAssignee(false, false);
         if (!!assignee) {
           // call Jira API
-          const res = await state.jira.assignIssue(issue.key, {
-            name: assignee
-          });
+          const res = await state.jira.setAssignIssue({ issueKey: issue.key, assignee: assignee });
           await vscode.commands.executeCommand('jira-plugin.refresh');
         }
       }

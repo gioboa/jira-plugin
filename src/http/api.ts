@@ -1,91 +1,57 @@
-import { Get, Interceptor, IPretendDecoder, IPretendRequestInterceptor, Post, Pretend, Put } from 'pretend/dist/src';
-import { Jira } from './api.model';
+const jiraClient = require('jira-connector');
+import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
+import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
+import { IAddComment, IAddCommentResponse, IAddWorkLog, IAssignee, IIssues, IJira, IProject, ISetTransition, IStatus, ITransitions } from './api.model';
 
-export const createClient = (endpoint: string, username: string, password: string): Jira => {
-  return Pretend.builder()
-    .interceptor(impl.logger())
-    .basicAuthentication(username, password)
-    .requestInterceptor(impl.contentType())
-    .decode(impl.decoder())
-    .target(impl.JiraBlueprint, endpoint);
-};
+export class Jira implements IJira {
+  jiraInstance: any;
 
-namespace impl {
-  export const logger = (): Interceptor => {
-    return async (chain, request) => {
-      // console.log('request: ', request);
-      const response = await chain(request);
-      // console.log('response', response);
-      return response;
-    };
-  };
-
-  export const contentType = (): IPretendRequestInterceptor => {
-    return request => {
-      (request.options.headers as Headers).set('Content-Type', 'application/json');
-      return request;
-    };
-  };
-
-  export const decoder = (): IPretendDecoder => {
-    return response => {
-      if (response.status === 204) {
-        // no-content
-        return Promise.resolve();
-      }
-      return response.json();
-    };
-  };
-
-  export class JiraBlueprint implements Jira {
-    @Get('/rest/api/2/serverInfo')
-    public serverInfo(): any {
-      /* */
+  constructor() {
+    let baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
+    if (baseUrl) {
+      // lib JiraClient automatically menage the protocol
+      baseUrl = baseUrl.replace('https://', '').replace('http://', '');
+      const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
+      this.jiraInstance = new jiraClient({
+        host: baseUrl,
+        basic_auth: { username, password }
+      });
     }
+  }
 
-    @Get('/rest/api/latest/status')
-    public getStatuses(): any {
-      /* */
-    }
+  async search(params: { jql: string; maxResults?: number }): Promise<IIssues> {
+    return await this.jiraInstance.search.search(params);
+  }
 
-    @Post('/rest/api/2/search')
-    public search(): any {
-      /* */
-    }
+  async getStatuses(): Promise<IStatus[]> {
+    return await this.jiraInstance.status.getAllStatuses();
+  }
 
-    @Get('/rest/api/2/project')
-    public getProjects(): any {
-      /* */
-    }
+  async getProjects(): Promise<IProject[]> {
+    return await this.jiraInstance.project.getAllProjects();
+  }
 
-    @Get('/rest/api/2/issue/:issue/transitions')
-    public getTransitions(): any {
-      /* */
-    }
+  async getAssignees(params: { project: string; maxResults?: number }): Promise<IAssignee[]> {
+    return await this.jiraInstance.user.searchAssignable(params);
+  }
 
-    @Post('/rest/api/2/issue/:issue/transitions')
-    public doTransition(): any {
-      /* */
-    }
+  async getTransitions(issueKey: string): Promise<ITransitions> {
+    return await this.jiraInstance.issue.getTransitions({ issueKey });
+  }
 
-    @Get('/rest/api/2/user/assignable/:param')
-    public getAssignees(): any {
-      /* */
-    }
+  async setTransition(params: { issueKey: string; transition: ISetTransition }): Promise<void> {
+    return await this.jiraInstance.issue.transitionIssue(params);
+  }
 
-    @Put('/rest/api/2/issue/:issue/assignee')
-    public assignIssue(): any {
-      /* */
-    }
+  async setAssignIssue(params: { issueKey: string; assignee: string }): Promise<void> {
+    return await this.jiraInstance.issue.assignIssue(params);
+  }
 
-    @Post('/rest/api/2/issue/:issue/comment')
-    public addNewComment(): any {
-      /* */
-    }
+  async addNewComment(params: { issueKey: string; comment: IAddComment }): Promise<IAddCommentResponse> {
+    return await this.jiraInstance.issue.assignIssue(params);
+  }
 
-    @Post('/rest/api/2/issue/:issue/worklog')
-    public addWorkLog(): any {
-      /* */
-    }
+  async addWorkLog(params: { issueKey: string; worklog: IAddWorkLog }): Promise<void> {
+    return await this.jiraInstance.issue.addWorkLog(params);
   }
 }

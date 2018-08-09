@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { JiraExplorer } from '../explorer/jira-explorer';
-import { IIssue, IProject, IStatus, IWorkingIssue, Jira } from '../http/api.model';
+import { Jira } from '../http/api';
+import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import { configIsCorrect, setGlobalWorkingIssue } from '../shared/configuration';
 import { LOADING, NO_WORKING_ISSUE } from '../shared/constants';
@@ -11,7 +12,7 @@ export interface State {
   channel: vscode.OutputChannel;
   statusBar: StatusBarManager;
   jiraExplorer: JiraExplorer;
-  jira: Jira;
+  jira: IJira;
   statuses: IStatus[];
   projects: IProject[];
   issues: IIssue[];
@@ -40,6 +41,13 @@ const state: State = {
 };
 
 export default state;
+
+export const connectToJira = async (): Promise<void> => {
+  state.jira = new Jira();
+  // save statuses and projects in the global state
+  state.statuses = await state.jira.getStatuses();
+  state.projects = await state.jira.getProjects();
+};
 
 export const canExecuteJiraAPI = (): boolean => {
   return state.jira && configIsCorrect();

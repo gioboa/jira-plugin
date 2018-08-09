@@ -5,7 +5,7 @@ import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
-import { BACK_PICK_LABEL, CONFIG, LOADING, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
+import { BACK_PICK_LABEL, CONFIG, LOADING, MAX_RESULTS, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
 import { addStatusIcon } from './utilities';
 
 // selection for projects
@@ -107,7 +107,7 @@ export const selectIssue = async (mode: string): Promise<void> => {
       changeStateIssues(LOADING.text, '', []);
       if (!!jql) {
         // call Jira API with the generated JQL
-        const issues = await state.jira.search({ jql });
+        const issues = await state.jira.search({ jql, maxResults: MAX_RESULTS });
         if (!!issues && !!issues.issues && issues.issues.length > 0) {
           changeStateIssues(filter, jql, issues.issues);
         } else {
@@ -135,7 +135,7 @@ export const selectWorkingIssues = async (): Promise<IIssue[]> => {
     if (verifyCurrentProject(project)) {
       const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_IN_PROGRESS_ISSUES, project || '');
       if (!!jql) {
-        const result = await state.jira.search({ jql });
+        const result = await state.jira.search({ jql, maxResults: MAX_RESULTS });
         issues = result.issues || [];
       }
     }
@@ -151,7 +151,7 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
       const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_IN_PROGRESS_ISSUES, project || '');
       if (!!jql) {
         // call Jira API
-        const issues = await state.jira.search({ jql });
+        const issues = await state.jira.search({ jql, maxResults: MAX_RESULTS });
         if (issues.issues && issues.issues.length > 0) {
           const picks = issues.issues.map(issue => ({
             pickValue: issue,
@@ -180,7 +180,7 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
 export const selectAssignee = async (unassigned: boolean, back: boolean): Promise<string> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
-    const assignees = await state.jira.getAssignees(`search?project=${project}`);
+    const assignees = await state.jira.getAssignees({ project, maxResults: MAX_RESULTS });
     const picks = (assignees || []).filter((assignee: IAssignee) => assignee.active === true).map((assignee: IAssignee) => {
       return {
         pickValue: assignee.key,

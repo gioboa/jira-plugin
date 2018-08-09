@@ -1,14 +1,15 @@
-export interface Jira {
-  serverInfo(): Promise<IServerInfo>;
-  search(params: { jql: string }): Promise<IIssues>;
-  getProjects(): Promise<IProject[]>;
+export interface IJira {
+  search(params: { jql: string; maxResults?: number }): Promise<IIssues>;
   getStatuses(): Promise<IStatus[]>;
-  getTransitions(issue: string): Promise<ITransitions>;
-  doTransition(issue: string, body: IDoTransition): Promise<void>;
-  getAssignees(param: string): Promise<IAssignee[]>;
-  assignIssue(issue: string, body: IAssignIssue): Promise<void>;
-  addNewComment(issue: string, body: IAddComment): Promise<IAddCommentResponse>;
-  addWorkLog(issue: string, body: IAddWorkLog): Promise<void>;
+  getProjects(): Promise<IProject[]>;
+  getAssignees(param: { project: string; maxResults?: number }): Promise<IAssignee[]>;
+  getTransitions(issueKey: string): Promise<ITransitions>;
+
+  setTransition(params: { issueKey: string; transition: ISetTransition }): Promise<void>;
+  setAssignIssue(params: { issueKey: string; assignee: string }): Promise<void>;
+
+  addNewComment(params: { issueKey: string; comment: IAddComment }): Promise<IAddCommentResponse>;
+  addWorkLog(params: { issueKey: string; worklog: IAddWorkLog }): Promise<void>;
 }
 
 export interface IServerInfo {
@@ -49,7 +50,6 @@ export interface IStatus {
   iconUrl: string;
   name: string;
   id: string;
-  statusCategory: any;
 }
 
 export interface ITransitions {
@@ -64,7 +64,7 @@ export interface ITransition {
   };
 }
 
-export interface IDoTransition {
+export interface ISetTransition {
   transition: {
     id: string;
   };
@@ -75,10 +75,6 @@ export interface IAssignee {
   name: string;
   displayName: string;
   active: boolean;
-}
-
-export interface IAssignIssue {
-  name: string;
 }
 
 export interface IAddComment {

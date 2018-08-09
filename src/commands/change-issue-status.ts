@@ -17,9 +17,12 @@ export class ChangeIssueStatusCommand implements Command {
         const newTransitionId = await selectTransition(issue.key);
         if (newTransitionId) {
           // call Jira API
-          const result = await state.jira.doTransition(issue.key, {
+          const result = await state.jira.setTransition({
+            issueKey: issue.key,
             transition: {
-              id: newTransitionId
+              transition: {
+                id: newTransitionId
+              }
             }
           });
           await vscode.commands.executeCommand('jira-plugin.refresh');

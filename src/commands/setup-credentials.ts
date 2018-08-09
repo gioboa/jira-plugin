@@ -2,7 +2,7 @@ import { bind } from 'decko';
 import * as vscode from 'vscode';
 import { getConfigurationByKey, setConfigurationByKey, setGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG } from '../shared/constants';
-import { executeConnectionToJira } from '../shared/utilities';
+import { connectToJira } from '../state/state';
 import { Command } from './shared/command';
 
 export class SetupCredentialsCommand implements Command {
@@ -22,6 +22,6 @@ export class SetupCredentialsCommand implements Command {
     setConfigurationByKey(CONFIG.BASE_URL, await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA url' }));
     setConfigurationByKey(CONFIG.USERNAME, await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA username' }));
     setGlobalStateConfiguration(await vscode.window.showInputBox({ ignoreFocusOut: true, password: true, placeHolder: 'Your JIRA password' }));
-    executeConnectionToJira();
+    await connectToJira();
   }
 }
