@@ -1,4 +1,3 @@
-import { bind } from 'decko';
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { selectTransition } from '../shared/select-utilities';
@@ -8,7 +7,6 @@ import { Command } from './shared/command';
 export class ChangeIssueStatusCommand implements Command {
   public id = 'jira-plugin.changeIssueStatusCommand';
 
-  @bind
   public async run(issueItem: IssueItem): Promise<void> {
     if (issueItem && issueItem.issue && canExecuteJiraAPI()) {
       let issue = issueItem.issue;

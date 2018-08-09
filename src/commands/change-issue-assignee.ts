@@ -1,4 +1,3 @@
-import { bind } from 'decko';
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { selectAssignee } from '../shared/select-utilities';
@@ -8,7 +7,6 @@ import { Command } from './shared/command';
 export class ChangeIssueAssigneeCommand implements Command {
   public id = 'jira-plugin.changeIssueAssigneeCommand';
 
-  @bind
   public async run(issueItem: IssueItem): Promise<void> {
     if (issueItem && issueItem.issue && canExecuteJiraAPI()) {
       let issue = issueItem.issue;

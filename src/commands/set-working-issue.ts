@@ -1,4 +1,3 @@
-import { bind } from 'decko';
 import * as vscode from 'vscode';
 import { IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
@@ -12,21 +11,6 @@ import { Command } from './shared/command';
 export class SetWorkingIssueCommand implements Command {
   public id = 'jira-plugin.setWorkingIssueCommand';
 
-  private async menageResponse(response: string): Promise<void> {
-    if (response === NO) {
-      return;
-    }
-    let comment;
-    if (response === YES_WITH_COMMENT) {
-      comment = await vscode.window.showInputBox({
-        ignoreFocusOut: true,
-        placeHolder: 'Add worklog comment...'
-      });
-    }
-    await vscode.commands.executeCommand('jira-plugin.issueAddWorklogCommand', state.workingIssue.issue.key, state.workingIssue.trackingTime, comment || '');
-  }
-
-  @bind
   public async run(storedWorkingIssue: IWorkingIssue): Promise<void> {
     // run it's called from status bar there is a working issue in the storage
     if (!!storedWorkingIssue) {
@@ -58,7 +42,18 @@ export class SetWorkingIssueCommand implements Command {
             YES,
             NO
           );
-          await this.menageResponse(action || NO);
+          // response management
+          if (action === NO) {
+            return;
+          }
+          let comment;
+          if (action === YES_WITH_COMMENT) {
+            comment = await vscode.window.showInputBox({
+              ignoreFocusOut: true,
+              placeHolder: 'Add worklog comment...'
+            });
+          }
+          await vscode.commands.executeCommand('jira-plugin.issueAddWorklogCommand', state.workingIssue.issue.key, state.workingIssue.trackingTime, comment || '');
         }
         // set the new working issue
         changeStateWorkingIssue(newIssue, 0);

@@ -1,4 +1,3 @@
-import { bind } from 'decko';
 import { NO_WORKING_ISSUE } from '../shared/constants';
 import state, { canExecuteJiraAPI } from '../state/state';
 import { Command } from './shared/command';
@@ -6,7 +5,6 @@ import { Command } from './shared/command';
 export class IssueAddWorklogCommand implements Command {
   public id = 'jira-plugin.issueAddWorklogCommand';
 
-  @bind
   public async run(issueKey: string, timeSpentSeconds: number, comment: string): Promise<void> {
     if (issueKey !== NO_WORKING_ISSUE.key) {
       if (canExecuteJiraAPI()) {

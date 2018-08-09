@@ -1,4 +1,3 @@
-import { bind } from 'decko';
 import * as vscode from 'vscode';
 import { getConfigurationByKey, setConfigurationByKey, setGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG } from '../shared/constants';
@@ -8,7 +7,6 @@ import { Command } from './shared/command';
 export class SetupCredentialsCommand implements Command {
   public id = 'jira-plugin.setupCredentialsCommand';
 
-  @bind
   public async run(): Promise<void> {
     const baseUrl = getConfigurationByKey(CONFIG.BASE_URL);
     if (baseUrl) {
