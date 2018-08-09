@@ -28,7 +28,6 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
   state.context = context;
   state.channel = channel;
   state.statusBar = statusBar;
-  await connectToJira();
   const jiraExplorer = new JiraExplorer();
   vscode.window.registerTreeDataProvider('jiraExplorer', jiraExplorer);
   state.jiraExplorer = jiraExplorer;
@@ -53,9 +52,8 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issueByIdCommand', () => selectIssue(SEARCH_MODE.ID)));
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesBySummaryCommand', () => selectIssue(SEARCH_MODE.SUMMARY)));
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
-
   context.subscriptions.push(statusBar);
 
-  state.statusBar.updateWorkingProjectItem('');
-  await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
+  // create Jira Instance and try to connect
+  await connectToJira();
 };

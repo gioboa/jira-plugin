@@ -11,6 +11,9 @@ import { addStatusIcon } from './utilities';
 // selection for projects
 export const selectProject = async (): Promise<string> => {
   if (canExecuteJiraAPI()) {
+    if (state.projects.length === 0) {
+      state.projects = await state.jira.getProjects();
+    }
     const picks = state.projects.map(project => ({
       pickValue: project.key,
       label: project.key,
@@ -120,7 +123,7 @@ export const selectIssue = async (mode: string): Promise<void> => {
       }
     } else {
       changeStateIssues('', '', []);
-      throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
+      throw new Error(`Working project not correct. Select working project in the status bar.`);
     }
   } else {
     changeStateIssues('', '', []);

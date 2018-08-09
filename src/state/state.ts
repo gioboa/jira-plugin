@@ -3,8 +3,8 @@ import { JiraExplorer } from '../explorer/jira-explorer';
 import { Jira } from '../http/api';
 import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
-import { configIsCorrect, setGlobalWorkingIssue } from '../shared/configuration';
-import { LOADING, NO_WORKING_ISSUE } from '../shared/constants';
+import { configIsCorrect, setConfigurationByKey, setGlobalWorkingIssue } from '../shared/configuration';
+import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
 import { StatusBarManager } from '../shared/status-bar';
 
 export interface State {
@@ -43,10 +43,22 @@ const state: State = {
 export default state;
 
 export const connectToJira = async (): Promise<void> => {
-  state.jira = new Jira();
-  // save statuses and projects in the global state
-  state.statuses = await state.jira.getStatuses();
-  state.projects = await state.jira.getProjects();
+  try {
+    state.jira = new Jira();
+    // save statuses and projects in the global state
+    state.statuses = await state.jira.getStatuses();
+    state.projects = await state.jira.getProjects();
+    state.statusBar.updateWorkingProjectItem('');
+    // refresh Jira explorer list
+    await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
+  } catch (e) {
+    setConfigurationByKey(CONFIG.WORKING_PROJECT, '');
+    setTimeout(() => {
+      state.statusBar.updateWorkingProjectItem('');
+    }, 1000);
+    changeStateIssues('', '', []);
+    vscode.window.showErrorMessage(e.message);
+  }
 };
 
 export const canExecuteJiraAPI = (): boolean => {
