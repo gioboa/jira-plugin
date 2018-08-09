@@ -16,6 +16,18 @@ export class Jira implements IJira {
         host: baseUrl,
         basic_auth: { username, password }
       });
+
+      /* code for oauth copy from -> https://www.npmjs.com/package/jira-connector
+      this.jiraInstance = new jiraClient({
+        host: 'jenjinstudios.atlassian.net',
+        oauth: {
+          consumer_key: 'your-consumer-key',
+          private_key: '-----BEGIN RSA PRIVATE KEY-----\n' + 'SomePrivateKey\n' + '-----END RSA PRIVATE KEY-----',
+          token: 'your-access-token',
+          token_secret: 'your-token-secret'
+        }
+      });
+      */
     }
   }
 
