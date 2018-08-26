@@ -8,12 +8,21 @@ export class Jira implements IJira {
 
   constructor() {
     let baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
-    if (baseUrl) {
-      // lib JiraClient automatically menage the protocol
+    if (baseUrl && getGlobalStateConfiguration()) {
+      // prepare config for jira-connector
+      const protocol = baseUrl.indexOf('https://') >= 0 ? 'https' : 'http';
       baseUrl = baseUrl.replace('https://', '').replace('http://', '');
+      const portPosition = baseUrl.indexOf(':');
+      const port = portPosition !== -1 ? baseUrl.substring(portPosition + 1) : undefined;
+      if (portPosition !== -1) {
+        baseUrl = baseUrl.substring(0, portPosition);
+      }
+
       const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
       this.jiraInstance = new jiraClient({
         host: baseUrl,
+        port,
+        protocol,
         basic_auth: { username, password }
       });
 
@@ -28,6 +37,8 @@ export class Jira implements IJira {
         }
       });
       */
+    } else {
+      throw new Error('Error: Check jira-plugin settings in VSCode.');
     }
   }
 
