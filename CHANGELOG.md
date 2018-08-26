@@ -1,3 +1,10 @@
+## 0.7.0
+
+### Features
+
+- replace pretend with jira-connector for Jira calls
+- detect protocol and port from baseUrl
+
 ## 0.6.0
 
 ### Features
