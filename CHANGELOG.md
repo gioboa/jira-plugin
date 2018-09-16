@@ -1,3 +1,9 @@
+## 0.8.0
+
+### Features
+
+- **config** add workingIssueStatues
+
 ## 0.7.0
 
 ### Features
