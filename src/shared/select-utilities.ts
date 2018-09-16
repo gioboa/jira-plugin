@@ -6,7 +6,7 @@ import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
 import { BACK_PICK_LABEL, CONFIG, LOADING, MAX_RESULTS, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
-import { addStatusIcon } from './utilities';
+import { addStatusIcon, workingIssueStatuses } from './utilities';
 
 // selection for projects
 export const selectProject = async (): Promise<string> => {
@@ -73,14 +73,22 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     case SEARCH_MODE.MY_STATUS: {
       const status = await selectStatus();
       if (!!status) {
-        return [`STATUS: ${status} ASSIGNEE: you`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`];
+        return [
+          `STATUS: ${status} ASSIGNEE: you`,
+          `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY updated DESC`
+        ];
       }
       break;
     }
     case SEARCH_MODE.STATUS_ASSIGNEE: {
       const { status, assignee } = await selectStatusAndAssignee();
       if (!!status && !!assignee) {
-        return [`STATUS: ${status} ASSIGNEE: ${assignee}`, `project = ${project} AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY updated DESC`];
+        return [
+          `STATUS: ${status} ASSIGNEE: ${assignee}`,
+          `project = ${project} AND status = '${status}' AND assignee = ${
+            assignee !== UNASSIGNED ? `'${assignee}'` : `null`
+          } ORDER BY updated DESC`
+        ];
       }
       break;
     }
@@ -94,8 +102,12 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     case SEARCH_MODE.REFRESH: {
       return [state.currentFilter, state.currentJQL];
     }
-    case SEARCH_MODE.MY_IN_PROGRESS_ISSUES: {
-      return [`STATUS: In progress`, `project = ${project} AND status = 'In progress' AND assignee in (currentUser()) ORDER BY updated DESC`];
+    case SEARCH_MODE.MY_WORKING_ISSUES: {
+      const statuses = workingIssueStatuses();
+      return [
+        `STATUS: ${statuses}`,
+        `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY updated DESC`
+      ];
     }
   }
   return ['', ''];
@@ -136,7 +148,7 @@ export const selectWorkingIssues = async (): Promise<IIssue[]> => {
   if (canExecuteJiraAPI()) {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
     if (verifyCurrentProject(project)) {
-      const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_IN_PROGRESS_ISSUES, project || '');
+      const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project || '');
       if (!!jql) {
         const result = await state.jira.search({ jql, maxResults: MAX_RESULTS });
         issues = result.issues || [];
@@ -151,7 +163,7 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
   if (canExecuteJiraAPI()) {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
     if (verifyCurrentProject(project)) {
-      const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_IN_PROGRESS_ISSUES, project || '');
+      const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project || '');
       if (!!jql) {
         // call Jira API
         const issues = await state.jira.search({ jql, maxResults: MAX_RESULTS });
@@ -162,14 +174,14 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
             description: issue.fields.summary
           }));
           picks.unshift(new NoWorkingIssuePick());
-          const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Your in progress issues`, matchOnDescription: true });
+          const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Your working issue list`, matchOnDescription: true });
           return selected ? selected.pickValue : undefined;
         } else {
-          vscode.window.showInformationMessage(`No 'In Progress' issues found for your user in ${project} project`);
-          // limit case, there is a working issue selected but the user has no more 'In Progress' issue. i.e: change of status of the working issue
+          vscode.window.showInformationMessage(`No ${filter} issues found for your user in ${project} project`);
+          // limit case, there is a working issue selected but the user has no more ${filter} issue. i.e: change of status of the working issue
           if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
             const picks = [new NoWorkingIssuePick()];
-            const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Your in progress issues`, matchOnDescription: true });
+            const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Your working issue list`, matchOnDescription: true });
             return selected ? selected.pickValue : undefined;
           }
         }
@@ -224,7 +236,10 @@ export const selectTransition = async (issueKey: string): Promise<string | null 
   return selected ? selected.pickValue : undefined;
 };
 
-const doubleSelection = async (firstSelection: Function, secondSelection: Function): Promise<{ firstChoise: string; secondChoise: string }> => {
+const doubleSelection = async (
+  firstSelection: Function,
+  secondSelection: Function
+): Promise<{ firstChoise: string; secondChoise: string }> => {
   let ok = false;
   let firstChoise = '';
   let secondChoise = '';

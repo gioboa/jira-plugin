@@ -8,7 +8,8 @@ export const CONFIG = {
   ENABLE_WORKING_ISSUE: 'enableWorkingIssue',
   TRACKING_TIME_MODE: 'trackingTimeMode',
   TRACKING_TIME_MODE_HYBRID_TIMEOUT: 'trackingTimeModeHybridTimeout',
-  WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime'
+  WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime',
+  WORKING_ISSUE_STATUSES: 'workingIssueStatues'
 };
 
 // all the tracking time mode
@@ -20,6 +21,8 @@ export const TRACKING_TIME_MODE = {
 
 export const CONFIG_NAME = 'jira-plugin';
 export const CONFIG_WORKING_ISSUE = 'working-issue';
+
+export const DEFAULT_WORKING_ISSUE_STATUS = 'In progress';
 
 // modal answers
 export const YES = 'Yes';
@@ -33,7 +36,7 @@ export const SEARCH_MODE = {
   STATUS: 'STATUS',
   MY_STATUS: 'MY_STATUS',
   STATUS_ASSIGNEE: 'STATUS_ASSIGNEE',
-  MY_IN_PROGRESS_ISSUES: 'MY_IN_PROGRESS_ISSUES',
+  MY_WORKING_ISSUES: 'MY_WORKING_ISSUES',
   SUMMARY: 'SUMMARY',
   REFRESH: 'REFRESH'
 };

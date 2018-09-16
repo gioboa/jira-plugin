@@ -86,6 +86,11 @@
           "type": "integer",
           "description": "Minimum tracking time for show the Worklog modal and create Jira worklog",
           "default": 0
+        },
+        "jira-plugin.workingIssueStatues": {
+          "type": "string",
+          "description": "Statuses used for extract working issue list (e.g. In Progress, Development In Progress, Test in Progress)",
+          "default": "In progress"
         }
       }
     },

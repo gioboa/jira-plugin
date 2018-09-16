@@ -1,7 +1,7 @@
 import * as path from 'path';
-import { STATUS_ICONS } from './constants';
 import state from '../state/state';
-import { Jira } from '../http/api';
+import { getConfigurationByKey } from './configuration';
+import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS, STATUS_ICONS } from './constants';
 
 // generate icon + status
 export const addStatusIcon = (status: string, withDescription: boolean): string => {
@@ -29,4 +29,14 @@ export const secondsToHHMMSS = (sec: number): string => {
 
 export const secondsToMinutes = (sec: number): number => {
   return Math.floor(sec / 60);
+};
+
+export const workingIssueStatuses = (): string => {
+  let statusList = (getConfigurationByKey(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
+    .split(',')
+    .map((status: string) => status.trim())
+    .filter((status: string) => state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
+  return statusList && statusList.length > 0
+    ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
+    : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
 };
