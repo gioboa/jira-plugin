@@ -1,3 +1,9 @@
+## 0.8.1
+
+### Bug Fixes
+
+- solve error in vscode output log
+
 ## 0.8.0
 
 ### Features
