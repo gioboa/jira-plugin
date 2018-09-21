@@ -2,7 +2,7 @@
 
 ### Bug Fixes
 
-- solve error in vscode output log
+- solve error in VS Code output log
 
 ## 0.8.0
 
