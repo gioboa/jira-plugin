@@ -6,8 +6,8 @@ export class IssueLinkProvider implements vscode.DocumentLinkProvider {
     return getConfiguration().baseUrl;
   }
 
-  private get projectNames(): string[] {
-    return getConfiguration().projectNames.split(',');
+  private get projectName(): string {
+    return !!getConfiguration().projectNames ? getConfiguration().projectNames : '';
   }
 
   public provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]> {
@@ -15,11 +15,10 @@ export class IssueLinkProvider implements vscode.DocumentLinkProvider {
     return document
       .getText()
       .split('\n')
-      .reduce((matches, line, no) => this.getMatchesOnLine(baseUrl, line, no, this.projectNames, matches), [] as vscode.DocumentLink[]);
+      .reduce((matches, line, no) => this.getMatchesOnLine(baseUrl, line, no, this.projectName, matches), [] as vscode.DocumentLink[]);
   }
 
-  private getMatchesOnLine(baseUrl: string, line: string, lineNo: number, projectNames: string[], matches: vscode.DocumentLink[]): vscode.DocumentLink[] {
-    projectNames.forEach(projectName => {
+  private getMatchesOnLine(baseUrl: string, line: string, lineNo: number, projectName: string, matches: vscode.DocumentLink[]): vscode.DocumentLink[] {
       const expr = new RegExp(`${projectName}-\\d+`, 'gi');
       let match;
       while (true) {
@@ -33,7 +32,6 @@ export class IssueLinkProvider implements vscode.DocumentLinkProvider {
           target: vscode.Uri.parse(`${baseUrl}/browse/${match[0]}`)
         });
       }
-    });
     return matches;
   }
 }
