@@ -21,6 +21,7 @@ export const TRACKING_TIME_MODE = {
 
 export const CONFIG_NAME = 'jira-plugin';
 export const CONFIG_WORKING_ISSUE = 'working-issue';
+export const CONFIG_COUNTER = 'counter';
 
 export const DEFAULT_WORKING_ISSUE_STATUS = 'In progress';
 
@@ -28,6 +29,7 @@ export const DEFAULT_WORKING_ISSUE_STATUS = 'In progress';
 export const YES = 'Yes';
 export const YES_WITH_COMMENT = 'Yes with comment';
 export const NO = 'No';
+export const LATER = 'Later';
 
 // all the search types
 export const SEARCH_MODE = {

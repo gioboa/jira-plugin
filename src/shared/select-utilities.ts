@@ -6,7 +6,7 @@ import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
 import { BACK_PICK_LABEL, CONFIG, LOADING, MAX_RESULTS, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
-import { addStatusIcon, workingIssueStatuses } from './utilities';
+import { addStatusIcon, workingIssueStatuses, checkCounter } from './utilities';
 
 // selection for projects
 export const selectProject = async (): Promise<string> => {
@@ -52,6 +52,7 @@ const selectSummary = async (): Promise<string | undefined> => {
 
 // return the filter (used in filter-info-item) and the JQL
 const getFilterAndJQL = async (mode: string, project: string): Promise<string[]> => {
+  checkCounter();
   switch (mode) {
     case SEARCH_MODE.ALL: {
       return [`ALL ISSUES`, `project = ${project} ORDER BY updated DESC`];

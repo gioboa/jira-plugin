@@ -1,7 +1,8 @@
+import * as vscode from 'vscode';
 import * as path from 'path';
 import state from '../state/state';
-import { getConfigurationByKey } from './configuration';
-import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS, STATUS_ICONS } from './constants';
+import { getConfigurationByKey, getGlobalCounter, setGlobalCounter } from './configuration';
+import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS, STATUS_ICONS, NO, YES, LATER } from './constants';
 
 // generate icon + status
 export const addStatusIcon = (status: string, withDescription: boolean): string => {
@@ -40,3 +41,31 @@ export const workingIssueStatuses = (): string => {
     ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
     : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
 };
+
+export const checkCounter = async (): Promise<void> => {
+  const count = getGlobalCounter(state.context) || 0;
+  if (count !== -1) {
+    if (count % 20 === 0 && count > 0) {
+      let action = await vscode.window.showInformationMessage(
+        `Star Jira Plugin on GitHub?`,
+        YES,
+        LATER,
+        NO
+      );
+      switch (action) {
+        case NO: {
+          setGlobalCounter(state.context, -1);
+          break;
+        }
+        case YES: {
+          vscode.commands.executeCommand('jira-plugin.openGitHubRepoCommand');
+          setGlobalCounter(state.context, -1);
+          break;
+        }
+        default: setGlobalCounter(state.context, count + 1);
+      }
+    } else {
+      setGlobalCounter(state.context, count + 1);
+    }
+  }
+}

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { IWorkingIssue } from '../http/api.model';
 import state from '../state/state';
 import { Configuration } from './configuration.model';
-import { CONFIG, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR } from './constants';
+import { CONFIG, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR, CONFIG_COUNTER } from './constants';
 
 export const configIsCorrect = (): boolean => {
   const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
@@ -64,3 +64,12 @@ export const getGlobalWorkingIssue = (context: vscode.ExtensionContext): any => 
   const config = getConfiguration();
   return context.globalState.get(`${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`);
 };
+
+export const setGlobalCounter = (context: vscode.ExtensionContext, count: number): Thenable<void> => {
+  return context.globalState.update(`${CONFIG_NAME}:${CONFIG_COUNTER}`, count);
+};
+
+export const getGlobalCounter = (context: vscode.ExtensionContext): any => {
+  return context.globalState.get(`${CONFIG_NAME}:${CONFIG_COUNTER}`);
+};
+

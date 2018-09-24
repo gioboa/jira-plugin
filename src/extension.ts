@@ -13,6 +13,7 @@ import { IssueLinkProvider } from './shared/document-link-provider';
 import { selectIssue } from './shared/select-utilities';
 import { StatusBarManager } from './shared/status-bar';
 import state, { connectToJira } from './state/state';
+import { OpenGitHubRepoCommand } from './commands/open-github-repo';
 
 let channel: vscode.OutputChannel;
 
@@ -38,6 +39,7 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
     new ChangeIssueStatusCommand(),
     new ChangeIssueAssigneeCommand(),
     new IssueAddCommentCommand(),
+    new OpenGitHubRepoCommand(),
     new OpenIssueCommand(),
     new SetWorkingIssueCommand(),
     new IssueAddWorklogCommand()
