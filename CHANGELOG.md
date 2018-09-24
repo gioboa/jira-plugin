@@ -1,3 +1,9 @@
+## 0.8.2
+
+### Bug Fixes
+
+- fix docs
+
 ## 0.8.1
 
 ### Bug Fixes
