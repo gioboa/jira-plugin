@@ -1,8 +1,5 @@
 # jira-plugin README
 
-<br>Inspired by [vscode-jira](https://github.com/KnisterPeter/vscode-jira) I decided to create my own JIRA plugin for VS Code.<br>
-I'm happy to will implement more features. :blush: <br><br>
-
 ## Installation
 
 Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter.<br>
