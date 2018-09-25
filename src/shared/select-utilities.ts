@@ -6,7 +6,7 @@ import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
 import { BACK_PICK_LABEL, CONFIG, LOADING, MAX_RESULTS, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
-import { addStatusIcon, workingIssueStatuses, checkCounter } from './utilities';
+import { addStatusIcon, checkCounter, workingIssueStatuses } from './utilities';
 
 // selection for projects
 export const selectProject = async (): Promise<string> => {
@@ -123,12 +123,20 @@ export const selectIssue = async (mode: string): Promise<void> => {
       changeStateIssues(LOADING.text, '', []);
       if (!!jql) {
         // call Jira API with the generated JQL
-        const issues = await state.jira.search({ jql, maxResults: MAX_RESULTS });
-        if (!!issues && !!issues.issues && issues.issues.length > 0) {
-          changeStateIssues(filter, jql, issues.issues);
-        } else {
-          changeStateIssues(filter, jql, []);
-          vscode.window.showInformationMessage(`No issues found for ${project} project`);
+        try {
+          const issues = await state.jira.search({ jql, maxResults: MAX_RESULTS });
+          if (!!issues && !!issues.issues && issues.issues.length > 0) {
+            changeStateIssues(filter, jql, issues.issues);
+          } else {
+            changeStateIssues(filter, jql, []);
+            vscode.window.showInformationMessage(`No issues found for ${project} project`);
+          }
+        } catch (e) {
+          changeStateIssues('', '', []);
+          let error = JSON.parse(e);
+          if (!!error && error.body && error.body.errorMessages && error.body.errorMessages.length > 0) {
+            throw new Error(`${error.body.errorMessages[0]}`);
+          }
         }
       } else {
         changeStateIssues('', '', []);
