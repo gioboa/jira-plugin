@@ -1,3 +1,9 @@
+## 0.8.3
+
+### Bug Fixes
+
+- fix solve search by Id issue
+
 ## 0.8.2
 
 ### Bug Fixes
