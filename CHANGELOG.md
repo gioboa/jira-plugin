@@ -1,3 +1,9 @@
+## 0.8.4
+
+### Bug Fixes
+
+- improve error messages
+
 ## 0.8.3
 
 ### Bug Fixes
