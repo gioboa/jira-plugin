@@ -103,6 +103,6 @@ export const isWorkingIssue = (issueKey: string): boolean => {
 export const printErrorMessageInOutput = (err: any) => {
   if (state.channel) {
     vscode.window.showErrorMessage(`Error: Check logs in Jira Plugin terminal output.`);
-    state.channel.append(`Error: ${err}`);
+    state.channel.append(`Error: ${err}\n`);
   }
 };

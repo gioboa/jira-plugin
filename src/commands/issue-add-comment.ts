@@ -26,6 +26,7 @@ export class IssueAddCommentCommand implements Command {
               text = text.replace('[@]', `[~${assignee}]`);
             } else {
               printErrorMessageInOutput('Abort command, wrong parameter.');
+              return;
             }
           }
           // call Jira API

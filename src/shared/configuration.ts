@@ -24,15 +24,17 @@ export const getConfigurationByKey = (entry: string): string | undefined => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
   if (!config) {
     printErrorMessageInOutput('No configuration found. Probably an error in vscode');
+    return undefined;
   }
   return (<any>config).get(entry);
 };
 
 // used for set only one setting
-export const setConfigurationByKey = (entry: string, value: string | undefined): Thenable<void> => {
+export const setConfigurationByKey = (entry: string, value: string | undefined): Thenable<void> | undefined => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
   if (!config) {
     printErrorMessageInOutput('No configuration found. Probably an error in vscode');
+    return undefined;
   }
   if (entry === CONFIG.BASE_URL && value && value.substring(value.length - 1) === '/') {
     value = value.substring(0, value.length - 1);
