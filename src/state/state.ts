@@ -51,13 +51,13 @@ export const connectToJira = async (): Promise<void> => {
     state.statusBar.updateWorkingProjectItem('');
     // refresh Jira explorer list
     await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
-  } catch (e) {
+  } catch (err) {
     setConfigurationByKey(CONFIG.WORKING_PROJECT, '');
     setTimeout(() => {
       state.statusBar.updateWorkingProjectItem('');
     }, 1000);
     changeStateIssues('', '', []);
-    vscode.window.showErrorMessage(e.message);
+    printErrorMessageInOutput(err);
   }
 };
 
@@ -98,4 +98,11 @@ export const isWorkingIssue = (issueKey: string): boolean => {
     vscode.window.showErrorMessage(`Issue ${issueKey} has pending worklog. Resolve the conflict and retry the action.`);
   }
   return issueKey === state.workingIssue.issue.key;
+};
+
+export const printErrorMessageInOutput = (err: any) => {
+  if (state.channel) {
+    vscode.window.showErrorMessage(`Error: Check logs in Jira Plugin terminal output.`);
+    state.channel.append(`Error: ${err}`);
+  }
 };

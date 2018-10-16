@@ -1,35 +1,39 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { selectTransition } from '../shared/select-utilities';
-import state, { canExecuteJiraAPI, isWorkingIssue } from '../state/state';
+import state, { canExecuteJiraAPI, isWorkingIssue, printErrorMessageInOutput } from '../state/state';
 import { Command } from './shared/command';
 
 export class ChangeIssueStatusCommand implements Command {
   public id = 'jira-plugin.changeIssueStatusCommand';
 
   public async run(issueItem: IssueItem): Promise<void> {
-    if (issueItem && issueItem.issue && canExecuteJiraAPI()) {
-      let issue = issueItem.issue;
-      // verify if it's the current working issue
-      if (!isWorkingIssue(issue.key)) {
-        const newTransitionId = await selectTransition(issue.key);
-        if (newTransitionId) {
-          // call Jira API
-          const result = await state.jira.setTransition({
-            issueKey: issue.key,
-            transition: {
+    try {
+      if (issueItem && issueItem.issue && canExecuteJiraAPI()) {
+        let issue = issueItem.issue;
+        // verify if it's the current working issue
+        if (!isWorkingIssue(issue.key)) {
+          const newTransitionId = await selectTransition(issue.key);
+          if (newTransitionId) {
+            // call Jira API
+            const result = await state.jira.setTransition({
+              issueKey: issue.key,
               transition: {
-                id: newTransitionId
+                transition: {
+                  id: newTransitionId
+                }
               }
-            }
-          });
-          await vscode.commands.executeCommand('jira-plugin.refresh');
+            });
+            await vscode.commands.executeCommand('jira-plugin.refresh');
+          }
+        }
+      } else {
+        if (canExecuteJiraAPI()) {
+          throw new Error('Use this command from JIRA: EXPLORER');
         }
       }
-    } else {
-      if (canExecuteJiraAPI()) {
-        throw new Error('Use this command from JIRA: EXPLORER');
-      }
+    } catch (err) {
+      printErrorMessageInOutput(err);
     }
   }
 }
