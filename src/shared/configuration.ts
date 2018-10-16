@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import { IWorkingIssue } from '../http/api.model';
-import state from '../state/state';
+import state, { printErrorMessageInOutput } from '../state/state';
 import { Configuration } from './configuration.model';
-import { CONFIG, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR, CONFIG_COUNTER } from './constants';
+import { CONFIG, CONFIG_COUNTER, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR } from './constants';
 
 export const configIsCorrect = (): boolean => {
   const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
@@ -14,7 +14,7 @@ export const configIsCorrect = (): boolean => {
 export const getConfiguration = (): Configuration => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
   if (!config) {
-    throw new Error('No configuration found. Probably an error in vscode');
+    printErrorMessageInOutput('No configuration found. Probably an error in vscode');
   }
   return config;
 };
@@ -23,7 +23,7 @@ export const getConfiguration = (): Configuration => {
 export const getConfigurationByKey = (entry: string): string | undefined => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
   if (!config) {
-    throw new Error('No configuration found. Probably an error in vscode');
+    printErrorMessageInOutput('No configuration found. Probably an error in vscode');
   }
   return (<any>config).get(entry);
 };
@@ -32,7 +32,7 @@ export const getConfigurationByKey = (entry: string): string | undefined => {
 export const setConfigurationByKey = (entry: string, value: string | undefined): Thenable<void> => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
   if (!config) {
-    throw new Error('No configuration found. Probably an error in vscode');
+    printErrorMessageInOutput('No configuration found. Probably an error in vscode');
   }
   if (entry === CONFIG.BASE_URL && value && value.substring(value.length - 1) === '/') {
     value = value.substring(0, value.length - 1);
@@ -43,7 +43,10 @@ export const setConfigurationByKey = (entry: string, value: string | undefined):
 // set inside VS Code local storage the configuration
 export const setGlobalStateConfiguration = (password: string | undefined): Thenable<void> => {
   const config = getConfiguration();
-  return state.context.globalState.update(`${CONFIG_NAME}:${config.baseUrl}`, `${config.username}${CREDENTIALS_SEPARATOR}${password || ''}`);
+  return state.context.globalState.update(
+    `${CONFIG_NAME}:${config.baseUrl}`,
+    `${config.username}${CREDENTIALS_SEPARATOR}${password || ''}`
+  );
 };
 
 // get inside VS Code local storage the configuration
@@ -56,7 +59,10 @@ export const getGlobalStateConfiguration = (): any => {
 // used for remember last working issue if the user close VS Code without stop the tracking
 export const setGlobalWorkingIssue = (context: vscode.ExtensionContext, workingIssue: IWorkingIssue | undefined): Thenable<void> => {
   const config = getConfiguration();
-  return context.globalState.update(`${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`, !!workingIssue ? JSON.stringify(workingIssue) : undefined);
+  return context.globalState.update(
+    `${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`,
+    !!workingIssue ? JSON.stringify(workingIssue) : undefined
+  );
 };
 
 // get inside VS Code local storage the last working issue
@@ -72,4 +78,3 @@ export const setGlobalCounter = (context: vscode.ExtensionContext, count: number
 export const getGlobalCounter = (context: vscode.ExtensionContext): any => {
   return context.globalState.get(`${CONFIG_NAME}:${CONFIG_COUNTER}`);
 };
-

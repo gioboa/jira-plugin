@@ -22,7 +22,7 @@ export class ChangeIssueAssigneeCommand implements Command {
         }
       } else {
         if (canExecuteJiraAPI()) {
-          throw new Error('Use this command from JIRA: EXPLORER');
+          printErrorMessageInOutput('Use this command from Jira Plugin EXPLORER');
         }
       }
     } catch (err) {

@@ -25,7 +25,7 @@ export class IssueAddCommentCommand implements Command {
             if (!!assignee) {
               text = text.replace('[@]', `[~${assignee}]`);
             } else {
-              throw new Error('Abort command, wrong parameter.');
+              printErrorMessageInOutput('Abort command, wrong parameter.');
             }
           }
           // call Jira API
@@ -35,13 +35,17 @@ export class IssueAddCommentCommand implements Command {
           const action = await vscode.window.showInformationMessage('Created comment', 'Open in browser');
           if (action === 'Open in browser') {
             const baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
-            const url = `${baseUrl}/browse/${issue.key}` + `?focusedCommentId=${response.id}` + `&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel` + `#comment-${response.id}`;
+            const url =
+              `${baseUrl}/browse/${issue.key}` +
+              `?focusedCommentId=${response.id}` +
+              `&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel` +
+              `#comment-${response.id}`;
             await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
           }
         }
       } else {
         if (canExecuteJiraAPI()) {
-          throw new Error('Use this command from JIRA: EXPLORER');
+          printErrorMessageInOutput('Use this command from Jira Plugin EXPLORER');
         }
       }
     } catch (err) {

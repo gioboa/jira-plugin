@@ -71,7 +71,7 @@
 
 ### Features
 
-- change UI experience, the issue list now is inside the JIRA: EXPLORER
+- change UI experience, the issue list now is inside the Jira Plugin EXPLORER
 
 ## 0.2.0
 

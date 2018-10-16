@@ -1,7 +1,19 @@
 const jiraClient = require('jira-connector');
 import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
-import { IAddComment, IAddCommentResponse, IAddWorkLog, IAssignee, IIssues, IJira, IProject, ISetTransition, IStatus, ITransitions } from './api.model';
+import { printErrorMessageInOutput } from '../state/state';
+import {
+  IAddComment,
+  IAddCommentResponse,
+  IAddWorkLog,
+  IAssignee,
+  IIssues,
+  IJira,
+  IProject,
+  ISetTransition,
+  IStatus,
+  ITransitions
+} from './api.model';
 
 export class Jira implements IJira {
   jiraInstance: any;
@@ -38,7 +50,7 @@ export class Jira implements IJira {
       });
       */
     } else {
-      throw new Error('Error: Check jira-plugin settings in VSCode.');
+      printErrorMessageInOutput('Error: Check Jira Plugin settings in VSCode.');
     }
   }
 
