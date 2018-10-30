@@ -114,6 +114,9 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
         `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY updated DESC`
       ];
     }
+    case SEARCH_MODE.CURRENT_SPRINT :{
+      return [`ALL ISSUES`, `project = ${project} AND sprint in openSprints() and sprint not in futureSprints() ORDER BY updated DESC`];
+    }
   }
   return ['', ''];
 };

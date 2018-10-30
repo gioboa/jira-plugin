@@ -3,9 +3,12 @@ import { DIVIDER } from '../../shared/constants';
 import { getIconsPath } from '../../shared/utilities';
 
 export class DividerItem extends vscode.TreeItem {
-  constructor() {
-    super('------', vscode.TreeItemCollapsibleState.None);
+  constructor(label: string, collapsibleState?: vscode.TreeItemCollapsibleState) {
+
+    super(label , vscode.TreeItemCollapsibleState.None);
+    
   }
+  
 
   get tooltip(): string {
     return '';

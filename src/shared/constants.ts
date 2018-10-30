@@ -34,6 +34,7 @@ export const LATER = 'Later';
 // all the search types
 export const SEARCH_MODE = {
   ALL: 'ALL',
+  CURRENT_SPRINT : 'CURRENT_SPRINT',
   ID: 'ID',
   STATUS: 'STATUS',
   MY_STATUS: 'MY_STATUS',
