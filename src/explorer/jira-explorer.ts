@@ -37,10 +37,40 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
           })
       );
       // add in the firt possition 'filter-info-item' and then the 'divider-item'
-      items.unshift(new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem());
+      items.unshift(new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem('------'));
+
+      // get the current position of each status change for the separator
+      let idx = null;
+      let status = [];
+      let titulos = [];
+      let i = 0;
+      for(idx in items){
+          if(items.hasOwnProperty(idx)){
+              let item = items[idx];
+              if(item.issue){
+                  if(status.indexOf(item.issue.fields.status.name) == -1){
+                      status.push(item.issue.fields.status.name);
+                      titulos.push({
+                          pos : i,
+                          item : item.issue.fields.status.name
+                      });
+                  }
+              }
+          }
+          i++;
+      }
+      i = 0;
+      // for each status put the separator into correct position 
+      for(idx in titulos){
+          if(titulos.hasOwnProperty(idx)){
+              let titulo = titulos[idx];
+              items.splice(titulo.pos + i++, 0, new DividerItem(titulo.item));
+          }
+      }
+
       // Jira block search result at 50 rows (it's a user settings)
       if (issues.length === 50) {
-        items.push(new DividerItem(), new LimitInfoItem());
+        items.push(new DividerItem('------'), new LimitInfoItem());
       }
       return items;
     } else {
@@ -49,7 +79,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
         return [new LoadingItem()];
       }
       // no result
-      return [new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem(), new NoResultItem(project || '')];
+      return [new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem('------'), new NoResultItem(project || '')];
     }
   }
 }

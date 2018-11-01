@@ -48,6 +48,7 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
   // register all commands
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.refresh', () => selectIssue(SEARCH_MODE.REFRESH)));
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.allIssuesCommand', () => selectIssue(SEARCH_MODE.ALL)));
+  context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.currentSprintCommand', () => selectIssue(SEARCH_MODE.CURRENT_SPRINT)));
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.myIssuesByStatusCommand', () => selectIssue(SEARCH_MODE.MY_STATUS)));
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesByStatusAssigneeCommand', () => selectIssue(SEARCH_MODE.STATUS_ASSIGNEE)));
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesByStatusCommand', () => selectIssue(SEARCH_MODE.STATUS)));
