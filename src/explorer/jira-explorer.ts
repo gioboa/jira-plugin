@@ -36,16 +36,10 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
             arguments: [`${issue.key}`]
           })
       );
-      items.sort(function(a,b) {
-        if (a.issue.fields.status.id < b.issue.fields.status.id)
-            return -1;
-        if (a.issue.fields.status.id > b.issue.fields.status.id)
-            return 1;
-        return 0;
-      });
       // add in the firt possition 'filter-info-item' and then the 'divider-item'
       items.unshift(new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem('------'));
 
+      // get the current position of each status change for the separator
       let idx = null;
       let status = [];
       let titulos = [];
@@ -66,6 +60,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
           i++;
       }
       i = 0;
+      // for each status put the separator into correct position 
       for(idx in titulos){
           if(titulos.hasOwnProperty(idx)){
               let titulo = titulos[idx];
