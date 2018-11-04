@@ -123,6 +123,11 @@
         "category": "Jira-plugin"
       },
       {
+        "command": "jira-plugin.currentSprintCommand",
+        "title": "Current sprint issues",
+        "category": "Jira-plugin"
+      },
+      {
         "command": "jira-plugin.issueByIdCommand",
         "title": "Issue by id",
         "category": "Jira-plugin"
@@ -175,6 +180,10 @@
       "view/title": [
         {
           "command": "jira-plugin.allIssuesCommand",
+          "when": "view == jiraExplorer"
+        },
+        {
+          "command": "jira-plugin.currentSprintCommand",
           "when": "view == jiraExplorer"
         },
         {
