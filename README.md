@@ -43,6 +43,8 @@ values:<br>
 
 - **All issues**<br>
   With this command you can search all issues for the current project.<br><br>
+- **Current sprint issues**<br>
+  With this command you can search all issues for the current sprint.<br><br>
 - **Issue by id**<br>
   With this command you can search an issue by id.<br><br>
 - **Issues filtered by status**<br>
