@@ -95,6 +95,12 @@ values:<br>
 
 If you want to file a bug, contribute some code or improve documentation, read up on [contributing guidelines](CONTRIBUTING.md), and check out [open issues](https://github.com/gioboa/jira-plugin/issues).
 
+## [Contributors](https://github.com/gioboa/jira-plugin/graphs/contributors)
+
+## License
+
+[![Version](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/gioboa/jira-plugin/blob/master/LICENSE)
+
 ## Versioning
 
 `jira-plugin` will be maintained under the Semantic Versioning guidelines. Releases are numbered with the following format:
