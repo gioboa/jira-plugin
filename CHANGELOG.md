@@ -1,3 +1,10 @@
+## 0.9.0
+
+### Features
+
+- current sprint functionality
+- state separator in the Jira Plugin EXPLORER
+
 ## 0.8.4
 
 ### Bug Fixes
