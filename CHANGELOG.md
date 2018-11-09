@@ -1,3 +1,9 @@
+## 0.9.1
+
+### Bug Fixes
+
+- fix jira connector issue
+
 ## 0.9.0
 
 ### Features
