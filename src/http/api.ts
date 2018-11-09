@@ -38,6 +38,20 @@ export class Jira implements IJira {
         basic_auth: { username, password }
       });
 
+      // custom event 
+      // solve this issue -> https://github.com/floralvikings/jira-connector/issues/115
+      const customGetAllProjects = (opts: any, callback: any) => {
+        var options = this.jiraInstance.project.buildRequestOptions(opts, '', 'GET');
+        if (Object.keys(options.body).length === 0) {
+          delete options.body;
+        }
+        if (Object.keys(options.qs).length === 0) {
+          delete options.qs;
+        }
+        return this.jiraInstance.makeRequest(options, callback);
+      };
+      this.jiraInstance.project.getAllProjects = customGetAllProjects;
+
       /* code for oauth copy from -> https://www.npmjs.com/package/jira-connector
       this.jiraInstance = new jiraClient({
         host: 'jenjinstudios.atlassian.net',
