@@ -123,11 +123,6 @@
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.createIssueCommand",
-        "title": "Create issue",
-        "category": "Jira-plugin"
-      },
-      {
         "command": "jira-plugin.currentSprintCommand",
         "title": "Current sprint issues",
         "category": "Jira-plugin"
@@ -179,16 +174,20 @@
           "light": "images/icons/light/refresh.svg",
           "dark": "images/icons/dark/refresh.svg"
         }
+      },
+      {
+        "command": "jira-plugin.createIssueCommand",
+        "title": "Create issue",
+        "icon": {
+          "light": "images/icons/light/plus_nav.png",
+          "dark": "images/icons/dark/plus_nav.png"
+        }
       }
     ],
     "menus": {
       "view/title": [
         {
           "command": "jira-plugin.allIssuesCommand",
-          "when": "view == jiraExplorer"
-        },
-        {
-          "command": "jira-plugin.createIssueCommand",
           "when": "view == jiraExplorer"
         },
         {
@@ -217,6 +216,11 @@
         },
         {
           "command": "jira-plugin.refresh",
+          "when": "view == jiraExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "jira-plugin.createIssueCommand",
           "when": "view == jiraExplorer",
           "group": "navigation"
         }
