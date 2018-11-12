@@ -78,10 +78,7 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     case SEARCH_MODE.MY_STATUS: {
       const status = await selectStatus();
       if (!!status) {
-        return [
-          `STATUS: ${status} ASSIGNEE: you`,
-          `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
-        ];
+        return [`STATUS: ${status} ASSIGNEE: you`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`];
       }
       break;
     }
@@ -90,9 +87,7 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
       if (!!status && !!assignee) {
         return [
           `STATUS: ${status} ASSIGNEE: ${assignee}`,
-          `project = ${project} AND status = '${status}' AND assignee = ${
-            assignee !== UNASSIGNED ? `'${assignee}'` : `null`
-          } ORDER BY status ASC, updated DESC`
+          `project = ${project} AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY status ASC, updated DESC`
         ];
       }
       break;
@@ -109,12 +104,9 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     }
     case SEARCH_MODE.MY_WORKING_ISSUES: {
       const statuses = workingIssueStatuses();
-      return [
-        `STATUS: ${statuses}`,
-        `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
-      ];
+      return [`STATUS: ${statuses}`, `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`];
     }
-    case SEARCH_MODE.CURRENT_SPRINT :{
+    case SEARCH_MODE.CURRENT_SPRINT: {
       return [`CURRENT SPRINT`, `project = ${project} AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`];
     }
   }
@@ -218,13 +210,15 @@ export const selectAssignee = async (unassigned: boolean, back: boolean): Promis
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
       const assignees = await state.jira.getAssignees({ project, maxResults: MAX_RESULTS });
-      const picks = (assignees || []).filter((assignee: IAssignee) => assignee.active === true).map((assignee: IAssignee) => {
-        return {
-          pickValue: assignee.key,
-          label: assignee.key,
-          description: assignee.displayName
-        };
-      });
+      const picks = (assignees || [])
+        .filter((assignee: IAssignee) => assignee.active === true)
+        .map((assignee: IAssignee) => {
+          return {
+            pickValue: assignee.key,
+            label: assignee.key,
+            description: assignee.displayName
+          };
+        });
       if (back) {
         picks.unshift(new BackPick());
       }
@@ -267,10 +261,7 @@ export const selectTransition = async (issueKey: string): Promise<string | null 
   return undefined;
 };
 
-const doubleSelection = async (
-  firstSelection: Function,
-  secondSelection: Function
-): Promise<{ firstChoise: string; secondChoise: string }> => {
+const doubleSelection = async (firstSelection: Function, secondSelection: Function): Promise<{ firstChoise: string; secondChoise: string }> => {
   let ok = false;
   let firstChoise = '';
   let secondChoise = '';
@@ -294,4 +285,24 @@ export const selectStatusAndAssignee = async (): Promise<{ status: string; assig
   } else {
     throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
   }
+};
+
+export const selectIssueType = async (): Promise<string | undefined> => {
+  try {
+    const types = await state.jira.getAllIssueTypes();
+    const picks = types.map(type => ({
+      pickValue: type.id,
+      label: type.name,
+      description: '',
+      type
+    }));
+    const selected = await vscode.window.showQuickPick(picks, {
+      placeHolder: `Select type`,
+      matchOnDescription: true
+    });
+    return selected ? selected.pickValue : undefined;
+  } catch (err) {
+    printErrorMessageInOutput(err);
+  }
+  return undefined;
 };

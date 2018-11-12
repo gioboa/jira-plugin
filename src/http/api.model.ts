@@ -10,6 +10,8 @@ export interface IJira {
 
   addNewComment(params: { issueKey: string; comment: IAddComment }): Promise<IAddCommentResponse>;
   addWorkLog(params: { issueKey: string; worklog: IAddWorkLog }): Promise<void>;
+
+  getAllIssueTypes(): Promise<IIssueType[]>;
 }
 
 export interface IServerInfo {
@@ -94,4 +96,11 @@ export interface IWorkingIssue {
 export interface IAddWorkLog {
   timeSpentSeconds: number;
   comment?: string;
+}
+
+export interface IIssueType {
+  id: string;
+  description: string;
+  name: string;
+  subtask: boolean;
 }

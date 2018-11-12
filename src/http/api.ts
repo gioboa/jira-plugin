@@ -2,18 +2,7 @@ const jiraClient = require('jira-connector');
 import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
 import { printErrorMessageInOutput } from '../state/state';
-import {
-  IAddComment,
-  IAddCommentResponse,
-  IAddWorkLog,
-  IAssignee,
-  IIssues,
-  IJira,
-  IProject,
-  ISetTransition,
-  IStatus,
-  ITransitions
-} from './api.model';
+import { IAddComment, IAddCommentResponse, IAddWorkLog, IAssignee, IIssues, IJira, IProject, ISetTransition, IStatus, ITransitions, IIssueType } from './api.model';
 
 export class Jira implements IJira {
   jiraInstance: any;
@@ -38,7 +27,7 @@ export class Jira implements IJira {
         basic_auth: { username, password }
       });
 
-      // custom event 
+      // custom event
       // solve this issue -> https://github.com/floralvikings/jira-connector/issues/115
       const customGetAllProjects = (opts: any, callback: any) => {
         var options = this.jiraInstance.project.buildRequestOptions(opts, '', 'GET');
@@ -102,5 +91,9 @@ export class Jira implements IJira {
 
   async addWorkLog(params: { issueKey: string; worklog: IAddWorkLog }): Promise<void> {
     return await this.jiraInstance.issue.addWorkLog(params);
+  }
+
+  async getAllIssueTypes(): Promise<IIssueType[]> {
+    return await this.jiraInstance.issueType.getAllIssueTypes();
   }
 }
