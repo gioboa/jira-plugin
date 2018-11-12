@@ -123,6 +123,11 @@
         "category": "Jira-plugin"
       },
       {
+        "command": "jira-plugin.createIssueCommand",
+        "title": "Create issue",
+        "category": "Jira-plugin"
+      },
+      {
         "command": "jira-plugin.currentSprintCommand",
         "title": "Current sprint issues",
         "category": "Jira-plugin"
@@ -180,6 +185,10 @@
       "view/title": [
         {
           "command": "jira-plugin.allIssuesCommand",
+          "when": "view == jiraExplorer"
+        },
+        {
+          "command": "jira-plugin.createIssueCommand",
           "when": "view == jiraExplorer"
         },
         {

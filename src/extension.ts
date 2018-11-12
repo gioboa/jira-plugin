@@ -14,6 +14,7 @@ import { selectIssue } from './shared/select-utilities';
 import { StatusBarManager } from './shared/status-bar';
 import state, { connectToJira } from './state/state';
 import { OpenGitHubRepoCommand } from './commands/open-github-repo';
+import { CreateIssueCommand } from './commands/create-issue';
 
 let channel: vscode.OutputChannel;
 
@@ -42,7 +43,8 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
     new OpenGitHubRepoCommand(),
     new OpenIssueCommand(),
     new SetWorkingIssueCommand(),
-    new IssueAddWorklogCommand()
+    new IssueAddWorklogCommand(),
+    new CreateIssueCommand()
   ];
 
   // register all commands
