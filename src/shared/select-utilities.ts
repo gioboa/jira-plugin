@@ -287,18 +287,19 @@ export const selectStatusAndAssignee = async (): Promise<{ status: string; assig
   }
 };
 
-export const selectIssueType = async (): Promise<string | undefined> => {
+export const selectIssueType = async (ignoreFocusOut: boolean): Promise<string | undefined> => {
   try {
     const types = await state.jira.getAllIssueTypes();
     const picks = types.map(type => ({
-      pickValue: type.id,
+      pickValue: `${type.id} - ${type.name}`,
       label: type.name,
       description: '',
       type
     }));
     const selected = await vscode.window.showQuickPick(picks, {
       placeHolder: `Select type`,
-      matchOnDescription: true
+      matchOnDescription: true,
+      ignoreFocusOut
     });
     return selected ? selected.pickValue : undefined;
   } catch (err) {

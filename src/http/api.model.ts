@@ -12,6 +12,7 @@ export interface IJira {
   addWorkLog(params: { issueKey: string; worklog: IAddWorkLog }): Promise<void>;
 
   getAllIssueTypes(): Promise<IIssueType[]>;
+  createIssue(params: ICreateIssue): Promise<any>;
 }
 
 export interface IServerInfo {
@@ -103,4 +104,17 @@ export interface IIssueType {
   description: string;
   name: string;
   subtask: boolean;
+}
+
+export interface ICreateIssue {
+  fields: {
+    project: {
+      key: string;
+    };
+    summary: string;
+    description: string;
+    issuetype: {
+      id: string;
+    };
+  };
 }

@@ -6,12 +6,18 @@ export const NEW_ISSUE_STATUS = {
 };
 
 export interface INewIssue {
+  type: string | undefined;
   summary: string | undefined;
   description: string | undefined;
 }
 
 // items available inside the selector
 export const NEW_ISSUE_FIELDS = {
+  TYPE: {
+    field: 'type',
+    label: 'Type :',
+    description: 'Select type'
+  },
   SUMMARY: {
     field: 'summary',
     label: 'Summary :',

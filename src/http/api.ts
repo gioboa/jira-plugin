@@ -2,7 +2,7 @@ const jiraClient = require('jira-connector');
 import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
 import { printErrorMessageInOutput } from '../state/state';
-import { IAddComment, IAddCommentResponse, IAddWorkLog, IAssignee, IIssues, IJira, IProject, ISetTransition, IStatus, ITransitions, IIssueType } from './api.model';
+import { IAddComment, IAddCommentResponse, IAddWorkLog, IAssignee, IIssues, IJira, IProject, ISetTransition, IStatus, ITransitions, IIssueType, ICreateIssue } from './api.model';
 
 export class Jira implements IJira {
   jiraInstance: any;
@@ -95,5 +95,9 @@ export class Jira implements IJira {
 
   async getAllIssueTypes(): Promise<IIssueType[]> {
     return await this.jiraInstance.issueType.getAllIssueTypes();
+  }
+
+  async createIssue(params: ICreateIssue): Promise<any> {
+    return await this.jiraInstance.issue.createIssue(params);
   }
 }
