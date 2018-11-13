@@ -21,7 +21,7 @@ export class IssueAddCommentCommand implements Command {
           // ask for assignee if there is one or more [@] in the comment
           const num = (text.match(new RegExp('[@]', 'g')) || []).length;
           for (let i = 0; i < num; i++) {
-            const assignee = await selectAssignee(false, false);
+            const assignee = await selectAssignee(false, false, true);
             if (!!assignee) {
               text = text.replace('[@]', `[~${assignee}]`);
             } else {

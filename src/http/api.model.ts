@@ -116,5 +116,8 @@ export interface ICreateIssue {
     issuetype: {
       id: string;
     };
+    assignee?: {
+      key: string;
+    };
   };
 }
