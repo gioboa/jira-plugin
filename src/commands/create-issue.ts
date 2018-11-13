@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import state, { printErrorMessageInOutput } from '../state/state';
-import { INewIssue, NEW_ISSUE_FIELDS, NEW_ISSUE_STATUS } from './create-issue.model';
-import { Command } from './shared/command';
-import { selectIssueType } from '../shared/select-utilities';
 import { getConfigurationByKey } from '../shared/configuration';
 import { CONFIG } from '../shared/constants';
-import { SSL_OP_NO_TICKET } from 'constants';
+import { selectIssueType } from '../shared/select-utilities';
+import state, { printErrorMessageInOutput } from '../state/state';
+import { INewIssue, NEW_ISSUE_FIELDS, NEW_ISSUE_STATUS } from './create-issue.model';
+import { OpenIssueCommand } from './open-issue';
+import { Command } from './shared/command';
 
 export class CreateIssueCommand implements Command {
   public id = 'jira-plugin.createIssueCommand';
@@ -75,7 +75,7 @@ export class CreateIssueCommand implements Command {
       if (status === NEW_ISSUE_STATUS.INSERT) {
         const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
         if (project && newIssue.summary && newIssue.description && newIssue.type) {
-          const a = await state.jira.createIssue({
+          const createdIssue = await state.jira.createIssue({
             fields: {
               project: {
                 key: project
@@ -87,6 +87,13 @@ export class CreateIssueCommand implements Command {
               }
             }
           });
+          if (!!createdIssue && !!createdIssue.key) {
+            // if the response is ok, we will open the created issue
+            const action = await vscode.window.showInformationMessage('Issue created', 'Open in browser');
+            if (action === 'Open in browser') {
+              new OpenIssueCommand().run(createdIssue.key);
+            }
+          }
         }
       } else {
         console.log(`Exit`);
