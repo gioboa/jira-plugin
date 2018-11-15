@@ -34,7 +34,7 @@ export const LATER = 'Later';
 // all the search types
 export const SEARCH_MODE = {
   ALL: 'ALL',
-  CURRENT_SPRINT : 'CURRENT_SPRINT',
+  CURRENT_SPRINT: 'CURRENT_SPRINT',
   ID: 'ID',
   STATUS: 'STATUS',
   MY_STATUS: 'MY_STATUS',
@@ -45,12 +45,17 @@ export const SEARCH_MODE = {
 };
 
 // status icons, used for show the correct icon
+// https://octicons.github.com/
 export const STATUS_ICONS = {
   OPEN: { text: 'OPEN', icon: '$(beaker)', file: 'beaker.png' },
   PROGRESS: { text: 'PROGRESS', icon: '$(flame)', file: 'flame.png' },
   RESOLVE: { text: 'RESOLVE', icon: '$(check)', file: 'check.png' },
   CLOSE: { text: 'CLOSE', icon: '$(x)', file: 'x.png' },
   SUSPEND: { text: 'SUSPEND', icon: '$(alert)', file: 'alert.png' },
+  ESTIMATING: { text: 'ESTIMATING', icon: '$(gist-secret)', file: 'gist-secret.png' },
+  ESTIMATED: { text: 'ESTIMATED', icon: '$(book)', file: 'book.png' },
+  REMARKED: { text: 'REMARKED', icon: '$(eye)', file: 'eye.png' },
+  APPROVED: { text: 'APPROVED', icon: '$(thumbsup)', file: 'thumbsup.png' },
   DEFAULT: { text: 'DEFAULT', icon: '$(info)', file: 'info.png' }
 };
 
