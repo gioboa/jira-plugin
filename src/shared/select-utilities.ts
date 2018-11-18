@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { IAssignee, IIssue } from '../http/api.model';
+import { IAssignee, IIssue, IIssueType } from '../http/api.model';
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
@@ -114,8 +114,11 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
         `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
       ];
     }
-    case SEARCH_MODE.CURRENT_SPRINT :{
-      return [`CURRENT SPRINT`, `project = ${project} AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`];
+    case SEARCH_MODE.CURRENT_SPRINT: {
+      return [
+        `CURRENT SPRINT`,
+        `project = ${project} AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`
+      ];
     }
   }
   return ['', ''];
@@ -199,7 +202,10 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
             // limit case, there is a working issue selected but the user has no more ${filter} issue. i.e: change of status of the working issue
             if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
               const picks = [new NoWorkingIssuePick()];
-              const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Your working issue list`, matchOnDescription: true });
+              const selected = await vscode.window.showQuickPick(picks, {
+                placeHolder: `Your working issue list`,
+                matchOnDescription: true
+              });
               return selected ? selected.pickValue : undefined;
             }
           }
@@ -213,18 +219,25 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
 };
 
 // selection for assignees
-export const selectAssignee = async (unassigned: boolean, back: boolean): Promise<string> => {
+export const selectAssignee = async (
+  unassigned: boolean,
+  back: boolean,
+  onlyKey: boolean,
+  preLoadedPicks: IAssignee[] | undefined
+): Promise<string | IAssignee> => {
   try {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
-      const assignees = await state.jira.getAssignees({ project, maxResults: MAX_RESULTS });
-      const picks = (assignees || []).filter((assignee: IAssignee) => assignee.active === true).map((assignee: IAssignee) => {
-        return {
-          pickValue: assignee.key,
-          label: assignee.key,
-          description: assignee.displayName
-        };
-      });
+      const assignees = preLoadedPicks || (await state.jira.getAssignees({ project, maxResults: MAX_RESULTS }));
+      const picks = (assignees || [])
+        .filter((assignee: IAssignee) => assignee.active === true)
+        .map((assignee: IAssignee) => {
+          return {
+            pickValue: onlyKey ? assignee.key : assignee,
+            label: assignee.key,
+            description: assignee.displayName
+          };
+        });
       if (back) {
         picks.unshift(new BackPick());
       }
@@ -289,9 +302,33 @@ const doubleSelection = async (
 export const selectStatusAndAssignee = async (): Promise<{ status: string; assignee: string }> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
-    const { firstChoise, secondChoise } = await doubleSelection(selectStatus, async () => await selectAssignee(true, true));
+    const { firstChoise, secondChoise } = await doubleSelection(
+      selectStatus,
+      async () => await selectAssignee(true, true, true, undefined)
+    );
     return { status: firstChoise, assignee: secondChoise };
   } else {
     throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
   }
+};
+
+export const selectIssueType = async (ignoreFocusOut: boolean, preLoadedPicks: IIssueType[]): Promise<IIssueType | undefined> => {
+  try {
+    const types = preLoadedPicks || (await state.jira.getAllIssueTypes());
+    const picks = (types || []).map(type => ({
+      pickValue: type,
+      label: type.name,
+      description: '',
+      type
+    }));
+    const selected = await vscode.window.showQuickPick(picks, {
+      placeHolder: `Select type`,
+      matchOnDescription: true,
+      ignoreFocusOut
+    });
+    return selected ? selected.pickValue : undefined;
+  } catch (err) {
+    printErrorMessageInOutput(err);
+  }
+  return undefined;
 };

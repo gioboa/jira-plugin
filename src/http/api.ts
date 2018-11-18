@@ -7,12 +7,15 @@ import {
   IAddCommentResponse,
   IAddWorkLog,
   IAssignee,
+  ICreateIssue,
   IIssues,
+  IIssueType,
   IJira,
   IProject,
   ISetTransition,
   IStatus,
-  ITransitions
+  ITransitions,
+  IPriority
 } from './api.model';
 
 export class Jira implements IJira {
@@ -38,7 +41,7 @@ export class Jira implements IJira {
         basic_auth: { username, password }
       });
 
-      // custom event 
+      // custom event
       // solve this issue -> https://github.com/floralvikings/jira-connector/issues/115
       const customGetAllProjects = (opts: any, callback: any) => {
         var options = this.jiraInstance.project.buildRequestOptions(opts, '', 'GET');
@@ -102,5 +105,17 @@ export class Jira implements IJira {
 
   async addWorkLog(params: { issueKey: string; worklog: IAddWorkLog }): Promise<void> {
     return await this.jiraInstance.issue.addWorkLog(params);
+  }
+
+  async getAllIssueTypes(): Promise<IIssueType[]> {
+    return await this.jiraInstance.issueType.getAllIssueTypes();
+  }
+
+  async createIssue(params: ICreateIssue): Promise<any> {
+    return await this.jiraInstance.issue.createIssue(params);
+  }
+
+  async getAllPriorities(): Promise<IPriority[]> {
+    return await this.jiraInstance.priority.getAllPriorities();
   }
 }

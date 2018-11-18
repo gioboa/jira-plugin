@@ -1,8 +1,10 @@
 import * as vscode from 'vscode';
 import { ChangeIssueAssigneeCommand } from './commands/change-issue-assignee';
 import { ChangeIssueStatusCommand } from './commands/change-issue-status';
+import { CreateIssueCommand } from './commands/create-issue';
 import { IssueAddCommentCommand } from './commands/issue-add-comment';
 import { IssueAddWorklogCommand } from './commands/issue-add-worklog';
+import { OpenGitHubRepoCommand } from './commands/open-github-repo';
 import { OpenIssueCommand } from './commands/open-issue';
 import { SetWorkingIssueCommand } from './commands/set-working-issue';
 import { SetWorkingProjectCommand } from './commands/set-working-project';
@@ -13,7 +15,6 @@ import { IssueLinkProvider } from './shared/document-link-provider';
 import { selectIssue } from './shared/select-utilities';
 import { StatusBarManager } from './shared/status-bar';
 import state, { connectToJira } from './state/state';
-import { OpenGitHubRepoCommand } from './commands/open-github-repo';
 
 let channel: vscode.OutputChannel;
 
@@ -42,15 +43,22 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
     new OpenGitHubRepoCommand(),
     new OpenIssueCommand(),
     new SetWorkingIssueCommand(),
-    new IssueAddWorklogCommand()
+    new IssueAddWorklogCommand(),
+    new CreateIssueCommand()
   ];
 
   // register all commands
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.refresh', () => selectIssue(SEARCH_MODE.REFRESH)));
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.allIssuesCommand', () => selectIssue(SEARCH_MODE.ALL)));
-  context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.currentSprintCommand', () => selectIssue(SEARCH_MODE.CURRENT_SPRINT)));
-  context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.myIssuesByStatusCommand', () => selectIssue(SEARCH_MODE.MY_STATUS)));
-  context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesByStatusAssigneeCommand', () => selectIssue(SEARCH_MODE.STATUS_ASSIGNEE)));
+  context.subscriptions.push(
+    vscode.commands.registerCommand('jira-plugin.currentSprintCommand', () => selectIssue(SEARCH_MODE.CURRENT_SPRINT))
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand('jira-plugin.myIssuesByStatusCommand', () => selectIssue(SEARCH_MODE.MY_STATUS))
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand('jira-plugin.issuesByStatusAssigneeCommand', () => selectIssue(SEARCH_MODE.STATUS_ASSIGNEE))
+  );
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesByStatusCommand', () => selectIssue(SEARCH_MODE.STATUS)));
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issueByIdCommand', () => selectIssue(SEARCH_MODE.ID)));
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesBySummaryCommand', () => selectIssue(SEARCH_MODE.SUMMARY)));

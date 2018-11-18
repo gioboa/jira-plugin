@@ -13,10 +13,10 @@ export class ChangeIssueAssigneeCommand implements Command {
         let issue = issueItem.issue;
         // verify if it's the current working issue
         if (!isWorkingIssue(issue.key)) {
-          let assignee = await selectAssignee(false, false);
+          let assignee = await selectAssignee(false, false, true, undefined);
           if (!!assignee) {
             // call Jira API
-            const res = await state.jira.setAssignIssue({ issueKey: issue.key, assignee: assignee });
+            const res = await state.jira.setAssignIssue({ issueKey: issue.key, assignee: <string>assignee });
             await vscode.commands.executeCommand('jira-plugin.refresh');
           }
         }
