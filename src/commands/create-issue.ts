@@ -43,9 +43,12 @@ export class CreateIssueCommand implements Command {
             if (selected.field !== NEW_ISSUE_FIELDS.INSERT_ISSUE.field && selected.field !== NEW_ISSUE_FIELDS.EXIT.field) {
               await manageSelectedField(selected, newIssue, types, assignees, priorities);
             } else {
-              if (mandatoryFieldsOk(newIssue)) {
-                status = selected.field === NEW_ISSUE_FIELDS.INSERT_ISSUE.field ? NEW_ISSUE_STATUS.INSERT : NEW_ISSUE_STATUS.STOP;
-              }
+              status =
+                selected.field === NEW_ISSUE_FIELDS.EXIT.field
+                  ? NEW_ISSUE_STATUS.STOP
+                  : mandatoryFieldsOk(newIssue)
+                  ? NEW_ISSUE_STATUS.INSERT
+                  : status;
             }
           }
         }

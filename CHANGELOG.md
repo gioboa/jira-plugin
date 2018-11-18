@@ -1,3 +1,9 @@
+## 0.10.1
+
+### Bug Fixes
+
+- solve problem with VS Code publish
+
 ## 0.10.0
 
 ### Features
