@@ -1,4 +1,4 @@
-import { IAssignee, IIssueType } from '../http/api.model';
+import { IAssignee, IIssueType, IPriority } from '../http/api.model';
 
 // statuses for new issue loop
 export const NEW_ISSUE_STATUS = {
@@ -12,6 +12,7 @@ export interface INewIssue {
   summary: string | undefined;
   description: string | undefined;
   assignee: IAssignee | string | undefined;
+  priority: IPriority | undefined;
 }
 
 // items available inside the selector
@@ -35,6 +36,11 @@ export const NEW_ISSUE_FIELDS = {
     field: 'assignee',
     label: 'Assignee :',
     description: 'Select assignee'
+  },
+  PRIORITY: {
+    field: 'priority',
+    label: 'Priority :',
+    description: 'Select priority'
   },
   DIVIDER: {
     field: 'divider',

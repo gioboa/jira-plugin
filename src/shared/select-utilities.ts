@@ -219,11 +219,16 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
 };
 
 // selection for assignees
-export const selectAssignee = async (unassigned: boolean, back: boolean, onlyKey: boolean): Promise<string | IAssignee> => {
+export const selectAssignee = async (
+  unassigned: boolean,
+  back: boolean,
+  onlyKey: boolean,
+  preLoadedPicks: IAssignee[] | undefined
+): Promise<string | IAssignee> => {
   try {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
-      const assignees = await state.jira.getAssignees({ project, maxResults: MAX_RESULTS });
+      const assignees = preLoadedPicks || (await state.jira.getAssignees({ project, maxResults: MAX_RESULTS }));
       const picks = (assignees || [])
         .filter((assignee: IAssignee) => assignee.active === true)
         .map((assignee: IAssignee) => {
@@ -297,17 +302,20 @@ const doubleSelection = async (
 export const selectStatusAndAssignee = async (): Promise<{ status: string; assignee: string }> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
-    const { firstChoise, secondChoise } = await doubleSelection(selectStatus, async () => await selectAssignee(true, true, true));
+    const { firstChoise, secondChoise } = await doubleSelection(
+      selectStatus,
+      async () => await selectAssignee(true, true, true, undefined)
+    );
     return { status: firstChoise, assignee: secondChoise };
   } else {
     throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
   }
 };
 
-export const selectIssueType = async (ignoreFocusOut: boolean): Promise<IIssueType | undefined> => {
+export const selectIssueType = async (ignoreFocusOut: boolean, preLoadedPicks: IIssueType[]): Promise<IIssueType | undefined> => {
   try {
-    const types = await state.jira.getAllIssueTypes();
-    const picks = types.map(type => ({
+    const types = preLoadedPicks || (await state.jira.getAllIssueTypes());
+    const picks = (types || []).map(type => ({
       pickValue: type,
       label: type.name,
       description: '',

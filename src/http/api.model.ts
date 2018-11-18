@@ -13,6 +13,8 @@ export interface IJira {
 
   getAllIssueTypes(): Promise<IIssueType[]>;
   createIssue(params: ICreateIssue): Promise<any>;
+
+  getAllPriorities(): Promise<IPriority[]>;
 }
 
 export interface IServerInfo {
@@ -119,5 +121,17 @@ export interface ICreateIssue {
     assignee?: {
       key: string;
     };
+    priority?: {
+      id: string;
+    };
   };
+}
+
+export interface IPriority {
+  description: string;
+  iconUrl: string;
+  id: string;
+  name: string;
+  self: string;
+  statusColor: string;
 }
