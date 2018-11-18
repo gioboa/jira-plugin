@@ -1,3 +1,11 @@
+## 0.10.0
+
+### Features
+
+- create issue functionality
+- icons for all available states
+- README contributors list - thanks guys :-)
+
 ## 0.9.1
 
 ### Bug Fixes
