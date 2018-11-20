@@ -100,7 +100,7 @@ export class Jira implements IJira {
   }
 
   async addNewComment(params: { issueKey: string; comment: IAddComment }): Promise<IAddCommentResponse> {
-    return await this.jiraInstance.issue.assignIssue(params);
+    return await this.jiraInstance.issue.addComment(params);
   }
 
   async addWorkLog(params: { issueKey: string; worklog: IAddWorkLog }): Promise<void> {
