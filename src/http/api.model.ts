@@ -119,7 +119,7 @@ export interface ICreateIssue {
       id: string;
     };
     assignee?: {
-      key: string;
+      name: string;
     };
     priority?: {
       id: string;

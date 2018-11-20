@@ -138,7 +138,7 @@ const insertNewTicket = async (newIssue: INewIssue) => {
       request.fields = {
         ...request.fields,
         assignee: {
-          key: (<IAssignee>newIssue.assignee).key
+          name: (<IAssignee>newIssue.assignee).name
         }
       };
     }
