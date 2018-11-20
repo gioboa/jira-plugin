@@ -8,6 +8,7 @@ import { IssueItem } from './item/issue-item';
 import { LimitInfoItem } from './item/limit-info';
 import { LoadingItem } from './item/loading-item';
 import { NoResultItem } from './item/no-result-item';
+import { StatusItem } from './item/status-item';
 
 export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<IssueItem | undefined> = new vscode.EventEmitter<IssueItem | undefined>();
@@ -44,9 +45,9 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
       items.map((item: any, index: number) => {
         if (item.issue) {
           if (
-            !items.find(el => el.contextValue === new DividerItem('').contextValue && getLabel(item.issue.fields.status.name) === el.label)
+            !items.find(el => el.contextValue === new StatusItem('','').contextValue && getLabel(item.issue.fields.status.name) === el.label)
           ) {
-            items.splice(index, 0, new DividerItem(getLabel(item.issue.fields.status.name)));
+            items.splice(index, 0, new StatusItem(getLabel(item.issue.fields.status.name), item.issue.fields.status.name));
           }
         }
       });
