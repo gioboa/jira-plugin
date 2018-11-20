@@ -1,3 +1,10 @@
+## 0.10.2
+
+### Bug Fixes
+
+- refactor explorer icons
+- create issue assignee
+
 ## 0.10.1
 
 ### Bug Fixes
