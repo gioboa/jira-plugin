@@ -1,3 +1,9 @@
+## 0.10.3
+
+### Bug Fixes
+
+- typo in addNewComment api
+
 ## 0.10.2
 
 ### Bug Fixes
