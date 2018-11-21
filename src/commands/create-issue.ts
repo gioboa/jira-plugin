@@ -19,7 +19,7 @@ export class CreateIssueCommand implements Command {
         // load once the options
         const assignees = await state.jira.getAssignees({ project, maxResults: MAX_RESULTS });
         const priorities = await state.jira.getAllPriorities();
-        const types = await state.jira.getAllIssueTypes();
+        const types = await state.jira.getAllIssueTypesWithFields(project);
 
         // instance for keep data
         const newIssue: INewIssue = {
@@ -32,7 +32,7 @@ export class CreateIssueCommand implements Command {
         let status = NEW_ISSUE_STATUS.CONTINUE;
         while (status === NEW_ISSUE_STATUS.CONTINUE) {
           // genearte/update new issue selector
-          const createIssuePicks = generateNewIssuePicks(newIssue, priorities && priorities.length > 0);
+          const createIssuePicks = generateNewIssuePicks(newIssue, priorities && priorities.length > 0, types);
           const selected = await vscode.window.showQuickPick(createIssuePicks, {
             placeHolder: `Insert Jira issue`,
             matchOnDescription: true
@@ -46,7 +46,7 @@ export class CreateIssueCommand implements Command {
               status =
                 selected.field === NEW_ISSUE_FIELDS.EXIT.field
                   ? NEW_ISSUE_STATUS.STOP
-                  : mandatoryFieldsOk(newIssue)
+                  : mandatoryFieldsOk(newIssue, types)
                   ? NEW_ISSUE_STATUS.INSERT
                   : status;
             }
@@ -54,7 +54,7 @@ export class CreateIssueCommand implements Command {
         }
         // insert
         if (status === NEW_ISSUE_STATUS.INSERT) {
-          await insertNewTicket(newIssue);
+          await insertNewTicket(newIssue, types);
         } else {
           // console.log(`Exit`);
         }
@@ -65,7 +65,32 @@ export class CreateIssueCommand implements Command {
   }
 }
 
-const generateNewIssuePicks = (newIssue: INewIssue, addPriority: boolean) => {
+const mandatoryFieldsOk = (newIssue: INewIssue, types: IIssueType[]): boolean => {
+  // newIssue.type must be defined for detect which fields are mandatory
+  if (!newIssue.type) {
+    return false;
+  }
+  for (const key in newIssue) {
+    const value = (<any>newIssue)[key];
+    if (!value && isFieldMandatory(newIssue.type.id, types, key)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const isFieldMandatory = (newIssueTypeId: string, types: IIssueType[], field: string): boolean => {
+  if (!!newIssueTypeId) {
+    const type = types.find(type => type.id === newIssueTypeId);
+    if (!!type) {
+      return !!type.fields[field.toLowerCase()] ? type.fields[field.toLowerCase()].required : false;
+    }
+  }
+  return false;
+};
+
+const generateNewIssuePicks = (newIssue: INewIssue, addPriority: boolean, types: IIssueType[]): any[] => {
+  const newIssueTypeId = !!newIssue.type ? newIssue.type.id : '';
   const picks = [
     {
       field: NEW_ISSUE_FIELDS.TYPE.field,
@@ -74,17 +99,23 @@ const generateNewIssuePicks = (newIssue: INewIssue, addPriority: boolean) => {
     },
     {
       field: NEW_ISSUE_FIELDS.SUMMARY.field,
-      label: NEW_ISSUE_FIELDS.SUMMARY.label,
+      label: `${isFieldMandatory(newIssueTypeId, types, NEW_ISSUE_FIELDS.SUMMARY.field) ? '$(star) ' : ''}${
+        NEW_ISSUE_FIELDS.SUMMARY.label
+      }`,
       description: newIssue.summary || NEW_ISSUE_FIELDS.SUMMARY.description
     },
     {
       field: NEW_ISSUE_FIELDS.DESCRIPTION.field,
-      label: NEW_ISSUE_FIELDS.DESCRIPTION.label,
+      label: `${isFieldMandatory(newIssueTypeId, types, NEW_ISSUE_FIELDS.DESCRIPTION.field) ? '$(star) ' : ''}${
+        NEW_ISSUE_FIELDS.DESCRIPTION.label
+      }`,
       description: newIssue.description || NEW_ISSUE_FIELDS.DESCRIPTION.description
     },
     {
       field: NEW_ISSUE_FIELDS.ASSIGNEE.field,
-      label: NEW_ISSUE_FIELDS.ASSIGNEE.label,
+      label: `${isFieldMandatory(newIssueTypeId, types, NEW_ISSUE_FIELDS.ASSIGNEE.field) ? '$(star) ' : ''}${
+        NEW_ISSUE_FIELDS.ASSIGNEE.label
+      }`,
       description: !!newIssue.assignee ? (<IAssignee>newIssue.assignee).name : NEW_ISSUE_FIELDS.ASSIGNEE.description
     },
     {
@@ -114,13 +145,9 @@ const generateNewIssuePicks = (newIssue: INewIssue, addPriority: boolean) => {
   return picks;
 };
 
-const mandatoryFieldsOk = (newIssue: INewIssue) => {
-  return !!newIssue.summary && !!newIssue.description && !!newIssue.type;
-};
-
-const insertNewTicket = async (newIssue: INewIssue) => {
+const insertNewTicket = async (newIssue: INewIssue, types: IIssueType[]): Promise<void> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
-  if (mandatoryFieldsOk(newIssue)) {
+  if (mandatoryFieldsOk(newIssue, types)) {
     let request = {
       fields: {
         project: {
@@ -168,7 +195,7 @@ const manageSelectedField = async (
   types: IIssueType[],
   assignees: IAssignee[],
   priorities: IPriority[]
-) => {
+): Promise<void> => {
   switch (selected.field) {
     case NEW_ISSUE_FIELDS.SUMMARY.field:
     case NEW_ISSUE_FIELDS.DESCRIPTION.field:

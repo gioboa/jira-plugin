@@ -19,32 +19,32 @@ export interface INewIssue {
 export const NEW_ISSUE_FIELDS = {
   TYPE: {
     field: 'type',
-    label: 'Type * :',
+    label: '$(star) Type: ',
     description: 'Select type'
   },
   SUMMARY: {
     field: 'summary',
-    label: 'Summary * :',
+    label: 'Summary: ',
     description: 'Insert summary'
   },
   DESCRIPTION: {
     field: 'description',
-    label: 'Description * :',
+    label: 'Description: ',
     description: 'Insert description'
   },
   ASSIGNEE: {
     field: 'assignee',
-    label: 'Assignee :',
+    label: 'Assignee: ',
     description: 'Select assignee'
   },
   PRIORITY: {
     field: 'priority',
-    label: 'Priority :',
+    label: 'Priority: ',
     description: 'Select priority'
   },
   DIVIDER: {
     field: 'divider',
-    label: '--- * required ---',
+    label: '--- $(star) required ---',
     description: ''
   },
   INSERT_ISSUE: {

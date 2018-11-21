@@ -4,17 +4,14 @@ export interface IJira {
   getProjects(): Promise<IProject[]>;
   getAssignees(param: { project: string; maxResults?: number }): Promise<IAssignee[]>;
   getTransitions(issueKey: string): Promise<ITransitions>;
-
   setTransition(params: { issueKey: string; transition: ISetTransition }): Promise<void>;
   setAssignIssue(params: { issueKey: string; assignee: string }): Promise<void>;
-
   addNewComment(params: { issueKey: string; comment: IAddComment }): Promise<IAddCommentResponse>;
   addWorkLog(params: { issueKey: string; worklog: IAddWorkLog }): Promise<void>;
-
   getAllIssueTypes(): Promise<IIssueType[]>;
   createIssue(params: ICreateIssue): Promise<any>;
-
   getAllPriorities(): Promise<IPriority[]>;
+  getAllIssueTypesWithFields(project: string): Promise<IIssueType[]>;
 }
 
 export interface IServerInfo {
@@ -106,6 +103,13 @@ export interface IIssueType {
   description: string;
   name: string;
   subtask: boolean;
+  fields: { [key: string]: IField };
+}
+
+export interface IField {
+  hasDefaultValue: boolean;
+  name: string;
+  required: boolean;
 }
 
 export interface ICreateIssue {
@@ -134,4 +138,10 @@ export interface IPriority {
   name: string;
   self: string;
   statusColor: string;
+}
+
+export interface ICreateMetadata {
+  projectKeys: string;
+  issuetypeIds?: string[];
+  expand: string;
 }

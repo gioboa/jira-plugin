@@ -8,14 +8,15 @@ import {
   IAddWorkLog,
   IAssignee,
   ICreateIssue,
+  ICreateMetadata,
   IIssues,
   IIssueType,
   IJira,
+  IPriority,
   IProject,
   ISetTransition,
   IStatus,
-  ITransitions,
-  IPriority
+  ITransitions
 } from './api.model';
 
 export class Jira implements IJira {
@@ -117,5 +118,16 @@ export class Jira implements IJira {
 
   async getAllPriorities(): Promise<IPriority[]> {
     return await this.jiraInstance.priority.getAllPriorities();
+  }
+
+  async getAllIssueTypesWithFields(project: string): Promise<IIssueType[]> {
+    const response = await this.jiraInstance.issue.getCreateMetadata({
+      projectKeys: project,
+      expand: 'projects.issuetypes.fields'
+    } as ICreateMetadata);
+    if (!!response.projects && response.projects.length > 0) {
+      return response.projects[0].issuetypes;
+    }
+    return [];
   }
 }
