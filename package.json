@@ -91,6 +91,11 @@
           "type": "string",
           "description": "Statuses used for extract working issue list (e.g. In Progress, Development In Progress, Test in Progress)",
           "default": "In progress"
+        },
+        "jira-plugin.additionalStatuses": {
+          "type": "string",
+          "description": "Additional custom statuses, used for manage some Jira wrong behavior",
+          "default": ""
         }
       }
     },

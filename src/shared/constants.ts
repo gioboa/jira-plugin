@@ -9,7 +9,8 @@ export const CONFIG = {
   TRACKING_TIME_MODE: 'trackingTimeMode',
   TRACKING_TIME_MODE_HYBRID_TIMEOUT: 'trackingTimeModeHybridTimeout',
   WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime',
-  WORKING_ISSUE_STATUSES: 'workingIssueStatues'
+  WORKING_ISSUE_STATUSES: 'workingIssueStatues',
+  ADDITIONAL_STATUSES: 'additionalStatuses'
 };
 
 // all the tracking time mode

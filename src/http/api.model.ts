@@ -47,11 +47,8 @@ export interface IProject {
 }
 
 export interface IStatus {
-  self: string;
   description: string;
-  iconUrl: string;
   name: string;
-  id: string;
 }
 
 export interface ITransitions {

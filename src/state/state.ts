@@ -47,6 +47,9 @@ export const connectToJira = async (): Promise<void> => {
     state.jira = new Jira();
     // save statuses and projects in the global state
     state.statuses = await state.jira.getStatuses();
+    addAdditionalStatuses();
+    state.statuses.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+
     state.projects = await state.jira.getProjects();
     state.statusBar.updateWorkingProjectItem('');
 
@@ -110,5 +113,25 @@ export const printErrorMessageInOutput = (err: any) => {
   if (state.channel) {
     vscode.window.showErrorMessage(`Error: Check logs in Jira Plugin terminal output.`);
     state.channel.append(`Error: ${err}\n`);
+  }
+};
+
+export const addAdditionalStatuses = () => {
+  try {
+    const additionalStatuses = (getConfigurationByKey(CONFIG.ADDITIONAL_STATUSES) || '').toString();
+    if (!!additionalStatuses) {
+      const list = additionalStatuses.split(',');
+      list.forEach(status => {
+        const newStatus = status.trim();
+        if (!!newStatus && !state.statuses.find(el => el.name.toLowerCase() === newStatus.toLowerCase())) {
+          state.statuses.push({
+            description: newStatus,
+            name: newStatus
+          });
+        }
+      });
+    }
+  } catch (err) {
+    printErrorMessageInOutput(err);
   }
 };
