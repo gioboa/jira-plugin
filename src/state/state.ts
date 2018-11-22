@@ -3,7 +3,7 @@ import { JiraExplorer } from '../explorer/jira-explorer';
 import { Jira } from '../http/api';
 import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
-import { configIsCorrect, setConfigurationByKey, setGlobalWorkingIssue } from '../shared/configuration';
+import { configIsCorrect, getConfigurationByKey, setConfigurationByKey, setGlobalWorkingIssue } from '../shared/configuration';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
 import { StatusBarManager } from '../shared/status-bar';
 
@@ -49,8 +49,14 @@ export const connectToJira = async (): Promise<void> => {
     state.statuses = await state.jira.getStatuses();
     state.projects = await state.jira.getProjects();
     state.statusBar.updateWorkingProjectItem('');
+
+    const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
     // refresh Jira explorer list
-    await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
+    if (project) {
+      await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
+    } else {
+      vscode.window.showWarningMessage("Working project isn't set.");
+    }
   } catch (err) {
     setConfigurationByKey(CONFIG.WORKING_PROJECT, '');
     setTimeout(() => {
