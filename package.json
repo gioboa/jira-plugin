@@ -170,6 +170,7 @@
       {
         "command": "jira-plugin.refresh",
         "title": "Refresh",
+        "category": "Jira-plugin",
         "icon": {
           "light": "images/icons/light/refresh.svg",
           "dark": "images/icons/dark/refresh.svg"
@@ -178,6 +179,7 @@
       {
         "command": "jira-plugin.createIssueCommand",
         "title": "Create issue",
+        "category": "Jira-plugin",
         "icon": {
           "light": "images/icons/light/plus_nav.png",
           "dark": "images/icons/dark/plus_nav.png"
