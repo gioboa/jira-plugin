@@ -1,3 +1,11 @@
+## 0.10.4
+
+### Bug Fixes
+
+- include additionalStatuses into status list
+- add category to issue and refresh commands
+- create issue, detect which fields are mandatory
+
 ## 0.10.3
 
 ### Bug Fixes
