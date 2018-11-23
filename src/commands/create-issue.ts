@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import { IAssignee, ICreateIssue, IIssueType, IPriority } from '../http/api.model';
+import { IField } from '../http/api.model';
 import { getConfigurationByKey } from '../shared/configuration';
 import { CONFIG, MAX_RESULTS } from '../shared/constants';
-import { selectAssignee, selectIssueType } from '../shared/select-utilities';
+import { selectIssueType } from '../shared/select-utilities';
 import state, { printErrorMessageInOutput, verifyCurrentProject } from '../state/state';
-import { INewIssue, NEW_ISSUE_FIELDS, NEW_ISSUE_STATUS } from './create-issue.model';
+import { NEW_ISSUE_FIELDS, NEW_ISSUE_STATUS } from './create-issue.model';
 import { OpenIssueCommand } from './open-issue';
 import { Command } from './shared/command';
 
@@ -16,47 +16,88 @@ export class CreateIssueCommand implements Command {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
       try {
-        // load once the options
-        const assignees = await state.jira.getAssignees({ project, maxResults: MAX_RESULTS });
-        const priorities = await state.jira.getAllPriorities();
-        const types = await state.jira.getAllIssueTypesWithFields(project);
-
         // instance for keep data
-        const newIssue: INewIssue = {
-          type: undefined,
-          summary: undefined,
-          description: undefined,
-          assignee: undefined,
-          priority: undefined
-        };
-        let status = NEW_ISSUE_STATUS.CONTINUE;
-        while (status === NEW_ISSUE_STATUS.CONTINUE) {
-          // genearte/update new issue selector
-          const createIssuePicks = generateNewIssuePicks(newIssue, priorities && priorities.length > 0, types);
-          const selected = await vscode.window.showQuickPick(createIssuePicks, {
-            placeHolder: `Insert Jira issue`,
-            matchOnDescription: true
-          });
-
-          // manage the selected field
-          if (!!selected && selected.field !== NEW_ISSUE_FIELDS.DIVIDER.field) {
-            if (selected.field !== NEW_ISSUE_FIELDS.INSERT_ISSUE.field && selected.field !== NEW_ISSUE_FIELDS.EXIT.field) {
-              await manageSelectedField(selected, newIssue, types, assignees, priorities);
+        let newIssueIstance = {};
+        let preloadedListValues = {};
+        let fieldsRequest = {};
+        // first of first we decide the type of the ticket
+        const availableTypes = await state.jira.getAllIssueTypesWithFields(project);
+        if (!!availableTypes) {
+          const issueTypeSelected = await selectIssueType(false, availableTypes);
+          if (!!issueTypeSelected) {
+            newIssueIstance = { ...newIssueIstance, project };
+            fieldsRequest = {
+              issuetype: {
+                id: issueTypeSelected.id
+              },
+              project: {
+                key: project
+              }
+            };
+            let loopStatus = NEW_ISSUE_STATUS.CONTINUE;
+            while (loopStatus === NEW_ISSUE_STATUS.CONTINUE) {
+              const newIssuePicks = [];
+              for (const key in issueTypeSelected.fields) {
+                // type and project forced to selected type and selected project
+                if (key !== 'issuetype' && key !== 'project') {
+                  const field = issueTypeSelected.fields[key];
+                  // load values for every field if necessary
+                  if (!(<any>preloadedListValues)[key.toString()]) {
+                    await retriveValues(project, field, key, preloadedListValues);
+                  }
+                  newIssuePicks.push({
+                    field: key,
+                    label: `${issueTypeSelected.fields[key].required ? '$(star) ' : ''}${field.name}`,
+                    description: !!(<any>newIssueIstance)[key] ? (<any>newIssueIstance)[key] : `Insert ${field.name}`,
+                    pickValue: field,
+                    fieldSchema: field.schema
+                  });
+                }
+              }
+              // add last 3 custom items in the list
+              newIssuePicks.push(
+                {
+                  field: NEW_ISSUE_FIELDS.DIVIDER.field,
+                  label: NEW_ISSUE_FIELDS.DIVIDER.label,
+                  description: NEW_ISSUE_FIELDS.DIVIDER.description
+                },
+                {
+                  field: NEW_ISSUE_FIELDS.INSERT_ISSUE.field,
+                  label: NEW_ISSUE_FIELDS.INSERT_ISSUE.label,
+                  description: NEW_ISSUE_FIELDS.INSERT_ISSUE.description
+                },
+                {
+                  field: NEW_ISSUE_FIELDS.EXIT.field,
+                  label: NEW_ISSUE_FIELDS.EXIT.label,
+                  description: NEW_ISSUE_FIELDS.EXIT.description
+                }
+              );
+              // second selector with all the fields
+              const fieldToModifySelection = await vscode.window.showQuickPick(newIssuePicks, {
+                placeHolder: `Insert Jira issue`,
+                matchOnDescription: true
+              });
+              // manage the selected field from selector
+              if (!!fieldToModifySelection && fieldToModifySelection.field !== NEW_ISSUE_FIELDS.DIVIDER.field) {
+                switch (fieldToModifySelection.field) {
+                  case NEW_ISSUE_FIELDS.INSERT_ISSUE.field:
+                    loopStatus = mandatoryFieldsOk(fieldsRequest, issueTypeSelected.fields) ? NEW_ISSUE_STATUS.INSERT : loopStatus;
+                    break;
+                  case NEW_ISSUE_FIELDS.EXIT.field:
+                    loopStatus = NEW_ISSUE_STATUS.STOP;
+                    break;
+                  default:
+                    await manageSelectedField(fieldToModifySelection, newIssueIstance, preloadedListValues, fieldsRequest);
+                }
+              }
+            }
+            // insert
+            if (loopStatus === NEW_ISSUE_STATUS.INSERT) {
+              await insertNewTicket(fieldsRequest);
             } else {
-              status =
-                selected.field === NEW_ISSUE_FIELDS.EXIT.field
-                  ? NEW_ISSUE_STATUS.STOP
-                  : mandatoryFieldsOk(newIssue, types)
-                  ? NEW_ISSUE_STATUS.INSERT
-                  : status;
+              console.log(`Exit`);
             }
           }
-        }
-        // insert
-        if (status === NEW_ISSUE_STATUS.INSERT) {
-          await insertNewTicket(newIssue, types);
-        } else {
-          // console.log(`Exit`);
         }
       } catch (err) {
         printErrorMessageInOutput(err);
@@ -65,167 +106,124 @@ export class CreateIssueCommand implements Command {
   }
 }
 
-const mandatoryFieldsOk = (newIssue: INewIssue, types: IIssueType[]): boolean => {
-  // newIssue.type must be defined for detect which fields are mandatory
-  if (!newIssue.type) {
-    return false;
+const retriveValues = async (project: string, field: IField, key: string, values: any): Promise<void> => {
+  if (!!field.autoCompleteUrl) {
+    try {
+      // assignee autoCompleteUrl don't work, I use custom one
+      if (key !== 'assignee') {
+        // use autoCompleteUrl for retrive list values
+        const response = await state.jira.customApiCall(field.autoCompleteUrl);
+        for (const key of response) {
+          // I assume this are the values because it's an array
+          if (key instanceof Array) {
+            (<any>values)[key.toString()] = response[key.toString()];
+          }
+        }
+      } else {
+        (<any>values)[key.toString()] = await state.jira.getAssignees({ project, maxResults: MAX_RESULTS });
+      }
+    } catch (e) {
+      (<any>values)[key.toString()] = [];
+    }
   }
-  for (const key in newIssue) {
-    const value = (<any>newIssue)[key];
-    if (!value && isFieldMandatory(newIssue.type.id, types, key)) {
+  if (!!field.allowedValues) {
+    (<any>values)[key.toString()] = field.allowedValues;
+  }
+};
+
+const mandatoryFieldsOk = (request: any, fields: any): boolean => {
+  for (const key in fields) {
+    if (!!fields[key].required && !request[key]) {
       return false;
     }
   }
   return true;
 };
 
-const isFieldMandatory = (newIssueTypeId: string, types: IIssueType[], field: string): boolean => {
-  if (!!newIssueTypeId) {
-    const type = types.find(type => type.id === newIssueTypeId);
-    if (!!type) {
-      return !!type.fields[field.toLowerCase()] ? type.fields[field.toLowerCase()].required : false;
-    }
-  }
-  return false;
-};
-
-const generateNewIssuePicks = (newIssue: INewIssue, addPriority: boolean, types: IIssueType[]): any[] => {
-  const newIssueTypeId = !!newIssue.type ? newIssue.type.id : '';
-  const picks = [
-    {
-      field: NEW_ISSUE_FIELDS.TYPE.field,
-      label: NEW_ISSUE_FIELDS.TYPE.label,
-      description: !!newIssue.type ? newIssue.type.name : NEW_ISSUE_FIELDS.TYPE.description
-    },
-    {
-      field: NEW_ISSUE_FIELDS.SUMMARY.field,
-      label: `${isFieldMandatory(newIssueTypeId, types, NEW_ISSUE_FIELDS.SUMMARY.field) ? '$(star) ' : ''}${
-        NEW_ISSUE_FIELDS.SUMMARY.label
-      }`,
-      description: newIssue.summary || NEW_ISSUE_FIELDS.SUMMARY.description
-    },
-    {
-      field: NEW_ISSUE_FIELDS.DESCRIPTION.field,
-      label: `${isFieldMandatory(newIssueTypeId, types, NEW_ISSUE_FIELDS.DESCRIPTION.field) ? '$(star) ' : ''}${
-        NEW_ISSUE_FIELDS.DESCRIPTION.label
-      }`,
-      description: newIssue.description || NEW_ISSUE_FIELDS.DESCRIPTION.description
-    },
-    {
-      field: NEW_ISSUE_FIELDS.ASSIGNEE.field,
-      label: `${isFieldMandatory(newIssueTypeId, types, NEW_ISSUE_FIELDS.ASSIGNEE.field) ? '$(star) ' : ''}${
-        NEW_ISSUE_FIELDS.ASSIGNEE.label
-      }`,
-      description: !!newIssue.assignee ? (<IAssignee>newIssue.assignee).name : NEW_ISSUE_FIELDS.ASSIGNEE.description
-    },
-    {
-      field: NEW_ISSUE_FIELDS.DIVIDER.field,
-      label: NEW_ISSUE_FIELDS.DIVIDER.label,
-      description: NEW_ISSUE_FIELDS.DIVIDER.description
-    },
-    {
-      field: NEW_ISSUE_FIELDS.INSERT_ISSUE.field,
-      label: NEW_ISSUE_FIELDS.INSERT_ISSUE.label,
-      description: NEW_ISSUE_FIELDS.INSERT_ISSUE.description
-    },
-    {
-      field: NEW_ISSUE_FIELDS.EXIT.field,
-      label: NEW_ISSUE_FIELDS.EXIT.label,
-      description: NEW_ISSUE_FIELDS.EXIT.description
-    }
-  ];
-
-  if (addPriority) {
-    picks.splice(4, 0, {
-      field: NEW_ISSUE_FIELDS.PRIORITY.field,
-      label: NEW_ISSUE_FIELDS.PRIORITY.label,
-      description: !!newIssue.priority ? newIssue.priority.name : NEW_ISSUE_FIELDS.PRIORITY.description
-    });
-  }
-  return picks;
-};
-
-const insertNewTicket = async (newIssue: INewIssue, types: IIssueType[]): Promise<void> => {
-  const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
-  if (mandatoryFieldsOk(newIssue, types)) {
-    let request = {
-      fields: {
-        project: {
-          key: project
-        },
-        summary: newIssue.summary,
-        description: newIssue.description,
-        issuetype: {
-          id: (<IIssueType>newIssue.type).id
-        }
-      }
-    } as ICreateIssue;
-    // adding assignee
-    if (!!newIssue.assignee) {
-      request.fields = {
-        ...request.fields,
-        assignee: {
-          name: (<IAssignee>newIssue.assignee).name
-        }
+const generatePicks = (values: any[]) => {
+  return values
+    .map(value => {
+      return {
+        pickValue: value,
+        label: value.name || value.value, // Quotation UM only value
+        description: value.description
       };
-    }
-    // adding priority
-    if (!!newIssue.priority) {
-      request.fields = {
-        ...request.fields,
-        priority: {
-          id: newIssue.priority.id
-        }
-      };
-    }
-    const createdIssue = await state.jira.createIssue(request);
-    if (!!createdIssue && !!createdIssue.key) {
-      // if the response is ok, we will open the created issue
-      const action = await vscode.window.showInformationMessage('Issue created', 'Open in browser');
-      if (action === 'Open in browser') {
-        new OpenIssueCommand().run(createdIssue.key);
-      }
-    }
-  }
+    })
+    .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
 };
 
 const manageSelectedField = async (
-  selected: any,
-  newIssue: INewIssue,
-  types: IIssueType[],
-  assignees: IAssignee[],
-  priorities: IPriority[]
+  fieldToModifySelection: any,
+  newIssueIstance: any,
+  preloadedListValues: any,
+  fieldsRequest: any
 ): Promise<void> => {
-  switch (selected.field) {
-    case NEW_ISSUE_FIELDS.SUMMARY.field:
-    case NEW_ISSUE_FIELDS.DESCRIPTION.field:
-      (<any>newIssue)[selected.field] = await vscode.window.showInputBox({
-        ignoreFocusOut: true,
-        placeHolder: ''
-      });
-      break;
-    case NEW_ISSUE_FIELDS.TYPE.field:
-      newIssue.type = await selectIssueType(true, types);
-      break;
-    case NEW_ISSUE_FIELDS.ASSIGNEE.field:
-      newIssue.assignee = await selectAssignee(false, false, false, assignees);
-      break;
-    case NEW_ISSUE_FIELDS.PRIORITY.field:
+  switch (fieldToModifySelection.fieldSchema.type) {
+    case 'string':
       {
-        const priorityPicks = (priorities || []).map((priority: IPriority) => {
-          return {
-            pickValue: priority,
-            label: priority.id,
-            description: priority.name
-          };
+        const text = await vscode.window.showInputBox({
+          ignoreFocusOut: true,
+          placeHolder: `Insert ${fieldToModifySelection.pickValue.name}`,
+          value:
+            fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}`
+              ? fieldToModifySelection.description
+              : undefined
         });
-        const selected = await vscode.window.showQuickPick(priorityPicks, {
-          matchOnDescription: true,
-          matchOnDetail: true,
-          placeHolder: 'Select an issue'
-        });
-        newIssue.priority = selected ? selected.pickValue : undefined;
+        newIssueIstance[fieldToModifySelection.field] = text;
+        fieldsRequest[fieldToModifySelection.field] = text;
       }
       break;
+    // case 'any': with no values
+    // case 'date':
+    // case 'number':
+    // case 'timetracking':
+    // case 'array': with no values
+    //   {
+    //     // need to manage this type
+    //   }
+    //   break;
+    default: {
+      if (
+        !!(<any>preloadedListValues)[fieldToModifySelection.field] &&
+        (<any>preloadedListValues)[fieldToModifySelection.field].length > 0
+      ) {
+        const newValueSelected = await vscode.window.showQuickPick(
+          generatePicks((<any>preloadedListValues)[fieldToModifySelection.field]),
+          {
+            placeHolder: `Insert value`,
+            matchOnDescription: true
+          }
+        );
+        newIssueIstance[fieldToModifySelection.field] = undefined;
+        delete fieldsRequest[fieldToModifySelection.field];
+        if (!!newValueSelected) {
+          newIssueIstance[fieldToModifySelection.field] = newValueSelected.label;
+          // assignee want a name prop and NOT id or key
+          if (fieldToModifySelection.field === 'assignee') {
+            fieldsRequest[fieldToModifySelection.field] = { name: newValueSelected.pickValue.name };
+          } else {
+            if (!!newValueSelected.pickValue.id) {
+              fieldsRequest[fieldToModifySelection.field] = { id: newValueSelected.pickValue.id };
+            }
+            if (!!newValueSelected.pickValue.key) {
+              fieldsRequest[fieldToModifySelection.field] = { key: newValueSelected.pickValue.key };
+            }
+          }
+        }
+      } else {
+        vscode.window.showErrorMessage(`Debug msg - type not managed ${fieldToModifySelection.fieldSchema.type}`);
+      }
+    }
+  }
+};
+
+const insertNewTicket = async (fieldsRequest: any): Promise<void> => {
+  const createdIssue = await state.jira.createIssue({ fields: { ...fieldsRequest } });
+  if (!!createdIssue && !!createdIssue.key) {
+    // if the response is ok, we will open the created issue
+    const action = await vscode.window.showInformationMessage('Issue created', 'Open in browser');
+    if (action === 'Open in browser') {
+      new OpenIssueCommand().run(createdIssue.key);
+    }
   }
 };

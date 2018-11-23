@@ -45,7 +45,7 @@ export class Jira implements IJira {
       // custom event
       // solve this issue -> https://github.com/floralvikings/jira-connector/issues/115
       const customGetAllProjects = (opts: any, callback: any) => {
-        var options = this.jiraInstance.project.buildRequestOptions(opts, '', 'GET');
+        const options = this.jiraInstance.project.buildRequestOptions(opts, '', 'GET');
         if (Object.keys(options.body).length === 0) {
           delete options.body;
         }
@@ -55,6 +55,19 @@ export class Jira implements IJira {
         return this.jiraInstance.makeRequest(options, callback);
       };
       this.jiraInstance.project.getAllProjects = customGetAllProjects;
+
+      const customApiCall = (uri: string, callback: any) => {
+        const options = this.jiraInstance.project.buildRequestOptions({}, '', 'GET');
+        if (Object.keys(options.body).length === 0) {
+          delete options.body;
+        }
+        if (Object.keys(options.qs).length === 0) {
+          delete options.qs;
+        }
+        options.uri = uri;
+        return this.jiraInstance.makeRequest(options, callback);
+      };
+      this.jiraInstance.project.customApiCall = customApiCall;
 
       /* code for oauth copy from -> https://www.npmjs.com/package/jira-connector
       this.jiraInstance = new jiraClient({
@@ -129,5 +142,9 @@ export class Jira implements IJira {
       return response.projects[0].issuetypes;
     }
     return [];
+  }
+
+  async customApiCall(uri: string): Promise<any> {
+    return await this.jiraInstance.project.customApiCall(uri);
   }
 }

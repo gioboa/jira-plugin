@@ -12,6 +12,7 @@ export interface IJira {
   createIssue(params: ICreateIssue): Promise<any>;
   getAllPriorities(): Promise<IPriority[]>;
   getAllIssueTypesWithFields(project: string): Promise<IIssueType[]>;
+  customApiCall(uri: string): Promise<any>;
 }
 
 export interface IServerInfo {
@@ -107,6 +108,13 @@ export interface IField {
   hasDefaultValue: boolean;
   name: string;
   required: boolean;
+  schema: {
+    type: string;
+    items: string;
+    system: string;
+  };
+  allowedValues: any[];
+  autoCompleteUrl: string;
 }
 
 export interface ICreateIssue {
