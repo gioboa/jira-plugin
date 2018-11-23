@@ -48,7 +48,7 @@ export class CreateIssueCommand implements Command {
                   newIssuePicks.push({
                     field: key,
                     label: `${issueTypeSelected.fields[key].required ? '$(star) ' : ''}${field.name}`,
-                    description: !!(<any>newIssueIstance)[key] ? (<any>newIssueIstance)[key] : `Insert ${field.name}`,
+                    description: !!(<any>newIssueIstance)[key] ? (<any>newIssueIstance)[key].toString() : `Insert ${field.name}`,
                     pickValue: field,
                     fieldSchema: field.schema
                   });
@@ -173,9 +173,25 @@ const manageSelectedField = async (
         fieldsRequest[fieldToModifySelection.field] = text;
       }
       break;
-    // case 'any': with no values
+    case 'number':
+      {
+        const text = await vscode.window.showInputBox({
+          ignoreFocusOut: true,
+          placeHolder: `Insert ${fieldToModifySelection.pickValue.name}`,
+          value:
+            fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}`
+              ? fieldToModifySelection.description
+              : undefined
+        });
+        if (!!text) {
+          newIssueIstance[fieldToModifySelection.field] = parseInt(text);
+          fieldsRequest[fieldToModifySelection.field] = parseInt(text);
+        }
+      }
+      break;
+    //  case 'any': with no values
     // case 'date':
-    // case 'number':
+
     // case 'timetracking':
     // case 'array': with no values
     //   {
