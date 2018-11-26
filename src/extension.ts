@@ -14,6 +14,7 @@ import { CONFIG_NAME, SEARCH_MODE } from './shared/constants';
 import { IssueLinkProvider } from './shared/document-link-provider';
 import { selectIssue } from './shared/select-utilities';
 import { StatusBarManager } from './shared/status-bar';
+import { copyToClipboard } from './shared/utilities';
 import state, { connectToJira } from './state/state';
 
 let channel: vscode.OutputChannel;
@@ -62,6 +63,7 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesByStatusCommand', () => selectIssue(SEARCH_MODE.STATUS)));
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issueByIdCommand', () => selectIssue(SEARCH_MODE.ID)));
   context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.issuesBySummaryCommand', () => selectIssue(SEARCH_MODE.SUMMARY)));
+  context.subscriptions.push(vscode.commands.registerCommand('jira-plugin.copyJiraSummary', copyToClipboard));
   context.subscriptions.push(...commands.map(command => vscode.commands.registerCommand(command.id, command.run)));
   context.subscriptions.push(statusBar);
 
