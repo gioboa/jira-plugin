@@ -1,3 +1,9 @@
+## 0.10.5
+
+### Bug Fixes
+
+- create issue - improve workflow
+
 ## 0.10.4
 
 ### Bug Fixes
