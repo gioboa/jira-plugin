@@ -112,9 +112,12 @@ export interface IField {
     type: string;
     items: string;
     system: string;
+    custom?: string;
+    customId?: string;
   };
   allowedValues: any[];
   autoCompleteUrl: string;
+  hideField?: boolean; // used internally for hide not managed fields
 }
 
 export interface ICreateIssue {

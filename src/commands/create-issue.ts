@@ -35,6 +35,7 @@ export class CreateIssueCommand implements Command {
               }
             };
             let loopStatus = NEW_ISSUE_STATUS.CONTINUE;
+            let executeRetriveValues = true;
             while (loopStatus === NEW_ISSUE_STATUS.CONTINUE) {
               const newIssuePicks = [];
               for (const key in issueTypeSelected.fields) {
@@ -42,18 +43,21 @@ export class CreateIssueCommand implements Command {
                 if (key !== 'issuetype' && key !== 'project') {
                   const field = issueTypeSelected.fields[key];
                   // load values for every field if necessary
-                  if (!(<any>preloadedListValues)[key.toString()]) {
+                  if (executeRetriveValues) {
                     await retriveValues(project, field, key, preloadedListValues);
                   }
-                  newIssuePicks.push({
-                    field: key,
-                    label: `${issueTypeSelected.fields[key].required ? '$(star) ' : ''}${field.name}`,
-                    description: !!(<any>newIssueIstance)[key] ? (<any>newIssueIstance)[key].toString() : `Insert ${field.name}`,
-                    pickValue: field,
-                    fieldSchema: field.schema
-                  });
+                  if (!field.hideField) {
+                    newIssuePicks.push({
+                      field: key,
+                      label: `${issueTypeSelected.fields[key].required ? '$(star) ' : ''}${field.name}`,
+                      description: !!(<any>newIssueIstance)[key] ? (<any>newIssueIstance)[key].toString() : `Insert ${field.name}`,
+                      pickValue: field,
+                      fieldSchema: field.schema
+                    });
+                  }
                 }
               }
+              executeRetriveValues = false;
               // add last 3 custom items in the list
               newIssuePicks.push(
                 {
@@ -107,27 +111,37 @@ export class CreateIssueCommand implements Command {
 }
 
 const retriveValues = async (project: string, field: IField, key: string, values: any): Promise<void> => {
-  if (!!field.autoCompleteUrl) {
-    try {
-      // assignee autoCompleteUrl don't work, I use custom one
-      if (key !== 'assignee') {
-        // use autoCompleteUrl for retrive list values
-        const response = await state.jira.customApiCall(field.autoCompleteUrl);
-        for (const key of response) {
-          // I assume this are the values because it's an array
-          if (key instanceof Array) {
-            (<any>values)[key.toString()] = response[key.toString()];
+  if (field.schema.type !== 'string' && field.schema.type !== 'number') {
+    if (!!field.schema.custom || field.schema.type === 'date' || field.schema.type === 'timetracking') {
+      // need to manage this types
+      field.hideField = true;
+    } else {
+      if (!!field.autoCompleteUrl) {
+        try {
+          // assignee autoCompleteUrl don't work, I use custom one
+          if (key !== 'assignee') {
+            // use autoCompleteUrl for retrive list values
+            const response = await state.jira.customApiCall(field.autoCompleteUrl);
+            for (const key of response) {
+              // I assume this are the values because it's an array
+              if (key instanceof Array) {
+                (<any>values)[key.toString()] = response[key.toString()];
+              }
+            }
+          } else {
+            (<any>values)[key.toString()] = await state.jira.getAssignees({ project, maxResults: MAX_RESULTS });
           }
+        } catch (e) {
+          (<any>values)[key.toString()] = [];
         }
-      } else {
-        (<any>values)[key.toString()] = await state.jira.getAssignees({ project, maxResults: MAX_RESULTS });
       }
-    } catch (e) {
-      (<any>values)[key.toString()] = [];
+      if (!!field.allowedValues) {
+        (<any>values)[key.toString()] = field.allowedValues;
+      }
+      if (!(<any>values)[key.toString()] || (<any>values)[key.toString()].length === 0) {
+        field.hideField = true;
+      }
     }
-  }
-  if (!!field.allowedValues) {
-    (<any>values)[key.toString()] = field.allowedValues;
   }
 };
 
@@ -189,15 +203,6 @@ const manageSelectedField = async (
         }
       }
       break;
-    //  case 'any': with no values
-    // case 'date':
-
-    // case 'timetracking':
-    // case 'array': with no values
-    //   {
-    //     // need to manage this type
-    //   }
-    //   break;
     default: {
       if (
         !!(<any>preloadedListValues)[fieldToModifySelection.field] &&
