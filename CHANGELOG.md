@@ -1,3 +1,9 @@
+## 0.10.6
+
+### Bug Fixes
+
+- set working issue - improve workflow
+
 ## 0.10.5
 
 ### Bug Fixes
