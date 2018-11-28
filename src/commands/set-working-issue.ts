@@ -42,18 +42,17 @@ export class SetWorkingIssueCommand implements Command {
             YES,
             NO
           );
-          // response management
-          if (action === NO) {
-            return;
+          // menage response
+          let comment =
+            action === YES_WITH_COMMENT
+              ? await vscode.window.showInputBox({
+                  ignoreFocusOut: true,
+                  placeHolder: 'Add worklog comment...'
+                })
+              : '';
+          if (action === YES || action === YES_WITH_COMMENT) {
+            await vscode.commands.executeCommand('jira-plugin.issueAddWorklogCommand', state.workingIssue.issue.key, state.workingIssue.trackingTime, comment || '');
           }
-          let comment;
-          if (action === YES_WITH_COMMENT) {
-            comment = await vscode.window.showInputBox({
-              ignoreFocusOut: true,
-              placeHolder: 'Add worklog comment...'
-            });
-          }
-          await vscode.commands.executeCommand('jira-plugin.issueAddWorklogCommand', state.workingIssue.issue.key, state.workingIssue.trackingTime, comment || '');
         }
         // set the new working issue
         changeStateWorkingIssue(newIssue, 0);
