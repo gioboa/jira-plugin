@@ -173,6 +173,11 @@
         "category": "Jira-plugin"
       },
       {
+        "command": "jira-plugin.copyJiraSummary",
+        "title": "Copy Jira Summary",
+        "category": "Jira-plugin"
+      },
+      {
         "command": "jira-plugin.refresh",
         "title": "Refresh",
         "category": "Jira-plugin",
@@ -244,6 +249,10 @@
         {
           "command": "jira-plugin.changeIssueAssigneeCommand",
           "when": "view == jiraExplorer && viewItem == IssueItem"
+        },
+        {
+          "command": "jira-plugin.copyJiraSummary",
+          "when": "view == jiraExplorer && viewItem == IssueItem"
         }
       ]
     }
@@ -257,6 +266,7 @@
     "vscode": "^1.1.18"
   },
   "dependencies": {
+    "copy-paste": "^1.3.0",
     "jira-connector": "^2.8.0"
   }
 }
