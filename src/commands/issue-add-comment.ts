@@ -33,7 +33,7 @@ export class IssueAddCommentCommand implements Command {
           const response = await state.jira.addNewComment({ issueKey: issue.key, comment: { body: text } });
           await vscode.commands.executeCommand('jira-plugin.refresh');
           // modal
-          const action = await vscode.window.showInformationMessage('Created comment', 'Open in browser');
+          const action = await vscode.window.showInformationMessage('Comment created', 'Open in browser');
           if (action === 'Open in browser') {
             const baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
             const url =
