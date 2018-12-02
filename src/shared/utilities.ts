@@ -2,7 +2,7 @@ import * as copyPaste from 'copy-paste';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import state from '../state/state';
+import state, { printErrorMessageInOutput } from '../state/state';
 import { getConfigurationByKey, getGlobalCounter, setGlobalCounter } from './configuration';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS, LATER, NO, STATUS_ICONS, YES } from './constants';
 
@@ -67,6 +67,10 @@ export const checkCounter = async (): Promise<void> => {
 };
 
 export const copyToClipboard = (issue: IssueItem) => {
-  copyPaste.copy(issue.label);
-  vscode.window.showInformationMessage('Jira Plugin - Copied to clipboard');
+  if (issue) {
+    copyPaste.copy(issue.label);
+    vscode.window.showInformationMessage('Jira Plugin - Copied to clipboard');
+  } else {
+    printErrorMessageInOutput('Use this command from Jira Plugin EXPLORER');
+  }
 };
