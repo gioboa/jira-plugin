@@ -39,9 +39,7 @@ export const workingIssueStatuses = (): string => {
     .split(',')
     .map((status: string) => status.trim())
     .filter((status: string) => state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
-  return statusList && statusList.length > 0
-    ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
-    : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
+  return statusList && statusList.length > 0 ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '') : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
 };
 
 export const checkCounter = async (): Promise<void> => {
@@ -70,4 +68,5 @@ export const checkCounter = async (): Promise<void> => {
 
 export const copyToClipboard = (issue: IssueItem) => {
   copyPaste.copy(issue.label);
+  vscode.window.showInformationMessage('Jira Plugin - Copied to clipboard');
 };
