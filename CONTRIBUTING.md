@@ -23,6 +23,40 @@ Here are a few things you can do that will increase the likelihood of your pull 
 - Keep your change as focused as possible. If there are multiple changes you would like to make that are not dependent upon each other, consider submitting them as separate pull requests.
 - Write a [good commit message](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
+## Commit Message Format
+
+Each commit message consists of a **header**, a **body** and a **footer**. The header has a special
+format that includes a **type**, a **scope** and a **subject**:
+
+```
+<type>(<scope>): <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+```
+
+The **header** is mandatory and the **scope** of the header is optional.
+
+Any line of the commit message cannot be longer 100 characters! This allows the message to be easier
+to read on GitHub as well as in various git tools.
+
+The footer should contain a [closing reference to an issue](https://help.github.com/articles/closing-issues-via-commit-messages/) if any.
+
 ### Revert
 
 If the commit reverts a previous commit it should begin with `revert:`, followed by the SHA of the reverted commit. <br> e.g: `revert: commit <SHA>.`
+
+### Type
+
+Must be one of the following:
+
+- **build**: Changes that affect the build system or external dependencies
+- **chore**: Maintain
+- **docs**: Documentation only changes
+- **feat**: A new feature
+- **fix**: A bug fix
+- **perf**: A code change that improves performance
+- **refactor**: A code change that neither fixes a bug nor adds a feature
+- **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+- **test**: Adding missing tests or correcting existing tests
