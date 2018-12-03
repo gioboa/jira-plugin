@@ -143,11 +143,6 @@
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.myIssuesByStatusCommand",
-        "title": "My issues filtered by status",
-        "category": "Jira-plugin"
-      },
-      {
         "command": "jira-plugin.issuesByStatusAssigneeCommand",
         "title": "Issues filtered by status and assignee",
         "category": "Jira-plugin"
@@ -155,6 +150,16 @@
       {
         "command": "jira-plugin.issuesBySummaryCommand",
         "title": "Issues filtered by summary",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.myIssuesByStatusCommand",
+        "title": "My issues filtered by status",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.favouritesFilters",
+        "title": "Favourites filters",
         "category": "Jira-plugin"
       },
       {
@@ -216,6 +221,10 @@
         },
         {
           "command": "jira-plugin.myIssuesByStatusCommand",
+          "when": "view == jiraExplorer"
+        },
+        {
+          "command": "jira-plugin.favouritesFilters",
           "when": "view == jiraExplorer"
         },
         {
