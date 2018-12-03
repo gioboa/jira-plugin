@@ -13,6 +13,7 @@ export interface IJira {
   getAllPriorities(): Promise<IPriority[]>;
   getAllIssueTypesWithFields(project: string): Promise<IIssueType[]>;
   customApiCall(uri: string): Promise<any>;
+  getFavoriteFilters(): Promise<IFavouriteFilter[]>;
 }
 
 export interface IServerInfo {
@@ -152,4 +153,13 @@ export interface ICreateMetadata {
   projectKeys: string;
   issuetypeIds?: string[];
   expand: string;
+}
+
+export interface IFavouriteFilter {
+  description: string;
+  editable: boolean;
+  favourite: boolean;
+  id: string;
+  jql: string;
+  name: string;
 }
