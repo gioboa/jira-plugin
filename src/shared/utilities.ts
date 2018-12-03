@@ -74,3 +74,15 @@ export const copyToClipboard = (issue: IssueItem) => {
     printErrorMessageInOutput('Use this command from Jira Plugin EXPLORER');
   }
 };
+
+export const insertWorkingIssueComment = () => {
+  const editor = vscode.window.activeTextEditor;
+  if (editor && state.workingIssue) {
+    editor.edit(edit => {
+      const workingIssue = state.workingIssue;
+      edit.insert(editor.selection.active, `// ${workingIssue.issue.key} - ${workingIssue.issue.fields.summary}`);
+    });
+  } else {
+    vscode.window.showInformationMessage('No working issue');
+  }
+};

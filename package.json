@@ -194,6 +194,11 @@
           "light": "images/icons/light/plus_nav.png",
           "dark": "images/icons/dark/plus_nav.png"
         }
+      },
+      {
+        "command": "jira-plugin.insertWorkingIssueComment",
+        "title": "Insert Working Issue key + summary comment",
+        "category": "Jira-plugin"
       }
     ],
     "menus": {
