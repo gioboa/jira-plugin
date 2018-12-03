@@ -9,6 +9,7 @@ import {
   IAssignee,
   ICreateIssue,
   ICreateMetadata,
+  IFavouriteFilter,
   IIssues,
   IIssueType,
   IJira,
@@ -146,5 +147,9 @@ export class Jira implements IJira {
 
   async customApiCall(uri: string): Promise<any> {
     return await this.jiraInstance.project.customApiCall(uri);
+  }
+
+  async getFavoriteFilters(): Promise<IFavouriteFilter[]> {
+    return await this.jiraInstance.filter.getFavoriteFilters();
   }
 }

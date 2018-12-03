@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { IAssignee, IIssue, IIssueType } from '../http/api.model';
+import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from '../http/api.model';
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
@@ -78,10 +78,7 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     case SEARCH_MODE.MY_STATUS: {
       const status = await selectStatus();
       if (!!status) {
-        return [
-          `STATUS: ${status} ASSIGNEE: you`,
-          `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
-        ];
+        return [`STATUS: ${status} ASSIGNEE: you`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`];
       }
       break;
     }
@@ -90,9 +87,7 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
       if (!!status && !!assignee) {
         return [
           `STATUS: ${status} ASSIGNEE: ${assignee}`,
-          `project = ${project} AND status = '${status}' AND assignee = ${
-            assignee !== UNASSIGNED ? `'${assignee}'` : `null`
-          } ORDER BY status ASC, updated DESC`
+          `project = ${project} AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY status ASC, updated DESC`
         ];
       }
       break;
@@ -109,28 +104,22 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     }
     case SEARCH_MODE.MY_WORKING_ISSUES: {
       const statuses = workingIssueStatuses();
-      return [
-        `STATUS: ${statuses}`,
-        `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
-      ];
+      return [`STATUS: ${statuses}`, `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`];
     }
     case SEARCH_MODE.CURRENT_SPRINT: {
-      return [
-        `CURRENT SPRINT`,
-        `project = ${project} AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`
-      ];
+      return [`CURRENT SPRINT`, `project = ${project} AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`];
     }
   }
   return ['', ''];
 };
 
 // perform the search calling Jira API
-export const selectIssue = async (mode: string): Promise<void> => {
+export const selectIssue = async (mode: string, filterAndJQL?: string[]): Promise<void> => {
   try {
     if (canExecuteJiraAPI()) {
       const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
       if (verifyCurrentProject(project)) {
-        const [filter, jql] = await getFilterAndJQL(mode, project || '');
+        const [filter, jql] = filterAndJQL || (await getFilterAndJQL(mode, project || ''));
         changeStateIssues(LOADING.text, '', []);
         if (!!jql) {
           // call Jira API with the generated JQL
@@ -219,12 +208,7 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
 };
 
 // selection for assignees
-export const selectAssignee = async (
-  unassigned: boolean,
-  back: boolean,
-  onlyKey: boolean,
-  preLoadedPicks: IAssignee[] | undefined
-): Promise<string | IAssignee> => {
+export const selectAssignee = async (unassigned: boolean, back: boolean, onlyKey: boolean, preLoadedPicks: IAssignee[] | undefined): Promise<string | IAssignee> => {
   try {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
@@ -280,10 +264,7 @@ export const selectTransition = async (issueKey: string): Promise<string | null 
   return undefined;
 };
 
-const doubleSelection = async (
-  firstSelection: Function,
-  secondSelection: Function
-): Promise<{ firstChoise: string; secondChoise: string }> => {
+const doubleSelection = async (firstSelection: Function, secondSelection: Function): Promise<{ firstChoise: string; secondChoise: string }> => {
   let ok = false;
   let firstChoise = '';
   let secondChoise = '';
@@ -302,10 +283,7 @@ const doubleSelection = async (
 export const selectStatusAndAssignee = async (): Promise<{ status: string; assignee: string }> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
-    const { firstChoise, secondChoise } = await doubleSelection(
-      selectStatus,
-      async () => await selectAssignee(true, true, true, undefined)
-    );
+    const { firstChoise, secondChoise } = await doubleSelection(selectStatus, async () => await selectAssignee(true, true, true, undefined));
     return { status: firstChoise, assignee: secondChoise };
   } else {
     throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
@@ -327,6 +305,53 @@ export const selectIssueType = async (ignoreFocusOut: boolean, preLoadedPicks: I
       ignoreFocusOut
     });
     return selected ? selected.pickValue : undefined;
+  } catch (err) {
+    printErrorMessageInOutput(err);
+  }
+  return undefined;
+};
+
+// selection for Favorite Filters
+export const selectFavoriteFilters = async (): Promise<IFavouriteFilter | undefined> => {
+  try {
+    if (canExecuteJiraAPI()) {
+      const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+      if (verifyCurrentProject(project)) {
+        const favFilters = await state.jira.getFavoriteFilters();
+        if (favFilters && favFilters.length > 0) {
+          // exclude favorites filters with different project key/name inside jql
+          const otherProjects = state.projects.filter(prj => prj.key !== project);
+          const selected = await vscode.window.showQuickPick(
+            favFilters
+              .filter(filter => {
+                let valid = true;
+                otherProjects.forEach(prj => {
+                  if (filter.jql.indexOf(prj.key) >= 0 || filter.jql.indexOf(prj.name) >= 0) {
+                    valid = false;
+                  }
+                });
+                return valid;
+              })
+              .map(filter => {
+                return {
+                  label: filter.name,
+                  description: filter.description,
+                  pickValue: filter
+                };
+              }),
+            {
+              placeHolder: `Select favourite filter`,
+              matchOnDescription: true
+            }
+          );
+          return selected ? selected.pickValue : undefined;
+        } else {
+          vscode.window.showInformationMessage('No favourites filters found');
+        }
+      } else {
+        throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
+      }
+    }
   } catch (err) {
     printErrorMessageInOutput(err);
   }

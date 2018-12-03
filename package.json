@@ -124,37 +124,42 @@
       },
       {
         "command": "jira-plugin.allIssuesCommand",
-        "title": "All issues",
+        "title": "1 - All issues",
         "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.currentSprintCommand",
-        "title": "Current sprint issues",
+        "title": "2 - Current sprint issues",
         "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.issueByIdCommand",
-        "title": "Issue by id",
+        "title": "3 - Issue by id",
         "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.issuesByStatusCommand",
-        "title": "Issues filtered by status",
-        "category": "Jira-plugin"
-      },
-      {
-        "command": "jira-plugin.myIssuesByStatusCommand",
-        "title": "My issues filtered by status",
+        "title": "4 - Issues filtered by status",
         "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.issuesByStatusAssigneeCommand",
-        "title": "Issues filtered by status and assignee",
+        "title": "5 - Issues filtered by status and assignee",
         "category": "Jira-plugin"
       },
       {
         "command": "jira-plugin.issuesBySummaryCommand",
-        "title": "Issues filtered by summary",
+        "title": "6 - Issues filtered by summary",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.myIssuesByStatusCommand",
+        "title": "7 - My issues filtered by status",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.favouritesFilters",
+        "title": "8 - Favourites filters",
         "category": "Jira-plugin"
       },
       {
@@ -219,6 +224,10 @@
           "when": "view == jiraExplorer"
         },
         {
+          "command": "jira-plugin.favouritesFilters",
+          "when": "view == jiraExplorer"
+        },
+        {
           "command": "jira-plugin.issuesByStatusAssigneeCommand",
           "when": "view == jiraExplorer"
         },
@@ -258,6 +267,7 @@
     }
   },
   "devDependencies": {
+    "@types/copy-paste": "^1.1.30",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.5.7",
     "mocha": "^5.2.0",
