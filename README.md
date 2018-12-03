@@ -45,7 +45,7 @@ values:<br>
   With this command you can create new ticket.<br><br>
 
 - **Insert Working Issue Key+Summary comment**<br>
-  With this command you can insert Working Issue Key+Summary comment at the current position in the code.
+  With this command you can insert Working Issue Key+Summary comment at the current position in the code.<br>
   `You can set your custom keyboard shortcut to retrieve this command`<br><br>
 
 ### Filters
@@ -65,7 +65,7 @@ values:<br>
 - **My issues filtered by status**<br>
   With this command you can search your issues with a particular status.<br><br>
 - **Favourites filters**<br>
-  With this command you can use your favoutite filters for search your issues.
+  With this command you can use your favoutite filters for search your issues.<br>
   `only coherent "favorites filters" for the working project`<br><br>
 
 ## Issue commands (right click on issue in explorer)
