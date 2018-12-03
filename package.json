@@ -179,7 +179,7 @@
       },
       {
         "command": "jira-plugin.copyJiraSummary",
-        "title": "Copy Jira Summary",
+        "title": "Copy Jira Key+Summary",
         "category": "Jira-plugin"
       },
       {
@@ -202,7 +202,7 @@
       },
       {
         "command": "jira-plugin.insertWorkingIssueComment",
-        "title": "Insert Working Issue key + summary comment",
+        "title": "Insert Working Issue Key+Summary comment",
         "category": "Jira-plugin"
       }
     ],

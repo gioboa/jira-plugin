@@ -41,6 +41,15 @@ values:<br>
 
 ![Explorer commands](images/readme/explorer-commands.png)
 
+- **Create new ticket**<br>
+  With this command you can create new ticket.<br><br>
+
+- **Insert Working Issue Key+Summary comment**<br>
+  With this command you can insert Working Issue Key+Summary comment at the current position in the code.
+  `You can set your custom keyboard shortcut to retrieve this command`<br><br>
+
+### Filters
+
 - **All issues**<br>
   With this command you can search all issues for the current project.<br><br>
 - **Current sprint issues**<br>
@@ -55,6 +64,9 @@ values:<br>
   With this command you can search issues with a particular summary.<br><br>
 - **My issues filtered by status**<br>
   With this command you can search your issues with a particular status.<br><br>
+- **Favourites filters**<br>
+  With this command you can use your favoutite filters for search your issues.
+  `only coherent "favorites filters" for the working project`<br><br>
 
 ## Issue commands (right click on issue in explorer)
 
@@ -66,6 +78,8 @@ values:<br>
   With this command you can change an issue assignee.<br><br>
 - **Change issue status**<br>
   With this command you can change an issue status.<br><br>
+- **Copy Jira Key+Summary**<br>
+  With this command you can copy to clipboard Jira Key+Summary.<br><br>
 
 ## Explorer
 
