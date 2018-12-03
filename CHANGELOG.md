@@ -1,3 +1,11 @@
+## 0.11.0
+
+### Features
+
+- insert Working issue Key+Summary comment
+- use favourites filters
+- copy Jira Issue Key+Summary to clipboard
+
 ## 0.10.6
 
 ### Bug Fixes
