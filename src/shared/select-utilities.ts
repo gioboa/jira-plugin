@@ -119,7 +119,7 @@ export const selectIssue = async (mode: string, filterAndJQL?: string[]): Promis
     if (canExecuteJiraAPI()) {
       const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
       if (verifyCurrentProject(project)) {
-        const [filter, jql] = filterAndJQL || await getFilterAndJQL(mode, project || '');
+        const [filter, jql] = filterAndJQL || (await getFilterAndJQL(mode, project || ''));
         changeStateIssues(LOADING.text, '', []);
         if (!!jql) {
           // call Jira API with the generated JQL
@@ -315,24 +315,41 @@ export const selectIssueType = async (ignoreFocusOut: boolean, preLoadedPicks: I
 export const selectFavoriteFilters = async (): Promise<IFavouriteFilter | undefined> => {
   try {
     if (canExecuteJiraAPI()) {
-      const favFilters = await state.jira.getFavoriteFilters();
-      if (favFilters && favFilters.length > 0) {
-        const selected = await vscode.window.showQuickPick(
-          favFilters.map(filter => {
-            return {
-              label: filter.name,
-              description: filter.description,
-              pickValue: filter
-            };
-          }),
-          {
-            placeHolder: `Select favourite filter`,
-            matchOnDescription: true
-          }
-        );
-        return selected ? selected.pickValue : undefined;
+      const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+      if (verifyCurrentProject(project)) {
+        const favFilters = await state.jira.getFavoriteFilters();
+        if (favFilters && favFilters.length > 0) {
+          // exclude favorites filters with different project key/name inside jql
+          const otherProjects = state.projects.filter(prj => prj.key !== project);
+          const selected = await vscode.window.showQuickPick(
+            favFilters
+              .filter(filter => {
+                let valid = true;
+                otherProjects.forEach(prj => {
+                  if (filter.jql.indexOf(prj.key) >= 0 || filter.jql.indexOf(prj.name) >= 0) {
+                    valid = false;
+                  }
+                });
+                return valid;
+              })
+              .map(filter => {
+                return {
+                  label: filter.name,
+                  description: filter.description,
+                  pickValue: filter
+                };
+              }),
+            {
+              placeHolder: `Select favourite filter`,
+              matchOnDescription: true
+            }
+          );
+          return selected ? selected.pickValue : undefined;
+        } else {
+          vscode.window.showInformationMessage('No favourites filters found');
+        }
       } else {
-        vscode.window.showInformationMessage('No favourites filters found');
+        throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
       }
     }
   } catch (err) {

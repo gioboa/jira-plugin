@@ -1,4 +1,4 @@
-import * as copyPaste from 'copy-paste';
+const copyPaste = require('copy-paste');
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
