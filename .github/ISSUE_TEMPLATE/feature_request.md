@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: 'feat: your_title_here'
-labels: feature
+labels: enhancement
 assignees: gioboa
 
 ---
