@@ -1,6 +1,9 @@
 ---
 name: Issue report
 about: Create a report to help us improve
+title: 'issue: your_title_here'
+labels: question
+assignees: gioboa
 
 ---
 
