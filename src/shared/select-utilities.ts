@@ -5,7 +5,7 @@ import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeStateIssues, printErrorMessageInOutput, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
-import { ASSIGNEES_MAX_RESULTS, BACK_PICK_LABEL, CONFIG, LOADING, MAX_RESULTS, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
+import { ASSIGNEES_MAX_RESULTS, BACK_PICK_LABEL, CONFIG, LOADING, SEARCH_MAX_RESULTS, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
 import { addStatusIcon, checkCounter, workingIssueStatuses } from './utilities';
 
 // selection for projects
@@ -123,7 +123,7 @@ export const selectIssue = async (mode: string, filterAndJQL?: string[]): Promis
         changeStateIssues(LOADING.text, '', []);
         if (!!jql) {
           // call Jira API with the generated JQL
-          const issues = await state.jira.search({ jql, maxResults: MAX_RESULTS });
+          const issues = await state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
           if (!!issues && !!issues.issues && issues.issues.length > 0) {
             changeStateIssues(filter, jql, issues.issues);
           } else {
@@ -156,7 +156,7 @@ export const selectWorkingIssues = async (): Promise<IIssue[]> => {
       if (verifyCurrentProject(project)) {
         const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project || '');
         if (!!jql) {
-          const result = await state.jira.search({ jql, maxResults: MAX_RESULTS });
+          const result = await state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
           issues = result.issues || [];
         }
       }
@@ -176,7 +176,7 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
         const [filter, jql] = await getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project || '');
         if (!!jql) {
           // call Jira API
-          const issues = await state.jira.search({ jql, maxResults: MAX_RESULTS });
+          const issues = await state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
           if (issues.issues && issues.issues.length > 0) {
             const picks = issues.issues.map(issue => ({
               pickValue: issue,
