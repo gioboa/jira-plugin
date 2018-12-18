@@ -86,7 +86,11 @@ export class Jira implements IJira {
     }
   }
 
-  async search(params: { jql: string; maxResults?: number }): Promise<IIssues> {
+  async search(params: { jql: string; maxResults: number }): Promise<IIssues> {
+    // from jira-connector docs
+    // The maximum number of issues to return (defaults to 50). The maximum allowable
+    // value is dictated by the JIRA property 'jira.search.views.default.max'. If you specify a value that is
+    // higher than this number, your search results will be truncated.
     return await this.jiraInstance.search.search(params);
   }
 

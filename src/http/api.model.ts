@@ -1,5 +1,5 @@
 export interface IJira {
-  search(params: { jql: string; maxResults?: number }): Promise<IIssues>;
+  search(params: { jql: string; maxResults: number }): Promise<IIssues>;
   getStatuses(): Promise<IStatus[]>;
   getProjects(): Promise<IProject[]>;
   getAssignees(param: { project: string; maxResults: number }): Promise<IAssignee[]>;
