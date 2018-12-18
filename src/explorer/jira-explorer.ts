@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { getConfigurationByKey } from '../shared/configuration';
-import { CONFIG, LOADING } from '../shared/constants';
+import { CONFIG, LOADING, SEARCH_MAX_RESULTS } from '../shared/constants';
 import state from '../state/state';
 import { DividerItem } from './item/divider-item';
 import { FilterInfoItem } from './item/filter-info-item';
@@ -44,16 +44,13 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
       const getLabel = (status: string) => `Status: ${status}`;
       items.map((item: any, index: number) => {
         if (item.issue) {
-          if (
-            !items.find(el => el.contextValue === new StatusItem('','').contextValue && getLabel(item.issue.fields.status.name) === el.label)
-          ) {
+          if (!items.find(el => el.contextValue === new StatusItem('', '').contextValue && getLabel(item.issue.fields.status.name) === el.label)) {
             items.splice(index, 0, new StatusItem(getLabel(item.issue.fields.status.name), item.issue.fields.status.name));
           }
         }
       });
 
-      // Jira block search result at 50 rows (it's a user settings)
-      if (issues.length === 50) {
+      if (issues.length === SEARCH_MAX_RESULTS) {
         items.push(new DividerItem('------'), new LimitInfoItem());
       }
       return items;
@@ -63,11 +60,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
         return [new LoadingItem()];
       }
       // no result
-      return [
-        new FilterInfoItem(project || '', state.currentFilter, issues.length),
-        new DividerItem('------'),
-        new NoResultItem(project || '')
-      ];
+      return [new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem('------'), new NoResultItem(project || '')];
     }
   }
 }
