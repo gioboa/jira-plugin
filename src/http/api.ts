@@ -98,7 +98,11 @@ export class Jira implements IJira {
     return await this.jiraInstance.project.getAllProjects();
   }
 
-  async getAssignees(params: { project: string; maxResults?: number }): Promise<IAssignee[]> {
+  async getAssignees(params: { project: string; maxResults: number }): Promise<IAssignee[]> {
+    // from jira-connector docs
+    // The maximum number of users to return (defaults to 50). The maximum allowed
+    // value is 1000. If you specify a value that is higher than this number, your search results will be
+    // truncated.
     return await this.jiraInstance.user.searchAssignable(params);
   }
 

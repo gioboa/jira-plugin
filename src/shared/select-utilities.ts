@@ -5,7 +5,7 @@ import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeStateIssues, printErrorMessageInOutput, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
-import { BACK_PICK_LABEL, CONFIG, LOADING, MAX_RESULTS, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
+import { ASSIGNEES_MAX_RESULTS, BACK_PICK_LABEL, CONFIG, LOADING, MAX_RESULTS, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
 import { addStatusIcon, checkCounter, workingIssueStatuses } from './utilities';
 
 // selection for projects
@@ -212,7 +212,7 @@ export const selectAssignee = async (unassigned: boolean, back: boolean, onlyKey
   try {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
-      const assignees = preLoadedPicks || (await state.jira.getAssignees({ project, maxResults: MAX_RESULTS }));
+      const assignees = preLoadedPicks || (await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS }));
       const picks = (assignees || [])
         .filter((assignee: IAssignee) => assignee.active === true)
         .map((assignee: IAssignee) => {

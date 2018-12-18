@@ -2,7 +2,7 @@ export interface IJira {
   search(params: { jql: string; maxResults?: number }): Promise<IIssues>;
   getStatuses(): Promise<IStatus[]>;
   getProjects(): Promise<IProject[]>;
-  getAssignees(param: { project: string; maxResults?: number }): Promise<IAssignee[]>;
+  getAssignees(param: { project: string; maxResults: number }): Promise<IAssignee[]>;
   getTransitions(issueKey: string): Promise<ITransitions>;
   setTransition(params: { issueKey: string; transition: ISetTransition }): Promise<void>;
   setAssignIssue(params: { issueKey: string; assignee: string }): Promise<void>;

@@ -68,3 +68,4 @@ export const NO_WORKING_ISSUE = { text: 'No working issue', key: 'NO_WORKING_ISS
 export const BACK_PICK_LABEL = '$(arrow-left) Back';
 
 export const MAX_RESULTS = 50;
+export const ASSIGNEES_MAX_RESULTS = 1000;

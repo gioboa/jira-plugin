@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { IField } from '../http/api.model';
 import { getConfigurationByKey } from '../shared/configuration';
-import { CONFIG, MAX_RESULTS } from '../shared/constants';
+import { ASSIGNEES_MAX_RESULTS, CONFIG } from '../shared/constants';
 import { selectIssueType } from '../shared/select-utilities';
 import state, { printErrorMessageInOutput, verifyCurrentProject } from '../state/state';
 import { NEW_ISSUE_FIELDS, NEW_ISSUE_STATUS } from './create-issue.model';
@@ -129,7 +129,7 @@ const retriveValues = async (project: string, field: IField, key: string, values
               }
             }
           } else {
-            (<any>values)[key.toString()] = await state.jira.getAssignees({ project, maxResults: MAX_RESULTS });
+            (<any>values)[key.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
           }
         } catch (e) {
           (<any>values)[key.toString()] = [];
@@ -166,22 +166,14 @@ const generatePicks = (values: any[]) => {
     .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
 };
 
-const manageSelectedField = async (
-  fieldToModifySelection: any,
-  newIssueIstance: any,
-  preloadedListValues: any,
-  fieldsRequest: any
-): Promise<void> => {
+const manageSelectedField = async (fieldToModifySelection: any, newIssueIstance: any, preloadedListValues: any, fieldsRequest: any): Promise<void> => {
   switch (fieldToModifySelection.fieldSchema.type) {
     case 'string':
       {
         const text = await vscode.window.showInputBox({
           ignoreFocusOut: true,
           placeHolder: `Insert ${fieldToModifySelection.pickValue.name}`,
-          value:
-            fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}`
-              ? fieldToModifySelection.description
-              : undefined
+          value: fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}` ? fieldToModifySelection.description : undefined
         });
         newIssueIstance[fieldToModifySelection.field] = text;
         fieldsRequest[fieldToModifySelection.field] = text;
@@ -192,10 +184,7 @@ const manageSelectedField = async (
         const text = await vscode.window.showInputBox({
           ignoreFocusOut: true,
           placeHolder: `Insert ${fieldToModifySelection.pickValue.name}`,
-          value:
-            fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}`
-              ? fieldToModifySelection.description
-              : undefined
+          value: fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}` ? fieldToModifySelection.description : undefined
         });
         if (!!text) {
           newIssueIstance[fieldToModifySelection.field] = parseInt(text);
@@ -204,17 +193,11 @@ const manageSelectedField = async (
       }
       break;
     default: {
-      if (
-        !!(<any>preloadedListValues)[fieldToModifySelection.field] &&
-        (<any>preloadedListValues)[fieldToModifySelection.field].length > 0
-      ) {
-        const newValueSelected = await vscode.window.showQuickPick(
-          generatePicks((<any>preloadedListValues)[fieldToModifySelection.field]),
-          {
-            placeHolder: `Insert value`,
-            matchOnDescription: true
-          }
-        );
+      if (!!(<any>preloadedListValues)[fieldToModifySelection.field] && (<any>preloadedListValues)[fieldToModifySelection.field].length > 0) {
+        const newValueSelected = await vscode.window.showQuickPick(generatePicks((<any>preloadedListValues)[fieldToModifySelection.field]), {
+          placeHolder: `Insert value`,
+          matchOnDescription: true
+        });
         newIssueIstance[fieldToModifySelection.field] = undefined;
         delete fieldsRequest[fieldToModifySelection.field];
         if (!!newValueSelected) {
