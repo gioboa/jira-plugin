@@ -1,3 +1,9 @@
+## 0.11.1
+
+### Bug Fixes
+
+- set const ASSIGNEES_MAX_RESULTS = 1000 (highest available)
+
 ## 0.11.0
 
 ### Features
