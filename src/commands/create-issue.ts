@@ -4,7 +4,7 @@ import { IField } from '../http/api.model';
 import { getConfigurationByKey } from '../shared/configuration';
 import { ASSIGNEES_MAX_RESULTS, CONFIG } from '../shared/constants';
 import { selectIssueType } from '../shared/select-utilities';
-import state, { printErrorMessageInOutput, verifyCurrentProject } from '../state/state';
+import state, { printErrorMessageInOutput, silentPrintErrorMessageInOutput, verifyCurrentProject } from '../state/state';
 import { NEW_ISSUE_FIELDS, NEW_ISSUE_STATUS } from './create-issue.model';
 import { OpenIssueCommand } from './open-issue';
 import { Command } from './shared/command';
@@ -148,6 +148,7 @@ const retriveValues = async (project: string, field: IField, key: string, values
 const mandatoryFieldsOk = (request: any, fields: any): boolean => {
   for (const key in fields) {
     if (!!fields[key].required && !request[key]) {
+      silentPrintErrorMessageInOutput(`${key} field missing : ${JSON.stringify(fields[key])}`);
       return false;
     }
   }

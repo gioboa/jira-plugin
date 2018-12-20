@@ -116,6 +116,12 @@ export const printErrorMessageInOutput = (err: any) => {
   }
 };
 
+export const silentPrintErrorMessageInOutput = (err: any) => {
+  if (state.channel) {
+    state.channel.append(`Error: ${err}\n`);
+  }
+};
+
 export const addAdditionalStatuses = () => {
   try {
     const additionalStatuses = (getConfigurationByKey(CONFIG.ADDITIONAL_STATUSES) || '').toString();
