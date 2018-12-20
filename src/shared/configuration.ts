@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { IWorkingIssue } from '../http/api.model';
-import state, { printErrorMessageInOutput } from '../state/state';
+import state, { printErrorMessageInOutputAndShowAlert } from '../state/state';
 import { Configuration } from './configuration.model';
 import { CONFIG, CONFIG_COUNTER, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR } from './constants';
 
@@ -14,7 +14,7 @@ export const configIsCorrect = (): boolean => {
 export const getConfiguration = (): Configuration => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
   if (!config) {
-    printErrorMessageInOutput('No configuration found. Probably an error in vscode');
+    printErrorMessageInOutputAndShowAlert('No configuration found. Probably an error in vscode');
   }
   return config;
 };
@@ -23,7 +23,7 @@ export const getConfiguration = (): Configuration => {
 export const getConfigurationByKey = (entry: string): string | undefined => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
   if (!config) {
-    printErrorMessageInOutput('No configuration found. Probably an error in vscode');
+    printErrorMessageInOutputAndShowAlert('No configuration found. Probably an error in vscode');
     return undefined;
   }
   return (<any>config).get(entry);
@@ -33,7 +33,7 @@ export const getConfigurationByKey = (entry: string): string | undefined => {
 export const setConfigurationByKey = (entry: string, value: string | undefined): Thenable<void> | undefined => {
   const config: Configuration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
   if (!config) {
-    printErrorMessageInOutput('No configuration found. Probably an error in vscode');
+    printErrorMessageInOutputAndShowAlert('No configuration found. Probably an error in vscode');
     return undefined;
   }
   if (entry === CONFIG.BASE_URL && value && value.substring(value.length - 1) === '/') {

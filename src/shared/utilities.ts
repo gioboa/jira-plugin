@@ -2,7 +2,7 @@ const copyPaste = require('copy-paste');
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import state, { printErrorMessageInOutput } from '../state/state';
+import state, { printErrorMessageInOutputAndShowAlert } from '../state/state';
 import { getConfigurationByKey, getGlobalCounter, setGlobalCounter } from './configuration';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS, LATER, NO, STATUS_ICONS, YES } from './constants';
 
@@ -71,7 +71,7 @@ export const copyToClipboard = (issue: IssueItem) => {
     copyPaste.copy(issue.label);
     vscode.window.showInformationMessage('Jira Plugin - Copied to clipboard');
   } else {
-    printErrorMessageInOutput('Use this command from Jira Plugin EXPLORER');
+    printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
   }
 };
 

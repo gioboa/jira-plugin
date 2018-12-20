@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { selectAssignee } from '../shared/select-utilities';
-import state, { canExecuteJiraAPI, isWorkingIssue, printErrorMessageInOutput } from '../state/state';
+import state, { canExecuteJiraAPI, isWorkingIssue, printErrorMessageInOutputAndShowAlert } from '../state/state';
 import { Command } from './shared/command';
 
 export class ChangeIssueAssigneeCommand implements Command {
@@ -22,11 +22,11 @@ export class ChangeIssueAssigneeCommand implements Command {
         }
       } else {
         if (canExecuteJiraAPI()) {
-          printErrorMessageInOutput('Use this command from Jira Plugin EXPLORER');
+          printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
         }
       }
     } catch (err) {
-      printErrorMessageInOutput(err);
+      printErrorMessageInOutputAndShowAlert(err);
     }
   }
 }

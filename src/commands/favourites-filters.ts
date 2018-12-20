@@ -1,6 +1,6 @@
 import { SEARCH_MODE } from '../shared/constants';
 import { selectFavoriteFilters, selectIssue } from '../shared/select-utilities';
-import { printErrorMessageInOutput } from '../state/state';
+import { printErrorMessageInOutputAndShowAlert } from '../state/state';
 import { Command } from './shared/command';
 
 export class FavouritesFiltersCommand implements Command {
@@ -13,7 +13,7 @@ export class FavouritesFiltersCommand implements Command {
         selectIssue(SEARCH_MODE.FAVOURITES_FILTERS, [filter.name, filter.jql]);
       }
     } catch (err) {
-      printErrorMessageInOutput(err);
+      printErrorMessageInOutputAndShowAlert(err);
     }
   }
 

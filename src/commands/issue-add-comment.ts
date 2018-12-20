@@ -3,7 +3,7 @@ import { IssueItem } from '../explorer/item/issue-item';
 import { getConfigurationByKey } from '../shared/configuration';
 import { CONFIG } from '../shared/constants';
 import { selectAssignee } from '../shared/select-utilities';
-import state, { canExecuteJiraAPI, printErrorMessageInOutput } from '../state/state';
+import state, { canExecuteJiraAPI, printErrorMessageInOutputAndShowAlert } from '../state/state';
 import { Command } from './shared/command';
 
 export class IssueAddCommentCommand implements Command {
@@ -25,7 +25,7 @@ export class IssueAddCommentCommand implements Command {
             if (!!assignee) {
               text = text.replace('[@]', `[~${assignee}]`);
             } else {
-              printErrorMessageInOutput('Abort command, wrong parameter.');
+              printErrorMessageInOutputAndShowAlert('Abort command, wrong parameter.');
               return;
             }
           }
@@ -46,11 +46,11 @@ export class IssueAddCommentCommand implements Command {
         }
       } else {
         if (canExecuteJiraAPI()) {
-          printErrorMessageInOutput('Use this command from Jira Plugin EXPLORER');
+          printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
         }
       }
     } catch (err) {
-      printErrorMessageInOutput(err);
+      printErrorMessageInOutputAndShowAlert(err);
     }
   }
 }

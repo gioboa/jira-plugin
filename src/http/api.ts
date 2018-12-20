@@ -1,7 +1,7 @@
 const jiraClient = require('jira-connector');
 import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
-import { printErrorMessageInOutput } from '../state/state';
+import { printErrorMessageInOutputAndShowAlert } from '../state/state';
 import {
   IAddComment,
   IAddCommentResponse,
@@ -82,7 +82,7 @@ export class Jira implements IJira {
       });
       */
     } else {
-      printErrorMessageInOutput('Error: Check Jira Plugin settings in VSCode.');
+      printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
     }
   }
 

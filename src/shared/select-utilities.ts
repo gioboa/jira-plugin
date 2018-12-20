@@ -3,7 +3,7 @@ import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from '../http/api.mod
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
-import state, { canExecuteJiraAPI, changeStateIssues, printErrorMessageInOutput, verifyCurrentProject } from '../state/state';
+import state, { canExecuteJiraAPI, changeStateIssues, printErrorMessageInOutputAndShowAlert, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
 import { ASSIGNEES_MAX_RESULTS, BACK_PICK_LABEL, CONFIG, LOADING, SEARCH_MAX_RESULTS, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
 import { addStatusIcon, checkCounter, workingIssueStatuses } from './utilities';
@@ -24,7 +24,7 @@ export const selectProject = async (): Promise<string> => {
       return selected ? selected.pickValue : '';
     }
   } catch (err) {
-    printErrorMessageInOutput(err);
+    printErrorMessageInOutputAndShowAlert(err);
   }
   return '';
 };
@@ -143,7 +143,7 @@ export const selectIssue = async (mode: string, filterAndJQL?: string[]): Promis
     }
   } catch (e) {
     changeStateIssues('', '', []);
-    printErrorMessageInOutput(e);
+    printErrorMessageInOutputAndShowAlert(e);
   }
 };
 
@@ -162,7 +162,7 @@ export const selectWorkingIssues = async (): Promise<IIssue[]> => {
       }
     }
   } catch (err) {
-    printErrorMessageInOutput(err);
+    printErrorMessageInOutputAndShowAlert(err);
   }
   return issues;
 };
@@ -202,7 +202,7 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
       }
     }
   } catch (err) {
-    printErrorMessageInOutput(err);
+    printErrorMessageInOutputAndShowAlert(err);
   }
   return undefined;
 };
@@ -238,7 +238,7 @@ export const selectAssignee = async (unassigned: boolean, back: boolean, onlyKey
       throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
     }
   } catch (err) {
-    printErrorMessageInOutput(err);
+    printErrorMessageInOutputAndShowAlert(err);
   }
   return '';
 };
@@ -259,7 +259,7 @@ export const selectTransition = async (issueKey: string): Promise<string | null 
     });
     return selected ? selected.pickValue : undefined;
   } catch (err) {
-    printErrorMessageInOutput(err);
+    printErrorMessageInOutputAndShowAlert(err);
   }
   return undefined;
 };
@@ -306,7 +306,7 @@ export const selectIssueType = async (ignoreFocusOut: boolean, preLoadedPicks: I
     });
     return selected ? selected.pickValue : undefined;
   } catch (err) {
-    printErrorMessageInOutput(err);
+    printErrorMessageInOutputAndShowAlert(err);
   }
   return undefined;
 };
@@ -353,7 +353,7 @@ export const selectFavoriteFilters = async (): Promise<IFavouriteFilter | undefi
       }
     }
   } catch (err) {
-    printErrorMessageInOutput(err);
+    printErrorMessageInOutputAndShowAlert(err);
   }
   return undefined;
 };

@@ -1,5 +1,5 @@
 import { NO_WORKING_ISSUE } from '../shared/constants';
-import state, { canExecuteJiraAPI, printErrorMessageInOutput } from '../state/state';
+import state, { canExecuteJiraAPI, printErrorMessageInOutputAndShowAlert } from '../state/state';
 import { Command } from './shared/command';
 
 export class IssueAddWorklogCommand implements Command {
@@ -14,7 +14,7 @@ export class IssueAddWorklogCommand implements Command {
         }
       }
     } catch (err) {
-      printErrorMessageInOutput(err);
+      printErrorMessageInOutputAndShowAlert(err);
     }
   }
 

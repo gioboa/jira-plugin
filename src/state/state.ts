@@ -66,7 +66,7 @@ export const connectToJira = async (): Promise<void> => {
       state.statusBar.updateWorkingProjectItem('');
     }, 1000);
     changeStateIssues('', '', []);
-    printErrorMessageInOutput(err);
+    printErrorMessageInOutputAndShowAlert(err);
   }
 };
 
@@ -109,14 +109,14 @@ export const isWorkingIssue = (issueKey: string): boolean => {
   return issueKey === state.workingIssue.issue.key;
 };
 
-export const printErrorMessageInOutput = (err: any) => {
+export const printErrorMessageInOutputAndShowAlert = (err: any) => {
   if (state.channel) {
     vscode.window.showErrorMessage(`Error: Check logs in Jira Plugin terminal output.`);
     state.channel.append(`Error: ${err}\n`);
   }
 };
 
-export const silentPrintErrorMessageInOutput = (err: any) => {
+export const printErrorMessageInOutput = (err: any) => {
   if (state.channel) {
     state.channel.append(`Error: ${err}\n`);
   }
@@ -138,6 +138,6 @@ export const addAdditionalStatuses = () => {
       });
     }
   } catch (err) {
-    printErrorMessageInOutput(err);
+    printErrorMessageInOutputAndShowAlert(err);
   }
 };
