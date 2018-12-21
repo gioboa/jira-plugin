@@ -325,8 +325,15 @@ export const selectFavoriteFilters = async (): Promise<IFavouriteFilter | undefi
             favFilters
               .filter(filter => {
                 let valid = true;
-                otherProjects.forEach(prj => {
-                  if (filter.jql.indexOf(prj.key) >= 0 || filter.jql.indexOf(prj.name) >= 0) {
+                otherProjects.forEach(prj => 
+                {
+                  let regexp0 = new RegExp('project = "?' + prj.key + '"?');
+                  let regexp1 = new RegExp('project in \(.*?"?' + prj.key + '"?.*?\)');
+                  let regexp2 = new RegExp('"Project Name" in \(.*?"?' + prj.name + '"?.*?\)');
+                  let regexp3 = new RegExp('"Project Name" = "?' + prj.name + '"?');
+                  
+                  if ( regexp0.test(filter.jql) || regexp1.test(filter.jql) || regexp2.test(filter.jql) || regexp3.test(filter.jql) ) 
+                  {
                     valid = false;
                   }
                 });
