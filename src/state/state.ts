@@ -1,16 +1,18 @@
-import * as vscode from "vscode";
-import { JiraExplorer } from "../explorer/jira-explorer";
-import { Jira } from "../http/api";
-import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from "../http/api.model";
-import NoWorkingIssuePick from "../picks/no-working-issue-pick";
-import { configIsCorrect, getConfigurationByKey, setConfigurationByKey, setGlobalWorkingIssue } from "../shared/configuration";
-import { CONFIG, LOADING, NO_WORKING_ISSUE } from "../shared/constants";
-import { StatusBarManager } from "../shared/status-bar";
-import { GitIntegration } from "../shared/git-integration";
+import * as vscode from 'vscode';
+import { JiraExplorer } from '../explorer/jira-explorer';
+import { Jira } from '../http/api';
+import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.model';
+import NoWorkingIssuePick from '../picks/no-working-issue-pick';
+import { configIsCorrect, getConfigurationByKey, setConfigurationByKey, setGlobalWorkingIssue } from '../shared/configuration';
+import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
+import { StatusBarManager } from '../shared/status-bar';
+import { createDocumentLinkProvider } from '../shared/utilities';
+import { GitIntegration } from '../shared/git-integration';
 
 export interface State {
   context: vscode.ExtensionContext;
   channel: vscode.OutputChannel;
+  documentLinkDisposable: vscode.Disposable;
   statusBar: StatusBarManager;
   gitIntegration: GitIntegration;
   jiraExplorer: JiraExplorer;
@@ -28,6 +30,7 @@ const state: State = {
   jira: undefined as any,
   context: undefined as any,
   channel: undefined as any,
+  documentLinkDisposable: undefined as any,
   statusBar: undefined as any,
   gitIntegration: undefined as any,
   jiraExplorer: undefined as any,
@@ -35,7 +38,7 @@ const state: State = {
   projects: [],
   issues: [],
   currentFilter: LOADING.text,
-  currentJQL: "",
+  currentJQL: '',
   workingIssue: {
     issue: new NoWorkingIssuePick().pickValue,
     trackingTime: 0,
@@ -54,21 +57,22 @@ export const connectToJira = async (): Promise<void> => {
     state.statuses.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
     state.projects = await state.jira.getProjects();
-    state.statusBar.updateWorkingProjectItem("");
+    createDocumentLinkProvider(state.projects);
+    state.statusBar.updateWorkingProjectItem('');
 
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
     // refresh Jira explorer list
     if (project) {
-      await vscode.commands.executeCommand("jira-plugin.allIssuesCommand");
+      await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
     } else {
       vscode.window.showWarningMessage("Working project isn't set.");
     }
   } catch (err) {
-    setConfigurationByKey(CONFIG.WORKING_PROJECT, "");
+    setConfigurationByKey(CONFIG.WORKING_PROJECT, '');
     setTimeout(() => {
-      state.statusBar.updateWorkingProjectItem("");
+      state.statusBar.updateWorkingProjectItem('');
     }, 1000);
-    changeStateIssues("", "", []);
+    changeStateIssues('', '', []);
     printErrorMessageInOutputAndShowAlert(err);
   }
 };
@@ -86,9 +90,9 @@ export const changeStateProject = (project: string): void => {
   // update project item in the status bar
   state.statusBar.updateWorkingProjectItem(project);
   // loading in Jira explorer
-  changeStateIssues(LOADING.text, "", []);
+  changeStateIssues(LOADING.text, '', []);
   // launch search for the new project
-  setTimeout(() => vscode.commands.executeCommand("jira-plugin.allIssuesCommand"), 1000);
+  setTimeout(() => vscode.commands.executeCommand('jira-plugin.allIssuesCommand'), 1000);
 };
 
 export const changeStateIssues = (filter: string, jql: string, issues: IIssue[]): void => {
@@ -137,9 +141,9 @@ export const printErrorMessageInOutput = (err: any) => {
 
 export const addAdditionalStatuses = () => {
   try {
-    const additionalStatuses = (getConfigurationByKey(CONFIG.ADDITIONAL_STATUSES) || "").toString();
+    const additionalStatuses = (getConfigurationByKey(CONFIG.ADDITIONAL_STATUSES) || '').toString();
     if (!!additionalStatuses) {
-      const list = additionalStatuses.split(",");
+      const list = additionalStatuses.split(',');
       list.forEach(status => {
         const newStatus = status.trim();
         if (!!newStatus && !state.statuses.find(el => el.name.toLowerCase() === newStatus.toLowerCase())) {
