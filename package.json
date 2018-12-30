@@ -2,7 +2,7 @@
   "name": "jira-plugin",
   "displayName": "Jira Plugin",
   "description": "JIRA integration for vscode",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "publisher": "gioboa",
   "icon": "images/icons/icon.png",
   "galleryBanner": {
