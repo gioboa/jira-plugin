@@ -24,9 +24,6 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
   channel = vscode.window.createOutputChannel(CONFIG_NAME.toUpperCase());
   context.subscriptions.push(channel);
 
-  const jiraLinkProvider = new IssueLinkProvider();
-  vscode.languages.registerDocumentLinkProvider('*', jiraLinkProvider);
-
   const statusBar = new StatusBarManager();
   // instances in the state
   state.context = context;

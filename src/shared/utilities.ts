@@ -2,9 +2,11 @@ const copyPaste = require('copy-paste');
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
+import { IProject } from '../http/api.model';
 import state, { printErrorMessageInOutputAndShowAlert } from '../state/state';
 import { getConfigurationByKey, getGlobalCounter, setGlobalCounter } from './configuration';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS, LATER, NO, STATUS_ICONS, YES } from './constants';
+import { IssueLinkProvider } from './document-link-provider';
 
 // generate icon + status
 export const addStatusIcon = (status: string, withDescription: boolean): string => {
@@ -39,7 +41,9 @@ export const workingIssueStatuses = (): string => {
     .split(',')
     .map((status: string) => status.trim())
     .filter((status: string) => state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
-  return statusList && statusList.length > 0 ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '') : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
+  return statusList && statusList.length > 0
+    ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
+    : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
 };
 
 export const checkCounter = async (): Promise<void> => {
@@ -85,4 +89,11 @@ export const insertWorkingIssueComment = () => {
   } else {
     vscode.window.showInformationMessage('No working issue');
   }
+};
+
+export const createDocumentLinkProvider = (projects: IProject[]) => {
+  if (!!state.documentLinkDisposable) {
+    state.documentLinkDisposable.dispose();
+  }
+  state.documentLinkDisposable = vscode.languages.registerDocumentLinkProvider('*', new IssueLinkProvider(projects));
 };

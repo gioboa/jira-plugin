@@ -6,10 +6,12 @@ import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import { configIsCorrect, getConfigurationByKey, setConfigurationByKey, setGlobalWorkingIssue } from '../shared/configuration';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
 import { StatusBarManager } from '../shared/status-bar';
+import { createDocumentLinkProvider } from '../shared/utilities';
 
 export interface State {
   context: vscode.ExtensionContext;
   channel: vscode.OutputChannel;
+  documentLinkDisposable: vscode.Disposable;
   statusBar: StatusBarManager;
   jiraExplorer: JiraExplorer;
   jira: IJira;
@@ -26,6 +28,7 @@ const state: State = {
   jira: undefined as any,
   context: undefined as any,
   channel: undefined as any,
+  documentLinkDisposable: undefined as any,
   statusBar: undefined as any,
   jiraExplorer: undefined as any,
   statuses: [],
@@ -51,6 +54,7 @@ export const connectToJira = async (): Promise<void> => {
     state.statuses.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
     state.projects = await state.jira.getProjects();
+    createDocumentLinkProvider(state.projects);
     state.statusBar.updateWorkingProjectItem('');
 
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);

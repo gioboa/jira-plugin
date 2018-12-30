@@ -5,8 +5,17 @@ import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeStateIssues, printErrorMessageInOutputAndShowAlert, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
-import { ASSIGNEES_MAX_RESULTS, BACK_PICK_LABEL, CONFIG, LOADING, SEARCH_MAX_RESULTS, NO_WORKING_ISSUE, SEARCH_MODE, UNASSIGNED } from './constants';
-import { addStatusIcon, checkCounter, workingIssueStatuses } from './utilities';
+import {
+  ASSIGNEES_MAX_RESULTS,
+  BACK_PICK_LABEL,
+  CONFIG,
+  LOADING,
+  NO_WORKING_ISSUE,
+  SEARCH_MAX_RESULTS,
+  SEARCH_MODE,
+  UNASSIGNED
+} from './constants';
+import { addStatusIcon, checkCounter, createDocumentLinkProvider, workingIssueStatuses } from './utilities';
 
 // selection for projects
 export const selectProject = async (): Promise<string> => {
@@ -14,6 +23,7 @@ export const selectProject = async (): Promise<string> => {
     if (canExecuteJiraAPI()) {
       if (state.projects.length === 0) {
         state.projects = await state.jira.getProjects();
+        createDocumentLinkProvider(state.projects);
       }
       const picks = state.projects.map(project => ({
         pickValue: project.key,
@@ -78,7 +88,10 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     case SEARCH_MODE.MY_STATUS: {
       const status = await selectStatus();
       if (!!status) {
-        return [`STATUS: ${status} ASSIGNEE: you`, `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`];
+        return [
+          `STATUS: ${status} ASSIGNEE: you`,
+          `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
+        ];
       }
       break;
     }
@@ -87,7 +100,9 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
       if (!!status && !!assignee) {
         return [
           `STATUS: ${status} ASSIGNEE: ${assignee}`,
-          `project = ${project} AND status = '${status}' AND assignee = ${assignee !== UNASSIGNED ? `'${assignee}'` : `null`} ORDER BY status ASC, updated DESC`
+          `project = ${project} AND status = '${status}' AND assignee = ${
+            assignee !== UNASSIGNED ? `'${assignee}'` : `null`
+          } ORDER BY status ASC, updated DESC`
         ];
       }
       break;
@@ -104,10 +119,16 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     }
     case SEARCH_MODE.MY_WORKING_ISSUES: {
       const statuses = workingIssueStatuses();
-      return [`STATUS: ${statuses}`, `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`];
+      return [
+        `STATUS: ${statuses}`,
+        `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
+      ];
     }
     case SEARCH_MODE.CURRENT_SPRINT: {
-      return [`CURRENT SPRINT`, `project = ${project} AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`];
+      return [
+        `CURRENT SPRINT`,
+        `project = ${project} AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`
+      ];
     }
   }
   return ['', ''];
@@ -208,7 +229,12 @@ export const selectChangeWorkingIssue = async (): Promise<IIssue | undefined> =>
 };
 
 // selection for assignees
-export const selectAssignee = async (unassigned: boolean, back: boolean, onlyKey: boolean, preLoadedPicks: IAssignee[] | undefined): Promise<string | IAssignee> => {
+export const selectAssignee = async (
+  unassigned: boolean,
+  back: boolean,
+  onlyKey: boolean,
+  preLoadedPicks: IAssignee[] | undefined
+): Promise<string | IAssignee> => {
   try {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
@@ -264,7 +290,10 @@ export const selectTransition = async (issueKey: string): Promise<string | null 
   return undefined;
 };
 
-const doubleSelection = async (firstSelection: Function, secondSelection: Function): Promise<{ firstChoise: string; secondChoise: string }> => {
+const doubleSelection = async (
+  firstSelection: Function,
+  secondSelection: Function
+): Promise<{ firstChoise: string; secondChoise: string }> => {
   let ok = false;
   let firstChoise = '';
   let secondChoise = '';
@@ -283,7 +312,10 @@ const doubleSelection = async (firstSelection: Function, secondSelection: Functi
 export const selectStatusAndAssignee = async (): Promise<{ status: string; assignee: string }> => {
   const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
-    const { firstChoise, secondChoise } = await doubleSelection(selectStatus, async () => await selectAssignee(true, true, true, undefined));
+    const { firstChoise, secondChoise } = await doubleSelection(
+      selectStatus,
+      async () => await selectAssignee(true, true, true, undefined)
+    );
     return { status: firstChoise, assignee: secondChoise };
   } else {
     throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
