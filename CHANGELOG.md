@@ -1,3 +1,9 @@
+## 0.11.2
+
+### Bug Fixes
+
+- creation of Document Link Provider
+
 ## 0.11.1
 
 ### Bug Fixes
