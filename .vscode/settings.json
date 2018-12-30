@@ -6,5 +6,6 @@
   "search.exclude": {
     "out": true // set this to false to include "out" folder in search results
   },
-  "prettier.printWidth": 200
+  "prettier.printWidth": 140,
+  "prettier.singleQuote": true
 }
