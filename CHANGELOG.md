@@ -1,3 +1,9 @@
+## 0.11.3
+
+### Bug Fixes
+
+- update readme with key features
+
 ## 0.11.2
 
 ### Bug Fixes
