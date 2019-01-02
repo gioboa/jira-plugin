@@ -4,7 +4,7 @@ export const mockIssues = [
     key: 'ABC-1',
     fields: {
       description: 'ABC 1 Long description issue ',
-      summary: 'ABC 1Summary issue',
+      summary: 'ABC 1 Summary issue',
       status: {
         name: 'In Progress'
       }
