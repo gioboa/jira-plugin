@@ -1,5 +1,29 @@
 # jira-plugin README
 
+## Key Features
+
+- [View Jira issues](#explorer)
+- Create new Jira issue
+- [Search/Filter Jira issues](#filters)
+  - All issues
+  - Current sprint issues
+  - Issue by id
+  - Issues filtered by status
+  - Issues filtered by status and assignee
+  - Issues filtered by summary
+  - My issues filtered by status
+  - Favourites filters
+- Open Jira issue in the browser (left click on the issue)
+- Change Jira issue status
+- Change Jira issue assignee
+- Add comment to Jira issue
+- Copy to clipboard Jira Key+Summary
+- [Set current working project](#working-project)
+- [Set current working issue](#working-issue)
+- [Trace the time spended on the current working issue](#working-issue)
+- Insert current Working Issue Key+Summary comment
+- [Jira Issue Key+Summary link to open Jira issue in the browser](#link-to-open-jira-issue-in-the-browser)
+
 ## Installation
 
 Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter.<br>
@@ -37,9 +61,13 @@ values:<br>
 1.  `always` - will increment tracking time always <br>
 1.  `vsCodeFocus` - will increment tracking time only if VS Code is focused<br>
 
-## Explorer commands
+## Explorer
 
-![Explorer commands](images/readme/explorer-commands.png)
+- In the explorer you can use all the extension command
+
+![Explorer](images/readme/explorer.gif)
+
+## Explorer commands
 
 - **Create new ticket**<br>
   With this command you can create new ticket.<br><br>
@@ -81,12 +109,6 @@ values:<br>
 - **Copy Jira Key+Summary**<br>
   With this command you can copy to clipboard Jira Key+Summary.<br><br>
 
-## Explorer
-
-- In the explorer you can use all the extension command
-
-![Explorer](images/readme/explorer.gif)
-
 ## Status bar
 
 ### Working project
@@ -104,6 +126,10 @@ values:<br>
   The extension **every 60 second** store in iternal storage the current working activity so if you close and reopen VS Code the extension retrive (if needed) the pending working issue.
 
 ![Working issue](images/readme/working-issue.gif)
+
+### Link to open Jira issue in the browser
+
+![Jira issue link](images/readme/jira-issue-link.png)
 
 ## Want to contribute?
 
