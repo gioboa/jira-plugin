@@ -3,10 +3,11 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { IProject } from '../http/api.model';
-import state, { printErrorMessageInOutputAndShowAlert } from '../state/state';
+import state from '../state/state';
 import { getConfigurationByKey, getGlobalCounter, setGlobalCounter } from './configuration';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS, LATER, NO, STATUS_ICONS, YES } from './constants';
 import { IssueLinkProvider } from './document-link-provider';
+import { printErrorMessageInOutputAndShowAlert } from './log-utilities';
 
 // generate icon + status
 export const addStatusIcon = (status: string, withDescription: boolean): string => {

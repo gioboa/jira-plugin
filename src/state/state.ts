@@ -5,6 +5,7 @@ import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.mod
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import { configIsCorrect, getConfigurationByKey, setConfigurationByKey, setGlobalWorkingIssue } from '../shared/configuration';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
+import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import { StatusBarManager } from '../shared/status-bar';
 import { createDocumentLinkProvider } from '../shared/utilities';
 
@@ -111,38 +112,6 @@ export const isWorkingIssue = (issueKey: string): boolean => {
     vscode.window.showErrorMessage(`Issue ${issueKey} has pending worklog. Resolve the conflict and retry the action.`);
   }
   return issueKey === state.workingIssue.issue.key;
-};
-
-export const printErrorMessageInOutputAndShowAlert = (err: any) => {
-  if (state.channel) {
-    vscode.window.showErrorMessage(`Error: Check logs in Jira Plugin terminal output.`);
-    state.channel.append(`Error: ${err}\n`);
-  }
-};
-
-export const printErrorMessageInOutput = (err: any) => {
-  if (state.channel) {
-    state.channel.append(`Error: ${err}\n`);
-  }
-};
-
-export const debugMode = () => {
-  const editor = vscode.window.activeTextEditor;
-  if (editor && editor.document) {
-    const text = editor.document.getText();
-    if (text.indexOf('JIRA_PLUGIN_DEBUG_MODE') !== -1) {
-      return true;
-    }
-  }
-  return false;
-};
-
-export const jiraPluginDebugLog = (message: string, value: any) => {
-  if (debugMode()) {
-    if (state.channel) {
-      state.channel.append(`${message}: ${value}\n`);
-    }
-  }
 };
 
 export const addAdditionalStatuses = () => {

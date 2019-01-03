@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { selectAssignee } from '../shared/select-utilities';
-import state, { canExecuteJiraAPI, isWorkingIssue, printErrorMessageInOutputAndShowAlert } from '../state/state';
+import state, { canExecuteJiraAPI, isWorkingIssue} from '../state/state';
 import { Command } from './shared/command';
+import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 
 export class ChangeIssueAssigneeCommand implements Command {
   public id = 'jira-plugin.changeIssueAssigneeCommand';

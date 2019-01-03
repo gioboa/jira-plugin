@@ -1,7 +1,6 @@
 const jiraClient = require('jira-connector');
 import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
-import { printErrorMessageInOutputAndShowAlert } from '../state/state';
 import {
   IAddComment,
   IAddCommentResponse,
@@ -19,6 +18,7 @@ import {
   IStatus,
   ITransitions
 } from './api.model';
+import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 
 export class Jira implements IJira {
   jiraInstance: any;

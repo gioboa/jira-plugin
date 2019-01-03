@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 import { IWorkingIssue } from '../http/api.model';
-import state, { printErrorMessageInOutputAndShowAlert } from '../state/state';
+import state from '../state/state';
 import { Configuration } from './configuration.model';
 import { CONFIG, CONFIG_COUNTER, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR } from './constants';
+import { printErrorMessageInOutputAndShowAlert } from './log-utilities';
 
 export const configIsCorrect = (): boolean => {
   const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);

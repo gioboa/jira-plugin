@@ -1,5 +1,6 @@
 import { NO_WORKING_ISSUE } from '../shared/constants';
-import state, { canExecuteJiraAPI, printErrorMessageInOutputAndShowAlert } from '../state/state';
+import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
+import state, { canExecuteJiraAPI } from '../state/state';
 import { Command } from './shared/command';
 
 export class IssueAddWorklogCommand implements Command {
@@ -10,7 +11,10 @@ export class IssueAddWorklogCommand implements Command {
       if (issueKey !== NO_WORKING_ISSUE.key) {
         if (canExecuteJiraAPI()) {
           // call Jira API
-          const response = await state.jira.addWorkLog({ issueKey: issueKey, worklog: { timeSpentSeconds: Math.ceil(timeSpentSeconds / 60) * 60, comment } });
+          const response = await state.jira.addWorkLog({
+            issueKey: issueKey,
+            worklog: { timeSpentSeconds: Math.ceil(timeSpentSeconds / 60) * 60, comment }
+          });
         }
       }
     } catch (err) {
