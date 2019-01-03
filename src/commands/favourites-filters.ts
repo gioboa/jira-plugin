@@ -1,6 +1,6 @@
 import { SEARCH_MODE } from '../shared/constants';
+import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import { selectFavoriteFilters, selectIssue } from '../shared/select-utilities';
-import { printErrorMessageInOutputAndShowAlert } from '../state/state';
 import { Command } from './shared/command';
 
 export class FavouritesFiltersCommand implements Command {

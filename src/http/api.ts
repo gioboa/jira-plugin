@@ -1,7 +1,6 @@
-const jiraClient = require("jira-connector");
-import { getConfigurationByKey, getGlobalStateConfiguration } from "../shared/configuration";
-import { CONFIG, CREDENTIALS_SEPARATOR } from "../shared/constants";
-import { printErrorMessageInOutputAndShowAlert } from "../state/state";
+const jiraClient = require('jira-connector');
+import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
+import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
 import {
   IAddComment,
   IAddCommentResponse,
@@ -19,18 +18,19 @@ import {
   ISetTransition,
   IStatus,
   ITransitions
-} from "./api.model";
+} from './api.model';
+import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 
 export class Jira implements IJira {
   jiraInstance: any;
 
   constructor() {
-    let baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || "";
+    let baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
     if (baseUrl && getGlobalStateConfiguration()) {
       // prepare config for jira-connector
-      const protocol = baseUrl.indexOf("https://") >= 0 ? "https" : "http";
-      baseUrl = baseUrl.replace("https://", "").replace("http://", "");
-      const portPosition = baseUrl.indexOf(":");
+      const protocol = baseUrl.indexOf('https://') >= 0 ? 'https' : 'http';
+      baseUrl = baseUrl.replace('https://', '').replace('http://', '');
+      const portPosition = baseUrl.indexOf(':');
       const port = portPosition !== -1 ? baseUrl.substring(portPosition + 1) : undefined;
       if (portPosition !== -1) {
         baseUrl = baseUrl.substring(0, portPosition);
@@ -47,7 +47,7 @@ export class Jira implements IJira {
       // custom event
       // solve this issue -> https://github.com/floralvikings/jira-connector/issues/115
       const customGetAllProjects = (opts: any, callback: any) => {
-        const options = this.jiraInstance.project.buildRequestOptions(opts, "", "GET");
+        const options = this.jiraInstance.project.buildRequestOptions(opts, '', 'GET');
         if (Object.keys(options.body).length === 0) {
           delete options.body;
         }
@@ -59,7 +59,7 @@ export class Jira implements IJira {
       this.jiraInstance.project.getAllProjects = customGetAllProjects;
 
       const customApiCall = (uri: string, callback: any) => {
-        const options = this.jiraInstance.project.buildRequestOptions({}, "", "GET");
+        const options = this.jiraInstance.project.buildRequestOptions({}, '', 'GET');
         if (Object.keys(options.body).length === 0) {
           delete options.body;
         }
@@ -83,7 +83,7 @@ export class Jira implements IJira {
       });
       */
     } else {
-      printErrorMessageInOutputAndShowAlert("Error: Check Jira Plugin settings in VSCode.");
+      printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
     }
   }
 
@@ -150,7 +150,7 @@ export class Jira implements IJira {
   async getAllIssueTypesWithFields(project: string): Promise<IIssueType[]> {
     const response = await this.jiraInstance.issue.getCreateMetadata({
       projectKeys: project,
-      expand: "projects.issuetypes.fields"
+      expand: 'projects.issuetypes.fields'
     } as ICreateMetadata);
     if (!!response.projects && response.projects.length > 0) {
       return response.projects[0].issuetypes;

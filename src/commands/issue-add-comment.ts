@@ -2,8 +2,9 @@ import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { getConfigurationByKey } from '../shared/configuration';
 import { CONFIG } from '../shared/constants';
+import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import { selectAssignee } from '../shared/select-utilities';
-import state, { canExecuteJiraAPI, printErrorMessageInOutputAndShowAlert } from '../state/state';
+import state, { canExecuteJiraAPI } from '../state/state';
 import { Command } from './shared/command';
 
 export class IssueAddCommentCommand implements Command {

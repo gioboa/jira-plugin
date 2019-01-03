@@ -3,13 +3,7 @@ import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from '../http/api.mod
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
-import state, {
-  canExecuteJiraAPI,
-  changeStateIssues,
-  jiraPluginDebugLog,
-  printErrorMessageInOutputAndShowAlert,
-  verifyCurrentProject
-} from '../state/state';
+import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
 import {
   ASSIGNEES_MAX_RESULTS,
@@ -21,6 +15,7 @@ import {
   SEARCH_MODE,
   UNASSIGNED
 } from './constants';
+import { jiraPluginDebugLog, printErrorMessageInOutputAndShowAlert } from './log-utilities';
 import { addStatusIcon, checkCounter, createDocumentLinkProvider, workingIssueStatuses } from './utilities';
 
 // selection for projects

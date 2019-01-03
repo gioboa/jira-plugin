@@ -4,10 +4,11 @@ import { IField } from '../http/api.model';
 import { getConfigurationByKey } from '../shared/configuration';
 import { ASSIGNEES_MAX_RESULTS, CONFIG } from '../shared/constants';
 import { selectIssueType } from '../shared/select-utilities';
-import state, { printErrorMessageInOutputAndShowAlert, printErrorMessageInOutput, verifyCurrentProject } from '../state/state';
+import state, {  verifyCurrentProject } from '../state/state';
 import { NEW_ISSUE_FIELDS, NEW_ISSUE_STATUS } from './create-issue.model';
 import { OpenIssueCommand } from './open-issue';
 import { Command } from './shared/command';
+import { printErrorMessageInOutputAndShowAlert, printErrorMessageInOutput } from '../shared/log-utilities';
 
 export class CreateIssueCommand implements Command {
   public id = 'jira-plugin.createIssueCommand';
