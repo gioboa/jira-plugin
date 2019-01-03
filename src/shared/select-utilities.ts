@@ -3,7 +3,13 @@ import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from '../http/api.mod
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
-import state, { canExecuteJiraAPI, changeStateIssues, printErrorMessageInOutputAndShowAlert, verifyCurrentProject } from '../state/state';
+import state, {
+  canExecuteJiraAPI,
+  changeStateIssues,
+  jiraPluginDebugLog,
+  printErrorMessageInOutputAndShowAlert,
+  verifyCurrentProject
+} from '../state/state';
 import { getConfigurationByKey } from './configuration';
 import {
   ASSIGNEES_MAX_RESULTS,
@@ -143,6 +149,7 @@ export const selectIssue = async (mode: string, filterAndJQL?: string[]): Promis
         const [filter, jql] = filterAndJQL || (await getFilterAndJQL(mode, project || ''));
         changeStateIssues(LOADING.text, '', []);
         if (!!jql) {
+          jiraPluginDebugLog(`${filter} jql`, jql);
           // call Jira API with the generated JQL
           const issues = await state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
           if (!!issues && !!issues.issues && issues.issues.length > 0) {
