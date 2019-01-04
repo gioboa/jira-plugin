@@ -14,6 +14,7 @@ export interface IJira {
   getAllIssueTypesWithFields(project: string): Promise<IIssueType[]>;
   customApiCall(uri: string): Promise<any>;
   getFavoriteFilters(): Promise<IFavouriteFilter[]>;
+  getAllEpics(maxResults: number): any;
 }
 
 export interface IServerInfo {

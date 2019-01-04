@@ -1,6 +1,7 @@
 const jiraClient = require('jira-connector');
 import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
+import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import {
   IAddComment,
   IAddCommentResponse,
@@ -18,7 +19,6 @@ import {
   IStatus,
   ITransitions
 } from './api.model';
-import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 
 export class Jira implements IJira {
   jiraInstance: any;
@@ -159,5 +159,10 @@ export class Jira implements IJira {
 
   async getFavoriteFilters(): Promise<IFavouriteFilter[]> {
     return await this.jiraInstance.filter.getFavoriteFilters();
+  }
+
+  async getAllEpics(maxResults: number): Promise<any> {
+    const jql = 'type = Epic ORDER BY project DESC , description DESC';
+    return await this.jiraInstance.search.search({ jql, maxResults });
   }
 }
