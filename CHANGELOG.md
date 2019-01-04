@@ -1,3 +1,10 @@
+## 0.11.4
+
+### Bug Fixes
+
+- managed array field type with allowedValues
+- improve debug logs
+
 ## 0.11.3
 
 ### Bug Fixes
