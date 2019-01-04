@@ -116,6 +116,10 @@ const isArrayType = (type: string) => {
   return type.toString().toLowerCase() === 'array';
 };
 
+const isSpecialField = (field: string) => {
+  return field.toLowerCase() === 'assignee' || field.toLowerCase() === 'reporter';
+};
+
 const retriveValues = async (project: string, field: IField, key: string, values: any): Promise<void> => {
   if (field.schema.type !== 'string' && field.schema.type !== 'number') {
     if (!!field.schema.custom || field.schema.type === 'date' || field.schema.type === 'timetracking') {
@@ -125,7 +129,9 @@ const retriveValues = async (project: string, field: IField, key: string, values
       if (!!field.autoCompleteUrl) {
         try {
           // assignee autoCompleteUrl don't work, I use custom one
-          if (key !== 'assignee') {
+          if (isSpecialField(key)) {
+            (<any>values)[key.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
+          } else {
             // use autoCompleteUrl for retrive list values
             const response = await state.jira.customApiCall(field.autoCompleteUrl);
             for (const key of response) {
@@ -134,8 +140,6 @@ const retriveValues = async (project: string, field: IField, key: string, values
                 (<any>values)[key.toString()] = response[key.toString()];
               }
             }
-          } else {
-            (<any>values)[key.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
           }
         } catch (e) {
           (<any>values)[key.toString()] = [];
@@ -227,7 +231,7 @@ const manageSelectedField = async (
           const newValueSelected: IPickValue[] = !canPickMany ? [selected] : [...selected];
           newIssueIstance[fieldToModifySelection.field] = newValueSelected.map((value: any) => value.label).join(' ');
           // assignee want a name prop and NOT id or key
-          if (fieldToModifySelection.field === 'assignee') {
+          if (isSpecialField(fieldToModifySelection.field)) {
             const values = newValueSelected.map((value: any) => value.pickValue.name);
             fieldsRequest[fieldToModifySelection.field] = { name: !canPickMany ? values[0] : values };
           } else {
