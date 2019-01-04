@@ -37,6 +37,11 @@ From the command palette Ctrl-Shift-P (Windows, Linux) or Cmd-Shift-P (OSX) unde
 
 First of all your have to launch "Setup credentials" command to configure the plugin.<br>
 The Jira base URL is needed and also your credentials.<br>
+**n.b:** you can also use OAuth.
+
+- url: your base Atlassian url
+- username: your full email
+- password: the token
 
 ![Setup](images/readme/setup.gif)
 
