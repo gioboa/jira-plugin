@@ -2,13 +2,14 @@ import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { IField } from '../http/api.model';
 import { getConfigurationByKey } from '../shared/configuration';
+import { IPickValue } from '../shared/configuration.model';
 import { ASSIGNEES_MAX_RESULTS, CONFIG } from '../shared/constants';
+import { printErrorMessageInOutput, printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import { selectIssueType } from '../shared/select-utilities';
-import state, {  verifyCurrentProject } from '../state/state';
+import state, { verifyCurrentProject } from '../state/state';
 import { NEW_ISSUE_FIELDS, NEW_ISSUE_STATUS } from './create-issue.model';
 import { OpenIssueCommand } from './open-issue';
 import { Command } from './shared/command';
-import { printErrorMessageInOutputAndShowAlert, printErrorMessageInOutput } from '../shared/log-utilities';
 
 export class CreateIssueCommand implements Command {
   public id = 'jira-plugin.createIssueCommand';
@@ -111,6 +112,10 @@ export class CreateIssueCommand implements Command {
   }
 }
 
+const isArrayType = (type: string) => {
+  return type.toString().toLowerCase() === 'array';
+};
+
 const retriveValues = async (project: string, field: IField, key: string, values: any): Promise<void> => {
   if (field.schema.type !== 'string' && field.schema.type !== 'number') {
     if (!!field.schema.custom || field.schema.type === 'date' || field.schema.type === 'timetracking') {
@@ -168,14 +173,22 @@ const generatePicks = (values: any[]) => {
     .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
 };
 
-const manageSelectedField = async (fieldToModifySelection: any, newIssueIstance: any, preloadedListValues: any, fieldsRequest: any): Promise<void> => {
+const manageSelectedField = async (
+  fieldToModifySelection: any,
+  newIssueIstance: any,
+  preloadedListValues: any,
+  fieldsRequest: any
+): Promise<void> => {
   switch (fieldToModifySelection.fieldSchema.type) {
     case 'string':
       {
         const text = await vscode.window.showInputBox({
           ignoreFocusOut: true,
           placeHolder: `Insert ${fieldToModifySelection.pickValue.name}`,
-          value: fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}` ? fieldToModifySelection.description : undefined
+          value:
+            fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}`
+              ? fieldToModifySelection.description
+              : undefined
         });
         newIssueIstance[fieldToModifySelection.field] = text;
         fieldsRequest[fieldToModifySelection.field] = text;
@@ -186,7 +199,10 @@ const manageSelectedField = async (fieldToModifySelection: any, newIssueIstance:
         const text = await vscode.window.showInputBox({
           ignoreFocusOut: true,
           placeHolder: `Insert ${fieldToModifySelection.pickValue.name}`,
-          value: fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}` ? fieldToModifySelection.description : undefined
+          value:
+            fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}`
+              ? fieldToModifySelection.description
+              : undefined
         });
         if (!!text) {
           newIssueIstance[fieldToModifySelection.field] = parseInt(text);
@@ -195,24 +211,38 @@ const manageSelectedField = async (fieldToModifySelection: any, newIssueIstance:
       }
       break;
     default: {
-      if (!!(<any>preloadedListValues)[fieldToModifySelection.field] && (<any>preloadedListValues)[fieldToModifySelection.field].length > 0) {
-        const newValueSelected = await vscode.window.showQuickPick(generatePicks((<any>preloadedListValues)[fieldToModifySelection.field]), {
+      if (
+        !!(<any>preloadedListValues)[fieldToModifySelection.field] &&
+        (<any>preloadedListValues)[fieldToModifySelection.field].length > 0
+      ) {
+        const canPickMany = isArrayType(fieldToModifySelection.fieldSchema.type);
+        const selected = await vscode.window.showQuickPick<any>(generatePicks((<any>preloadedListValues)[fieldToModifySelection.field]), {
           placeHolder: `Insert value`,
-          matchOnDescription: true
+          matchOnDescription: true,
+          canPickMany
         });
         newIssueIstance[fieldToModifySelection.field] = undefined;
         delete fieldsRequest[fieldToModifySelection.field];
-        if (!!newValueSelected) {
-          newIssueIstance[fieldToModifySelection.field] = newValueSelected.label;
+        if (!!selected) {
+          const newValueSelected: IPickValue[] = !canPickMany ? [selected] : [...selected];
+          newIssueIstance[fieldToModifySelection.field] = newValueSelected.map((value: any) => value.label).join(' ');
           // assignee want a name prop and NOT id or key
           if (fieldToModifySelection.field === 'assignee') {
-            fieldsRequest[fieldToModifySelection.field] = { name: newValueSelected.pickValue.name };
+            const values = newValueSelected.map((value: any) => value.pickValue.name);
+            fieldsRequest[fieldToModifySelection.field] = { name: !canPickMany ? values[0] : values };
           } else {
-            if (!!newValueSelected.pickValue.id) {
-              fieldsRequest[fieldToModifySelection.field] = { id: newValueSelected.pickValue.id };
-            }
-            if (!!newValueSelected.pickValue.key) {
-              fieldsRequest[fieldToModifySelection.field] = { key: newValueSelected.pickValue.key };
+            if (!!newValueSelected[0].pickValue.id) {
+              const values = newValueSelected.map((value: any) => value.pickValue.id);
+              fieldsRequest[fieldToModifySelection.field] = {
+                id: !canPickMany ? values[0] : values
+              };
+            } else {
+              if (!!newValueSelected[0].pickValue.key) {
+                const values = newValueSelected.map((value: any) => value.pickValue.key);
+                fieldsRequest[fieldToModifySelection.field] = {
+                  key: !canPickMany ? values[0] : values
+                };
+              }
             }
           }
         }
