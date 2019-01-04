@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import { IField } from '../http/api.model';
+import { IField, IFieldSchema } from '../http/api.model';
 import { getConfigurationByKey } from '../shared/configuration';
 import { IPickValue } from '../shared/configuration.model';
-import { ASSIGNEES_MAX_RESULTS, CONFIG } from '../shared/constants';
-import { printErrorMessageInOutput, printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
+import { ASSIGNEES_MAX_RESULTS, CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
+import { jiraPluginDebugLog, printErrorMessageInOutput, printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import { selectIssueType } from '../shared/select-utilities';
 import state, { verifyCurrentProject } from '../state/state';
 import { NEW_ISSUE_FIELDS, NEW_ISSUE_STATUS } from './create-issue.model';
@@ -116,14 +116,22 @@ const isArrayType = (type: string) => {
   return type.toString().toLowerCase() === 'array';
 };
 
-const isSpecialField = (field: string) => {
-  return field.toLowerCase() === 'assignee' || field.toLowerCase() === 'reporter';
+const isSpecialField = (fieldName: string) => {
+  return fieldName.toLowerCase() === 'assignee' || fieldName.toLowerCase() === 'reporter';
+};
+
+const isEpicLinkFieldSchema = (fieldSchema: IFieldSchema) => {
+  return !!fieldSchema.custom && fieldSchema.custom.toLowerCase() === 'com.pyxis.greenhopper.jira:gh-epic-link';
 };
 
 const retriveValues = async (project: string, field: IField, key: string, values: any): Promise<void> => {
   if (field.schema.type !== 'string' && field.schema.type !== 'number') {
-    if (!!field.schema.custom || field.schema.type === 'date' || field.schema.type === 'timetracking') {
+    if (
+      (!!field.schema.custom || field.schema.type === 'date' || field.schema.type === 'timetracking') &&
+      !isEpicLinkFieldSchema(field.schema)
+    ) {
       // need to manage this types
+      jiraPluginDebugLog(`field`, field);
       field.hideField = true;
     } else {
       if (!!field.autoCompleteUrl) {
@@ -148,6 +156,10 @@ const retriveValues = async (project: string, field: IField, key: string, values
       if (!!field.allowedValues) {
         (<any>values)[key.toString()] = field.allowedValues;
       }
+      if (isEpicLinkFieldSchema(field.schema)) {
+        const response = await state.jira.getAllEpics(SEARCH_MAX_RESULTS);
+        (<any>values)[key.toString()] = response.issues || [];
+      }
       if (!(<any>values)[key.toString()] || (<any>values)[key.toString()].length === 0) {
         field.hideField = true;
       }
@@ -165,7 +177,18 @@ const mandatoryFieldsOk = (request: any, fields: any): boolean => {
   return true;
 };
 
-const generatePicks = (values: any[]) => {
+const generatePicks = (values: any[], fieldSchema: IFieldSchema) => {
+  if (isEpicLinkFieldSchema(fieldSchema)) {
+    return values
+      .map(value => {
+        return {
+          pickValue: value,
+          label: value.key,
+          description: value.fields.summary || ''
+        };
+      })
+      .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
+  }
   return values
     .map(value => {
       return {
@@ -220,11 +243,14 @@ const manageSelectedField = async (
         (<any>preloadedListValues)[fieldToModifySelection.field].length > 0
       ) {
         const canPickMany = isArrayType(fieldToModifySelection.fieldSchema.type);
-        const selected = await vscode.window.showQuickPick<any>(generatePicks((<any>preloadedListValues)[fieldToModifySelection.field]), {
-          placeHolder: `Insert value`,
-          matchOnDescription: true,
-          canPickMany
-        });
+        const selected = await vscode.window.showQuickPick<any>(
+          generatePicks((<any>preloadedListValues)[fieldToModifySelection.field], fieldToModifySelection.fieldSchema),
+          {
+            placeHolder: `Insert value`,
+            matchOnDescription: true,
+            canPickMany
+          }
+        );
         newIssueIstance[fieldToModifySelection.field] = undefined;
         delete fieldsRequest[fieldToModifySelection.field];
         if (!!selected) {
