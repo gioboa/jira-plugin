@@ -9,3 +9,9 @@ export interface Configuration extends WorkspaceConfiguration {
   trackingTimeModeHybridTimeout?: number;
   worklogMinimumTrackingTim?: number;
 }
+
+export interface IPickValue {
+  pickValue: any;
+  label: any;
+  description: any;
+}
