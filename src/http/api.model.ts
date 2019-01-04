@@ -110,16 +110,18 @@ export interface IField {
   hasDefaultValue: boolean;
   name: string;
   required: boolean;
-  schema: {
-    type: string;
-    items: string;
-    system: string;
-    custom?: string;
-    customId?: string;
-  };
+  schema: IFieldSchema;
   allowedValues: any[];
   autoCompleteUrl: string;
   hideField?: boolean; // used internally for hide not managed fields
+}
+
+export interface IFieldSchema {
+  type: string;
+  items: string;
+  system: string;
+  custom?: string;
+  customId?: string;
 }
 
 export interface ICreateIssue {
