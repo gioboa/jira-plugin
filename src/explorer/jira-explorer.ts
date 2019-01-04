@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { getConfigurationByKey } from '../shared/configuration';
-import { CONFIG, LOADING, SEARCH_MAX_RESULTS } from '../shared/constants';
+import { CONFIG, LOADING, LIST_MAX_RESULTS } from '../shared/constants';
 import state from '../state/state';
 import { DividerItem } from './item/divider-item';
 import { FilterInfoItem } from './item/filter-info-item';
@@ -50,7 +50,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
         }
       });
 
-      if (issues.length === SEARCH_MAX_RESULTS) {
+      if (issues.length === LIST_MAX_RESULTS) {
         items.push(new DividerItem('------'), new LimitInfoItem());
       }
       return items;
