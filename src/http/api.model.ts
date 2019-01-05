@@ -1,5 +1,5 @@
 export interface IJira {
-  search(params: { jql: string; maxResults: number }): Promise<IIssues>;
+  search(params: { jql: string; maxResults: number }): Promise<ISearch>;
   getStatuses(): Promise<IStatus[]>;
   getProjects(): Promise<IProject[]>;
   getAssignees(param: { project: string; maxResults: number }): Promise<IAssignee[]>;
@@ -14,7 +14,7 @@ export interface IJira {
   getAllIssueTypesWithFields(project: string): Promise<IIssueType[]>;
   customApiCall(uri: string): Promise<any>;
   getFavoriteFilters(): Promise<IFavouriteFilter[]>;
-  getAllEpics(maxResults: number): any;
+  getAllEpics(maxResults: number): Promise<ISearch>;
 }
 
 export interface IServerInfo {
@@ -22,7 +22,7 @@ export interface IServerInfo {
   versionNumbers: number[];
 }
 
-export interface IIssues {
+export interface ISearch {
   issues: IIssue[] | undefined;
   maxResults: number;
   startAt: number;
@@ -32,6 +32,7 @@ export interface IIssues {
 export interface IIssue {
   id: string;
   key: string;
+  description?: string;
   fields: {
     summary: string;
     description?: string;

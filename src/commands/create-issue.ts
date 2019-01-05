@@ -112,8 +112,8 @@ export class CreateIssueCommand implements Command {
   }
 }
 
-const isArrayType = (type: string) => {
-  return type.toString().toLowerCase() === 'array';
+const isCanPickMany = (fieldSchema: IFieldSchema) => {
+  return fieldSchema.type.toString().toLowerCase() === 'array';
 };
 
 const isSpecialField = (fieldName: string) => {
@@ -158,7 +158,13 @@ const retriveValues = async (project: string, field: IField, key: string, values
       }
       if (isEpicLinkFieldSchema(field.schema)) {
         const response = await state.jira.getAllEpics(SEARCH_MAX_RESULTS);
-        (<any>values)[key.toString()] = response.issues || [];
+        // format issues in standard way
+        (<any>values)[key.toString()] = response.issues
+          ? response.issues.map(issue => {
+              issue.description = issue.fields.summary || '';
+              return issue;
+            })
+          : [];
       }
       if (!(<any>values)[key.toString()] || (<any>values)[key.toString()].length === 0) {
         field.hideField = true;
@@ -177,23 +183,12 @@ const mandatoryFieldsOk = (request: any, fields: any): boolean => {
   return true;
 };
 
-const generatePicks = (values: any[], fieldSchema: IFieldSchema) => {
-  if (isEpicLinkFieldSchema(fieldSchema)) {
-    return values
-      .map(value => {
-        return {
-          pickValue: value,
-          label: value.key,
-          description: value.fields.summary || ''
-        };
-      })
-      .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
-  }
+const generatePicks = (values: any[]) => {
   return values
     .map(value => {
       return {
         pickValue: value,
-        label: value.name || value.value, // Quotation UM only value
+        label: value.name || value.value || value.key,
         description: value.description
       };
     })
@@ -242,15 +237,12 @@ const manageSelectedField = async (
         !!(<any>preloadedListValues)[fieldToModifySelection.field] &&
         (<any>preloadedListValues)[fieldToModifySelection.field].length > 0
       ) {
-        const canPickMany = isArrayType(fieldToModifySelection.fieldSchema.type);
-        const selected = await vscode.window.showQuickPick<any>(
-          generatePicks((<any>preloadedListValues)[fieldToModifySelection.field], fieldToModifySelection.fieldSchema),
-          {
-            placeHolder: `Insert value`,
-            matchOnDescription: true,
-            canPickMany
-          }
-        );
+        const canPickMany = isCanPickMany(fieldToModifySelection.fieldSchema);
+        const selected = await vscode.window.showQuickPick<any>(generatePicks((<any>preloadedListValues)[fieldToModifySelection.field]), {
+          placeHolder: `Insert value`,
+          matchOnDescription: true,
+          canPickMany
+        });
         newIssueIstance[fieldToModifySelection.field] = undefined;
         delete fieldsRequest[fieldToModifySelection.field];
         if (!!selected) {
@@ -261,17 +253,22 @@ const manageSelectedField = async (
             const values = newValueSelected.map((value: any) => value.pickValue.name);
             fieldsRequest[fieldToModifySelection.field] = { name: !canPickMany ? values[0] : values };
           } else {
-            if (!!newValueSelected[0].pickValue.id) {
-              const values = newValueSelected.map((value: any) => value.pickValue.id);
-              fieldsRequest[fieldToModifySelection.field] = {
-                id: !canPickMany ? values[0] : values
-              };
+            if (isEpicLinkFieldSchema(fieldToModifySelection.fieldSchema)) {
+              const values = newValueSelected.map((value: any) => value.pickValue.key);
+              fieldsRequest[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
             } else {
-              if (!!newValueSelected[0].pickValue.key) {
-                const values = newValueSelected.map((value: any) => value.pickValue.key);
+              if (!!newValueSelected[0].pickValue.id) {
+                const values = newValueSelected.map((value: any) => value.pickValue.id);
                 fieldsRequest[fieldToModifySelection.field] = {
-                  key: !canPickMany ? values[0] : values
+                  id: !canPickMany ? values[0] : values
                 };
+              } else {
+                if (!!newValueSelected[0].pickValue.key) {
+                  const values = newValueSelected.map((value: any) => value.pickValue.key);
+                  fieldsRequest[fieldToModifySelection.field] = {
+                    key: !canPickMany ? values[0] : values
+                  };
+                }
               }
             }
           }
