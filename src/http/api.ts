@@ -10,12 +10,12 @@ import {
   ICreateIssue,
   ICreateMetadata,
   IFavouriteFilter,
-  IIssues,
   IIssueType,
   IJira,
   IPriority,
   IProject,
   IIssue,
+  ISearch,
   ISetTransition,
   IStatus,
   ITransitions
@@ -87,7 +87,7 @@ export class Jira implements IJira {
     }
   }
 
-  async search(params: { jql: string; maxResults: number }): Promise<IIssues> {
+  async search(params: { jql: string; maxResults: number }): Promise<ISearch> {
     // from jira-connector docs
     // The maximum number of issues to return (defaults to 50). The maximum allowable
     // value is dictated by the JIRA property 'jira.search.views.default.max'. If you specify a value that is
@@ -166,7 +166,7 @@ export class Jira implements IJira {
     return await this.jiraInstance.filter.getFavoriteFilters();
   }
 
-  async getAllEpics(maxResults: number): Promise<any> {
+  async getAllEpics(maxResults: number): Promise<ISearch> {
     const jql = 'type = Epic ORDER BY project DESC , description DESC';
     return await this.jiraInstance.search.search({ jql, maxResults });
   }
