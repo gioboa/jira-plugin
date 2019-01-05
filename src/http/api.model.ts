@@ -16,6 +16,7 @@ export interface IJira {
   customApiCall(uri: string): Promise<any>;
   getFavoriteFilters(): Promise<IFavouriteFilter[]>;
   getAllEpics(maxResults: number): Promise<ISearch>;
+  getLabels(baseUrl: string): Promise<{ suggestions: ILabel[] }>;
 }
 
 export interface IServerInfo {
@@ -167,4 +168,9 @@ export interface IFavouriteFilter {
   id: string;
   jql: string;
   name: string;
+}
+
+export interface ILabel {
+  html: string;
+  label: string;
 }
