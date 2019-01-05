@@ -12,6 +12,7 @@ import {
   IFavouriteFilter,
   IIssueType,
   IJira,
+  ILabel,
   IPriority,
   IProject,
   ISearch,
@@ -164,5 +165,9 @@ export class Jira implements IJira {
   async getAllEpics(maxResults: number): Promise<ISearch> {
     const jql = 'type = Epic ORDER BY project DESC , description DESC';
     return await this.jiraInstance.search.search({ jql, maxResults });
+  }
+
+  async getLabels(baseUrl: string): Promise<{ suggestions: ILabel[] }> {
+    return await this.customApiCall(baseUrl + '/rest/api/1.0/labels/suggest?query=');
   }
 }
