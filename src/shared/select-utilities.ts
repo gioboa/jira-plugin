@@ -148,7 +148,7 @@ export const selectIssue = async (mode: string, filterAndJQL?: string[]): Promis
           jiraPluginDebugLog(`${filter} jql`, jql);
           // call Jira API with the generated JQL
           const issues = await state.jira.search({ jql, maxResults: LIST_MAX_RESULTS });
-          jiraPluginDebugLog(`issues`, issues);
+          jiraPluginDebugLog(`issues`, JSON.stringify(issues));
           if (!!issues && !!issues.issues && issues.issues.length > 0) {
             changeStateIssues(filter, jql, issues.issues);
           } else {

@@ -131,7 +131,7 @@ const retriveValues = async (project: string, field: IField, key: string, values
       !isEpicLinkFieldSchema(field.schema)
     ) {
       // need to manage this types
-      jiraPluginDebugLog(`field`, field);
+      jiraPluginDebugLog(`field`, JSON.stringify(field));
       field.hideField = true;
     } else {
       if (!!field.autoCompleteUrl) {
