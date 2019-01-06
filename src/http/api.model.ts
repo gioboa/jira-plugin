@@ -173,4 +173,6 @@ export interface IFavouriteFilter {
 export interface ILabel {
   html: string;
   label: string;
+  key?: string;
+  description?: string;
 }

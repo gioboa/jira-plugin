@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import { IField, IFieldSchema } from '../http/api.model';
+import { IField, IFieldSchema, ILabel } from '../http/api.model';
 import { getConfigurationByKey } from '../shared/configuration';
 import { IPickValue } from '../shared/configuration.model';
 import { ASSIGNEES_MAX_RESULTS, CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
@@ -40,19 +40,21 @@ export class CreateIssueCommand implements Command {
             let executeRetriveValues = true;
             while (loopStatus === NEW_ISSUE_STATUS.CONTINUE) {
               const newIssuePicks = [];
-              for (const key in issueTypeSelected.fields) {
+              for (const fieldName in issueTypeSelected.fields) {
                 // type and project forced to selected type and selected project
-                if (key !== 'issuetype' && key !== 'project') {
-                  const field = issueTypeSelected.fields[key];
+                if (fieldName !== 'issuetype' && fieldName !== 'project') {
+                  const field = issueTypeSelected.fields[fieldName];
                   // load values for every field if necessary
                   if (executeRetriveValues) {
-                    await retriveValues(project, field, key, preloadedListValues);
+                    await retriveValues(project, field, fieldName, preloadedListValues);
                   }
                   if (!field.hideField) {
                     newIssuePicks.push({
-                      field: key,
-                      label: `${issueTypeSelected.fields[key].required ? '$(star) ' : ''}${field.name}`,
-                      description: !!(<any>newIssueIstance)[key] ? (<any>newIssueIstance)[key].toString() : `Insert ${field.name}`,
+                      field: fieldName,
+                      label: `${issueTypeSelected.fields[fieldName].required ? '$(star) ' : ''}${field.name}`,
+                      description: !!(<any>newIssueIstance)[fieldName]
+                        ? (<any>newIssueIstance)[fieldName].toString()
+                        : `Insert ${field.name}`,
                       pickValue: field,
                       fieldSchema: field.schema
                     });
@@ -116,7 +118,7 @@ const isCanPickMany = (fieldSchema: IFieldSchema) => {
   return fieldSchema.type.toString().toLowerCase() === 'array';
 };
 
-const isSpecialField = (fieldName: string) => {
+const isAssigneeOrReporterField = (fieldName: string) => {
   return fieldName.toLowerCase() === 'assignee' || fieldName.toLowerCase() === 'reporter';
 };
 
@@ -124,7 +126,50 @@ const isEpicLinkFieldSchema = (fieldSchema: IFieldSchema) => {
   return !!fieldSchema.custom && fieldSchema.custom.toLowerCase() === 'com.pyxis.greenhopper.jira:gh-epic-link';
 };
 
-const retriveValues = async (project: string, field: IField, key: string, values: any): Promise<void> => {
+const isLabelsField = (fieldName: string) => {
+  return fieldName.toLowerCase() === 'labels';
+};
+
+const isIssuelinksField = (fieldName: string) => {
+  return fieldName.toLowerCase() === 'issuelinks';
+};
+
+const manageSpecialFields = async (project: string, field: IField, fieldName: string, values: any) => {
+  if (isAssigneeOrReporterField(fieldName)) {
+    // assignee autoCompleteUrl don't work, I use custom one
+    (<any>values)[fieldName.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
+  }
+  if (isEpicLinkFieldSchema(field.schema)) {
+    const response = await state.jira.getAllEpics(SEARCH_MAX_RESULTS);
+    // format issues in standard way
+    (<any>values)[fieldName.toString()] = response.issues
+      ? response.issues.map(issue => {
+          issue.description = issue.fields.summary || '';
+          return issue;
+        })
+      : [];
+  }
+  if (isLabelsField(fieldName)) {
+    const response = await state.jira.customApiCall(field.autoCompleteUrl);
+    (<any>values)[fieldName.toString()] = (response.suggestions || []).map((entrie: ILabel) => {
+      entrie.key = entrie.label;
+      entrie.description = '';
+      return entrie;
+    });
+  }
+  if (isIssuelinksField(fieldName)) {
+    const response = await state.jira.customApiCall(field.autoCompleteUrl);
+    for (const [key, value] of Object.entries(response)) {
+      if (value instanceof Array) {
+        if (!!value[0] && !!value[0].issues && value[0].issues instanceof Array) {
+          (<any>values)[fieldName.toString()] = value[0].issues;
+        }
+      }
+    }
+  }
+};
+
+const retriveValues = async (project: string, field: IField, fieldName: string, values: any): Promise<void> => {
   if (field.schema.type !== 'string' && field.schema.type !== 'number') {
     if (
       (!!field.schema.custom || field.schema.type === 'date' || field.schema.type === 'timetracking') &&
@@ -134,39 +179,26 @@ const retriveValues = async (project: string, field: IField, key: string, values
       jiraPluginDebugLog(`field`, JSON.stringify(field));
       field.hideField = true;
     } else {
-      if (!!field.autoCompleteUrl) {
+      const wait = await manageSpecialFields(project, field, fieldName, values);
+      if (!(<any>values)[fieldName.toString()] && !!field.autoCompleteUrl) {
         try {
-          // assignee autoCompleteUrl don't work, I use custom one
-          if (isSpecialField(key)) {
-            (<any>values)[key.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
-          } else {
-            // use autoCompleteUrl for retrive list values
-            const response = await state.jira.customApiCall(field.autoCompleteUrl);
-            for (const key of response) {
-              // I assume this are the values because it's an array
-              if (key instanceof Array) {
-                (<any>values)[key.toString()] = response[key.toString()];
-              }
+          // use autoCompleteUrl for retrive list values
+          const response = await state.jira.customApiCall(field.autoCompleteUrl);
+          for (const [key, value] of Object.entries(response)) {
+            // I assume this are the values because it's an array
+            if (value instanceof Array) {
+              (<any>values)[fieldName.toString()] = value;
             }
           }
         } catch (e) {
-          (<any>values)[key.toString()] = [];
+          (<any>values)[fieldName.toString()] = [];
         }
       }
-      if (!!field.allowedValues) {
-        (<any>values)[key.toString()] = field.allowedValues;
+      if (!(<any>values)[fieldName.toString()] && !!field.allowedValues) {
+        (<any>values)[fieldName.toString()] = field.allowedValues;
       }
-      if (isEpicLinkFieldSchema(field.schema)) {
-        const response = await state.jira.getAllEpics(SEARCH_MAX_RESULTS);
-        // format issues in standard way
-        (<any>values)[key.toString()] = response.issues
-          ? response.issues.map(issue => {
-              issue.description = issue.fields.summary || '';
-              return issue;
-            })
-          : [];
-      }
-      if (!(<any>values)[key.toString()] || (<any>values)[key.toString()].length === 0) {
+      // hide field if there aren't values
+      if (!(<any>values)[fieldName.toString()] || (<any>values)[fieldName.toString()].length === 0) {
         field.hideField = true;
       }
     }
@@ -249,26 +281,27 @@ const manageSelectedField = async (
           const newValueSelected: IPickValue[] = !canPickMany ? [selected] : [...selected];
           newIssueIstance[fieldToModifySelection.field] = newValueSelected.map((value: any) => value.label).join(' ');
           // assignee want a name prop and NOT id or key
-          if (isSpecialField(fieldToModifySelection.field)) {
+          if (isAssigneeOrReporterField(fieldToModifySelection.field)) {
             const values = newValueSelected.map((value: any) => value.pickValue.name);
             fieldsRequest[fieldToModifySelection.field] = { name: !canPickMany ? values[0] : values };
-          } else {
-            if (isEpicLinkFieldSchema(fieldToModifySelection.fieldSchema)) {
-              const values = newValueSelected.map((value: any) => value.pickValue.key);
-              fieldsRequest[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
+          }
+          // straight string or string[]
+          if (isEpicLinkFieldSchema(fieldToModifySelection.fieldSchema) || isLabelsField(fieldToModifySelection.field)) {
+            const values = newValueSelected.map((value: any) => value.pickValue.key);
+            fieldsRequest[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
+          }
+          if (!fieldsRequest[fieldToModifySelection.field]) {
+            if (!!newValueSelected[0].pickValue.id) {
+              const values = newValueSelected.map((value: any) => value.pickValue.id);
+              fieldsRequest[fieldToModifySelection.field] = {
+                id: !canPickMany ? values[0] : values
+              };
             } else {
-              if (!!newValueSelected[0].pickValue.id) {
-                const values = newValueSelected.map((value: any) => value.pickValue.id);
+              if (!!newValueSelected[0].pickValue.key) {
+                const values = newValueSelected.map((value: any) => value.pickValue.key);
                 fieldsRequest[fieldToModifySelection.field] = {
-                  id: !canPickMany ? values[0] : values
+                  key: !canPickMany ? values[0] : values
                 };
-              } else {
-                if (!!newValueSelected[0].pickValue.key) {
-                  const values = newValueSelected.map((value: any) => value.pickValue.key);
-                  fieldsRequest[fieldToModifySelection.field] = {
-                    key: !canPickMany ? values[0] : values
-                  };
-                }
               }
             }
           }
