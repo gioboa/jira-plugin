@@ -131,6 +131,22 @@ const isLabelsField = (fieldName: string) => {
 };
 
 const isIssuelinksField = (fieldName: string) => {
+  //   "update":{
+  //     "issuelinks":[
+  //        {
+  //           "add":{
+  //              "type":{
+  //                 "name":"Blocks",
+  //                 "inward":"is blocked by",
+  //                 "outward":"blocks"
+  //              },
+  //              "outwardIssue":{
+  //                 "key":"TEST-1"
+  //              }
+  //           }
+  //        }
+  //     ]
+  //  }
   return fieldName.toLowerCase() === 'issuelinks';
 };
 
@@ -221,7 +237,7 @@ const generatePicks = (values: any[]) => {
       return {
         pickValue: value,
         label: value.name || value.value || value.key,
-        description: value.description
+        description: value.description || value.summary
       };
     })
     .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
@@ -277,7 +293,7 @@ const manageSelectedField = async (
         });
         newIssueIstance[fieldToModifySelection.field] = undefined;
         delete fieldsRequest[fieldToModifySelection.field];
-        if (!!selected) {
+        if (!canPickMany ? !!selected : selected.length > 0) {
           const newValueSelected: IPickValue[] = !canPickMany ? [selected] : [...selected];
           newIssueIstance[fieldToModifySelection.field] = newValueSelected.map((value: any) => value.label).join(' ');
           // assignee want a name prop and NOT id or key
@@ -286,7 +302,11 @@ const manageSelectedField = async (
             fieldsRequest[fieldToModifySelection.field] = { name: !canPickMany ? values[0] : values };
           }
           // straight string or string[]
-          if (isEpicLinkFieldSchema(fieldToModifySelection.fieldSchema) || isLabelsField(fieldToModifySelection.field)) {
+          if (
+            isEpicLinkFieldSchema(fieldToModifySelection.fieldSchema) ||
+            isLabelsField(fieldToModifySelection.field) ||
+            isIssuelinksField(fieldToModifySelection.field)
+          ) {
             const values = newValueSelected.map((value: any) => value.pickValue.key);
             fieldsRequest[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
           }
