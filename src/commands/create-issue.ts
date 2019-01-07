@@ -50,7 +50,10 @@ export class CreateIssueCommand implements Command {
                   const field = issueTypeSelected.fields[fieldName];
                   // load values for every field if necessary
                   if (executeRetriveValues) {
-                    await retriveValues(project, field, fieldName, newIssuePicks);
+                    await retriveValues(project, field, fieldName);
+                  }
+                  if (fieldName === NEW_ISSUE_FIELDS.ISSUE_LINKS.field) {
+                    addDefaultIssueLinkTypesIfNessesary(newIssuePicks);
                   }
                   if (!field.hideField) {
                     newIssuePicks.push({
@@ -118,8 +121,8 @@ export class CreateIssueCommand implements Command {
   }
 }
 
-const isCanPickMany = (fieldSchema: IFieldSchema) => {
-  return fieldSchema.type.toString().toLowerCase() === 'array';
+const isCanPickMany = (field: any) => {
+  return field.fieldSchema.type.toString().toLowerCase() === 'array' && !isIssuelinksField(field.field);
 };
 
 const isAssigneeOrReporterField = (fieldName: string) => {
@@ -134,38 +137,30 @@ const isLabelsField = (fieldName: string) => {
   return fieldName.toLowerCase() === 'labels';
 };
 
+const isIssuelinksTypeField = (fieldName: string) => {
+  return fieldName === NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field;
+};
+
 const isIssuelinksField = (fieldName: string) => {
-  //   "update":{
-  //     "issuelinks":[
-  //        {
-  //           "add":{
-  //              "type":{
-  //                 "name":"Blocks",
-  //                 "inward":"is blocked by",
-  //                 "outward":"blocks"
-  //              },
-  //              "outwardIssue":{
-  //                 "key":"TEST-1"
-  //              }
-  //           }
-  //        }
-  //     ]
-  //  }
   return fieldName.toLowerCase() === 'issuelinks';
 };
 
 const addDefaultIssueLinkTypesIfNessesary = (newIssuePicks: any[]) => {
-  if ((<any>preloadedListValues)[NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field]) {
+  const field = NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field;
+  if ((<any>preloadedListValues)[field]) {
     newIssuePicks.push({
-      field: NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field,
+      field,
       label: NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.label,
-      description: (<any>preloadedListValues)[NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field][0].inward,
-      pickValue: (<any>preloadedListValues)[NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field][0]
+      description: (<any>fieldsRequest)[field] || (<any>preloadedListValues)[field][0].inward,
+      fieldSchema: {
+        type: 'custom'
+      }
     });
+    (<any>fieldsRequest)[field] = (<any>fieldsRequest)[field] || (<any>preloadedListValues)[field][0].inward;
   }
 };
 
-const manageSpecialFields = async (project: string, field: IField, fieldName: string, newIssuePicks: any) => {
+const manageSpecialFields = async (project: string, field: IField, fieldName: string) => {
   if (isAssigneeOrReporterField(fieldName)) {
     // assignee autoCompleteUrl don't work, I use custom one
     (<any>preloadedListValues)[fieldName.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
@@ -218,12 +213,11 @@ const manageSpecialFields = async (project: string, field: IField, fieldName: st
       // issueLinkedType field
       const types = await state.jira.getAvailableLinkIssuesType();
       (<any>preloadedListValues)[NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field] = types.issueLinkTypes || [];
-      addDefaultIssueLinkTypesIfNessesary(newIssuePicks);
     }
   }
 };
 
-const retriveValues = async (project: string, field: IField, fieldName: string, newIssuePicks: any): Promise<void> => {
+const retriveValues = async (project: string, field: IField, fieldName: string): Promise<void> => {
   if (field.schema.type !== 'string' && field.schema.type !== 'number') {
     if (
       (!!field.schema.custom || field.schema.type === 'date' || field.schema.type === 'timetracking') &&
@@ -233,7 +227,7 @@ const retriveValues = async (project: string, field: IField, fieldName: string, 
       jiraPluginDebugLog(`field`, JSON.stringify(field));
       field.hideField = true;
     } else {
-      const wait = await manageSpecialFields(project, field, fieldName, newIssuePicks);
+      const wait = await manageSpecialFields(project, field, fieldName);
       if (!(<any>preloadedListValues)[fieldName.toString()] && !!field.autoCompleteUrl) {
         try {
           // use autoCompleteUrl for retrive list values
@@ -274,8 +268,8 @@ const generatePicks = (values: any[]) => {
     .map(value => {
       return {
         pickValue: value,
-        label: value.name || value.value || value.key,
-        description: value.description || value.summary
+        label: value.inward || value.name || value.value || value.key, // do not change order
+        description: value.description || value.summary || ''
       };
     })
     .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
@@ -318,7 +312,7 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
         !!(<any>preloadedListValues)[fieldToModifySelection.field] &&
         (<any>preloadedListValues)[fieldToModifySelection.field].length > 0
       ) {
-        const canPickMany = isCanPickMany(fieldToModifySelection.fieldSchema);
+        const canPickMany = isCanPickMany(fieldToModifySelection);
         const selected = await vscode.window.showQuickPick<any>(generatePicks((<any>preloadedListValues)[fieldToModifySelection.field]), {
           placeHolder: `Insert value`,
           matchOnDescription: true,
@@ -341,6 +335,10 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
             isIssuelinksField(fieldToModifySelection.field)
           ) {
             const values = newValueSelected.map((value: any) => value.pickValue.key);
+            (<any>fieldsRequest)[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
+          }
+          if (isIssuelinksTypeField(fieldToModifySelection.field)) {
+            const values = newValueSelected.map((value: any) => value.pickValue.inward);
             (<any>fieldsRequest)[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
           }
           if (!(<any>fieldsRequest)[fieldToModifySelection.field]) {
@@ -366,8 +364,49 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
   }
 };
 
+const generateUpdateJson = (fieldsRequest: any): any => {
+  if (fieldsRequest[NEW_ISSUE_FIELDS.ISSUE_LINKS.field]) {
+    const type = (<any>preloadedListValues)[NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field].find(
+      (type: any) => type.inward === fieldsRequest[NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field]
+    );
+    if (!type) {
+      return undefined;
+    }
+    const issueLink = (<any>fieldsRequest)[NEW_ISSUE_FIELDS.ISSUE_LINKS.field];
+    if (!issueLink) {
+      return undefined;
+    }
+    let res: any = {
+      issuelinks: []
+    };
+    // only one issueLinks https://jira.atlassian.com/browse/JRASERVER-66329
+    res.issuelinks.push({
+      add: {
+        type: {
+          name: type.name,
+          inward: type.inward,
+          outward: type.outward
+        },
+        outwardIssue: {
+          key: issueLink
+        }
+      }
+    });
+    return res;
+  }
+  return undefined;
+};
+
 const insertNewTicket = async (): Promise<void> => {
-  const createdIssue = await state.jira.createIssue({ fields: { ...(<any>fieldsRequest) } });
+  const update = generateUpdateJson(fieldsRequest);
+  delete (<any>fieldsRequest)[NEW_ISSUE_FIELDS.ISSUE_LINKS.field];
+  delete (<any>fieldsRequest)[NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field];
+  let payload;
+  payload = { fields: { ...(<any>fieldsRequest) } };
+  if (!!update) {
+    payload = { ...payload, update: { ...update } };
+  }
+  const createdIssue = await state.jira.createIssue(payload);
   if (!!createdIssue && !!createdIssue.key) {
     // if the response is ok, we will open the created issue
     const action = await vscode.window.showInformationMessage('Issue created', 'Open in browser');
