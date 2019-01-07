@@ -180,6 +180,7 @@ export class Jira implements IJira {
   }
 
   async getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }> {
+    // TODO - need to manage also opposed types. e.g blocks <-> is blocked by
     return await this.jiraInstance.issueLinkType.getAvailableTypes();
   }
 }
