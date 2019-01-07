@@ -7,7 +7,9 @@ import {
   IAddCommentResponse,
   IAddWorkLog,
   IAssignee,
+  IAvailableLinkIssuesType,
   ICreateIssue,
+  ICreateIssueEpic,
   ICreateMetadata,
   IFavouriteFilter,
   IIssueType,
@@ -162,12 +164,17 @@ export class Jira implements IJira {
     return await this.jiraInstance.filter.getFavoriteFilters();
   }
 
-  async getAllEpics(maxResults: number): Promise<ISearch> {
-    const jql = 'type = Epic ORDER BY project DESC , description DESC';
-    return await this.jiraInstance.search.search({ jql, maxResults });
+  async getCreateIssueEpics(baseUrl: string, projectKey: string, maxResults: number): Promise<ICreateIssueEpic> {
+    return await this.customApiCall(
+      `${baseUrl}/rest/greenhopper/1.0/epics?searchQuery=&projectKey=${projectKey}&maxResults=${maxResults}&hideDone=false`
+    );
   }
 
-  async getLabels(baseUrl: string): Promise<{ suggestions: ILabel[] }> {
+  async getCreateIssueLabels(baseUrl: string): Promise<{ suggestions: ILabel[] }> {
     return await this.customApiCall(baseUrl + '/rest/api/1.0/labels/suggest?query=');
+  }
+
+  async getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }> {
+    return await this.jiraInstance.issueLinkType.getAvailableTypes();
   }
 }

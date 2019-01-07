@@ -14,8 +14,9 @@ export interface IJira {
   getAllIssueTypesWithFields(project: string): Promise<IIssueType[]>;
   customApiCall(uri: string): Promise<any>;
   getFavoriteFilters(): Promise<IFavouriteFilter[]>;
-  getAllEpics(maxResults: number): Promise<ISearch>;
-  getLabels(baseUrl: string): Promise<{ suggestions: ILabel[] }>;
+  getCreateIssueEpics(baseUrl: string, project: string, maxResults: number): Promise<ICreateIssueEpic>;
+  getCreateIssueLabels(baseUrl: string): Promise<{ suggestions: ILabel[] }>;
+  getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }>;
 }
 
 export interface IServerInfo {
@@ -174,4 +175,25 @@ export interface ILabel {
   label: string;
   key?: string;
   description?: string;
+}
+
+export interface ICreateIssueEpic {
+  epicLists: ICreateIssueEpicList[];
+}
+
+export interface ICreateIssueEpicList {
+  listDescriptor: string;
+  epicNames: {
+    isDone: boolean;
+    key: string;
+    name: string;
+  }[];
+}
+
+export interface IAvailableLinkIssuesType {
+  id: string;
+  inward: string;
+  name: string;
+  outward: string;
+  self: string;
 }
