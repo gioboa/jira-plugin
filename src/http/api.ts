@@ -17,8 +17,8 @@ import {
   ILabel,
   IPriority,
   IProject,
-  IIssue,
   ISearch,
+  IIssue,
   ISetTransition,
   IStatus,
   ITransitions

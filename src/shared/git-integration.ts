@@ -1,23 +1,23 @@
-import * as vscode from "vscode";
-import { EventEmitter } from "events";
+import * as vscode from 'vscode';
+import { EventEmitter } from 'events';
 
-import state, { changeStateWorkingIssue, changeStateProject, printErrorMessageInOutputAndShowAlert } from "../state/state";
-import { getConfigurationByKey } from "../shared/configuration";
-import { CONFIG } from "../shared/constants";
-
+import state, { changeStateWorkingIssue, changeStateProject } from '../state/state';
+import { getConfigurationByKey } from '../shared/configuration';
+import { CONFIG } from '../shared/constants';
+import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 /**
  * TODO: overengineering. Implement simplier solution
  */
 class BranchWatcher extends EventEmitter {
   static EVENTS = {
-    BRANCH_CHANED: "branch:changed"
+    BRANCH_CHANED: 'branch:changed'
   };
 
   git: vscode.Extension<any> | undefined;
 
   constructor() {
     super();
-    this.git = vscode.extensions.getExtension("vscode.git");
+    this.git = vscode.extensions.getExtension('vscode.git');
     this.startWatchingBranchChange();
   }
 
