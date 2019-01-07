@@ -144,6 +144,20 @@ export interface ICreateIssue {
       id: string;
     };
   };
+  update?: {
+    issuelinks: {
+      add: {
+        type: {
+          name: string;
+          inward: string;
+          outward: string;
+        };
+        outwardIssue: {
+          key: string;
+        };
+      };
+    }[];
+  };
 }
 
 export interface IPriority {

@@ -11,9 +11,14 @@ export interface IIssueField {
 
 // items available inside the selector
 export const NEW_ISSUE_FIELDS = {
+  ISSUE_LINKS: {
+    field: 'issuelinks',
+    label: 'Linked issues',
+    description: ''
+  },
   ISSUE_LINKS_TYPES: {
     field: 'issuelinksTypes',
-    label: 'Linked issue type',
+    label: 'Linked issues type',
     description: ''
   },
   DIVIDER: {
