@@ -7,5 +7,11 @@
     "out": true // set this to false to include "out" folder in search results
   },
   "prettier.printWidth": 140,
-  "prettier.singleQuote": true
+  "prettier.singleQuote": true,
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#e6e6e6",
+    "titleBar.activeForeground": "#000000",
+    "titleBar.inactiveBackground": "#e6e6e6CC",
+    "titleBar.inactiveForeground": "#000000"
+  }
 }
