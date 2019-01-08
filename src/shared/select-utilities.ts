@@ -5,7 +5,17 @@ import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
-import { ASSIGNEES_MAX_RESULTS, BACK_PICK_LABEL, CONFIG, LIST_MAX_RESULTS, LOADING, NO_WORKING_ISSUE, SEARCH_MAX_RESULTS, SEARCH_MODE, UNASSIGNED } from './constants';
+import {
+  ASSIGNEES_MAX_RESULTS,
+  BACK_PICK_LABEL,
+  CONFIG,
+  LIST_MAX_RESULTS,
+  LOADING,
+  NO_WORKING_ISSUE,
+  SEARCH_MAX_RESULTS,
+  SEARCH_MODE,
+  UNASSIGNED
+} from './constants';
 import { jiraPluginDebugLog, printErrorMessageInOutputAndShowAlert } from './log-utilities';
 import { addStatusIcon, checkCounter, createDocumentLinkProvider, workingIssueStatuses } from './utilities';
 
@@ -137,10 +147,15 @@ export const selectIssue = async (mode: string, filterAndJQL?: string[]): Promis
         if (!!jql) {
           jiraPluginDebugLog(`${filter} jql`, jql);
           // call Jira API with the generated JQL
-          const issues = await state.jira.search({ jql, maxResults: LIST_MAX_RESULTS });
-          jiraPluginDebugLog(`issues`, JSON.stringify(issues));
-          if (!!issues && !!issues.issues && issues.issues.length > 0) {
-            changeStateIssues(filter, jql, issues.issues);
+          const searchResult = await state.jira.search({
+            jql,
+            maxResults: mode !== SEARCH_MODE.FAVOURITES_FILTERS ? LIST_MAX_RESULTS : SEARCH_MAX_RESULTS
+          });
+          jiraPluginDebugLog(`issues`, JSON.stringify(searchResult));
+          if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
+            // exclude issues with project key different from current working project
+            searchResult.issues = searchResult.issues.filter((issue: IIssue) => (issue.fields.project.key || '') === project);
+            changeStateIssues(filter, jql, searchResult.issues);
           } else {
             changeStateIssues(filter, jql, []);
             vscode.window.showInformationMessage(`No issues found for ${project} project`);
@@ -345,33 +360,14 @@ export const selectFavoriteFilters = async (): Promise<IFavouriteFilter | undefi
       if (verifyCurrentProject(project)) {
         const favFilters = await state.jira.getFavoriteFilters();
         if (favFilters && favFilters.length > 0) {
-          // exclude favorites filters with different project key/name inside jql
-          const otherProjects = state.projects.filter(prj => prj.key !== project);
           const selected = await vscode.window.showQuickPick(
-            favFilters
-              .filter(filter => {
-                let valid = true;
-                otherProjects.forEach(prj => 
-                {
-                  let regexp0 = new RegExp('project = "?' + prj.key + '"?');
-                  let regexp1 = new RegExp('project in \(.*?"?' + prj.key + '"?.*?\)');
-                  let regexp2 = new RegExp('"Project Name" in \(.*?"?' + prj.name + '"?.*?\)');
-                  let regexp3 = new RegExp('"Project Name" = "?' + prj.name + '"?');
-                  
-                  if ( regexp0.test(filter.jql) || regexp1.test(filter.jql) || regexp2.test(filter.jql) || regexp3.test(filter.jql) ) 
-                  {
-                    valid = false;
-                  }
-                });
-                return valid;
-              })
-              .map(filter => {
-                return {
-                  label: filter.name,
-                  description: filter.description,
-                  pickValue: filter
-                };
-              }),
+            favFilters.map(filter => {
+              return {
+                label: filter.name,
+                description: filter.description,
+                pickValue: filter
+              };
+            }),
             {
               placeHolder: `Select favourite filter`,
               matchOnDescription: true
