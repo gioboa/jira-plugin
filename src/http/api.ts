@@ -18,6 +18,7 @@ import {
   IPriority,
   IProject,
   ISearch,
+  IIssue,
   ISetTransition,
   IStatus,
   ITransitions
@@ -103,6 +104,10 @@ export class Jira implements IJira {
 
   async getProjects(): Promise<IProject[]> {
     return await this.jiraInstance.project.getAllProjects();
+  }
+
+  async getIssueByKey(issueKey: string): Promise<IIssue> {
+    return await this.jiraInstance.issue.getIssue({ issueKey });
   }
 
   async getAssignees(params: { project: string; maxResults: number }): Promise<IAssignee[]> {

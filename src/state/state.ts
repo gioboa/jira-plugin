@@ -8,12 +8,14 @@ import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
 import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import { StatusBarManager } from '../shared/status-bar';
 import { createDocumentLinkProvider } from '../shared/utilities';
+import { GitIntegration } from '../shared/git-integration';
 
 export interface State {
   context: vscode.ExtensionContext;
   channel: vscode.OutputChannel;
   documentLinkDisposable: vscode.Disposable;
   statusBar: StatusBarManager;
+  gitIntegration: GitIntegration;
   jiraExplorer: JiraExplorer;
   jira: IJira;
   statuses: IStatus[];
@@ -31,6 +33,7 @@ const state: State = {
   channel: undefined as any,
   documentLinkDisposable: undefined as any,
   statusBar: undefined as any,
+  gitIntegration: undefined as any,
   jiraExplorer: undefined as any,
   statuses: [],
   projects: [],
@@ -81,6 +84,16 @@ export const canExecuteJiraAPI = (): boolean => {
 
 export const verifyCurrentProject = (project: string | undefined): boolean => {
   return !!project && state.projects.filter((prj: IProject) => prj.key === project).length > 0;
+};
+
+export const changeStateProject = (project: string): void => {
+  setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
+  // update project item in the status bar
+  state.statusBar.updateWorkingProjectItem(project);
+  // loading in Jira explorer
+  changeStateIssues(LOADING.text, '', []);
+  // launch search for the new project
+  setTimeout(() => vscode.commands.executeCommand('jira-plugin.allIssuesCommand'), 1000);
 };
 
 export const changeStateIssues = (filter: string, jql: string, issues: IIssue[]): void => {

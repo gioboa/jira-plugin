@@ -1,15 +1,15 @@
-import * as vscode from 'vscode';
-import { IWorkingIssue } from '../http/api.model';
-import state, { incrementStateWorkingIssueTimePerSecond } from '../state/state';
-import { getConfigurationByKey, getGlobalWorkingIssue, setGlobalWorkingIssue } from './configuration';
-import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from './constants';
-import { secondsToHHMMSS } from './utilities';
-const awayTimeout = parseInt(getConfigurationByKey(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) || '30', 10) * 60; // Default to 30 minutes
+import * as vscode from "vscode";
+import { IWorkingIssue } from "../http/api.model";
+import state, { incrementStateWorkingIssueTimePerSecond } from "../state/state";
+import { getConfigurationByKey, getGlobalWorkingIssue, setGlobalWorkingIssue } from "./configuration";
+import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from "./constants";
+import { secondsToHHMMSS } from "./utilities";
+const awayTimeout = parseInt(getConfigurationByKey(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) || "30", 10) * 60; // Default to 30 minutes
 
 export class StatusBarManager {
   private workingProjectItem: vscode.StatusBarItem;
   private workingIssueItem: vscode.StatusBarItem;
-  private intervalId: NodeJS.Timer | undefined;
+  private intervalId: NodeJS.Timeout | undefined;
 
   constructor() {
     this.workingIssueItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
@@ -22,10 +22,10 @@ export class StatusBarManager {
       return;
     }
     if (!project) {
-      project = (await getConfigurationByKey(CONFIG.WORKING_PROJECT)) || '';
+      project = (await getConfigurationByKey(CONFIG.WORKING_PROJECT)) || "";
     }
-    this.workingProjectItem.tooltip = 'Set working project';
-    this.workingProjectItem.command = 'jira-plugin.setWorkingProjectCommand';
+    this.workingProjectItem.tooltip = "Set working project";
+    this.workingProjectItem.command = "jira-plugin.setWorkingProjectCommand";
     this.workingProjectItem.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
     this.workingProjectItem.show();
     if (getConfigurationByKey(CONFIG.ENABLE_WORKING_ISSUE)) {
@@ -34,12 +34,12 @@ export class StatusBarManager {
   }
 
   private workingIssueItemTooltip(workingIssue: IWorkingIssue): string {
-    return workingIssue.issue.key !== NO_WORKING_ISSUE.key ? workingIssue.issue.fields.summary : 'Set working issue';
+    return workingIssue.issue.key !== NO_WORKING_ISSUE.key ? workingIssue.issue.fields.summary : "Set working issue";
   }
 
   private workingIssueItemText(workingIssue: IWorkingIssue): string {
     return workingIssue.issue.key !== NO_WORKING_ISSUE.key
-      ? `Working Issue: ${workingIssue.issue.key || ''} $(watch) ${secondsToHHMMSS(workingIssue.trackingTime) || ''}` +
+      ? `Working Issue: ${workingIssue.issue.key || ""} $(watch) ${secondsToHHMMSS(workingIssue.trackingTime) || ""}` +
           (workingIssue.awayTime === 0 ? `` : workingIssue.awayTime > 0 ? ` $(history) ${secondsToHHMMSS(awayTimeout - workingIssue.awayTime)}` : ` $(history) Away too long, issue timer paused`)
       : NO_WORKING_ISSUE.text;
   }
@@ -66,7 +66,7 @@ export class StatusBarManager {
       setGlobalWorkingIssue(state.context, undefined);
     }
     this.workingIssueItem.tooltip = this.workingIssueItemTooltip(state.workingIssue);
-    this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';
+    this.workingIssueItem.command = "jira-plugin.setWorkingIssueCommand";
     state.workingIssue.awayTime = 0;
     this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
     this.workingIssueItem.show();

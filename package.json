@@ -96,6 +96,11 @@
           "type": "string",
           "description": "Additional custom statuses, used for manage some Jira wrong behavior",
           "default": ""
+        },
+        "jira-plugin.gitIntegration": {
+          "type": "boolean",
+          "description": "Automatically watch for branch switching and select appropriate project and working issue",
+          "default": false
         }
       }
     },
@@ -274,7 +279,7 @@
   "devDependencies": {
     "@types/copy-paste": "^1.1.30",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.5.7",
+    "@types/node": "^10.12.18",
     "mocha": "^5.2.0",
     "tslint": "^5.11.0",
     "typescript": "^3.0.1",
