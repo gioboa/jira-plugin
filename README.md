@@ -71,7 +71,7 @@ The extension store credentials in VS Code settings.<br><br>
 - _Tracking Time Mode Hybrid Timeout_ <br>
   Number of minutes to wait for the user to return to VSCode before discarding away time in hybrid time tracking mode
 - _Username_ <br>
-  Your Jira username
+  Your Jira username or full email for OAuth
 - _Working Issue Statues_ <br>
   Statuses used for extract working issue list (e.g. In Progress, Development In Progress, Test in Progress)
 - _Working Project_ <br>

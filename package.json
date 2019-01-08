@@ -54,7 +54,7 @@
         },
         "jira-plugin.username": {
           "type": "string",
-          "description": "Your Jira username",
+          "description": "Your Jira username or full email for OAuth",
           "default": ""
         },
         "jira-plugin.workingProject": {
