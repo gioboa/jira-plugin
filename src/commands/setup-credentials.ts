@@ -17,9 +17,17 @@ export class SetupCredentialsCommand implements Command {
       }
     }
     // store settings
-    setConfigurationByKey(CONFIG.BASE_URL, await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA url' }));
-    setConfigurationByKey(CONFIG.USERNAME, await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your JIRA username' }));
-    setGlobalStateConfiguration(await vscode.window.showInputBox({ ignoreFocusOut: true, password: true, placeHolder: 'Your JIRA password' }));
+    setConfigurationByKey(
+      CONFIG.BASE_URL,
+      await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your Jira url' })
+    );
+    setConfigurationByKey(
+      CONFIG.USERNAME,
+      await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Your Jira username' })
+    );
+    setGlobalStateConfiguration(
+      await vscode.window.showInputBox({ ignoreFocusOut: true, password: true, placeHolder: 'Your Jira password' })
+    );
     await connectToJira();
   }
 }

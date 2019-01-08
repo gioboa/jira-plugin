@@ -5,17 +5,7 @@ import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
-import {
-  ASSIGNEES_MAX_RESULTS,
-  BACK_PICK_LABEL,
-  CONFIG,
-  LIST_MAX_RESULTS,
-  LOADING,
-  NO_WORKING_ISSUE,
-  SEARCH_MAX_RESULTS,
-  SEARCH_MODE,
-  UNASSIGNED
-} from './constants';
+import { ASSIGNEES_MAX_RESULTS, BACK_PICK_LABEL, CONFIG, LIST_MAX_RESULTS, LOADING, NO_WORKING_ISSUE, SEARCH_MAX_RESULTS, SEARCH_MODE, UNASSIGNED } from './constants';
 import { jiraPluginDebugLog, printErrorMessageInOutputAndShowAlert } from './log-utilities';
 import { addStatusIcon, checkCounter, createDocumentLinkProvider, workingIssueStatuses } from './utilities';
 
@@ -57,13 +47,13 @@ const selectStatus = async (): Promise<string> => {
 
 // input for id
 const selectID = async (): Promise<string | undefined> => {
-  const id = await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert JIRA ID (only the number)' });
+  const id = await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert Jira ID (only the number)' });
   return id && !isNaN(parseInt(id)) ? parseInt(id).toString() : undefined;
 };
 
 // input for summary
 const selectSummary = async (): Promise<string | undefined> => {
-  return await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert JIRA Summary' });
+  return await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert Jira Summary' });
 };
 
 // return the filter (used in filter-info-item) and the JQL

@@ -61,7 +61,7 @@ The extension store credentials in VS Code settings.<br><br>
 - _Additional Statuses_ <br>
   Additional custom statuses, used for manage some Jira wrong behavior
 - _Base Url_ <br>
-  Your JIRA base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)
+  Your Jira base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)
 - _Enable Working Issue_ <br>
   Enable working issue functionality in status bar
 - _Git Integration_ <br>
@@ -71,11 +71,11 @@ The extension store credentials in VS Code settings.<br><br>
 - _Tracking Time Mode Hybrid Timeout_ <br>
   Number of minutes to wait for the user to return to VSCode before discarding away time in hybrid time tracking mode
 - _Username_ <br>
-  Your JIRA username
+  Your Jira username
 - _Working Issue Statues_ <br>
   Statuses used for extract working issue list (e.g. In Progress, Development In Progress, Test in Progress)
 - _Working Project_ <br>
-  JIRA working project
+  Jira working project
 - _Worklog Minimum Tracking Time_ <br>
   Minimum tracking time for show the Worklog modal and create Jira worklog
 
@@ -186,4 +186,4 @@ For more information on SemVer, please visit [http://semver.org](http://semver.o
 
 ## Resources
 
-Based on [JIRA APIs](https://developer.atlassian.com/cloud/jira/platform/rest/)
+Based on [Jira APIs](https://developer.atlassian.com/cloud/jira/platform/rest/)

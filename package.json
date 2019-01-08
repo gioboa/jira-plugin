@@ -1,7 +1,7 @@
 {
   "name": "jira-plugin",
   "displayName": "Jira Plugin",
-  "description": "JIRA integration for vscode",
+  "description": "Jira integration for vscode",
   "version": "0.11.4",
   "publisher": "gioboa",
   "icon": "images/icons/icon.png",
@@ -45,21 +45,21 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "JIRA configuration",
+      "title": "Jira configuration",
       "properties": {
         "jira-plugin.baseUrl": {
           "type": "string",
-          "description": "Your JIRA base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)",
+          "description": "Your Jira base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)",
           "default": ""
         },
         "jira-plugin.username": {
           "type": "string",
-          "description": "Your JIRA username",
+          "description": "Your Jira username",
           "default": ""
         },
         "jira-plugin.workingProject": {
           "type": "string",
-          "description": "JIRA working project",
+          "description": "Jira working project",
           "default": ""
         },
         "jira-plugin.enableWorkingIssue": {
@@ -108,7 +108,7 @@
       "activitybar": [
         {
           "id": "jiraExplorer",
-          "title": "JIRA",
+          "title": "Jira",
           "icon": "images/icons/jira-explorer-icon.svg"
         }
       ]
