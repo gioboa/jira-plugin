@@ -148,7 +148,7 @@ values:<br>
   With **Working Issue Statues** setting you can define statuses used for extract working issue list.<br>
   The extension trace the time spended on the working issue and you can also create the Jira worklog for the activity. <br>
   Jira worklog allow only time in minute so the extension round your activity time. <br>
-  The extension **every 60 second** store in iternal storage the current working activity so if you close and reopen VS Code the extension retrive (if needed) the pending working issue.
+  The extension **every 60 second** store in iternal storage the current working activity so if you close and reopen VS Code the extension retrieve (if needed) the pending working issue.
 
 ![Working issue](images/readme/working-issue.gif)
 
