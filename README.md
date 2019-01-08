@@ -58,28 +58,28 @@ After setup you have to set the working project, you can click on status-bar ico
 The extension store credentials in VS Code settings.<br><br>
 **n.b:** the extension store the password in VS Code internal storage so it's safe and hidden. :wink: <br>
 
-- _Additional Statuses_ <br>
+- **Additional Statuses** <br>
   Additional custom statuses, used for manage some Jira wrong behavior
-- _Base Url_ <br>
+- **Base Url** <br>
   Your Jira base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)
-- _Enable Working Issue_ <br>
+- **Enable Working Issue** <br>
   Enable working issue functionality in status bar
-- _Git Integration_ <br>
+- **Git Integration** <br>
   Automatically watch for branch switching and select appropriate project and working issue
-- _Tracking Time Mode_ <br>
+- **Tracking Time Mode** <br>
   Configure how the plugin tracking time for the working issue
-- _Tracking Time Mode Hybrid Timeout_ <br>
+- **Tracking Time Mode Hybrid Timeout** <br>
   Number of minutes to wait for the user to return to VSCode before discarding away time in hybrid time tracking mode
-- _Username_ <br>
+- **Username** <br>
   Your Jira username or full email for OAuth
-- _Working Issue Statues_ <br>
+- **Working Issue Statues** <br>
   Statuses used for extract working issue list (e.g. In Progress, Development In Progress, Test in Progress)
-- _Working Project_ <br>
+- **Working Project** <br>
   Jira working project
-- _Worklog Minimum Tracking Time_ <br>
+- **Worklog Minimum Tracking Time** <br>
   Minimum tracking time for show the Worklog modal and create Jira worklog
 
-**n.b:** setting: _Tracking Time Mode_ <br>
+**n.b:** setting: **Tracking Time Mode** <br>
 values:<br>
 
 1.  `hybrid` - will increment tracking time always but if VS Code remain idle more then "trackingTimeModeHybridTimeout" will discard the time addition<br>
@@ -145,7 +145,7 @@ values:<br>
 ### Working issue
 
 - The extension in the status bar show the **working issue**, you can also change it from here. <br>
-  With _Working Issue Statues_ setting you can define statuses used for extract working issue list.<br>
+  With **Working Issue Statues** setting you can define statuses used for extract working issue list.<br>
   The extension trace the time spended on the working issue and you can also create the Jira worklog for the activity. <br>
   Jira worklog allow only time in minute so the extension round your activity time. <br>
   The extension **every 60 second** store in iternal storage the current working activity so if you close and reopen VS Code the extension retrive (if needed) the pending working issue.
