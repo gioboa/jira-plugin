@@ -202,6 +202,11 @@ const manageSpecialFields = async (project: string, field: IField, fieldName: st
               summary: '',
               status: {
                 name: ''
+              },
+              project: {
+                id: '',
+                key: '',
+                name: ''
               }
             }
           });
