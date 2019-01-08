@@ -42,6 +42,11 @@ export interface IIssue {
     status: {
       name: string;
     };
+    project: {
+      id: string;
+      key: string;
+      name: string;
+    };
   };
 }
 
