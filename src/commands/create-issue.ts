@@ -7,9 +7,7 @@ import { ASSIGNEES_MAX_RESULTS, CONFIG, SEARCH_MAX_RESULTS } from '../shared/con
 import { jiraPluginDebugLog, printErrorMessageInOutput, printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import { selectIssueType } from '../shared/select-utilities';
 import state, { verifyCurrentProject } from '../state/state';
-import { NEW_ISSUE_FIELDS, NEW_ISSUE_STATUS } from './create-issue.model';
-import { OpenIssueCommand } from './open-issue';
-import { Command } from './shared/command';
+import openIssueCommand from './open-issue';
 
 // this object store all user choices
 let newIssueIstance = {};
@@ -18,121 +16,153 @@ let preloadedListValues = {};
 // this object store the selected values and is the payload for createIssue API
 let fieldsRequest = {};
 
-export class CreateIssueCommand implements Command {
-  public id = 'jira-plugin.createIssueCommand';
-
-  public async run(issueItem: IssueItem): Promise<void> {
-    const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
-    if (verifyCurrentProject(project)) {
-      try {
-        newIssueIstance = {};
-        preloadedListValues = {};
-        fieldsRequest = {};
-        // first of first we decide the type of the ticket
-        const availableTypes = await state.jira.getAllIssueTypesWithFields(project);
-        if (!!availableTypes) {
-          // here the user select which type of issue create
-          const issueTypeSelected = await selectIssueType(false, availableTypes);
-          if (!!issueTypeSelected) {
-            // store project
-            newIssueIstance = { ...newIssueIstance, project };
-            // store issueType and project in payload
-            // user cannot modify the values
-            (<any>fieldsRequest) = {
-              issuetype: {
-                id: issueTypeSelected.id
-              },
-              project: {
-                key: project
-              }
-            };
-            let loopStatus = NEW_ISSUE_STATUS.CONTINUE;
-            // this variable is used for retrieve only one time the available values inside the loop
-            let executeretrieveValues = true;
-            while (loopStatus === NEW_ISSUE_STATUS.CONTINUE) {
-              // all selector available items
-              const newIssuePicks = [];
-              for (const fieldName in issueTypeSelected.fields) {
-                // type and project forced before in the payload
-                if (fieldName !== 'issuetype' && fieldName !== 'project') {
-                  const field = issueTypeSelected.fields[fieldName];
-                  // load values for every field if necessary
-                  if (executeretrieveValues) {
-                    await retrieveValues(project, field, fieldName);
-                  }
-                  // if there is issuelinks field we need also of issuelinksType
-                  // so we add the field in selector available items
-                  if (fieldName === NEW_ISSUE_FIELDS.ISSUE_LINKS.field) {
-                    addDefaultIssueLinkTypesIfNessesary(newIssuePicks);
-                  }
-                  if (!field.hideField) {
-                    // create the item, use preselected value or default label 'Insert + fieldName'
-                    newIssuePicks.push({
-                      field: fieldName,
-                      label: `${issueTypeSelected.fields[fieldName].required ? '$(star) ' : ''}${field.name}`,
-                      description: !!(<any>newIssueIstance)[fieldName]
-                        ? (<any>newIssueIstance)[fieldName].toString()
-                        : `Insert ${field.name}`,
-                      pickValue: field,
-                      fieldSchema: field.schema
-                    });
-                  }
+export default async function createIssueCommand(issueItem: IssueItem): Promise<void> {
+  const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+  if (verifyCurrentProject(project)) {
+    try {
+      newIssueIstance = {};
+      preloadedListValues = {};
+      fieldsRequest = {};
+      // first of first we decide the type of the ticket
+      const availableTypes = await state.jira.getAllIssueTypesWithFields(project);
+      if (!!availableTypes) {
+        // here the user select which type of issue create
+        const issueTypeSelected = await selectIssueType(false, availableTypes);
+        if (!!issueTypeSelected) {
+          // store project
+          newIssueIstance = { ...newIssueIstance, project };
+          // store issueType and project in payload
+          // user cannot modify the values
+          (<any>fieldsRequest) = {
+            issuetype: {
+              id: issueTypeSelected.id
+            },
+            project: {
+              key: project
+            }
+          };
+          let loopStatus = NEW_ISSUE_STATUS.CONTINUE;
+          // this variable is used for retrieve only one time the available values inside the loop
+          let executeretrieveValues = true;
+          while (loopStatus === NEW_ISSUE_STATUS.CONTINUE) {
+            // all selector available items
+            const newIssuePicks = [];
+            for (const fieldName in issueTypeSelected.fields) {
+              // type and project forced before in the payload
+              if (fieldName !== 'issuetype' && fieldName !== 'project') {
+                const field = issueTypeSelected.fields[fieldName];
+                // load values for every field if necessary
+                if (executeretrieveValues) {
+                  await retrieveValues(project, field, fieldName);
                 }
-              }
-              executeretrieveValues = false;
-              // add last 3 custom items in the list
-              newIssuePicks.push(
-                {
-                  field: NEW_ISSUE_FIELDS.DIVIDER.field,
-                  label: NEW_ISSUE_FIELDS.DIVIDER.label,
-                  description: NEW_ISSUE_FIELDS.DIVIDER.description
-                },
-                {
-                  field: NEW_ISSUE_FIELDS.INSERT_ISSUE.field,
-                  label: NEW_ISSUE_FIELDS.INSERT_ISSUE.label,
-                  description: NEW_ISSUE_FIELDS.INSERT_ISSUE.description
-                },
-                {
-                  field: NEW_ISSUE_FIELDS.EXIT.field,
-                  label: NEW_ISSUE_FIELDS.EXIT.label,
-                  description: NEW_ISSUE_FIELDS.EXIT.description
+                // if there is issuelinks field we need also of issuelinksType
+                // so we add the field in selector available items
+                if (fieldName === NEW_ISSUE_FIELDS.ISSUE_LINKS.field) {
+                  addDefaultIssueLinkTypesIfNessesary(newIssuePicks);
                 }
-              );
-              // second selector with all the fields
-              const fieldToModifySelection = await vscode.window.showQuickPick(newIssuePicks, {
-                placeHolder: `Insert Jira issue`,
-                matchOnDescription: true
-              });
-              // manage the selected field from selector
-              if (!!fieldToModifySelection && fieldToModifySelection.field !== NEW_ISSUE_FIELDS.DIVIDER.field) {
-                switch (fieldToModifySelection.field) {
-                  case NEW_ISSUE_FIELDS.INSERT_ISSUE.field:
-                    // check if the mandatory field are populated, if not, we go on
-                    loopStatus = mandatoryFieldsOk(issueTypeSelected.fields) ? NEW_ISSUE_STATUS.INSERT : loopStatus;
-                    break;
-                  case NEW_ISSUE_FIELDS.EXIT.field:
-                    loopStatus = NEW_ISSUE_STATUS.STOP;
-                    break;
-                  default:
-                    // with the field selected values populate the palyload
-                    await manageSelectedField(fieldToModifySelection);
+                if (!field.hideField) {
+                  // create the item, use preselected value or default label 'Insert + fieldName'
+                  newIssuePicks.push({
+                    field: fieldName,
+                    label: `${issueTypeSelected.fields[fieldName].required ? '$(star) ' : ''}${field.name}`,
+                    description: !!(<any>newIssueIstance)[fieldName]
+                      ? (<any>newIssueIstance)[fieldName].toString()
+                      : `Insert ${field.name}`,
+                    pickValue: field,
+                    fieldSchema: field.schema
+                  });
                 }
               }
             }
-            if (loopStatus === NEW_ISSUE_STATUS.INSERT) {
-              // Jira create issue API
-              await insertNewTicket();
-            } else {
-              // Exit
+            executeretrieveValues = false;
+            // add last 3 custom items in the list
+            newIssuePicks.push(
+              {
+                field: NEW_ISSUE_FIELDS.DIVIDER.field,
+                label: NEW_ISSUE_FIELDS.DIVIDER.label,
+                description: NEW_ISSUE_FIELDS.DIVIDER.description
+              },
+              {
+                field: NEW_ISSUE_FIELDS.INSERT_ISSUE.field,
+                label: NEW_ISSUE_FIELDS.INSERT_ISSUE.label,
+                description: NEW_ISSUE_FIELDS.INSERT_ISSUE.description
+              },
+              {
+                field: NEW_ISSUE_FIELDS.EXIT.field,
+                label: NEW_ISSUE_FIELDS.EXIT.label,
+                description: NEW_ISSUE_FIELDS.EXIT.description
+              }
+            );
+            // second selector with all the fields
+            const fieldToModifySelection = await vscode.window.showQuickPick(newIssuePicks, {
+              placeHolder: `Insert Jira issue`,
+              matchOnDescription: true
+            });
+            // manage the selected field from selector
+            if (!!fieldToModifySelection && fieldToModifySelection.field !== NEW_ISSUE_FIELDS.DIVIDER.field) {
+              switch (fieldToModifySelection.field) {
+                case NEW_ISSUE_FIELDS.INSERT_ISSUE.field:
+                  // check if the mandatory field are populated, if not, we go on
+                  loopStatus = mandatoryFieldsOk(issueTypeSelected.fields) ? NEW_ISSUE_STATUS.INSERT : loopStatus;
+                  break;
+                case NEW_ISSUE_FIELDS.EXIT.field:
+                  loopStatus = NEW_ISSUE_STATUS.STOP;
+                  break;
+                default:
+                  // with the field selected values populate the palyload
+                  await manageSelectedField(fieldToModifySelection);
+              }
             }
           }
+          if (loopStatus === NEW_ISSUE_STATUS.INSERT) {
+            // Jira create issue API
+            await insertNewTicket();
+          } else {
+            // Exit
+          }
         }
-      } catch (err) {
-        printErrorMessageInOutputAndShowAlert(err);
       }
+    } catch (err) {
+      printErrorMessageInOutputAndShowAlert(err);
     }
   }
 }
+
+// statuses for new issue loop
+const NEW_ISSUE_STATUS = {
+  STOP: -1,
+  CONTINUE: 0,
+  INSERT: 1
+};
+
+// items available inside the selector
+const NEW_ISSUE_FIELDS = {
+  ISSUE_LINKS: {
+    field: 'issuelinks',
+    label: 'Linked issues',
+    description: ''
+  },
+  ISSUE_LINKS_TYPES: {
+    field: 'issuelinksTypes',
+    label: 'Linked issues type',
+    description: ''
+  },
+  DIVIDER: {
+    field: 'divider',
+    label: '--- $(star) required ---',
+    description: ''
+  },
+  INSERT_ISSUE: {
+    field: 'insert_issue',
+    label: 'Insert issue',
+    description: ''
+  },
+  EXIT: {
+    field: 'exit',
+    label: 'Exit',
+    description: ''
+  }
+};
 
 // define if the selector can have multiple choices
 const isCanPickMany = (field: any) => {
@@ -459,7 +489,7 @@ const insertNewTicket = async (): Promise<void> => {
     // if the response is ok, we will open the created issue
     const action = await vscode.window.showInformationMessage('Issue created', 'Open in browser');
     if (action === 'Open in browser') {
-      new OpenIssueCommand().run(createdIssue.key);
+      openIssueCommand(createdIssue.key);
     }
   }
 };
