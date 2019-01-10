@@ -287,15 +287,15 @@
     "@types/copy-paste": "^1.1.30",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.18",
+    "husky": "^1.3.1",
     "mocha": "^5.2.0",
+    "prettier": "^1.15.3",
     "tslint": "^5.11.0",
     "typescript": "^3.0.1",
     "vscode": "^1.1.18"
   },
   "dependencies": {
     "copy-paste": "^1.3.0",
-    "husky": "^1.3.1",
-    "jira-connector": "^2.8.0",
-    "prettier": "^1.15.3"
+    "jira-connector": "^2.8.0"
   }
 }

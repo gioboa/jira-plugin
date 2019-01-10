@@ -44,7 +44,11 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
       const getLabel = (status: string) => `Status: ${status}`;
       items.map((item: any, index: number) => {
         if (item.issue) {
-          if (!items.find(el => el.contextValue === new StatusItem('', '').contextValue && getLabel(item.issue.fields.status.name) === el.label)) {
+          if (
+            !items.find(
+              el => el.contextValue === new StatusItem('', '').contextValue && getLabel(item.issue.fields.status.name) === el.label
+            )
+          ) {
             items.splice(index, 0, new StatusItem(getLabel(item.issue.fields.status.name), item.issue.fields.status.name));
           }
         }
@@ -60,7 +64,11 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
         return [new LoadingItem()];
       }
       // no result
-      return [new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem('------'), new NoResultItem(project || '')];
+      return [
+        new FilterInfoItem(project || '', state.currentFilter, issues.length),
+        new DividerItem('------'),
+        new NoResultItem(project || '')
+      ];
     }
   }
 }
