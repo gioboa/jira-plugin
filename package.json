@@ -40,7 +40,7 @@
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
-    "prelint": "prettier --print-width 140 --single-quote --write src/**/*.ts",
+    "prelint": "prettier --print-width 140 --single-quote --write 'src/**/*.ts'",
     "lint": "tslint 'src/**/*.ts' --format stylish --fix"
   },
   "husky": {
