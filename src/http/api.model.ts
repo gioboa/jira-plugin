@@ -15,8 +15,8 @@ export interface IJira {
   getAllIssueTypesWithFields(project: string): Promise<IIssueType[]>;
   customApiCall(uri: string): Promise<any>;
   getFavoriteFilters(): Promise<IFavouriteFilter[]>;
-  getCreateIssueEpics(baseUrl: string, project: string, maxResults: number): Promise<ICreateIssueEpic>;
-  getCreateIssueLabels(baseUrl: string): Promise<{ suggestions: ILabel[] }>;
+  getCreateIssueEpics(project: string, maxResults: number): Promise<ICreateIssueEpic>;
+  getCreateIssueLabels(): Promise<{ suggestions: ILabel[] }>;
   getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }>;
 }
 

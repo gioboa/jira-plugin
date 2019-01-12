@@ -5,10 +5,10 @@ import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.mod
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import { configIsCorrect, getConfigurationByKey, setConfigurationByKey, setGlobalWorkingIssue } from '../shared/configuration';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
+import { GitIntegration } from '../shared/git-integration';
 import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import { StatusBarManager } from '../shared/status-bar';
 import { createDocumentLinkProvider } from '../shared/utilities';
-import { GitIntegration } from '../shared/git-integration';
 
 export interface State {
   context: vscode.ExtensionContext;

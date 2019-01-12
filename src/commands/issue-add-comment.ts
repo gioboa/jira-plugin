@@ -5,6 +5,7 @@ import { CONFIG } from '../shared/constants';
 import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import { selectAssignee } from '../shared/select-utilities';
 import state, { canExecuteJiraAPI } from '../state/state';
+const url = require('url');
 
 export default async function issueAddCommentCommand(issueItem: IssueItem): Promise<void> {
   try {
@@ -33,12 +34,15 @@ export default async function issueAddCommentCommand(issueItem: IssueItem): Prom
         const action = await vscode.window.showInformationMessage('Comment created', 'Open in browser');
         if (action === 'Open in browser') {
           const baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
-          const url =
-            `${baseUrl}/browse/${issue.key}` +
-            `?focusedCommentId=${response.id}` +
-            `&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel` +
-            `#comment-${response.id}`;
-          await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
+          const openUrl = url.resolve(
+            baseUrl,
+            `/browse/${issue.key}` +
+              `?focusedCommentId=${response.id}` +
+              `&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel` +
+              `#comment-${response.id}`
+          );
+
+          await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(openUrl));
         }
       }
     } else {

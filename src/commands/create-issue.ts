@@ -214,11 +214,7 @@ const manageSpecialFields = async (project: string, field: IField, fieldName: st
     (<any>preloadedListValues)[fieldName.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
   }
   if (isEpicLinkFieldSchema(field.schema)) {
-    const response = await state.jira.getCreateIssueEpics(
-      getConfigurationByKey(CONFIG.BASE_URL) || '',
-      getConfigurationByKey(CONFIG.WORKING_PROJECT) || '',
-      SEARCH_MAX_RESULTS
-    );
+    const response = await state.jira.getCreateIssueEpics(getConfigurationByKey(CONFIG.WORKING_PROJECT) || '', SEARCH_MAX_RESULTS);
     // format issues in standard way
     if (!!response && !!response.epicLists) {
       const list: IIssue[] = [];

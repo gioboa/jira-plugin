@@ -14,15 +14,8 @@ suite('Configuration Tests', () => {
     {
       title: `${CONFIG.BASE_URL} 2`,
       config: CONFIG.BASE_URL,
-      value: `${CONFIG.BASE_URL}_test_value/`,
-      expected: `${CONFIG.BASE_URL}_test_value/`,
-      equal: false
-    },
-    {
-      title: `${CONFIG.BASE_URL} 3`,
-      config: CONFIG.BASE_URL,
-      value: `${CONFIG.BASE_URL}_test_value/`,
-      expected: `${CONFIG.BASE_URL}_test_value`,
+      value: `${CONFIG.BASE_URL}_test2_value/`,
+      expected: `${CONFIG.BASE_URL}_test2_value/`,
       equal: true
     },
     {
@@ -50,12 +43,14 @@ suite('Configuration Tests', () => {
 
   tests.forEach(entry => {
     test(`Test ${entry.title} config`, () => {
-      config.setConfigurationByKey(entry.config, entry.value);
-      if (entry.equal) {
-        assert.equal(entry.expected, config.getConfigurationByKey(entry.config));
-      } else {
-        assert.notEqual(entry.expected, config.getConfigurationByKey(entry.config));
-      }
+      return config.setConfigurationByKey(entry.config, entry.value).then(() => {
+        const actual = config.getConfigurationByKey(entry.config);
+        if (entry.equal) {
+          assert.equal(entry.expected, actual);
+        } else {
+          assert.notEqual(entry.expected, actual);
+        }
+      });
     });
   });
 
