@@ -87,13 +87,15 @@ export const verifyCurrentProject = (project: string | undefined): boolean => {
 };
 
 export const changeStateProject = (project: string): void => {
-  setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
-  // update project item in the status bar
-  state.statusBar.updateWorkingProjectItem(project);
-  // loading in Jira explorer
-  changeStateIssues(LOADING.text, '', []);
-  // launch search for the new project
-  setTimeout(() => vscode.commands.executeCommand('jira-plugin.allIssuesCommand'), 1000);
+  if (getConfigurationByKey(CONFIG.WORKING_PROJECT) !== project) {
+    setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
+    // update project item in the status bar
+    state.statusBar.updateWorkingProjectItem(project);
+    // loading in Jira explorer
+    changeStateIssues(LOADING.text, '', []);
+    // launch search for the new project
+    setTimeout(() => vscode.commands.executeCommand('jira-plugin.allIssuesCommand'), 1000);
+  }
 };
 
 export const changeStateIssues = (filter: string, jql: string, issues: IIssue[]): void => {
