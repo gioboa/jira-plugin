@@ -56,7 +56,7 @@ export class StatusBarManager {
       issue = getGlobalWorkingIssue(state.context);
       if (!!issue) {
         // if there is a stored working issue we will use it
-        vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', JSON.parse(issue));
+        vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', JSON.parse(issue), undefined);
         setGlobalWorkingIssue(state.context, undefined);
         return;
       }

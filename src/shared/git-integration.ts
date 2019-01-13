@@ -1,10 +1,11 @@
-import * as vscode from 'vscode';
 import { EventEmitter } from 'events';
-
-import state, { changeStateWorkingIssue, changeStateProject } from '../state/state';
+import * as vscode from 'vscode';
+import { IIssue } from '../http/api.model';
 import { getConfigurationByKey } from '../shared/configuration';
-import { CONFIG } from '../shared/constants';
+import { CONFIG, NO, YES } from '../shared/constants';
 import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
+import state, { changeStateProject } from '../state/state';
+
 /**
  * TODO: overengineering. Implement simplier solution
  */
@@ -93,21 +94,31 @@ export class GitIntegration {
     this.enabled = enabled;
   }
 
-  private onBranchChanged(newBranch?: string, oldBrarnch?: string): void {
+  private async onBranchChanged(newBranch?: string, oldBrarnch?: string): Promise<void> {
     this.currentBranch = newBranch;
-
     if (this.currentBranch) {
       const ticket = this.parseTicket(this.currentBranch);
-      // TODO: consider user confirmation
       if (ticket) {
-        this.setActiveTicket(ticket);
+        const issue = await state.jira.getIssueByKey(ticket.issue);
+        // if issue exist and is different from current working issue
+        if (issue && issue.key !== state.workingIssue.issue.key) {
+          // modal
+          const action = await vscode.window.showInformationMessage(
+            `Jira plugin detected that current git branch can be related to a Jira issue. ` +
+              `Do you want change current working project into ${ticket.project} and issue into ${ticket.issue}?`,
+            YES,
+            NO
+          );
+          if (action === YES) {
+            this.setCurrentWorkingProjectAndIssue(ticket, issue);
+          }
+        }
       }
     }
   }
 
   private parseTicket(branchName: string): Ticket | null {
-    const matched = branchName.match(/([A-Z]+)-(\d+)/);
-
+    const matched = branchName.match(/([A-Z0-9]+)-(\d+)/);
     return (
       matched && {
         project: matched[1],
@@ -116,11 +127,10 @@ export class GitIntegration {
     );
   }
 
-  private async setActiveTicket(ticket: Ticket): Promise<void> {
+  private async setCurrentWorkingProjectAndIssue(ticket: Ticket, issue: IIssue): Promise<void> {
     try {
-      const issue = await state.jira.getIssueByKey(ticket.issue);
       changeStateProject(ticket.project);
-      changeStateWorkingIssue(issue, 0);
+      vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', undefined, issue);
     } catch (e) {
       printErrorMessageInOutputAndShowAlert(e);
     }

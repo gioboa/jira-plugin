@@ -7,7 +7,7 @@ import { selectChangeWorkingIssue, selectWorkingIssues } from '../shared/select-
 import { secondsToHHMMSS, secondsToMinutes } from '../shared/utilities';
 import state, { changeStateWorkingIssue } from '../state/state';
 
-export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkingIssue): Promise<void> {
+export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkingIssue, preloadedIssue: IIssue): Promise<void> {
   // run it's called from status bar there is a working issue in the storage
   if (!!storedWorkingIssue) {
     const workingIssues = await selectWorkingIssues();
@@ -28,7 +28,7 @@ export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkin
   } else {
     // normal workflow, user must select a working issue
     const workingIssue = state.workingIssue || new NoWorkingIssuePick().pickValue;
-    const newIssue = await selectChangeWorkingIssue();
+    const newIssue = preloadedIssue || (await selectChangeWorkingIssue());
     if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
       if (
         workingIssue.issue.key !== NO_WORKING_ISSUE.key &&
