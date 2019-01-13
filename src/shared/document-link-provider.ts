@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { IProject } from '../http/api.model';
 import { getConfigurationByKey } from './configuration';
 import { CONFIG } from './constants';
+const url = require('url');
 
 export class IssueLinkProvider implements vscode.DocumentLinkProvider {
   constructor(private projects: IProject[]) {}
@@ -36,7 +37,7 @@ export class IssueLinkProvider implements vscode.DocumentLinkProvider {
         );
         matches.push({
           range,
-          target: vscode.Uri.parse(`${baseUrl}/browse/${match[0]}`)
+          target: vscode.Uri.parse(url.join(baseUrl, `${baseUrl}/browse/${match[0]}`))
         });
       }
     });

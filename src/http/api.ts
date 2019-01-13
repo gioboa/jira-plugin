@@ -1,4 +1,3 @@
-const jiraClient = require('jira-connector');
 import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
 import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
@@ -24,26 +23,24 @@ import {
   ITransitions
 } from './api.model';
 
+const jiraClient = require('jira-connector');
+const url = require('url');
+
 export class Jira implements IJira {
   jiraInstance: any;
+  baseUrl: string;
 
   constructor() {
-    let baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
-    if (baseUrl && getGlobalStateConfiguration()) {
-      // prepare config for jira-connector
-      const protocol = baseUrl.indexOf('https://') >= 0 ? 'https' : 'http';
-      baseUrl = baseUrl.replace('https://', '').replace('http://', '');
-      const portPosition = baseUrl.indexOf(':');
-      const port = portPosition !== -1 ? baseUrl.substring(portPosition + 1) : undefined;
-      if (portPosition !== -1) {
-        baseUrl = baseUrl.substring(0, portPosition);
-      }
+    this.baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
 
+    if (this.baseUrl && getGlobalStateConfiguration()) {
+      const parsedUrl = url.parse(this.baseUrl);
       const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
+
       this.jiraInstance = new jiraClient({
-        host: baseUrl,
-        port,
-        protocol,
+        host: parsedUrl.host,
+        port: parsedUrl.port,
+        protocol: parsedUrl.protocol,
         basic_auth: { username, password }
       });
 
@@ -157,14 +154,17 @@ export class Jira implements IJira {
     return await this.jiraInstance.filter.getFavoriteFilters();
   }
 
-  async getCreateIssueEpics(baseUrl: string, projectKey: string, maxResults: number): Promise<ICreateIssueEpic> {
-    return await this.customApiCall(
-      `${baseUrl}/rest/greenhopper/1.0/epics?searchQuery=&projectKey=${projectKey}&maxResults=${maxResults}&hideDone=false`
+  async getCreateIssueEpics(projectKey: string, maxResults: number): Promise<ICreateIssueEpic> {
+    const apiCallUrl = url.resolve(
+      this.baseUrl,
+      `/rest/greenhopper/1.0/epics?searchQuery=&projectKey=${projectKey}&maxResults=${maxResults}&hideDone=false`
     );
+    return await this.customApiCall(apiCallUrl);
   }
 
-  async getCreateIssueLabels(baseUrl: string): Promise<{ suggestions: ILabel[] }> {
-    return await this.customApiCall(baseUrl + '/rest/api/1.0/labels/suggest?query=');
+  async getCreateIssueLabels(): Promise<{ suggestions: ILabel[] }> {
+    const apiCallUrl = url.resolve(this.baseUrl, '/rest/api/1.0/labels/suggest?query=');
+    return await this.customApiCall(apiCallUrl);
   }
 
   async getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }> {
