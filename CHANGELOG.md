@@ -1,3 +1,16 @@
+## 0.12.0
+
+### Features
+
+- git integration workflow
+
+### Bug Fixes
+
+- create issue managed EpicLink field
+- create issue managed Labels field
+- code refactor
+- minor changes and fixes
+
 ## 0.11.4
 
 ### Bug Fixes

@@ -23,7 +23,7 @@
 - [Trace the time spended on the current working issue](#working-issue)
 - Insert current Working Issue Key+Summary comment
 - [Jira Issue Key+Summary link to open Jira issue in the browser](#link-to-open-jira-issue-in-the-browser)
-- [Git Branch Integration](#settings)
+- [Git Integration](#settings)
 
 ## Installation
 
