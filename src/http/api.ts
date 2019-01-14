@@ -35,10 +35,12 @@ export class Jira implements IJira {
 
     if (this.baseUrl && getGlobalStateConfiguration()) {
       const parsedUrl = url.parse(this.baseUrl);
+      // host from parsedUrl.href because the base url can have subfolder
+      const host = parsedUrl.href.replace(parsedUrl.protocol + '//', '');
       const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
 
       this.jiraInstance = new jiraClient({
-        host: parsedUrl.host,
+        host: host,
         port: parsedUrl.port,
         protocol: parsedUrl.protocol,
         basic_auth: { username, password }
