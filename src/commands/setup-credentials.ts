@@ -15,14 +15,16 @@ export default async function setupCredentials(): Promise<void> {
   }
 
   // store settings
-  setConfigurationByKey(
-    CONFIG.BASE_URL,
-    await vscode.window.showInputBox({
-      ignoreFocusOut: true,
-      password: false,
-      placeHolder: 'Your Jira url'
-    })
-  );
+  let newBaseUrl = await vscode.window.showInputBox({
+    ignoreFocusOut: true,
+    password: false,
+    placeHolder: 'Your Jira url'
+  });
+  // remove / at the end
+  if (!!newBaseUrl && newBaseUrl.substring(newBaseUrl.length - 1) === '/') {
+    newBaseUrl = newBaseUrl.substring(0, newBaseUrl.length - 1);
+  }
+  setConfigurationByKey(CONFIG.BASE_URL, newBaseUrl);
 
   setConfigurationByKey(
     CONFIG.USERNAME,
