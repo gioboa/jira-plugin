@@ -1,3 +1,9 @@
+## 0.12.2
+
+### Bug Fixes
+
+- solve issue when Jira is in subfolder environment
+
 ## 0.12.1
 
 ### Bug Fixes
