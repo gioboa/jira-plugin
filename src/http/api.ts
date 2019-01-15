@@ -34,17 +34,20 @@ export class Jira implements IJira {
     this.baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
 
     if (this.baseUrl && getGlobalStateConfiguration()) {
-      const parsedUrl = url.parse(this.baseUrl);
+      // prepare config for jira-connector
+      let host = this.baseUrl;
+      const protocol = host.indexOf('https://') >= 0 ? 'https' : 'http';
+      host = host.replace('https://', '').replace('http://', '');
+      const portPosition = host.indexOf(':');
+      const port = portPosition !== -1 ? host.substring(portPosition + 1) : undefined;
+      if (portPosition !== -1) {
+        host = host.substring(0, portPosition);
+      }
+      // TODO - manage subfolder
       // host from parsedUrl.href because the base url can have subfolder
-      const host = parsedUrl.href.replace(parsedUrl.protocol + '//', '');
+      // const host = parsedUrl.href.replace(parsedUrl.protocol + '//', '');
       const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
-
-      this.jiraInstance = new jiraClient({
-        host: host,
-        port: parsedUrl.port,
-        protocol: parsedUrl.protocol,
-        basic_auth: { username, password }
-      });
+      this.jiraInstance = new jiraClient({ host, port, protocol, basic_auth: { username, password } });
 
       // custom event
       // solve this issue -> https://github.com/floralvikings/jira-connector/issues/115
