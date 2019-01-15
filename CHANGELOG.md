@@ -1,3 +1,9 @@
+## 0.12.1
+
+### Bug Fixes
+
+- error when base url contain port definition
+
 ## 0.12.0
 
 ### Features
