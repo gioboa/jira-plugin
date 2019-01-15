@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { IWorkingIssue } from '../http/api.model';
 import state from '../state/state';
 import { Configuration } from './configuration.model';
-import { CONFIG_COUNTER, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR } from './constants';
+import { CONFIG, CONFIG_COUNTER, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR } from './constants';
 import { printErrorMessageInOutputAndShowAlert } from './log-utilities';
 
 export const configIsCorrect = (): boolean => {
@@ -23,7 +23,12 @@ const getConfiguration = (): Configuration | undefined => {
 // used for get only one setting
 export const getConfigurationByKey = (entry: string): string | undefined => {
   const config = getConfiguration();
-  return config && (<any>config).get(entry);
+  let result = config && (<any>config).get(entry);
+  // remove / at the end if exist
+  if (entry === CONFIG.BASE_URL && result && result.substring(result.length - 1) === '/') {
+    result = result.substring(0, result.length - 1);
+  }
+  return result;
 };
 
 // used for set only one setting
