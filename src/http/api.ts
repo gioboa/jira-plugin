@@ -24,7 +24,6 @@ import {
 } from './api.model';
 
 const jiraClient = require('jira-connector');
-const url = require('url');
 
 export class Jira implements IJira {
   jiraInstance: any;
@@ -43,9 +42,6 @@ export class Jira implements IJira {
       if (portPosition !== -1) {
         host = host.substring(0, portPosition);
       }
-      // TODO - manage subfolder
-      // host from parsedUrl.href because the base url can have subfolder
-      // const host = parsedUrl.href.replace(parsedUrl.protocol + '//', '');
       const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
       this.jiraInstance = new jiraClient({ host, port, protocol, basic_auth: { username, password } });
 
@@ -160,16 +156,13 @@ export class Jira implements IJira {
   }
 
   async getCreateIssueEpics(projectKey: string, maxResults: number): Promise<ICreateIssueEpic> {
-    const apiCallUrl = url.resolve(
-      this.baseUrl,
-      `/rest/greenhopper/1.0/epics?searchQuery=&projectKey=${projectKey}&maxResults=${maxResults}&hideDone=false`
+    return await this.customApiCall(
+      `${this.baseUrl}/rest/greenhopper/1.0/epics?searchQuery=&projectKey=${projectKey}&maxResults=${maxResults}&hideDone=false`
     );
-    return await this.customApiCall(apiCallUrl);
   }
 
   async getCreateIssueLabels(): Promise<{ suggestions: ILabel[] }> {
-    const apiCallUrl = url.resolve(this.baseUrl, '/rest/api/1.0/labels/suggest?query=');
-    return await this.customApiCall(apiCallUrl);
+    return await this.customApiCall(this.baseUrl + '/rest/api/1.0/labels/suggest?query=');
   }
 
   async getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }> {
