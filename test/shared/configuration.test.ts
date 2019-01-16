@@ -1,7 +1,6 @@
 import * as assert from 'assert';
-import { configuration } from '../../src/services';
+import ConfigurationService from '../../src/services/configuration.service';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../../src/shared/constants';
-import './services';
 
 suite('Configuration Tests', () => {
   const tests = [
@@ -41,7 +40,7 @@ suite('Configuration Tests', () => {
       equal: true
     }
   ];
-
+  const configuration = new ConfigurationService();
   tests.forEach(entry => {
     test(`Test ${entry.title} config`, () => {
       return configuration.setConfigurationByKey(entry.config, entry.value).then(() => {
