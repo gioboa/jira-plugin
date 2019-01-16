@@ -1,13 +1,11 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { ICreateIssueEpicList, IField, IFieldSchema, IIssue, ILabel } from '../http/api.model';
-import { getConfigurationByKey } from '../shared/configuration';
-import { IPickValue } from '../shared/configuration.model';
+import { IPickValue } from '../services/configuration.model';
 import { ASSIGNEES_MAX_RESULTS, CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
-import { jiraPluginDebugLog, printErrorMessageInOutput, printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
-import { selectIssueType } from '../shared/select-utilities';
-import state, { verifyCurrentProject } from '../state/state';
+import state, { verifyCurrentProject } from '../store/state';
 import openIssueCommand from './open-issue';
+import services from '../services';
 
 // this object store all user choices
 let newIssueIstance = {};
@@ -17,7 +15,7 @@ let preloadedListValues = {};
 let fieldsRequest = {};
 
 export default async function createIssueCommand(issueItem: IssueItem): Promise<void> {
-  const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+  const project = services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
     try {
       newIssueIstance = {};
@@ -27,7 +25,7 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
       const availableTypes = await state.jira.getAllIssueTypesWithFields(project);
       if (!!availableTypes) {
         // here the user select which type of issue create
-        const issueTypeSelected = await selectIssueType(false, availableTypes);
+        const issueTypeSelected = await services.selectValues.selectIssueType(false, availableTypes);
         if (!!issueTypeSelected) {
           // store project
           newIssueIstance = { ...newIssueIstance, project };
@@ -123,7 +121,7 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
         }
       }
     } catch (err) {
-      printErrorMessageInOutputAndShowAlert(err);
+      services.logger.printErrorMessageInOutputAndShowAlert(err);
     }
   }
 }
@@ -214,7 +212,10 @@ const manageSpecialFields = async (project: string, field: IField, fieldName: st
     (<any>preloadedListValues)[fieldName.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
   }
   if (isEpicLinkFieldSchema(field.schema)) {
-    const response = await state.jira.getCreateIssueEpics(getConfigurationByKey(CONFIG.WORKING_PROJECT) || '', SEARCH_MAX_RESULTS);
+    const response = await state.jira.getCreateIssueEpics(
+      services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '',
+      SEARCH_MAX_RESULTS
+    );
     // format issues in standard way
     if (!!response && !!response.epicLists) {
       const list: IIssue[] = [];
@@ -274,7 +275,7 @@ const retrieveValues = async (project: string, field: IField, fieldName: string)
       !isEpicLinkFieldSchema(field.schema)
     ) {
       // output log useful for remote debug
-      jiraPluginDebugLog(`field`, JSON.stringify(field));
+      services.logger.jiraPluginDebugLog(`field`, JSON.stringify(field));
       field.hideField = true;
     } else {
       // first of first special fields
@@ -310,7 +311,7 @@ const mandatoryFieldsOk = (fields: any): boolean => {
   for (const key in fields) {
     if (!!fields[key].required && !(<any>fieldsRequest)[key]) {
       // output log useful for remote debug
-      printErrorMessageInOutput(`${key} field missing : ${JSON.stringify(fields[key])}`);
+      services.logger.printErrorMessageInOutput(`${key} field missing : ${JSON.stringify(fields[key])}`);
       return false;
     }
   }

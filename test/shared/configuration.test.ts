@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import * as config from '../../src/shared/configuration';
+import { ConfigurationService } from '../../src/services/configuration.service';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../../src/shared/constants';
 
 suite('Configuration Tests', () => {
@@ -15,7 +15,7 @@ suite('Configuration Tests', () => {
       title: `${CONFIG.BASE_URL} 2`,
       config: CONFIG.BASE_URL,
       value: `${CONFIG.BASE_URL}_test2_value/`,
-      expected: `${CONFIG.BASE_URL}_test2_value/`,
+      expected: `${CONFIG.BASE_URL}_test2_value`,
       equal: true
     },
     {
@@ -40,11 +40,12 @@ suite('Configuration Tests', () => {
       equal: true
     }
   ];
+  const configuration = new ConfigurationService();
 
   tests.forEach(entry => {
     test(`Test ${entry.title} config`, () => {
-      return config.setConfigurationByKey(entry.config, entry.value).then(() => {
-        const actual = config.getConfigurationByKey(entry.config);
+      return configuration.setConfigurationByKey(entry.config, entry.value).then(() => {
+        const actual = configuration.getConfigurationByKey(entry.config);
         if (entry.equal) {
           assert.equal(entry.expected, actual);
         } else {
@@ -56,8 +57,8 @@ suite('Configuration Tests', () => {
 
   test(`Test password config`, () => {
     const password = 'my_password';
-    config.setGlobalStateConfiguration(password);
-    const result = config.getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR)[1];
+    configuration.setGlobalStateConfiguration(password);
+    const result = configuration.getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR)[1];
     assert.equal(password, result);
   });
 });

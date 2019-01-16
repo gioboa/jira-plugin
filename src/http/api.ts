@@ -1,6 +1,4 @@
-import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
-import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import {
   IAddComment,
   IAddCommentResponse,
@@ -22,6 +20,7 @@ import {
   IStatus,
   ITransitions
 } from './api.model';
+import services from '../services';
 
 const jiraClient = require('jira-connector');
 
@@ -30,9 +29,9 @@ export class Jira implements IJira {
   baseUrl: string;
 
   constructor() {
-    this.baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
+    this.baseUrl = services.configuration.getConfigurationByKey(CONFIG.BASE_URL) || '';
 
-    if (this.baseUrl && getGlobalStateConfiguration()) {
+    if (this.baseUrl && services.configuration.getGlobalStateConfiguration()) {
       // prepare config for jira-connector
       let host = this.baseUrl;
       const protocol = host.indexOf('https://') >= 0 ? 'https' : 'http';
@@ -42,7 +41,7 @@ export class Jira implements IJira {
       if (portPosition !== -1) {
         host = host.substring(0, portPosition);
       }
-      const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
+      const [username, password] = services.configuration.getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
       this.jiraInstance = new jiraClient({ host, port, protocol, basic_auth: { username, password } });
 
       // custom event
@@ -72,7 +71,7 @@ export class Jira implements IJira {
       };
       this.jiraInstance.project.customApiCall = customApiCall;
     } else {
-      printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
+      services.logger.printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
     }
   }
 

@@ -1,6 +1,6 @@
-import { selectProject } from '../shared/select-utilities';
-import { changeStateProject } from '../state/state';
+import services from '../services';
+import { changeStateProject } from '../store/state';
 
 export default async function setWorkingProjectCommand(): Promise<void> {
-  changeStateProject(await selectProject());
+  changeStateProject(await services.selectValues.selectProject());
 }

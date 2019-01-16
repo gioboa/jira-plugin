@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { STATUS_ICONS } from '../../shared/constants';
-import { getIconsPath } from '../../shared/utilities';
+import services from '../../services';
 
 export class FilterInfoItem extends vscode.TreeItem {
   constructor(project: string, filter: string, issueCounter: number) {
@@ -12,8 +12,8 @@ export class FilterInfoItem extends vscode.TreeItem {
   }
 
   iconPath = {
-    light: getIconsPath(`light/${STATUS_ICONS.DEFAULT.file}`),
-    dark: getIconsPath(`dark/${STATUS_ICONS.DEFAULT.file}`)
+    light: services.utilities.getIconsPath(`light/${STATUS_ICONS.DEFAULT.file}`),
+    dark: services.utilities.getIconsPath(`dark/${STATUS_ICONS.DEFAULT.file}`)
   };
 
   contextValue = 'FilterInfoItem';

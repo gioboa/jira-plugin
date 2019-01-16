@@ -1,23 +1,15 @@
 import * as vscode from 'vscode';
-import { JiraExplorer } from '../explorer/jira-explorer';
 import { Jira } from '../http/api';
 import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
-import { configIsCorrect, getConfigurationByKey, setConfigurationByKey, setGlobalWorkingIssue } from '../shared/configuration';
+import services from '../services';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
-import { GitIntegration } from '../shared/git-integration';
-import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
-import { StatusBarManager } from '../shared/status-bar';
-import { createDocumentLinkProvider } from '../shared/utilities';
 
-export interface State {
+export interface IState {
+  jira: IJira;
   context: vscode.ExtensionContext;
   channel: vscode.OutputChannel;
   documentLinkDisposable: vscode.Disposable;
-  statusBar: StatusBarManager;
-  gitIntegration: GitIntegration;
-  jiraExplorer: JiraExplorer;
-  jira: IJira;
   statuses: IStatus[];
   projects: IProject[];
   issues: IIssue[];
@@ -27,14 +19,11 @@ export interface State {
 }
 
 // initial state
-const state: State = {
+const state: IState = {
   jira: undefined as any,
   context: undefined as any,
   channel: undefined as any,
   documentLinkDisposable: undefined as any,
-  statusBar: undefined as any,
-  gitIntegration: undefined as any,
-  jiraExplorer: undefined as any,
   statuses: [],
   projects: [],
   issues: [],
@@ -58,10 +47,10 @@ export const connectToJira = async (): Promise<void> => {
     state.statuses.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
     state.projects = await state.jira.getProjects();
-    createDocumentLinkProvider(state.projects);
-    state.statusBar.updateWorkingProjectItem('');
+    services.utilities.createDocumentLinkProvider(state.projects);
+    services.statusBarManager.updateWorkingProjectItem('');
 
-    const project = getConfigurationByKey(CONFIG.WORKING_PROJECT);
+    const project = services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
     // refresh Jira explorer list
     if (project) {
       await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
@@ -69,17 +58,17 @@ export const connectToJira = async (): Promise<void> => {
       vscode.window.showWarningMessage("Working project isn't set.");
     }
   } catch (err) {
-    setConfigurationByKey(CONFIG.WORKING_PROJECT, '');
+    services.configuration.setConfigurationByKey(CONFIG.WORKING_PROJECT, '');
     setTimeout(() => {
-      state.statusBar.updateWorkingProjectItem('');
+      services.statusBarManager.updateWorkingProjectItem('');
     }, 1000);
     changeStateIssues('', '', []);
-    printErrorMessageInOutputAndShowAlert(err);
+    services.logger.printErrorMessageInOutputAndShowAlert(err);
   }
 };
 
 export const canExecuteJiraAPI = (): boolean => {
-  return state.jira && configIsCorrect();
+  return state.jira && services.configuration.configIsCorrect();
 };
 
 export const verifyCurrentProject = (project: string | undefined): boolean => {
@@ -87,10 +76,10 @@ export const verifyCurrentProject = (project: string | undefined): boolean => {
 };
 
 export const changeStateProject = (project: string): void => {
-  if (getConfigurationByKey(CONFIG.WORKING_PROJECT) !== project) {
-    setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
+  if (services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) !== project) {
+    services.configuration.setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
     // update project item in the status bar
-    state.statusBar.updateWorkingProjectItem(project);
+    services.statusBarManager.updateWorkingProjectItem(project);
     // loading in Jira explorer
     changeStateIssues(LOADING.text, '', []);
     // launch search for the new project
@@ -102,13 +91,13 @@ export const changeStateIssues = (filter: string, jql: string, issues: IIssue[])
   state.currentFilter = filter;
   state.currentJQL = jql;
   state.issues = issues;
-  state.jiraExplorer.refresh();
+  services.jiraExplorer.refresh();
 };
 
 export const changeStateWorkingIssue = async (issue: IIssue, trackingTime: number): Promise<void> => {
   const awayTime: number = 0; // FIXME: We don't need awayTime when changing issues, not sure best way to handle this.
   state.workingIssue = { issue, trackingTime, awayTime };
-  state.statusBar.updateWorkingIssueItem(false);
+  services.statusBarManager.updateWorkingIssueItem(false);
 };
 
 export const incrementStateWorkingIssueTimePerSecond = (): void => {
@@ -116,7 +105,7 @@ export const incrementStateWorkingIssueTimePerSecond = (): void => {
   // prevent writing to much on storage
   if (state.workingIssue.trackingTime % 60 === 0) {
     if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
-      setGlobalWorkingIssue(state.context, state.workingIssue);
+      services.configuration.setGlobalWorkingIssue(state.context, state.workingIssue);
     }
   }
 };
@@ -131,7 +120,7 @@ export const isWorkingIssue = (issueKey: string): boolean => {
 
 export const addAdditionalStatuses = () => {
   try {
-    const additionalStatuses = (getConfigurationByKey(CONFIG.ADDITIONAL_STATUSES) || '').toString();
+    const additionalStatuses = (services.configuration.getConfigurationByKey(CONFIG.ADDITIONAL_STATUSES) || '').toString();
     if (!!additionalStatuses) {
       const list = additionalStatuses.split(',');
       list.forEach(status => {
@@ -145,6 +134,6 @@ export const addAdditionalStatuses = () => {
       });
     }
   } catch (err) {
-    printErrorMessageInOutputAndShowAlert(err);
+    services.logger.printErrorMessageInOutputAndShowAlert(err);
   }
 };

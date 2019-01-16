@@ -1,10 +1,9 @@
 import { EventEmitter } from 'events';
 import * as vscode from 'vscode';
 import { IIssue } from '../http/api.model';
-import { getConfigurationByKey } from '../shared/configuration';
 import { CONFIG, NO, YES } from '../shared/constants';
-import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
-import state, { changeStateProject } from '../state/state';
+import state, { changeStateProject } from '../store/state';
+import services from '.';
 
 /**
  * TODO: overengineering. Implement simplier solution
@@ -70,14 +69,14 @@ interface Ticket {
   issue: string;
 }
 
-export class GitIntegration {
+export class GitIntegrationService {
   private enabled = false;
   private configWatcher: vscode.Disposable;
   private watcher: BranchWatcher | undefined;
   private currentBranch: string | undefined;
 
   get isEnabled(): boolean {
-    return !!getConfigurationByKey(CONFIG.GIT_INTEGRATION_ENABLED);
+    return !!services.configuration.getConfigurationByKey(CONFIG.GIT_INTEGRATION_ENABLED);
   }
 
   constructor() {
@@ -132,7 +131,7 @@ export class GitIntegration {
       changeStateProject(ticket.project);
       vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', undefined, issue);
     } catch (e) {
-      printErrorMessageInOutputAndShowAlert(e);
+      services.logger.printErrorMessageInOutputAndShowAlert(e);
     }
   }
 

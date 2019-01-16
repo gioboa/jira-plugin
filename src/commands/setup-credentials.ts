@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import { getConfigurationByKey, setConfigurationByKey, setGlobalStateConfiguration } from '../shared/configuration';
 import { CONFIG } from '../shared/constants';
-import { connectToJira } from '../state/state';
+import { connectToJira } from '../store/state';
+import services from '../services';
 
 export default async function setupCredentials(): Promise<void> {
-  const baseUrl = getConfigurationByKey(CONFIG.BASE_URL);
+  const baseUrl = services.configuration.getConfigurationByKey(CONFIG.BASE_URL);
 
   if (baseUrl) {
     // ask for reset prev configuration
@@ -15,7 +15,7 @@ export default async function setupCredentials(): Promise<void> {
   }
 
   // store settings
-  setConfigurationByKey(
+  services.configuration.setConfigurationByKey(
     CONFIG.BASE_URL,
     await vscode.window.showInputBox({
       ignoreFocusOut: true,
@@ -24,7 +24,7 @@ export default async function setupCredentials(): Promise<void> {
     })
   );
 
-  setConfigurationByKey(
+  services.configuration.setConfigurationByKey(
     CONFIG.USERNAME,
     await vscode.window.showInputBox({
       ignoreFocusOut: true,
@@ -33,7 +33,7 @@ export default async function setupCredentials(): Promise<void> {
     })
   );
 
-  setGlobalStateConfiguration(
+  services.configuration.setGlobalStateConfiguration(
     await vscode.window.showInputBox({
       ignoreFocusOut: true,
       password: true,
