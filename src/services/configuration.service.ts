@@ -3,9 +3,9 @@ import { IWorkingIssue } from '../http/api.model';
 import { CONFIG, CONFIG_COUNTER, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR } from '../shared/constants';
 import state from '../store/state';
 import { IConfiguration } from './configuration.model';
-import services from '.';
+import { logger } from '.';
 
-export class ConfigurationService {
+export default class ConfigurationService {
   public configIsCorrect(): boolean {
     const [username, password] = this.getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
     const config = this.getConfiguration();
@@ -16,7 +16,7 @@ export class ConfigurationService {
   private getConfiguration(): IConfiguration | undefined {
     const config: IConfiguration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
     if (!config) {
-      services.logger.printErrorMessageInOutputAndShowAlert('No configuration found. Probably an error in vscode');
+      logger.printErrorMessageInOutputAndShowAlert('No configuration found. Probably an error in vscode');
     }
     return config;
   }

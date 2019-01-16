@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import services from '../services';
 import { CONFIG, LIST_MAX_RESULTS, LOADING } from '../shared/constants';
+import state from '../store/state';
 import { DividerItem } from './item/divider-item';
 import { FilterInfoItem } from './item/filter-info-item';
 import { IssueItem } from './item/issue-item';
@@ -8,9 +8,9 @@ import { LimitInfoItem } from './item/limit-info';
 import { LoadingItem } from './item/loading-item';
 import { NoResultItem } from './item/no-result-item';
 import { StatusItem } from './item/status-item';
-import state from '../store/state';
+import { configuration } from '../services';
 
-export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
+export default class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<IssueItem | undefined> = new vscode.EventEmitter<IssueItem | undefined>();
   readonly onDidChangeTreeData: vscode.Event<IssueItem | undefined> = this._onDidChangeTreeData.event;
 
@@ -25,7 +25,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
   }
 
   async getChildren(element?: IssueItem): Promise<any[]> {
-    let project = await services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
+    let project = await configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
     const issues = state.issues;
     // generate all the item from issues saved in global state
     if (issues.length > 0) {

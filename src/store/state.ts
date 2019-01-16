@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { Jira } from '../http/api';
 import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
-import services from '../services';
+import { configuration, jiraExplorer, logger, statusBar, utilities } from '../services';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
 
 export interface IState {
@@ -47,10 +47,10 @@ export const connectToJira = async (): Promise<void> => {
     state.statuses.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
     state.projects = await state.jira.getProjects();
-    services.utilities.createDocumentLinkProvider(state.projects);
-    services.statusBarManager.updateWorkingProjectItem('');
+    utilities.createDocumentLinkProvider(state.projects);
+    statusBar.updateWorkingProjectItem('');
 
-    const project = services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
+    const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
     // refresh Jira explorer list
     if (project) {
       await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
@@ -58,17 +58,17 @@ export const connectToJira = async (): Promise<void> => {
       vscode.window.showWarningMessage("Working project isn't set.");
     }
   } catch (err) {
-    services.configuration.setConfigurationByKey(CONFIG.WORKING_PROJECT, '');
+    configuration.setConfigurationByKey(CONFIG.WORKING_PROJECT, '');
     setTimeout(() => {
-      services.statusBarManager.updateWorkingProjectItem('');
+      statusBar.updateWorkingProjectItem('');
     }, 1000);
     changeStateIssues('', '', []);
-    services.logger.printErrorMessageInOutputAndShowAlert(err);
+    logger.printErrorMessageInOutputAndShowAlert(err);
   }
 };
 
 export const canExecuteJiraAPI = (): boolean => {
-  return state.jira && services.configuration.configIsCorrect();
+  return state.jira && configuration.configIsCorrect();
 };
 
 export const verifyCurrentProject = (project: string | undefined): boolean => {
@@ -76,10 +76,10 @@ export const verifyCurrentProject = (project: string | undefined): boolean => {
 };
 
 export const changeStateProject = (project: string): void => {
-  if (services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) !== project) {
-    services.configuration.setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
+  if (configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) !== project) {
+    configuration.setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
     // update project item in the status bar
-    services.statusBarManager.updateWorkingProjectItem(project);
+    statusBar.updateWorkingProjectItem(project);
     // loading in Jira explorer
     changeStateIssues(LOADING.text, '', []);
     // launch search for the new project
@@ -91,13 +91,13 @@ export const changeStateIssues = (filter: string, jql: string, issues: IIssue[])
   state.currentFilter = filter;
   state.currentJQL = jql;
   state.issues = issues;
-  services.jiraExplorer.refresh();
+  jiraExplorer.refresh();
 };
 
 export const changeStateWorkingIssue = async (issue: IIssue, trackingTime: number): Promise<void> => {
   const awayTime: number = 0; // FIXME: We don't need awayTime when changing issues, not sure best way to handle this.
   state.workingIssue = { issue, trackingTime, awayTime };
-  services.statusBarManager.updateWorkingIssueItem(false);
+  statusBar.updateWorkingIssueItem(false);
 };
 
 export const incrementStateWorkingIssueTimePerSecond = (): void => {
@@ -105,7 +105,7 @@ export const incrementStateWorkingIssueTimePerSecond = (): void => {
   // prevent writing to much on storage
   if (state.workingIssue.trackingTime % 60 === 0) {
     if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
-      services.configuration.setGlobalWorkingIssue(state.context, state.workingIssue);
+      configuration.setGlobalWorkingIssue(state.context, state.workingIssue);
     }
   }
 };
@@ -120,7 +120,7 @@ export const isWorkingIssue = (issueKey: string): boolean => {
 
 export const addAdditionalStatuses = () => {
   try {
-    const additionalStatuses = (services.configuration.getConfigurationByKey(CONFIG.ADDITIONAL_STATUSES) || '').toString();
+    const additionalStatuses = (configuration.getConfigurationByKey(CONFIG.ADDITIONAL_STATUSES) || '').toString();
     if (!!additionalStatuses) {
       const list = additionalStatuses.split(',');
       list.forEach(status => {
@@ -134,6 +134,6 @@ export const addAdditionalStatuses = () => {
       });
     }
   } catch (err) {
-    services.logger.printErrorMessageInOutputAndShowAlert(err);
+    logger.printErrorMessageInOutputAndShowAlert(err);
   }
 };

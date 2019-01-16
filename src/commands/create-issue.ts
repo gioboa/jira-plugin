@@ -5,7 +5,7 @@ import { IPickValue } from '../services/configuration.model';
 import { ASSIGNEES_MAX_RESULTS, CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
 import state, { verifyCurrentProject } from '../store/state';
 import openIssueCommand from './open-issue';
-import services from '../services';
+import { configuration, selectValues, logger } from '../services';
 
 // this object store all user choices
 let newIssueIstance = {};
@@ -15,7 +15,7 @@ let preloadedListValues = {};
 let fieldsRequest = {};
 
 export default async function createIssueCommand(issueItem: IssueItem): Promise<void> {
-  const project = services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+  const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
     try {
       newIssueIstance = {};
@@ -25,7 +25,7 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
       const availableTypes = await state.jira.getAllIssueTypesWithFields(project);
       if (!!availableTypes) {
         // here the user select which type of issue create
-        const issueTypeSelected = await services.selectValues.selectIssueType(false, availableTypes);
+        const issueTypeSelected = await selectValues.selectIssueType(false, availableTypes);
         if (!!issueTypeSelected) {
           // store project
           newIssueIstance = { ...newIssueIstance, project };
@@ -121,7 +121,7 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
         }
       }
     } catch (err) {
-      services.logger.printErrorMessageInOutputAndShowAlert(err);
+      logger.printErrorMessageInOutputAndShowAlert(err);
     }
   }
 }
@@ -213,7 +213,7 @@ const manageSpecialFields = async (project: string, field: IField, fieldName: st
   }
   if (isEpicLinkFieldSchema(field.schema)) {
     const response = await state.jira.getCreateIssueEpics(
-      services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '',
+      configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '',
       SEARCH_MAX_RESULTS
     );
     // format issues in standard way
@@ -275,7 +275,7 @@ const retrieveValues = async (project: string, field: IField, fieldName: string)
       !isEpicLinkFieldSchema(field.schema)
     ) {
       // output log useful for remote debug
-      services.logger.jiraPluginDebugLog(`field`, JSON.stringify(field));
+      logger.jiraPluginDebugLog(`field`, JSON.stringify(field));
       field.hideField = true;
     } else {
       // first of first special fields
@@ -311,7 +311,7 @@ const mandatoryFieldsOk = (fields: any): boolean => {
   for (const key in fields) {
     if (!!fields[key].required && !(<any>fieldsRequest)[key]) {
       // output log useful for remote debug
-      services.logger.printErrorMessageInOutput(`${key} field missing : ${JSON.stringify(fields[key])}`);
+      logger.printErrorMessageInOutput(`${key} field missing : ${JSON.stringify(fields[key])}`);
       return false;
     }
   }

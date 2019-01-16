@@ -1,6 +1,6 @@
 import { NO_WORKING_ISSUE } from '../shared/constants';
 import state, { canExecuteJiraAPI } from '../store/state';
-import services from '../services';
+import { logger } from '../services';
 
 export default async function issueAddWorklogCommand(issueKey: string, timeSpentSeconds: number, comment: string): Promise<void> {
   try {
@@ -14,6 +14,6 @@ export default async function issueAddWorklogCommand(issueKey: string, timeSpent
       }
     }
   } catch (err) {
-    services.logger.printErrorMessageInOutputAndShowAlert(err);
+    logger.printErrorMessageInOutputAndShowAlert(err);
   }
 }

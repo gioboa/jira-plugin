@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import services from '.';
+import { configuration, logger, utilities } from '.';
 import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from '../http/api.model';
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
@@ -24,7 +24,7 @@ export default class SelectCValuesService {
       if (canExecuteJiraAPI()) {
         if (state.projects.length === 0) {
           state.projects = await state.jira.getProjects();
-          services.utilities.createDocumentLinkProvider(state.projects);
+          utilities.createDocumentLinkProvider(state.projects);
         }
         const picks = state.projects.map(project => ({
           pickValue: project.key,
@@ -35,7 +35,7 @@ export default class SelectCValuesService {
         return selected ? selected.pickValue : '';
       }
     } catch (err) {
-      services.logger.printErrorMessageInOutputAndShowAlert(err);
+      logger.printErrorMessageInOutputAndShowAlert(err);
     }
     return '';
   }
@@ -45,7 +45,7 @@ export default class SelectCValuesService {
     if (canExecuteJiraAPI()) {
       const picks = state.statuses.map(status => ({
         pickValue: status.name,
-        label: services.utilities.addStatusIcon(status.name, true),
+        label: utilities.addStatusIcon(status.name, true),
         description: status.description
       }));
       const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Filter by STATUS`, matchOnDescription: true });
@@ -67,7 +67,7 @@ export default class SelectCValuesService {
 
   // return the filter (used in filter-info-item) and the JQL
   public async getFilterAndJQL(mode: string, project: string): Promise<string[]> {
-    services.utilities.checkCounter();
+    utilities.checkCounter();
     switch (mode) {
       case SEARCH_MODE.ALL: {
         return [`ALL ISSUES`, `project = ${project} ORDER BY status ASC, updated DESC`];
@@ -119,7 +119,7 @@ export default class SelectCValuesService {
         return [state.currentFilter, state.currentJQL];
       }
       case SEARCH_MODE.MY_WORKING_ISSUES: {
-        const statuses = services.utilities.workingIssueStatuses();
+        const statuses = utilities.workingIssueStatuses();
         return [
           `STATUS: ${statuses}`,
           `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
@@ -139,18 +139,18 @@ export default class SelectCValuesService {
   public async selectIssue(mode: string, filterAndJQL?: string[]): Promise<void> {
     try {
       if (canExecuteJiraAPI()) {
-        const project = services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
+        const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
           const [filter, jql] = filterAndJQL || (await this.getFilterAndJQL(mode, project || ''));
           changeStateIssues(LOADING.text, '', []);
           if (!!jql) {
-            services.logger.jiraPluginDebugLog(`${filter} jql`, jql);
+            logger.jiraPluginDebugLog(`${filter} jql`, jql);
             // call Jira API with the generated JQL
             const searchResult = await state.jira.search({
               jql,
               maxResults: mode !== SEARCH_MODE.FAVOURITES_FILTERS ? LIST_MAX_RESULTS : SEARCH_MAX_RESULTS
             });
-            services.logger.jiraPluginDebugLog(`issues`, JSON.stringify(searchResult));
+            logger.jiraPluginDebugLog(`issues`, JSON.stringify(searchResult));
             if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
               // exclude issues with project key different from current working project
               searchResult.issues = searchResult.issues.filter((issue: IIssue) => (issue.fields.project.key || '') === project);
@@ -172,7 +172,7 @@ export default class SelectCValuesService {
       }
     } catch (e) {
       changeStateIssues('', '', []);
-      services.logger.printErrorMessageInOutputAndShowAlert(e);
+      logger.printErrorMessageInOutputAndShowAlert(e);
     }
   }
 
@@ -181,7 +181,7 @@ export default class SelectCValuesService {
     let issues: IIssue[] = [];
     try {
       if (canExecuteJiraAPI()) {
-        const project = services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
+        const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
           const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project || '');
           if (!!jql) {
@@ -191,7 +191,7 @@ export default class SelectCValuesService {
         }
       }
     } catch (err) {
-      services.logger.printErrorMessageInOutputAndShowAlert(err);
+      logger.printErrorMessageInOutputAndShowAlert(err);
     }
     return issues;
   }
@@ -200,7 +200,7 @@ export default class SelectCValuesService {
   public async selectChangeWorkingIssue(): Promise<IIssue | undefined> {
     try {
       if (canExecuteJiraAPI()) {
-        const project = services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
+        const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
           const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project || '');
           if (!!jql) {
@@ -209,7 +209,7 @@ export default class SelectCValuesService {
             if (issues.issues && issues.issues.length > 0) {
               const picks = issues.issues.map(issue => ({
                 pickValue: issue,
-                label: services.utilities.addStatusIcon(issue.fields.status.name, false) + ` ${issue.key}`,
+                label: utilities.addStatusIcon(issue.fields.status.name, false) + ` ${issue.key}`,
                 description: issue.fields.summary
               }));
               picks.unshift(new NoWorkingIssuePick());
@@ -234,7 +234,7 @@ export default class SelectCValuesService {
         }
       }
     } catch (err) {
-      services.logger.printErrorMessageInOutputAndShowAlert(err);
+      logger.printErrorMessageInOutputAndShowAlert(err);
     }
     return undefined;
   }
@@ -247,7 +247,7 @@ export default class SelectCValuesService {
     preLoadedPicks: IAssignee[] | undefined
   ): Promise<string | IAssignee> {
     try {
-      const project = services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+      const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
       if (verifyCurrentProject(project)) {
         const assignees = preLoadedPicks || (await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS }));
         const picks = (assignees || [])
@@ -275,7 +275,7 @@ export default class SelectCValuesService {
         throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
       }
     } catch (err) {
-      services.logger.printErrorMessageInOutputAndShowAlert(err);
+      logger.printErrorMessageInOutputAndShowAlert(err);
     }
     return '';
   }
@@ -296,7 +296,7 @@ export default class SelectCValuesService {
       });
       return selected ? selected.pickValue : undefined;
     } catch (err) {
-      services.logger.printErrorMessageInOutputAndShowAlert(err);
+      logger.printErrorMessageInOutputAndShowAlert(err);
     }
     return undefined;
   }
@@ -321,7 +321,7 @@ export default class SelectCValuesService {
   }
 
   public async selectStatusAndAssignee(): Promise<{ status: string; assignee: string }> {
-    const project = services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+    const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
       const { firstChoise, secondChoise } = await this.doubleSelection(
         this.selectStatus,
@@ -349,7 +349,7 @@ export default class SelectCValuesService {
       });
       return selected ? selected.pickValue : undefined;
     } catch (err) {
-      services.logger.printErrorMessageInOutputAndShowAlert(err);
+      logger.printErrorMessageInOutputAndShowAlert(err);
     }
     return undefined;
   }
@@ -358,7 +358,7 @@ export default class SelectCValuesService {
   public async selectFavoriteFilters(): Promise<IFavouriteFilter | undefined> {
     try {
       if (canExecuteJiraAPI()) {
-        const project = services.configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+        const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
         if (verifyCurrentProject(project)) {
           const favFilters = await state.jira.getFavoriteFilters();
           if (favFilters && favFilters.length > 0) {
@@ -384,7 +384,7 @@ export default class SelectCValuesService {
         }
       }
     } catch (err) {
-      services.logger.printErrorMessageInOutputAndShowAlert(err);
+      logger.printErrorMessageInOutputAndShowAlert(err);
     }
     return undefined;
   }

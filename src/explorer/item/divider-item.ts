@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { DIVIDER } from '../../shared/constants';
-import services from '../../services';
+import { utilities } from '../../services';
 
 export class DividerItem extends vscode.TreeItem {
   constructor(label: string, collapsibleState?: vscode.TreeItemCollapsibleState) {
@@ -12,8 +12,8 @@ export class DividerItem extends vscode.TreeItem {
   }
 
   iconPath = {
-    light: services.utilities.getIconsPath(`light/${DIVIDER.file}`),
-    dark: services.utilities.getIconsPath(`dark/${DIVIDER.file}`)
+    light: utilities.getIconsPath(`light/${DIVIDER.file}`),
+    dark: utilities.getIconsPath(`dark/${DIVIDER.file}`)
   };
 
   contextValue = 'DividerItem';

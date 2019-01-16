@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import state from '../store/state';
 
-export class LoggerService {
+export default class LoggerService {
   public printErrorMessageInOutputAndShowAlert(err: any) {
     if (state.channel) {
       vscode.window.showErrorMessage(`Error: Check logs in Jira Plugin terminal output.`);

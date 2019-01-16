@@ -11,10 +11,10 @@ import openIssueCommand from './open-issue';
 import setWorkingIssueCommand from './set-working-issue';
 import setWorkingProjectCommand from './set-working-project';
 import setupCredentials from './setup-credentials';
-import services from '../services';
+import { selectValues, utilities } from '../services';
 
 const { registerCommand } = vscode.commands;
-const issueSelector = (mode: string) => () => services.selectValues.selectIssue(mode);
+const issueSelector = (mode: string) => () => selectValues.selectIssue(mode);
 
 export default {
   /**
@@ -30,7 +30,7 @@ export default {
       // working project / issue
       registerCommand('jira-plugin.setWorkingProjectCommand', setWorkingProjectCommand),
       registerCommand('jira-plugin.setWorkingIssueCommand', setWorkingIssueCommand),
-      registerCommand('jira-plugin.insertWorkingIssueComment', services.utilities.insertWorkingIssueComment),
+      registerCommand('jira-plugin.insertWorkingIssueComment', utilities.insertWorkingIssueComment),
       registerCommand('jira-plugin.issueAddWorklogCommand', issueAddWorklogCommand),
 
       // explorer header
@@ -52,7 +52,7 @@ export default {
       registerCommand('jira-plugin.changeIssueAssigneeCommand', changeIssueAssigneeCommand),
       registerCommand('jira-plugin.issueAddCommentCommand', issueAddCommentCommand),
       registerCommand('jira-plugin.openIssueCommand', openIssueCommand),
-      registerCommand('jira-plugin.copyJiraSummary', services.utilities.copyToClipboard),
+      registerCommand('jira-plugin.copyJiraSummary', utilities.copyToClipboard),
 
       // auxilary commands
       registerCommand('jira-plugin.openGitHubRepoCommand', openGitHubRepoCommand)

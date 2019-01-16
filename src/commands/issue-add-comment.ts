@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { CONFIG } from '../shared/constants';
 import state, { canExecuteJiraAPI } from '../store/state';
-import services from '../services';
+import { selectValues, logger, configuration } from '../services';
 
 export default async function issueAddCommentCommand(issueItem: IssueItem): Promise<void> {
   try {
@@ -16,11 +16,11 @@ export default async function issueAddCommentCommand(issueItem: IssueItem): Prom
         // ask for assignee if there is one or more [@] in the comment
         const num = (text.match(new RegExp('[@]', 'g')) || []).length;
         for (let i = 0; i < num; i++) {
-          const assignee = await services.selectValues.selectAssignee(false, false, true, undefined);
+          const assignee = await selectValues.selectAssignee(false, false, true, undefined);
           if (!!assignee) {
             text = text.replace('[@]', `[~${assignee}]`);
           } else {
-            services.logger.printErrorMessageInOutputAndShowAlert('Abort command, wrong parameter.');
+            logger.printErrorMessageInOutputAndShowAlert('Abort command, wrong parameter.');
             return;
           }
         }
@@ -30,7 +30,7 @@ export default async function issueAddCommentCommand(issueItem: IssueItem): Prom
         // modal
         const action = await vscode.window.showInformationMessage('Comment created', 'Open in browser');
         if (action === 'Open in browser') {
-          const baseUrl = services.configuration.getConfigurationByKey(CONFIG.BASE_URL) || '';
+          const baseUrl = configuration.getConfigurationByKey(CONFIG.BASE_URL) || '';
           const url =
             `${baseUrl}/browse/${issue.key}` +
             `?focusedCommentId=${response.id}` +
@@ -41,10 +41,10 @@ export default async function issueAddCommentCommand(issueItem: IssueItem): Prom
       }
     } else {
       if (canExecuteJiraAPI()) {
-        services.logger.printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
+        logger.printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
       }
     }
   } catch (err) {
-    services.logger.printErrorMessageInOutputAndShowAlert(err);
+    logger.printErrorMessageInOutputAndShowAlert(err);
   }
 }

@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import commands from './commands';
-import services from './services';
-import { GitIntegrationService } from './services/git-integration.service';
-import { StatusBarService } from './services/status-bar.service';
+import './services';
+import { gitIntegration, jiraExplorer, statusBar } from './services';
 import { CONFIG_NAME } from './shared/constants';
 import state, { connectToJira } from './store/state';
 
@@ -13,11 +12,9 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
   state.channel = channel;
   context.subscriptions.push(channel);
   state.context = context;
-  services.gitIntegration = new GitIntegrationService();
-  services.statusBarManager = new StatusBarService();
-  vscode.window.registerTreeDataProvider('jiraExplorer', services.jiraExplorer);
-  context.subscriptions.push(services.statusBarManager);
-  context.subscriptions.push(services.gitIntegration);
+  vscode.window.registerTreeDataProvider('jiraExplorer', jiraExplorer);
+  context.subscriptions.push(statusBar);
+  context.subscriptions.push(gitIntegration);
   context.subscriptions.push(...commands.register());
   // create Jira Instance and try to connect
   await connectToJira();

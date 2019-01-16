@@ -6,9 +6,9 @@ import { IProject } from '../http/api.model';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS, LATER, NO, STATUS_ICONS, YES } from '../shared/constants';
 import { IssueLinkProvider } from '../shared/document-link-provider';
 import state from '../store/state';
-import services from '.';
+import { logger, configuration } from '.';
 
-export class UtilitiesService {
+export default class UtilitiesService {
   // generate icon + status
   addStatusIcon(status: string, withDescription: boolean): string {
     let icon = STATUS_ICONS.DEFAULT.icon;
@@ -38,7 +38,7 @@ export class UtilitiesService {
   }
 
   workingIssueStatuses(): string {
-    let statusList = (services.configuration.getConfigurationByKey(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
+    let statusList = (configuration.getConfigurationByKey(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
       .split(',')
       .map((status: string) => status.trim())
       .filter((status: string) => state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
@@ -48,25 +48,25 @@ export class UtilitiesService {
   }
 
   async checkCounter(): Promise<void> {
-    const count = services.configuration.getGlobalCounter(state.context) || 0;
+    const count = configuration.getGlobalCounter(state.context) || 0;
     if (count !== -1) {
       if (count % 20 === 0 && count > 0) {
         let action = await vscode.window.showInformationMessage(`Star Jira Plugin on GitHub?`, YES, LATER, NO);
         switch (action) {
           case NO: {
-            services.configuration.setGlobalCounter(state.context, -1);
+            configuration.setGlobalCounter(state.context, -1);
             break;
           }
           case YES: {
             vscode.commands.executeCommand('jira-plugin.openGitHubRepoCommand');
-            services.configuration.setGlobalCounter(state.context, -1);
+            configuration.setGlobalCounter(state.context, -1);
             break;
           }
           default:
-            services.configuration.setGlobalCounter(state.context, count + 1);
+            configuration.setGlobalCounter(state.context, count + 1);
         }
       } else {
-        services.configuration.setGlobalCounter(state.context, count + 1);
+        configuration.setGlobalCounter(state.context, count + 1);
       }
     }
   }
@@ -76,7 +76,7 @@ export class UtilitiesService {
       copyPaste.copy(issue.label);
       vscode.window.showInformationMessage('Jira Plugin - Copied to clipboard');
     } else {
-      services.logger.printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
+      logger.printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
     }
   }
 
