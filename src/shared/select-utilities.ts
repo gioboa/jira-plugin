@@ -71,7 +71,7 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
   checkCounter();
   switch (mode) {
     case SEARCH_MODE.ALL: {
-      return [`ALL ISSUES`, `project = ${project} ORDER BY status ASC, updated DESC`];
+      return [`ALL ISSUES`, `project = '${project}' ORDER BY status ASC, updated DESC`];
     }
     case SEARCH_MODE.ID: {
       const id = await selectID();
@@ -83,7 +83,7 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     case SEARCH_MODE.STATUS: {
       const status = await selectStatus();
       if (!!status) {
-        return [`STATUS: ${status}`, `project = ${project} AND status = '${status}' ORDER BY status ASC, updated DESC`];
+        return [`STATUS: ${status}`, `project = '${project}' AND status = '${status}' ORDER BY status ASC, updated DESC`];
       }
       break;
     }
@@ -92,7 +92,7 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
       if (!!status) {
         return [
           `STATUS: ${status} ASSIGNEE: you`,
-          `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
+          `project = '${project}' AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
         ];
       }
       break;
@@ -102,7 +102,7 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
       if (!!status && !!assignee) {
         return [
           `STATUS: ${status} ASSIGNEE: ${assignee}`,
-          `project = ${project} AND status = '${status}' AND assignee = ${
+          `project = '${project}' AND status = '${status}' AND assignee = ${
             assignee !== UNASSIGNED ? `'${assignee}'` : `null`
           } ORDER BY status ASC, updated DESC`
         ];
@@ -112,7 +112,7 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
     case SEARCH_MODE.SUMMARY: {
       const summary = await selectSummary();
       if (!!summary) {
-        return [`SUMMARY: ${summary}`, `project in (${project}) AND summary ~ '${summary}' ORDER BY status ASC, updated DESC`];
+        return [`SUMMARY: ${summary}`, `project = '${project}' AND summary ~ '${summary}' ORDER BY status ASC, updated DESC`];
       }
       break;
     }
@@ -123,13 +123,13 @@ const getFilterAndJQL = async (mode: string, project: string): Promise<string[]>
       const statuses = workingIssueStatuses();
       return [
         `STATUS: ${statuses}`,
-        `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
+        `project = '${project}' AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
       ];
     }
     case SEARCH_MODE.CURRENT_SPRINT: {
       return [
         `CURRENT SPRINT`,
-        `project = ${project} AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`
+        `project = '${project}' AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`
       ];
     }
   }
