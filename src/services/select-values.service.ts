@@ -17,7 +17,7 @@ import {
 } from '../shared/constants';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../store/state';
 
-export default class SelectCValuesService {
+export default class SelectValuesService {
   // selection for projects
   public async selectProject(): Promise<string> {
     try {
