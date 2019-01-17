@@ -27,10 +27,8 @@ export default class LoggerService {
   }
 
   public jiraPluginDebugLog(message: string, value: any) {
-    if (this.debugMode()) {
-      if (state.channel) {
-        state.channel.append(`${message}: ${value}\n`);
-      }
+    if (this.debugMode() && state.channel) {
+      state.channel.append(`${message}: ${value}\n`);
     }
   }
 }

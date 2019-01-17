@@ -13,7 +13,7 @@ export default class StatusBarService {
   constructor(configuration: ConfigurationService) {
     this.workingIssueItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     this.workingProjectItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 200);
-    this.awayTimeout = parseInt(configuration.getConfigurationByKey(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) || '30', 10) * 60;
+    this.awayTimeout = parseInt(configuration.get(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) || '30', 10) * 60;
   }
 
   // setup working project item
@@ -22,13 +22,13 @@ export default class StatusBarService {
       return;
     }
     if (!project) {
-      project = (await configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT)) || '';
+      project = (await configuration.get(CONFIG.WORKING_PROJECT)) || '';
     }
     this.workingProjectItem.tooltip = 'Set working project';
     this.workingProjectItem.command = 'jira-plugin.setWorkingProjectCommand';
     this.workingProjectItem.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
     this.workingProjectItem.show();
-    if (configuration.getConfigurationByKey(CONFIG.ENABLE_WORKING_ISSUE)) {
+    if (configuration.get(CONFIG.ENABLE_WORKING_ISSUE)) {
       this.updateWorkingIssueItem(true);
     }
   }
@@ -85,8 +85,8 @@ export default class StatusBarService {
   public startWorkingIssueInterval(): void {
     this.clearWorkingIssueInterval();
     this.intervalId = setInterval(() => {
-      if (vscode.window.state.focused || configuration.getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.ALWAYS) {
-        if (configuration.getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
+      if (vscode.window.state.focused || configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.ALWAYS) {
+        if (configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
           // If we are coming back from an away period catch up our logging time
           // If the away time was > awayTimeout, workingIssue.awayTime will be -1, so we won't log the away time.
           if (state.workingIssue.awayTime && state.workingIssue.awayTime > 0) {
@@ -97,7 +97,7 @@ export default class StatusBarService {
         }
         // Update as normal
         incrementStateWorkingIssueTimePerSecond();
-      } else if (configuration.getConfigurationByKey(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
+      } else if (configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
         // If we are away from the Window capture the time, if it's less than our awayTimeout
         if (state.workingIssue.awayTime >= 0) {
           if (this.awayTimeout - state.workingIssue.awayTime > 0) {

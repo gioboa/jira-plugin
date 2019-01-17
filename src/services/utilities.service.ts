@@ -38,7 +38,7 @@ export default class UtilitiesService {
   }
 
   workingIssueStatuses(): string {
-    let statusList = (configuration.getConfigurationByKey(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
+    let statusList = (configuration.get(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
       .split(',')
       .map((status: string) => status.trim())
       .filter((status: string) => state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));

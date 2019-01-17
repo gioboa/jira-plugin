@@ -43,8 +43,8 @@ suite('Configuration Tests', () => {
   const configuration = new ConfigurationService();
   tests.forEach(entry => {
     test(`Test ${entry.title} config`, () => {
-      return configuration.setConfigurationByKey(entry.config, entry.value).then(() => {
-        const actual = configuration.getConfigurationByKey(entry.config);
+      return configuration.set(entry.config, entry.value).then(() => {
+        const actual = configuration.get(entry.config);
         if (entry.equal) {
           assert.equal(entry.expected, actual);
         } else {
@@ -56,8 +56,8 @@ suite('Configuration Tests', () => {
 
   test(`Test password config`, () => {
     const password = 'my_password';
-    configuration.setGlobalStateConfiguration(password);
-    const result = configuration.getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR)[1];
+    configuration.setGlobalState(password);
+    const result = configuration.globalState.split(CREDENTIALS_SEPARATOR)[1];
     assert.equal(password, result);
   });
 });

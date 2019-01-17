@@ -25,7 +25,7 @@ export default class JiraExplorer implements vscode.TreeDataProvider<IssueItem> 
   }
 
   async getChildren(element?: IssueItem): Promise<any[]> {
-    let project = await configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
+    let project = await configuration.get(CONFIG.WORKING_PROJECT);
     const issues = state.issues;
     // generate all the item from issues saved in global state
     if (issues.length > 0) {

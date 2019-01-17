@@ -8,7 +8,7 @@ export class IssueLinkProvider implements vscode.DocumentLinkProvider {
   constructor(private projects: IProject[]) {}
 
   private get baseUrl(): string | undefined {
-    return configuration.getConfigurationByKey(CONFIG.BASE_URL);
+    return configuration.get(CONFIG.BASE_URL);
   }
 
   public provideDocumentLinks(document: vscode.TextDocument): vscode.ProviderResult<vscode.DocumentLink[]> {

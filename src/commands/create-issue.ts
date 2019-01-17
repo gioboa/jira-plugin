@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { ICreateIssueEpicList, IField, IFieldSchema, IIssue, ILabel } from '../http/api.model';
+import { configuration, logger, selectValues } from '../services';
 import { IPickValue } from '../services/configuration.model';
 import { ASSIGNEES_MAX_RESULTS, CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
 import state, { verifyCurrentProject } from '../store/state';
 import openIssueCommand from './open-issue';
-import { configuration, selectValues, logger } from '../services';
 
 // this object store all user choices
 let newIssueIstance = {};
@@ -15,7 +15,7 @@ let preloadedListValues = {};
 let fieldsRequest = {};
 
 export default async function createIssueCommand(issueItem: IssueItem): Promise<void> {
-  const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+  const project = configuration.get(CONFIG.WORKING_PROJECT) || '';
   if (verifyCurrentProject(project)) {
     try {
       newIssueIstance = {};
@@ -212,10 +212,7 @@ const manageSpecialFields = async (project: string, field: IField, fieldName: st
     (<any>preloadedListValues)[fieldName.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
   }
   if (isEpicLinkFieldSchema(field.schema)) {
-    const response = await state.jira.getCreateIssueEpics(
-      configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '',
-      SEARCH_MAX_RESULTS
-    );
+    const response = await state.jira.getCreateIssueEpics(configuration.get(CONFIG.WORKING_PROJECT) || '', SEARCH_MAX_RESULTS);
     // format issues in standard way
     if (!!response && !!response.epicLists) {
       const list: IIssue[] = [];

@@ -50,7 +50,7 @@ export const connectToJira = async (): Promise<void> => {
     utilities.createDocumentLinkProvider(state.projects);
     statusBar.updateWorkingProjectItem('');
 
-    const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
+    const project = configuration.get(CONFIG.WORKING_PROJECT);
     // refresh Jira explorer list
     if (project) {
       await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
@@ -58,7 +58,7 @@ export const connectToJira = async (): Promise<void> => {
       vscode.window.showWarningMessage("Working project isn't set.");
     }
   } catch (err) {
-    configuration.setConfigurationByKey(CONFIG.WORKING_PROJECT, '');
+    configuration.set(CONFIG.WORKING_PROJECT, '');
     setTimeout(() => {
       statusBar.updateWorkingProjectItem('');
     }, 1000);
@@ -68,7 +68,7 @@ export const connectToJira = async (): Promise<void> => {
 };
 
 export const canExecuteJiraAPI = (): boolean => {
-  return state.jira && configuration.configIsCorrect();
+  return state.jira && configuration.isValid();
 };
 
 export const verifyCurrentProject = (project: string | undefined): boolean => {
@@ -76,8 +76,8 @@ export const verifyCurrentProject = (project: string | undefined): boolean => {
 };
 
 export const changeStateProject = (project: string): void => {
-  if (configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) !== project) {
-    configuration.setConfigurationByKey(CONFIG.WORKING_PROJECT, project);
+  if (configuration.get(CONFIG.WORKING_PROJECT) !== project) {
+    configuration.set(CONFIG.WORKING_PROJECT, project);
     // update project item in the status bar
     statusBar.updateWorkingProjectItem(project);
     // loading in Jira explorer
@@ -120,7 +120,7 @@ export const isWorkingIssue = (issueKey: string): boolean => {
 
 export const addAdditionalStatuses = () => {
   try {
-    const additionalStatuses = (configuration.getConfigurationByKey(CONFIG.ADDITIONAL_STATUSES) || '').toString();
+    const additionalStatuses = (configuration.get(CONFIG.ADDITIONAL_STATUSES) || '').toString();
     if (!!additionalStatuses) {
       const list = additionalStatuses.split(',');
       list.forEach(status => {

@@ -139,7 +139,7 @@ export default class SelectValuesService {
   public async selectIssue(mode: string, filterAndJQL?: string[]): Promise<void> {
     try {
       if (canExecuteJiraAPI()) {
-        const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
+        const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
           const [filter, jql] = filterAndJQL || (await this.getFilterAndJQL(mode, project || ''));
           changeStateIssues(LOADING.text, '', []);
@@ -181,7 +181,7 @@ export default class SelectValuesService {
     let issues: IIssue[] = [];
     try {
       if (canExecuteJiraAPI()) {
-        const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
+        const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
           const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project || '');
           if (!!jql) {
@@ -200,7 +200,7 @@ export default class SelectValuesService {
   public async selectChangeWorkingIssue(): Promise<IIssue | undefined> {
     try {
       if (canExecuteJiraAPI()) {
-        const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT);
+        const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
           const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project || '');
           if (!!jql) {
@@ -247,7 +247,7 @@ export default class SelectValuesService {
     preLoadedPicks: IAssignee[] | undefined
   ): Promise<string | IAssignee> {
     try {
-      const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+      const project = configuration.get(CONFIG.WORKING_PROJECT) || '';
       if (verifyCurrentProject(project)) {
         const assignees = preLoadedPicks || (await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS }));
         const picks = (assignees || [])
@@ -321,7 +321,7 @@ export default class SelectValuesService {
   }
 
   public async selectStatusAndAssignee(): Promise<{ status: string; assignee: string }> {
-    const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+    const project = configuration.get(CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
       const { firstChoise, secondChoise } = await this.doubleSelection(
         this.selectStatus,
@@ -358,7 +358,7 @@ export default class SelectValuesService {
   public async selectFavoriteFilters(): Promise<IFavouriteFilter | undefined> {
     try {
       if (canExecuteJiraAPI()) {
-        const project = configuration.getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
+        const project = configuration.get(CONFIG.WORKING_PROJECT) || '';
         if (verifyCurrentProject(project)) {
           const favFilters = await state.jira.getFavoriteFilters();
           if (favFilters && favFilters.length > 0) {

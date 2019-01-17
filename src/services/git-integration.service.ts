@@ -77,7 +77,7 @@ export default class GitIntegrationService {
   private currentBranch: string | undefined;
 
   get isEnabled(): boolean {
-    return !!this.configuration.getConfigurationByKey(CONFIG.GIT_INTEGRATION_ENABLED);
+    return !!this.configuration.get(CONFIG.GIT_INTEGRATION_ENABLED);
   }
 
   constructor(private configuration: ConfigurationService) {
