@@ -22,14 +22,19 @@ export default class ConfigurationService {
   }
 
   // used for get only one setting
-  public get(entry: string): string | undefined {
+  public get(entry: string, fallbackValue?: string): string {
     const config = this.settings;
     let result = config && (<any>config).get(entry);
     // remove / at the end if exist
-    if (entry === CONFIG.BASE_URL && result && result.substring(result.length - 1) === '/') {
-      result = result.substring(0, result.length - 1);
+    switch (entry) {
+      case CONFIG.BASE_URL: {
+        if (result && result.substring(result.length - 1) === '/') {
+          result = result.substring(0, result.length - 1);
+        }
+        break;
+      }
     }
-    return result;
+    return (result || fallbackValue || '').toString();
   }
 
   // used for set only one setting

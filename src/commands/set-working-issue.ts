@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import { IIssue, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
+import { configuration, selectValues, statusBar, utilities } from '../services';
 import { CONFIG, NO, NO_WORKING_ISSUE, YES, YES_WITH_COMMENT } from '../shared/constants';
 import state, { changeStateWorkingIssue } from '../store/state';
-import { selectValues, utilities, configuration, statusBar } from '../services';
 
 export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkingIssue, preloadedIssue: IIssue): Promise<void> {
   // run it's called from status bar there is a working issue in the storage
@@ -30,8 +30,7 @@ export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkin
     if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
       if (
         workingIssue.issue.key !== NO_WORKING_ISSUE.key &&
-        utilities.secondsToMinutes(workingIssue.trackingTime) >=
-          parseInt(configuration.get(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME) || '0', 10)
+        utilities.secondsToMinutes(workingIssue.trackingTime) >= parseInt(configuration.get(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME, '0'), 10)
       ) {
         // old working issue has trackingTime and it's equal or bigger then WORKLOG_MINIMUM_TRACKING_TIME setting
         statusBar.clearWorkingIssueInterval();

@@ -29,7 +29,7 @@ export class Jira implements IJira {
   baseUrl: string;
 
   constructor() {
-    this.baseUrl = configuration.get(CONFIG.BASE_URL) || '';
+    this.baseUrl = configuration.get(CONFIG.BASE_URL);
 
     if (this.baseUrl && configuration.globalState) {
       // prepare config for jira-connector

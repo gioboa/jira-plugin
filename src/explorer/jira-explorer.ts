@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { CONFIG, LIST_MAX_RESULTS, LOADING } from '../shared/constants';
+import { configuration } from '../services';
+import { CONFIG, LOADING } from '../shared/constants';
 import state from '../store/state';
 import { DividerItem } from './item/divider-item';
 import { FilterInfoItem } from './item/filter-info-item';
@@ -8,7 +9,6 @@ import { LimitInfoItem } from './item/limit-info';
 import { LoadingItem } from './item/loading-item';
 import { NoResultItem } from './item/no-result-item';
 import { StatusItem } from './item/status-item';
-import { configuration } from '../services';
 
 export default class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<IssueItem | undefined> = new vscode.EventEmitter<IssueItem | undefined>();
@@ -38,7 +38,7 @@ export default class JiraExplorer implements vscode.TreeDataProvider<IssueItem> 
           })
       );
       // add in the firt possition 'filter-info-item' and then the 'divider-item'
-      items.unshift(new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem('------'));
+      items.unshift(new FilterInfoItem(project, state.currentFilter, issues.length), new DividerItem('------'));
 
       // loop items and insert for every status a separator
       const getLabel = (status: string) => `Status: ${status}`;
@@ -54,7 +54,7 @@ export default class JiraExplorer implements vscode.TreeDataProvider<IssueItem> 
         }
       });
 
-      if (issues.length === LIST_MAX_RESULTS) {
+      if (issues.length === parseInt(configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST, '50'), 10)) {
         items.push(new DividerItem('------'), new LimitInfoItem());
       }
       return items;
@@ -64,11 +64,7 @@ export default class JiraExplorer implements vscode.TreeDataProvider<IssueItem> 
         return [new LoadingItem()];
       }
       // no result
-      return [
-        new FilterInfoItem(project || '', state.currentFilter, issues.length),
-        new DividerItem('------'),
-        new NoResultItem(project || '')
-      ];
+      return [new FilterInfoItem(project, state.currentFilter, issues.length), new DividerItem('------'), new NoResultItem(project)];
     }
   }
 }

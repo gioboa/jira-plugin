@@ -120,7 +120,7 @@ export const isWorkingIssue = (issueKey: string): boolean => {
 
 export const addAdditionalStatuses = () => {
   try {
-    const additionalStatuses = (configuration.get(CONFIG.ADDITIONAL_STATUSES) || '').toString();
+    const additionalStatuses = configuration.get(CONFIG.ADDITIONAL_STATUSES);
     if (!!additionalStatuses) {
       const list = additionalStatuses.split(',');
       list.forEach(status => {
