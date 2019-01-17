@@ -69,7 +69,7 @@ export default class SelectValuesService {
     utilities.checkCounter();
     switch (mode) {
       case SEARCH_MODE.ALL: {
-        return [`ALL ISSUES`, `project = ${project} ORDER BY status ASC, updated DESC`];
+        return [`ALL ISSUES`, `project = '${project}' ORDER BY status ASC, updated DESC`];
       }
       case SEARCH_MODE.ID: {
         const id = await this.selectID();
@@ -81,7 +81,7 @@ export default class SelectValuesService {
       case SEARCH_MODE.STATUS: {
         const status = await this.selectStatus();
         if (!!status) {
-          return [`STATUS: ${status}`, `project = ${project} AND status = '${status}' ORDER BY status ASC, updated DESC`];
+          return [`STATUS: ${status}`, `project = '${project}' AND status = '${status}' ORDER BY status ASC, updated DESC`];
         }
         break;
       }
@@ -90,7 +90,7 @@ export default class SelectValuesService {
         if (!!status) {
           return [
             `STATUS: ${status} ASSIGNEE: you`,
-            `project = ${project} AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
+            `project = '${project}' AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
           ];
         }
         break;
@@ -100,7 +100,7 @@ export default class SelectValuesService {
         if (!!status && !!assignee) {
           return [
             `STATUS: ${status} ASSIGNEE: ${assignee}`,
-            `project = ${project} AND status = '${status}' AND assignee = ${
+            `project = '${project}' AND status = '${status}' AND assignee = ${
               assignee !== UNASSIGNED ? `'${assignee}'` : `null`
             } ORDER BY status ASC, updated DESC`
           ];
@@ -110,7 +110,7 @@ export default class SelectValuesService {
       case SEARCH_MODE.SUMMARY: {
         const summary = await this.selectSummary();
         if (!!summary) {
-          return [`SUMMARY: ${summary}`, `project in (${project}) AND summary ~ '${summary}' ORDER BY status ASC, updated DESC`];
+          return [`SUMMARY: ${summary}`, `project = '${project}' AND summary ~ '${summary}' ORDER BY status ASC, updated DESC`];
         }
         break;
       }
@@ -121,13 +121,13 @@ export default class SelectValuesService {
         const statuses = utilities.workingIssueStatuses();
         return [
           `STATUS: ${statuses}`,
-          `project = ${project} AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
+          `project = '${project}' AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
         ];
       }
       case SEARCH_MODE.CURRENT_SPRINT: {
         return [
           `CURRENT SPRINT`,
-          `project = ${project} AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`
+          `project = '${project}' AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`
         ];
       }
     }
