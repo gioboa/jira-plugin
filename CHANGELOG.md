@@ -1,3 +1,9 @@
+## 0.12.3
+
+### Bug Fixes
+
+- Escape project name in JQL Queries
+
 ## 0.12.2
 
 ### Bug Fixes
