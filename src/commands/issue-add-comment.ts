@@ -30,7 +30,7 @@ export default async function issueAddCommentCommand(issueItem: IssueItem): Prom
         // modal
         const action = await vscode.window.showInformationMessage('Comment created', 'Open in browser');
         if (action === 'Open in browser') {
-          const baseUrl = configuration.get(CONFIG.BASE_URL) || '';
+          const baseUrl = configuration.get(CONFIG.BASE_URL);
           const url =
             `${baseUrl}/browse/${issue.key}` +
             `?focusedCommentId=${response.id}` +

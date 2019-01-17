@@ -141,7 +141,7 @@ export default class SelectValuesService {
       if (canExecuteJiraAPI()) {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
-          const [filter, jql] = filterAndJQL || (await this.getFilterAndJQL(mode, project || ''));
+          const [filter, jql] = filterAndJQL || (await this.getFilterAndJQL(mode, project));
           changeStateIssues(LOADING.text, '', []);
           if (!!jql) {
             logger.jiraPluginDebugLog(`${filter} jql`, jql);
@@ -183,7 +183,7 @@ export default class SelectValuesService {
       if (canExecuteJiraAPI()) {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
-          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project || '');
+          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project);
           if (!!jql) {
             const result = await state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
             issues = result.issues || [];
@@ -202,7 +202,7 @@ export default class SelectValuesService {
       if (canExecuteJiraAPI()) {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
-          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project || '');
+          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project);
           if (!!jql) {
             // call Jira API
             const issues = await state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
@@ -247,7 +247,7 @@ export default class SelectValuesService {
     preLoadedPicks: IAssignee[] | undefined
   ): Promise<string | IAssignee> {
     try {
-      const project = configuration.get(CONFIG.WORKING_PROJECT) || '';
+      const project = configuration.get(CONFIG.WORKING_PROJECT);
       if (verifyCurrentProject(project)) {
         const assignees = preLoadedPicks || (await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS }));
         const picks = (assignees || [])
@@ -321,7 +321,7 @@ export default class SelectValuesService {
   }
 
   public async selectStatusAndAssignee(): Promise<{ status: string; assignee: string }> {
-    const project = configuration.get(CONFIG.WORKING_PROJECT) || '';
+    const project = configuration.get(CONFIG.WORKING_PROJECT);
     if (verifyCurrentProject(project)) {
       const { firstChoise, secondChoise } = await this.doubleSelection(
         this.selectStatus,
@@ -358,7 +358,7 @@ export default class SelectValuesService {
   public async selectFavoriteFilters(): Promise<IFavouriteFilter | undefined> {
     try {
       if (canExecuteJiraAPI()) {
-        const project = configuration.get(CONFIG.WORKING_PROJECT) || '';
+        const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (verifyCurrentProject(project)) {
           const favFilters = await state.jira.getFavoriteFilters();
           if (favFilters && favFilters.length > 0) {
