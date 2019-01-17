@@ -16,7 +16,7 @@ suite('Configuration Tests', () => {
       config: CONFIG.BASE_URL,
       value: `${CONFIG.BASE_URL}_test2_value/`,
       expected: `${CONFIG.BASE_URL}_test2_value/`,
-      equal: true
+      equal: false
     },
     {
       title: `${CONFIG.USERNAME} 1`,
