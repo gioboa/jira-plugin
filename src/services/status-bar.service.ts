@@ -13,10 +13,7 @@ export default class StatusBarService {
   constructor(configuration: ConfigurationService) {
     this.workingIssueItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     this.workingProjectItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 200);
-    const setting = configuration.get(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT);
-    if (!!setting) {
-      this.awayTimeout = parseInt(setting, 10) * 60;
-    }
+    this.awayTimeout = parseInt(configuration.get(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT, '30'), 10) * 60;
   }
 
   // setup working project item

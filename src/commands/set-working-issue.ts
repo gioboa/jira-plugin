@@ -30,11 +30,7 @@ export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkin
     if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
       if (
         workingIssue.issue.key !== NO_WORKING_ISSUE.key &&
-        utilities.secondsToMinutes(workingIssue.trackingTime) >=
-          parseInt(
-            !!configuration.get(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME) ? configuration.get(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME) : '0',
-            10
-          )
+        utilities.secondsToMinutes(workingIssue.trackingTime) >= parseInt(configuration.get(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME, '0'), 10)
       ) {
         // old working issue has trackingTime and it's equal or bigger then WORKLOG_MINIMUM_TRACKING_TIME setting
         statusBar.clearWorkingIssueInterval();

@@ -22,7 +22,7 @@ export default class ConfigurationService {
   }
 
   // used for get only one setting
-  public get(entry: string): string {
+  public get(entry: string, fallbackValue?: string): string {
     const config = this.settings;
     let result = config && (<any>config).get(entry);
     // remove / at the end if exist
@@ -34,7 +34,7 @@ export default class ConfigurationService {
         break;
       }
     }
-    return (result || '').toString();
+    return (result || fallbackValue || '').toString();
   }
 
   // used for set only one setting
