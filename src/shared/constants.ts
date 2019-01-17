@@ -11,7 +11,8 @@ export const CONFIG = {
   WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime',
   WORKING_ISSUE_STATUSES: 'workingIssueStatues',
   ADDITIONAL_STATUSES: 'additionalStatuses',
-  GIT_INTEGRATION_ENABLED: 'gitIntegration'
+  GIT_INTEGRATION_ENABLED: 'gitIntegration',
+  NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList'
 };
 
 // all the tracking time mode
@@ -68,6 +69,5 @@ export const UNASSIGNED = 'Unassigned';
 export const NO_WORKING_ISSUE = { text: 'No working issue', key: 'NO_WORKING_ISSUE' };
 export const BACK_PICK_LABEL = '$(arrow-left) Back';
 
-export const LIST_MAX_RESULTS = 50;
 export const SEARCH_MAX_RESULTS = 1000;
 export const ASSIGNEES_MAX_RESULTS = 1000;

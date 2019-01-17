@@ -8,7 +8,6 @@ import {
   ASSIGNEES_MAX_RESULTS,
   BACK_PICK_LABEL,
   CONFIG,
-  LIST_MAX_RESULTS,
   LOADING,
   NO_WORKING_ISSUE,
   SEARCH_MAX_RESULTS,
@@ -146,9 +145,10 @@ export default class SelectValuesService {
           if (!!jql) {
             logger.jiraPluginDebugLog(`${filter} jql`, jql);
             // call Jira API with the generated JQL
+            const maxResults = Math.min(parseInt(configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST) || '50', 10), SEARCH_MAX_RESULTS);
             const searchResult = await state.jira.search({
               jql,
-              maxResults: mode !== SEARCH_MODE.FAVOURITES_FILTERS ? LIST_MAX_RESULTS : SEARCH_MAX_RESULTS
+              maxResults
             });
             logger.jiraPluginDebugLog(`issues`, JSON.stringify(searchResult));
             if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
