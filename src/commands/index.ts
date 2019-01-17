@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
 import { SEARCH_MODE } from '../shared/constants';
-import { selectIssue } from '../shared/select-utilities';
-import { copyToClipboard, insertWorkingIssueComment } from '../shared/utilities';
 import changeIssueAssigneeCommand from './change-issue-assignee';
 import changeIssueStatusCommand from './change-issue-status';
 import createIssueCommand from './create-issue';
@@ -13,9 +11,10 @@ import openIssueCommand from './open-issue';
 import setWorkingIssueCommand from './set-working-issue';
 import setWorkingProjectCommand from './set-working-project';
 import setupCredentials from './setup-credentials';
+import { selectValues, utilities } from '../services';
 
 const { registerCommand } = vscode.commands;
-const issueSelector = (mode: string) => () => selectIssue(mode);
+const issueSelector = (mode: string) => () => selectValues.selectIssue(mode);
 
 export default {
   /**
@@ -31,7 +30,7 @@ export default {
       // working project / issue
       registerCommand('jira-plugin.setWorkingProjectCommand', setWorkingProjectCommand),
       registerCommand('jira-plugin.setWorkingIssueCommand', setWorkingIssueCommand),
-      registerCommand('jira-plugin.insertWorkingIssueComment', insertWorkingIssueComment),
+      registerCommand('jira-plugin.insertWorkingIssueComment', utilities.insertWorkingIssueComment),
       registerCommand('jira-plugin.issueAddWorklogCommand', issueAddWorklogCommand),
 
       // explorer header
@@ -53,7 +52,7 @@ export default {
       registerCommand('jira-plugin.changeIssueAssigneeCommand', changeIssueAssigneeCommand),
       registerCommand('jira-plugin.issueAddCommentCommand', issueAddCommentCommand),
       registerCommand('jira-plugin.openIssueCommand', openIssueCommand),
-      registerCommand('jira-plugin.copyJiraSummary', copyToClipboard),
+      registerCommand('jira-plugin.copyJiraSummary', utilities.copyToClipboard),
 
       // auxilary commands
       registerCommand('jira-plugin.openGitHubRepoCommand', openGitHubRepoCommand)

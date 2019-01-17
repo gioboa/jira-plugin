@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
-import { selectTransition } from '../shared/select-utilities';
-import state, { canExecuteJiraAPI, isWorkingIssue } from '../state/state';
+import { logger, selectValues } from '../services';
+import state, { canExecuteJiraAPI, isWorkingIssue } from '../store/state';
 
 export default async function changeIssueStatusCommand(issueItem: IssueItem): Promise<void> {
   try {
@@ -10,7 +9,7 @@ export default async function changeIssueStatusCommand(issueItem: IssueItem): Pr
       let issue = issueItem.issue;
       // verify if it's the current working issue
       if (!isWorkingIssue(issue.key)) {
-        const newTransitionId = await selectTransition(issue.key);
+        const newTransitionId = await selectValues.selectTransition(issue.key);
         if (newTransitionId) {
           // call Jira API
           const result = await state.jira.setTransition({
@@ -26,10 +25,10 @@ export default async function changeIssueStatusCommand(issueItem: IssueItem): Pr
       }
     } else {
       if (canExecuteJiraAPI()) {
-        printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
+        logger.printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
       }
     }
   } catch (err) {
-    printErrorMessageInOutputAndShowAlert(err);
+    logger.printErrorMessageInOutputAndShowAlert(err);
   }
 }

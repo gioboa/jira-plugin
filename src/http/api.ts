@@ -1,6 +1,5 @@
-import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
+import { configuration, logger } from '../services';
 import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
-import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import {
   IAddComment,
   IAddCommentResponse,
@@ -30,9 +29,9 @@ export class Jira implements IJira {
   baseUrl: string;
 
   constructor() {
-    this.baseUrl = getConfigurationByKey(CONFIG.BASE_URL) || '';
+    this.baseUrl = configuration.get(CONFIG.BASE_URL) || '';
 
-    if (this.baseUrl && getGlobalStateConfiguration()) {
+    if (this.baseUrl && configuration.globalState) {
       // prepare config for jira-connector
       let host = this.baseUrl;
       const protocol = host.indexOf('https://') >= 0 ? 'https' : 'http';
@@ -42,7 +41,7 @@ export class Jira implements IJira {
       if (portPosition !== -1) {
         host = host.substring(0, portPosition);
       }
-      const [username, password] = getGlobalStateConfiguration().split(CREDENTIALS_SEPARATOR);
+      const [username, password] = configuration.globalState.split(CREDENTIALS_SEPARATOR);
       this.jiraInstance = new jiraClient({ host, port, protocol, basic_auth: { username, password } });
 
       // custom event
@@ -72,7 +71,7 @@ export class Jira implements IJira {
       };
       this.jiraInstance.project.customApiCall = customApiCall;
     } else {
-      printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
+      logger.printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
     }
   }
 
