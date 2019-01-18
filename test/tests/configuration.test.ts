@@ -80,4 +80,29 @@ suite('Configuration Tests', () => {
     await configuration.setGlobalCounter(1);
     assert.equal(configuration.getGlobalCounter(), 1);
   });
+
+  test(`Global working issue`, async () => {
+    const workingIssue = {
+      issue: {
+        id: '',
+        key: 'TEST',
+        fields: {
+          summary: '',
+          status: {
+            name: ''
+          },
+          project: {
+            id: '',
+            key: '',
+            name: ''
+          }
+        }
+      },
+      trackingTime: 0,
+      awayTime: 0
+    };
+    await configuration.setGlobalWorkingIssue(workingIssue);
+    const storedWOrkingIssue = await configuration.getGlobalWorkingIssue();
+    assert.equal(storedWOrkingIssue, JSON.stringify(workingIssue));
+  });
 });
