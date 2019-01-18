@@ -53,11 +53,11 @@ export default class StatusBarService {
     let issue;
     // verify stored working issue
     if (checkGlobalStore) {
-      issue = configuration.getGlobalWorkingIssue(state.context);
+      issue = configuration.getGlobalWorkingIssue();
       if (!!issue) {
         // if there is a stored working issue we will use it
         vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', JSON.parse(issue), undefined);
-        configuration.setGlobalWorkingIssue(state.context, undefined);
+        configuration.setGlobalWorkingIssue(undefined);
         return;
       }
     }
@@ -67,7 +67,7 @@ export default class StatusBarService {
       this.startWorkingIssueInterval();
     } else {
       // if user select NO_WORKING_ISSUE clear the stored working issue
-      configuration.setGlobalWorkingIssue(state.context, undefined);
+      configuration.setGlobalWorkingIssue(undefined);
     }
     this.workingIssueItem.tooltip = this.workingIssueItemTooltip(state.workingIssue);
     this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';

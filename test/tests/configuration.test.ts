@@ -41,23 +41,43 @@ suite('Configuration Tests', () => {
     }
   ];
   const configuration = new ConfigurationService();
+
   tests.forEach(entry => {
-    test(`Test ${entry.title} config`, () => {
-      return configuration.set(entry.config, entry.value).then(() => {
-        const actual = configuration.get(entry.config);
-        if (entry.equal) {
-          assert.equal(entry.expected, actual);
-        } else {
-          assert.notEqual(entry.expected, actual);
-        }
-      });
+    test(`Test ${entry.title} config`, async () => {
+      await configuration.set(entry.config, entry.value);
+      const actual = await configuration.get(entry.config);
+      if (entry.equal) {
+        assert.equal(entry.expected, actual);
+      } else {
+        assert.notEqual(entry.expected, actual);
+      }
     });
   });
 
-  test(`Test password config`, () => {
+  test(`Test password config`, async () => {
     const password = 'my_password';
-    configuration.setGlobalState(password);
+    await configuration.setGlobalState(password);
     const result = configuration.globalState.split(CREDENTIALS_SEPARATOR)[1];
     assert.equal(password, result);
+  });
+
+  test(`Valid config`, async () => {
+    await configuration.set(CONFIG.BASE_URL, 'baseUrl');
+    await configuration.set(CONFIG.USERNAME, 'my_username');
+    await configuration.setGlobalState('my_password');
+    assert.equal(configuration.isValid(), true);
+  });
+
+  test(`NOT valid config`, async () => {
+    await configuration.set(CONFIG.BASE_URL, 'baseUrl');
+    await configuration.set(CONFIG.USERNAME, undefined);
+    await configuration.setGlobalState('my_password');
+    assert.equal(configuration.isValid(), false);
+  });
+
+  test(`Global counter config`, async () => {
+    await configuration.setGlobalCounter(0);
+    await configuration.setGlobalCounter(1);
+    assert.equal(configuration.getGlobalCounter(), 1);
   });
 });

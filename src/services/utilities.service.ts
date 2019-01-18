@@ -1,12 +1,12 @@
 const copyPaste = require('copy-paste');
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { configuration, logger } from '.';
 import { IssueItem } from '../explorer/item/issue-item';
 import { IProject } from '../http/api.model';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS, LATER, NO, STATUS_ICONS, YES } from '../shared/constants';
 import { IssueLinkProvider } from '../shared/document-link-provider';
 import state from '../store/state';
-import { logger, configuration } from '.';
 
 export default class UtilitiesService {
   // generate icon + status
@@ -48,25 +48,25 @@ export default class UtilitiesService {
   }
 
   async checkCounter(): Promise<void> {
-    const count = configuration.getGlobalCounter(state.context) || 0;
+    const count = configuration.getGlobalCounter() || 0;
     if (count !== -1) {
       if (count % 20 === 0 && count > 0) {
         let action = await vscode.window.showInformationMessage(`Star Jira Plugin on GitHub?`, YES, LATER, NO);
         switch (action) {
           case NO: {
-            configuration.setGlobalCounter(state.context, -1);
+            configuration.setGlobalCounter(-1);
             break;
           }
           case YES: {
             vscode.commands.executeCommand('jira-plugin.openGitHubRepoCommand');
-            configuration.setGlobalCounter(state.context, -1);
+            configuration.setGlobalCounter(-1);
             break;
           }
           default:
-            configuration.setGlobalCounter(state.context, count + 1);
+            configuration.setGlobalCounter(count + 1);
         }
       } else {
-        configuration.setGlobalCounter(state.context, count + 1);
+        configuration.setGlobalCounter(count + 1);
       }
     }
   }
