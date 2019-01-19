@@ -1,8 +1,9 @@
 import * as assert from 'assert';
 import ConfigurationService from '../../src/services/configuration.service';
-import { CONFIG, CREDENTIALS_SEPARATOR } from '../../src/shared/constants';
+import { CONFIG, CREDENTIALS_SEPARATOR, DEFAULT_WORKING_ISSUE_STATUS } from '../../src/shared/constants';
+import state from '../../src/store/state';
 
-suite('Configuration Tests', () => {
+suite('Configuration', () => {
   const tests = [
     {
       title: `${CONFIG.BASE_URL} 1`,
@@ -38,12 +39,19 @@ suite('Configuration Tests', () => {
       value: `${CONFIG.ENABLE_WORKING_ISSUE}_test_value`,
       expected: `${CONFIG.ENABLE_WORKING_ISSUE}_test_value`,
       equal: true
+    },
+    {
+      title: `${CONFIG.WORKING_ISSUE_STATUSES}`,
+      config: CONFIG.WORKING_ISSUE_STATUSES,
+      value: `In Progess, Closed`,
+      expected: `In Progess, Closed`,
+      equal: true
     }
   ];
   const configuration = new ConfigurationService();
 
   tests.forEach(entry => {
-    test(`Test ${entry.title} config`, async () => {
+    test(`${entry.title} config`, async () => {
       await configuration.set(entry.config, entry.value);
       const actual = await configuration.get(entry.config);
       if (entry.equal) {
@@ -54,7 +62,7 @@ suite('Configuration Tests', () => {
     });
   });
 
-  test(`Test password config`, async () => {
+  test(`Password config`, async () => {
     const password = 'my_password';
     await configuration.setGlobalState(password);
     const result = configuration.globalState.split(CREDENTIALS_SEPARATOR)[1];
@@ -104,5 +112,53 @@ suite('Configuration Tests', () => {
     await configuration.setGlobalWorkingIssue(workingIssue);
     const storedWOrkingIssue = await configuration.getGlobalWorkingIssue();
     assert.equal(storedWOrkingIssue, JSON.stringify(workingIssue));
+  });
+
+  test(`WorkingIssueStatuses in statuses list`, async () => {
+    state.statuses = [
+      {
+        description: 'In Progress',
+        name: 'In Progress'
+      },
+      {
+        description: 'Closed',
+        name: 'Closed'
+      }
+    ];
+    await configuration.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Closed');
+    const statuses = configuration.workingIssueStatuses();
+    assert.equal(statuses, `'In Progress','Closed'`);
+  });
+
+  test(`WorkingIssueStatuses only one in statuses list`, async () => {
+    state.statuses = [
+      {
+        description: 'In Progress',
+        name: 'In Progress'
+      },
+      {
+        description: 'Closed',
+        name: 'Closed'
+      }
+    ];
+    await configuration.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Abc');
+    const statuses = configuration.workingIssueStatuses();
+    assert.equal(statuses, `'In Progress'`);
+  });
+
+  test(`WorkingIssueStatuses not in statuses list`, async () => {
+    state.statuses = [
+      {
+        description: 'In Progress',
+        name: 'In Progress'
+      },
+      {
+        description: 'Closed',
+        name: 'Closed'
+      }
+    ];
+    await configuration.set(CONFIG.WORKING_ISSUE_STATUSES, 'Abc');
+    const statuses = configuration.workingIssueStatuses();
+    assert.equal(statuses, `'${DEFAULT_WORKING_ISSUE_STATUS}'`);
   });
 });

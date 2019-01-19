@@ -118,7 +118,7 @@ export default class SelectValuesService {
         return [state.currentFilter, state.currentJQL];
       }
       case SEARCH_MODE.MY_WORKING_ISSUES: {
-        const statuses = utilities.workingIssueStatuses();
+        const statuses = configuration.workingIssueStatuses();
         return [
           `STATUS: ${statuses}`,
           `project = '${project}' AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`

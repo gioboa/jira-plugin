@@ -1,7 +1,14 @@
 import * as vscode from 'vscode';
 import { logger } from '.';
 import { IWorkingIssue } from '../http/api.model';
-import { CONFIG, CONFIG_COUNTER, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR } from '../shared/constants';
+import {
+  CONFIG,
+  CONFIG_COUNTER,
+  CONFIG_NAME,
+  CONFIG_WORKING_ISSUE,
+  CREDENTIALS_SEPARATOR,
+  DEFAULT_WORKING_ISSUE_STATUS
+} from '../shared/constants';
 import state from '../store/state';
 import { IConfiguration } from './configuration.model';
 
@@ -83,5 +90,15 @@ export default class ConfigurationService {
 
   public getGlobalCounter(): any {
     return state.context.globalState.get(`${CONFIG_NAME}:${CONFIG_COUNTER}`);
+  }
+
+  public workingIssueStatuses(): string {
+    let statusList = (this.get(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
+      .split(',')
+      .map((status: string) => status.trim())
+      .filter((status: string) => state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
+    return statusList && statusList.length > 0
+      ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
+      : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
   }
 }

@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { IssueLinkProvider } from '../../src/shared/document-link-provider';
 
-suite(`Issue Document Link Test`, () => {
+suite(`Issue Document Link`, () => {
   const linkProvider = new IssueLinkProvider([
     {
       key: 'projectA',

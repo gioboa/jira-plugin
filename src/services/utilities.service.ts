@@ -33,18 +33,8 @@ export default class UtilitiesService {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
 
-  secondsToMinutes(sec: number): number {
+  floorSecondsToMinutes(sec: number): number {
     return Math.floor(sec / 60);
-  }
-
-  workingIssueStatuses(): string {
-    let statusList = (configuration.get(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
-      .split(',')
-      .map((status: string) => status.trim())
-      .filter((status: string) => state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
-    return statusList && statusList.length > 0
-      ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
-      : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
   }
 
   async checkCounter(): Promise<void> {
