@@ -105,7 +105,7 @@ export const incrementStateWorkingIssueTimePerSecond = (): void => {
   // prevent writing to much on storage
   if (state.workingIssue.trackingTime % 60 === 0) {
     if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
-      configuration.setGlobalWorkingIssue(state.context, state.workingIssue);
+      configuration.setGlobalWorkingIssue(state.workingIssue);
     }
   }
 };

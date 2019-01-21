@@ -1,7 +1,14 @@
 import * as vscode from 'vscode';
 import { logger } from '.';
 import { IWorkingIssue } from '../http/api.model';
-import { CONFIG, CONFIG_COUNTER, CONFIG_NAME, CONFIG_WORKING_ISSUE, CREDENTIALS_SEPARATOR } from '../shared/constants';
+import {
+  CONFIG,
+  CONFIG_COUNTER,
+  CONFIG_NAME,
+  CONFIG_WORKING_ISSUE,
+  CREDENTIALS_SEPARATOR,
+  DEFAULT_WORKING_ISSUE_STATUS
+} from '../shared/constants';
 import state from '../store/state';
 import { IConfiguration } from './configuration.model';
 
@@ -60,11 +67,11 @@ export default class ConfigurationService {
 
   // set inside VS Code local storage the last working issue
   // used for remember last working issue if the user close VS Code without stop the tracking
-  public async setGlobalWorkingIssue(context: vscode.ExtensionContext, workingIssue: IWorkingIssue | undefined): Promise<void> {
+  public async setGlobalWorkingIssue(workingIssue: IWorkingIssue | undefined): Promise<void> {
     const config = this.settings;
     return (
       config &&
-      context.globalState.update(
+      state.context.globalState.update(
         `${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`,
         !!workingIssue ? JSON.stringify(workingIssue) : undefined
       )
@@ -72,16 +79,26 @@ export default class ConfigurationService {
   }
 
   // get inside VS Code local storage the last working issue
-  public getGlobalWorkingIssue(context: vscode.ExtensionContext): any {
+  public getGlobalWorkingIssue(): any {
     const config = this.settings;
-    return config && context.globalState.get(`${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`);
+    return config && state.context.globalState.get(`${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`);
   }
 
-  public setGlobalCounter(context: vscode.ExtensionContext, count: number): Thenable<void> {
-    return context.globalState.update(`${CONFIG_NAME}:${CONFIG_COUNTER}`, count);
+  public setGlobalCounter(count: number): Thenable<void> {
+    return state.context.globalState.update(`${CONFIG_NAME}:${CONFIG_COUNTER}`, count);
   }
 
-  public getGlobalCounter(context: vscode.ExtensionContext): any {
-    return context.globalState.get(`${CONFIG_NAME}:${CONFIG_COUNTER}`);
+  public getGlobalCounter(): any {
+    return state.context.globalState.get(`${CONFIG_NAME}:${CONFIG_COUNTER}`);
+  }
+
+  public workingIssueStatuses(): string {
+    let statusList = (this.get(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
+      .split(',')
+      .map((status: string) => status.trim())
+      .filter((status: string) => state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
+    return statusList && statusList.length > 0
+      ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
+      : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
   }
 }
