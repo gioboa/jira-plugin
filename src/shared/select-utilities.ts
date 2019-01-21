@@ -6,7 +6,6 @@ import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../state/state';
 import { getConfigurationByKey } from './configuration';
 import {
-  ASSIGNEES_MAX_RESULTS,
   BACK_PICK_LABEL,
   CONFIG,
   LIST_MAX_RESULTS,
@@ -247,7 +246,7 @@ export const selectAssignee = async (
   try {
     const project = getConfigurationByKey(CONFIG.WORKING_PROJECT) || '';
     if (verifyCurrentProject(project)) {
-      const assignees = preLoadedPicks || (await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS }));
+      const assignees = preLoadedPicks || (await state.jira.getAssignees(project));
       const picks = (assignees || [])
         .filter((assignee: IAssignee) => assignee.active === true)
         .map((assignee: IAssignee) => {

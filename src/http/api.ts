@@ -1,5 +1,5 @@
 import { getConfigurationByKey, getGlobalStateConfiguration } from '../shared/configuration';
-import { CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
+import { ASSIGNEES_MAX_RESULTS, CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
 import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import {
   IAddComment,
@@ -96,12 +96,25 @@ export class Jira implements IJira {
     return await this.jiraInstance.issue.getIssue({ issueKey });
   }
 
-  async getAssignees(params: { project: string; maxResults: number }): Promise<IAssignee[]> {
+  async getAssignees(project: string): Promise<IAssignee[]> {
     // from jira-connector docs
     // The maximum number of users to return (defaults to 50). The maximum allowed
     // value is 1000. If you specify a value that is higher than this number, your search results will be
     // truncated.
-    return await this.jiraInstance.user.searchAssignable(params);
+    const maxResults = ASSIGNEES_MAX_RESULTS;
+    const assignees = [];
+    let startAt = 0;
+    let goOn = true;
+    while (goOn) {
+      const response: IAssignee[] = await this.jiraInstance.user.searchAssignable({ project, maxResults, startAt });
+      assignees.push(...response);
+      if ((response || []).length < maxResults) {
+        goOn = false;
+      } else {
+        startAt += maxResults;
+      }
+    }
+    return assignees;
   }
 
   async getTransitions(issueKey: string): Promise<ITransitions> {

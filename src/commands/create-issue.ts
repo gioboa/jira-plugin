@@ -3,7 +3,7 @@ import { IssueItem } from '../explorer/item/issue-item';
 import { ICreateIssueEpicList, IField, IFieldSchema, IIssue, ILabel } from '../http/api.model';
 import { getConfigurationByKey } from '../shared/configuration';
 import { IPickValue } from '../shared/configuration.model';
-import { ASSIGNEES_MAX_RESULTS, CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
+import { CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
 import { jiraPluginDebugLog, printErrorMessageInOutput, printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
 import { selectIssueType } from '../shared/select-utilities';
 import state, { verifyCurrentProject } from '../state/state';
@@ -211,7 +211,7 @@ const addDefaultIssueLinkTypesIfNessesary = (newIssuePicks: any[]) => {
 const manageSpecialFields = async (project: string, field: IField, fieldName: string) => {
   if (isAssigneeOrReporterField(fieldName)) {
     // assignee autoCompleteUrl don't work, I use custom one
-    (<any>preloadedListValues)[fieldName.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
+    (<any>preloadedListValues)[fieldName.toString()] = await state.jira.getAssignees(project);
   }
   if (isEpicLinkFieldSchema(field.schema)) {
     const response = await state.jira.getCreateIssueEpics(getConfigurationByKey(CONFIG.WORKING_PROJECT) || '', SEARCH_MAX_RESULTS);
