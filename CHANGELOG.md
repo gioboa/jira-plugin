@@ -1,3 +1,9 @@
+## 0.12.4
+
+### Bug Fixes
+
+- solved limit in assignees list
+
 ## 0.12.3
 
 ### Bug Fixes
