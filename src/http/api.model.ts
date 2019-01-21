@@ -3,7 +3,7 @@ export interface IJira {
   getStatuses(): Promise<IStatus[]>;
   getProjects(): Promise<IProject[]>;
   getIssueByKey(issueKey: string): Promise<IIssue>;
-  getAssignees(param: { project: string; maxResults: number }): Promise<IAssignee[]>;
+  getAssignees(project: string): Promise<IAssignee[]>;
   getTransitions(issueKey: string): Promise<ITransitions>;
   setTransition(params: { issueKey: string; transition: ISetTransition }): Promise<void>;
   setAssignIssue(params: { issueKey: string; assignee: string }): Promise<void>;

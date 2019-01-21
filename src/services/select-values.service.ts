@@ -4,16 +4,7 @@ import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from '../http/api.mod
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
-import {
-  ASSIGNEES_MAX_RESULTS,
-  BACK_PICK_LABEL,
-  CONFIG,
-  LOADING,
-  NO_WORKING_ISSUE,
-  SEARCH_MAX_RESULTS,
-  SEARCH_MODE,
-  UNASSIGNED
-} from '../shared/constants';
+import { BACK_PICK_LABEL, CONFIG, LOADING, NO_WORKING_ISSUE, SEARCH_MAX_RESULTS, SEARCH_MODE, UNASSIGNED } from '../shared/constants';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../store/state';
 
 export default class SelectValuesService {
@@ -249,7 +240,7 @@ export default class SelectValuesService {
     try {
       const project = configuration.get(CONFIG.WORKING_PROJECT);
       if (verifyCurrentProject(project)) {
-        const assignees = preLoadedPicks || (await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS }));
+        const assignees = preLoadedPicks || (await state.jira.getAssignees(project));
         const picks = (assignees || [])
           .filter((assignee: IAssignee) => assignee.active === true)
           .map((assignee: IAssignee) => {
