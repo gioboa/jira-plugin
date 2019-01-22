@@ -209,7 +209,7 @@ const addDefaultIssueLinkTypesIfNessesary = (newIssuePicks: any[]) => {
 const manageSpecialFields = async (project: string, field: IField, fieldName: string) => {
   if (isAssigneeOrReporterField(fieldName)) {
     // assignee autoCompleteUrl don't work, I use custom one
-    (<any>preloadedListValues)[fieldName.toString()] = await state.jira.getAssignees({ project, maxResults: ASSIGNEES_MAX_RESULTS });
+    (<any>preloadedListValues)[fieldName.toString()] = await state.jira.getAssignees(project);
   }
   if (isEpicLinkFieldSchema(field.schema)) {
     const response = await state.jira.getCreateIssueEpics(configuration.get(CONFIG.WORKING_PROJECT), SEARCH_MAX_RESULTS);
