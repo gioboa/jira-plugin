@@ -1,26 +1,6 @@
 import { configuration, logger } from '../services';
 import { ASSIGNEES_MAX_RESULTS, CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
-import {
-  IAddComment,
-  IAddCommentResponse,
-  IAddWorkLog,
-  IAssignee,
-  IAvailableLinkIssuesType,
-  ICreateIssue,
-  ICreateIssueEpic,
-  ICreateMetadata,
-  IFavouriteFilter,
-  IIssue,
-  IIssueType,
-  IJira,
-  ILabel,
-  IPriority,
-  IProject,
-  ISearch,
-  ISetTransition,
-  IStatus,
-  ITransitions
-} from './api.model';
+import { IAddComment, IAddCommentResponse, IAddWorkLog, IAssignee, IAvailableLinkIssuesType, ICreateIssue, ICreateIssueEpic, ICreateMetadata, IFavouriteFilter, IIssue, IIssueType, IJira, ILabel, IPriority, IProject, ISearch, ISetTransition, IStatus, ITransitions } from './api.model';
 
 const jiraClient = require('jira-connector');
 
@@ -107,7 +87,7 @@ export class Jira implements IJira {
     while (goOn) {
       const response: IAssignee[] = await this.jiraInstance.user.searchAssignable({ project, maxResults, startAt });
       assignees.push(...response);
-      if (response.length < maxResults) {
+      if ((response || []).length < maxResults) {
         goOn = false;
       } else {
         startAt += maxResults;
