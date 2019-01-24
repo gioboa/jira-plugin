@@ -25,6 +25,14 @@
 - [Jira Issue Key+Summary link to open Jira issue in the browser](#link-to-open-jira-issue-in-the-browser)
 - [Git Integration](#settings)
 
+## Support
+
+**jira-plugin** is an open source extension.<br>While being free and open source, if you find it useful, please consider supporting it by donating via PayPal.<br>**Thanks!**
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UANXPBHUX7DJW&item_name=Donation+for+jira-plugin.+Thanks+for+be+a+backer.&currency_code=EUR&source=url">
+  <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"/>
+</a>
+
 ## Installation
 
 Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter.<br>
