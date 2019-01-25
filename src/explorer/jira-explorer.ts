@@ -54,7 +54,7 @@ export default class JiraExplorer implements vscode.TreeDataProvider<IssueItem> 
         }
       });
 
-      if (issues.length === parseInt(configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST, '50'), 10)) {
+      if (issues.length === configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST)) {
         items.push(new DividerItem('------'), new LimitInfoItem());
       }
       return items;

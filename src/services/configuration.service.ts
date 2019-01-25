@@ -42,22 +42,22 @@ export default class ConfigurationService {
   }
 
   // used for get only one setting
-  public get(entry: string, fallbackValue?: string): string {
-    const config = this.settings;
-    let result = config && (<any>config).get(entry);
-    return (result || fallbackValue || '').toString();
+  public get(entry: string, fallbackValue?: any): any {
+    if (!this.settings) {
+      return fallbackValue;
+    }
+
+    return this.settings.get(entry, fallbackValue);
   }
 
   // used for set only one setting
-  public async set(entry: string, value: string | undefined): Promise<any> {
-    const config = this.settings;
-
+  public async set(entry: string, value: any): Promise<any> {
     // remove / at the end if exist
-    if (value && entry === CONFIG.BASE_URL) {
+    if (entry === CONFIG.BASE_URL && typeof value === 'string') {
       value = value.replace(/\/$/, '');
     }
 
-    return config && config.update(entry, value || '', true);
+    return this.settings && this.settings.update(entry, value, true);
   }
 
   // set inside VS Code local storage the settings

@@ -26,10 +26,11 @@ const jiraClient = require('jira-connector');
 
 export class Jira implements IJira {
   jiraInstance: any;
-  baseUrl: string | undefined;
+  baseUrl: string;
 
   constructor() {
     if (!configuration.isValid()) {
+      this.baseUrl = '';
       logger.printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
       return;
     }

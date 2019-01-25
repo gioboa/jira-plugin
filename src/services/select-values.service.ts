@@ -136,7 +136,7 @@ export default class SelectValuesService {
           if (!!jql) {
             logger.jiraPluginDebugLog(`${filter} jql`, jql);
             // call Jira API with the generated JQL
-            const maxResults = Math.min(parseInt(configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST, '50'), 10), SEARCH_MAX_RESULTS);
+            const maxResults = Math.min(configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST), SEARCH_MAX_RESULTS);
             const searchResult = await state.jira.search({
               jql,
               maxResults
