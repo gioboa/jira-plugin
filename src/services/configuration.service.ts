@@ -45,21 +45,18 @@ export default class ConfigurationService {
   public get(entry: string, fallbackValue?: string): string {
     const config = this.settings;
     let result = config && (<any>config).get(entry);
-    // remove / at the end if exist
-    switch (entry) {
-      case CONFIG.BASE_URL: {
-        if (result && result.substring(result.length - 1) === '/') {
-          result = result.substring(0, result.length - 1);
-        }
-        break;
-      }
-    }
     return (result || fallbackValue || '').toString();
   }
 
   // used for set only one setting
   public async set(entry: string, value: string | undefined): Promise<any> {
     const config = this.settings;
+
+    // remove / at the end if exist
+    if (value && entry === CONFIG.BASE_URL) {
+      value = value.replace(/\/$/, '');
+    }
+
     return config && config.update(entry, value || '', true);
   }
 
