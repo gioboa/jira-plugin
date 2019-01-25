@@ -1,6 +1,26 @@
 import { configuration, logger } from '../services';
 import { ASSIGNEES_MAX_RESULTS, CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
-import { IAddComment, IAddCommentResponse, IAddWorkLog, IAssignee, IAvailableLinkIssuesType, ICreateIssue, ICreateIssueEpic, ICreateMetadata, IFavouriteFilter, IIssue, IIssueType, IJira, ILabel, IPriority, IProject, ISearch, ISetTransition, IStatus, ITransitions } from './api.model';
+import {
+  IAddComment,
+  IAddCommentResponse,
+  IAddWorkLog,
+  IAssignee,
+  IAvailableLinkIssuesType,
+  ICreateIssue,
+  ICreateIssueEpic,
+  ICreateMetadata,
+  IFavouriteFilter,
+  IIssue,
+  IIssueType,
+  IJira,
+  ILabel,
+  IPriority,
+  IProject,
+  ISearch,
+  ISetTransition,
+  IStatus,
+  ITransitions
+} from './api.model';
 
 const jiraClient = require('jira-connector');
 
