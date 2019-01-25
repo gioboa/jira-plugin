@@ -1,58 +1,85 @@
 import { configuration, logger } from '../services';
-import { ASSIGNEES_MAX_RESULTS, CONFIG, CREDENTIALS_SEPARATOR } from '../shared/constants';
-import { IAddComment, IAddCommentResponse, IAddWorkLog, IAssignee, IAvailableLinkIssuesType, ICreateIssue, ICreateIssueEpic, ICreateMetadata, IFavouriteFilter, IIssue, IIssueType, IJira, ILabel, IPriority, IProject, ISearch, ISetTransition, IStatus, ITransitions } from './api.model';
+import { ASSIGNEES_MAX_RESULTS, CONFIG } from '../shared/constants';
+import {
+  IAddComment,
+  IAddCommentResponse,
+  IAddWorkLog,
+  IAssignee,
+  IAvailableLinkIssuesType,
+  ICreateIssue,
+  ICreateIssueEpic,
+  ICreateMetadata,
+  IFavouriteFilter,
+  IIssue,
+  IIssueType,
+  IJira,
+  ILabel,
+  IPriority,
+  IProject,
+  ISearch,
+  ISetTransition,
+  IStatus,
+  ITransitions
+} from './api.model';
 
 const jiraClient = require('jira-connector');
 
 export class Jira implements IJira {
   jiraInstance: any;
-  baseUrl: string;
+  baseUrl: string | undefined;
 
   constructor() {
+    if (!configuration.isValid()) {
+      logger.printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
+      return;
+    }
+
     this.baseUrl = configuration.get(CONFIG.BASE_URL);
 
-    if (this.baseUrl && configuration.globalState) {
-      // prepare config for jira-connector
-      let host = this.baseUrl;
-      const protocol = host.indexOf('https://') >= 0 ? 'https' : 'http';
-      host = host.replace('https://', '').replace('http://', '');
-      const portPosition = host.indexOf(':');
-      const port = portPosition !== -1 ? host.substring(portPosition + 1) : undefined;
-      if (portPosition !== -1) {
-        host = host.substring(0, portPosition);
-      }
-      const [username, password] = configuration.globalState.split(CREDENTIALS_SEPARATOR);
-      this.jiraInstance = new jiraClient({ host, port, protocol, basic_auth: { username, password } });
+    // prepare config for jira-connector
+    let host = this.baseUrl;
+    const protocol = host.indexOf('https://') >= 0 ? 'https' : 'http';
+    host = host.replace('https://', '').replace('http://', '');
+    const portPosition = host.indexOf(':');
+    const port = portPosition !== -1 ? host.substring(portPosition + 1) : undefined;
 
-      // custom event
-      // solve this issue -> https://github.com/floralvikings/jira-connector/issues/115
-      const customGetAllProjects = (opts: any, callback: any) => {
-        const options = this.jiraInstance.project.buildRequestOptions(opts, '', 'GET');
-        if (Object.keys(options.body).length === 0) {
-          delete options.body;
-        }
-        if (Object.keys(options.qs).length === 0) {
-          delete options.qs;
-        }
-        return this.jiraInstance.makeRequest(options, callback);
-      };
-      this.jiraInstance.project.getAllProjects = customGetAllProjects;
-
-      const customApiCall = (uri: string, callback: any) => {
-        const options = this.jiraInstance.project.buildRequestOptions({}, '', 'GET');
-        if (Object.keys(options.body).length === 0) {
-          delete options.body;
-        }
-        if (Object.keys(options.qs).length === 0) {
-          delete options.qs;
-        }
-        options.uri = uri;
-        return this.jiraInstance.makeRequest(options, callback);
-      };
-      this.jiraInstance.project.customApiCall = customApiCall;
-    } else {
-      logger.printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
+    if (portPosition !== -1) {
+      host = host.substring(0, portPosition);
     }
+
+    this.jiraInstance = new jiraClient({
+      host,
+      port,
+      protocol,
+      basic_auth: configuration.credentials
+    });
+
+    // custom event
+    // solve this issue -> https://github.com/floralvikings/jira-connector/issues/115
+    const customGetAllProjects = (opts: any, callback: any) => {
+      const options = this.jiraInstance.project.buildRequestOptions(opts, '', 'GET');
+      if (Object.keys(options.body).length === 0) {
+        delete options.body;
+      }
+      if (Object.keys(options.qs).length === 0) {
+        delete options.qs;
+      }
+      return this.jiraInstance.makeRequest(options, callback);
+    };
+    this.jiraInstance.project.getAllProjects = customGetAllProjects;
+
+    const customApiCall = (uri: string, callback: any) => {
+      const options = this.jiraInstance.project.buildRequestOptions({}, '', 'GET');
+      if (Object.keys(options.body).length === 0) {
+        delete options.body;
+      }
+      if (Object.keys(options.qs).length === 0) {
+        delete options.qs;
+      }
+      options.uri = uri;
+      return this.jiraInstance.makeRequest(options, callback);
+    };
+    this.jiraInstance.project.customApiCall = customApiCall;
   }
 
   async search(params: { jql: string; maxResults: number }): Promise<ISearch> {

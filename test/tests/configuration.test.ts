@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import ConfigurationService from '../../src/services/configuration.service';
-import { CONFIG, CREDENTIALS_SEPARATOR, DEFAULT_WORKING_ISSUE_STATUS } from '../../src/shared/constants';
+import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS } from '../../src/shared/constants';
 import state from '../../src/store/state';
 
 suite('Configuration', () => {
@@ -64,22 +64,22 @@ suite('Configuration', () => {
 
   test(`Password config`, async () => {
     const password = 'my_password';
-    await configuration.setGlobalState(password);
-    const result = configuration.globalState.split(CREDENTIALS_SEPARATOR)[1];
+    await configuration.setPassword(password);
+    const { password: result } = configuration.credentials;
     assert.equal(password, result);
   });
 
   test(`Valid config`, async () => {
     await configuration.set(CONFIG.BASE_URL, 'baseUrl');
     await configuration.set(CONFIG.USERNAME, 'my_username');
-    await configuration.setGlobalState('my_password');
+    await configuration.setPassword('my_password');
     assert.equal(configuration.isValid(), true);
   });
 
   test(`NOT valid config`, async () => {
     await configuration.set(CONFIG.BASE_URL, 'baseUrl');
     await configuration.set(CONFIG.USERNAME, undefined);
-    await configuration.setGlobalState('my_password');
+    await configuration.setPassword('my_password');
     assert.equal(configuration.isValid(), false);
   });
 
