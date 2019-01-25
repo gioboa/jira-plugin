@@ -18,4 +18,19 @@ suite(`Utilities`, () => {
     const result = utilities.floorSecondsToMinutes(61);
     assert.equal(result, '1');
   });
+
+  test('AddStatusIcon with valid status', async () => {
+    const result = utilities.addStatusIcon('Open', true);
+    assert.equal(result, '$(beaker)  Open ');
+  });
+
+  test('AddStatusIcon with valid status, no description', async () => {
+    const result = utilities.addStatusIcon('Open', false);
+    assert.equal(result, '$(beaker)');
+  });
+
+  test('AddStatusIcon with NOT valid status', async () => {
+    const result = utilities.addStatusIcon('ABC', true);
+    assert.equal(result, '$(info)  ABC ');
+  });
 });
