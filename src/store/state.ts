@@ -123,7 +123,7 @@ export const addAdditionalStatuses = () => {
     const additionalStatuses = configuration.get(CONFIG.ADDITIONAL_STATUSES);
     if (!!additionalStatuses) {
       const list = additionalStatuses.split(',');
-      list.forEach(status => {
+      list.forEach((status: string) => {
         const newStatus = status.trim();
         if (!!newStatus && !state.statuses.find(el => el.name.toLowerCase() === newStatus.toLowerCase())) {
           state.statuses.push({

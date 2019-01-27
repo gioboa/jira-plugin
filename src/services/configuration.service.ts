@@ -14,9 +14,14 @@ import { IConfiguration } from './configuration.model';
 
 export default class ConfigurationService {
   public isValid(): boolean {
-    const [username, password] = this.globalState.split(CREDENTIALS_SEPARATOR);
-    const config = this.settings;
-    return !!(config && config.baseUrl && username && password);
+    if (!this.settings) {
+      return false;
+    }
+
+    const { baseUrl } = this.settings;
+    const { username, password } = this.credentials;
+
+    return !!(baseUrl && username && password);
   }
 
   // all the plugin settings
@@ -28,41 +33,44 @@ export default class ConfigurationService {
     return config;
   }
 
-  // used for get only one setting
-  public get(entry: string, fallbackValue?: string): string {
+  public get credentials(): { username: string; password: string } {
     const config = this.settings;
-    let result = config && (<any>config).get(entry);
-    // remove / at the end if exist
-    switch (entry) {
-      case CONFIG.BASE_URL: {
-        if (result && result.substring(result.length - 1) === '/') {
-          result = result.substring(0, result.length - 1);
-        }
-        break;
-      }
+    const credentials: string = (config && this.globalState.get(`${CONFIG_NAME}:${config.baseUrl}`)) || '';
+
+    const [username = '', password = ''] = credentials.split(CREDENTIALS_SEPARATOR);
+    return { username, password };
+  }
+
+  // used for get only one setting
+  public get(entry: string, fallbackValue?: any): any {
+    if (!this.settings) {
+      return fallbackValue;
     }
-    return (result || fallbackValue || '').toString();
+
+    return this.settings.get(entry, fallbackValue);
   }
 
   // used for set only one setting
-  public async set(entry: string, value: string | undefined): Promise<any> {
-    const config = this.settings;
-    return config && config.update(entry, value || '', true);
+  public async set(entry: string, value: any): Promise<any> {
+    // remove / at the end if exist
+    if (entry === CONFIG.BASE_URL && typeof value === 'string') {
+      value = value.replace(/\/$/, '');
+    }
+
+    return this.settings && this.settings.update(entry, value, true);
   }
 
   // set inside VS Code local storage the settings
-  public async setGlobalState(password: string | undefined): Promise<void> {
+  public async setPassword(password: string | undefined): Promise<void> {
     const config = this.settings;
     return (
-      config &&
-      state.context.globalState.update(`${CONFIG_NAME}:${config.baseUrl}`, `${config.username}${CREDENTIALS_SEPARATOR}${password || ''}`)
+      config && this.globalState.update(`${CONFIG_NAME}:${config.baseUrl}`, `${config.username}${CREDENTIALS_SEPARATOR}${password || ''}`)
     );
   }
 
   // get inside VS Code local storage the settings
-  public get globalState(): any {
-    const config = this.settings;
-    return config && state.context.globalState.get(`${CONFIG_NAME}:${config.baseUrl}`);
+  public get globalState(): vscode.Memento {
+    return state.context.globalState;
   }
 
   // set inside VS Code local storage the last working issue
@@ -71,7 +79,7 @@ export default class ConfigurationService {
     const config = this.settings;
     return (
       config &&
-      state.context.globalState.update(
+      this.globalState.update(
         `${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`,
         !!workingIssue ? JSON.stringify(workingIssue) : undefined
       )
@@ -81,15 +89,15 @@ export default class ConfigurationService {
   // get inside VS Code local storage the last working issue
   public getGlobalWorkingIssue(): any {
     const config = this.settings;
-    return config && state.context.globalState.get(`${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`);
+    return config && this.globalState.get(`${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`);
   }
 
   public setGlobalCounter(count: number): Thenable<void> {
-    return state.context.globalState.update(`${CONFIG_NAME}:${CONFIG_COUNTER}`, count);
+    return this.globalState.update(`${CONFIG_NAME}:${CONFIG_COUNTER}`, count);
   }
 
   public getGlobalCounter(): any {
-    return state.context.globalState.get(`${CONFIG_NAME}:${CONFIG_COUNTER}`);
+    return this.globalState.get(`${CONFIG_NAME}:${CONFIG_COUNTER}`);
   }
 
   public workingIssueStatuses(): string {

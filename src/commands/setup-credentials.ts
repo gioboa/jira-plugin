@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
+import { configuration } from '../services';
 import { CONFIG } from '../shared/constants';
 import { connectToJira } from '../store/state';
-import { configuration } from '../services';
 
 export default async function setupCredentials(): Promise<void> {
   const baseUrl = configuration.get(CONFIG.BASE_URL);
@@ -33,7 +33,7 @@ export default async function setupCredentials(): Promise<void> {
     })
   );
 
-  configuration.setGlobalState(
+  configuration.setPassword(
     await vscode.window.showInputBox({
       ignoreFocusOut: true,
       password: true,
