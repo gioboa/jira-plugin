@@ -12,7 +12,8 @@ export const CONFIG = {
   WORKING_ISSUE_STATUSES: 'workingIssueStatues',
   ADDITIONAL_STATUSES: 'additionalStatuses',
   GIT_INTEGRATION_ENABLED: 'gitIntegration',
-  NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList'
+  NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
+  DEFAULT_JQL_SEARCH: 'defaultJQLSearch'
 };
 
 // all the tracking time mode
@@ -36,6 +37,7 @@ export const LATER = 'Later';
 
 // all the search types
 export const SEARCH_MODE = {
+  DEFAULT: 'DEFAULT',
   ALL: 'ALL',
   CURRENT_SPRINT: 'CURRENT_SPRINT',
   ID: 'ID',

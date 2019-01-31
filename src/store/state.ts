@@ -53,7 +53,7 @@ export const connectToJira = async (): Promise<void> => {
     const project = configuration.get(CONFIG.WORKING_PROJECT);
     // refresh Jira explorer list
     if (project) {
-      await vscode.commands.executeCommand('jira-plugin.allIssuesCommand');
+      await vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand');
     } else {
       vscode.window.showWarningMessage("Working project isn't set.");
     }
@@ -83,7 +83,7 @@ export const changeStateProject = (project: string): void => {
     // loading in Jira explorer
     changeStateIssues(LOADING.text, '', []);
     // launch search for the new project
-    setTimeout(() => vscode.commands.executeCommand('jira-plugin.allIssuesCommand'), 1000);
+    setTimeout(() => vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand'), 1000);
   }
 };
 

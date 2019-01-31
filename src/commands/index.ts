@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { selectValues, utilities } from '../services';
 import { SEARCH_MODE } from '../shared/constants';
 import changeIssueAssigneeCommand from './change-issue-assignee';
 import changeIssueStatusCommand from './change-issue-status';
@@ -11,7 +12,6 @@ import openIssueCommand from './open-issue';
 import setWorkingIssueCommand from './set-working-issue';
 import setWorkingProjectCommand from './set-working-project';
 import setupCredentials from './setup-credentials';
-import { selectValues, utilities } from '../services';
 
 const { registerCommand } = vscode.commands;
 const issueSelector = (mode: string) => () => selectValues.selectIssue(mode);
@@ -38,6 +38,7 @@ export default {
 
       // explorer filters
       registerCommand('jira-plugin.refresh', issueSelector(SEARCH_MODE.REFRESH)),
+      registerCommand('jira-plugin.defaultIssuesCommand', issueSelector(SEARCH_MODE.DEFAULT)),
       registerCommand('jira-plugin.allIssuesCommand', issueSelector(SEARCH_MODE.ALL)),
       registerCommand('jira-plugin.currentSprintCommand', issueSelector(SEARCH_MODE.CURRENT_SPRINT)),
       registerCommand('jira-plugin.myIssuesByStatusCommand', issueSelector(SEARCH_MODE.MY_STATUS)),

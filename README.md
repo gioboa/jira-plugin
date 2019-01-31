@@ -70,6 +70,8 @@ The extension store credentials in VS Code settings.<br><br>
   Additional custom statuses, used for manage some Jira wrong behavior
 - **Base Url** <br>
   Your Jira base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)
+- **Default JQL Search**
+  Here you can define your default/custom JQL search. n.b WORKING_PROJECT is the placeholder for the current working project.
 - **Enable Working Issue** <br>
   Enable working issue functionality in status bar
 - **Git Integration** <br>
