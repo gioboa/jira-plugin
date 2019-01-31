@@ -63,8 +63,7 @@ export default class SelectValuesService {
     }
     switch (mode) {
       case SEARCH_MODE.DEFAULT: {
-        const jql = configuration.get(CONFIG.DEFAULT_JQL_SEARCH).replace(/WORKING_PROJECT/g, project);
-        return [`DEFAULT`, jql];
+        return [`DEFAULT`, configuration.get(CONFIG.DEFAULT_JQL_SEARCH).replace(/WORKING_PROJECT/g, project)];
       }
       case SEARCH_MODE.ALL: {
         return [`ALL ISSUES`, `project = '${project}' ORDER BY status ASC, updated DESC`];
