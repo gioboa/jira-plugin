@@ -58,7 +58,14 @@ export default class SelectValuesService {
   // return the filter (used in filter-info-item) and the JQL
   public async getFilterAndJQL(mode: string, project: string): Promise<string[]> {
     utilities.checkCounter();
+    if (mode === SEARCH_MODE.DEFAULT && !configuration.get(CONFIG.DEFAULT_JQL_SEARCH)) {
+      mode = SEARCH_MODE.ALL;
+    }
     switch (mode) {
+      case SEARCH_MODE.DEFAULT: {
+        const jql = configuration.get(CONFIG.DEFAULT_JQL_SEARCH).replace(/WORKING_PROJECT/g, project);
+        return [`DEFAULT`, jql];
+      }
       case SEARCH_MODE.ALL: {
         return [`ALL ISSUES`, `project = '${project}' ORDER BY status ASC, updated DESC`];
       }

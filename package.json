@@ -112,6 +112,11 @@
           "type": "integer",
           "description": "Number of issues to show in list. n.b: If you define high numbers the research can be slow.",
           "default": 50
+        },
+        "jira-plugin.defaultJQLSearch": {
+          "type": "string",
+          "description": "The plugin use this search by default. n.b WORKING_PROJECT is the placeholder for the current working project.",
+          "default": "project = 'WORKING_PROJECT' ORDER BY status ASC, updated DESC"
         }
       }
     },
@@ -136,6 +141,11 @@
       {
         "command": "jira-plugin.setupCredentialsCommand",
         "title": "Setup credentials",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.defaultIssuesCommand",
+        "title": "0 - Default JQL Search",
         "category": "Jira-plugin"
       },
       {
@@ -224,6 +234,10 @@
     ],
     "menus": {
       "view/title": [
+        {
+          "command": "jira-plugin.defaultIssuesCommand",
+          "when": "view == jiraExplorer"
+        },
         {
           "command": "jira-plugin.allIssuesCommand",
           "when": "view == jiraExplorer"
