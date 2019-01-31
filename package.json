@@ -115,7 +115,7 @@
         },
         "jira-plugin.defaultJQLSearch": {
           "type": "string",
-          "description": "The plugin use this search by default. n.b WORKING_PROJECT is the placeholder for the current working project.",
+          "description": "Here you can define your default/custom JQL search. n.b WORKING_PROJECT is the placeholder for the current working project.",
           "default": "project = 'WORKING_PROJECT' ORDER BY status ASC, updated DESC"
         }
       }
