@@ -3,7 +3,7 @@ import { IssueItem } from '../explorer/item/issue-item';
 import { ICreateIssueEpicList, IField, IFieldSchema, IIssue, ILabel } from '../http/api.model';
 import { configuration, logger, selectValues } from '../services';
 import { IPickValue } from '../services/configuration.model';
-import { ASSIGNEES_MAX_RESULTS, CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
+import { CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
 import state, { verifyCurrentProject } from '../store/state';
 import openIssueCommand from './open-issue';
 
