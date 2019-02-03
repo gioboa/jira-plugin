@@ -4,6 +4,16 @@ import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS } from '../../src/shared/constants
 import state from '../../src/store/state';
 
 suite('Configuration', () => {
+  const configuration = new ConfigurationService();
+  let baseUrlBkp: any;
+  let usernameBkp: any;
+  let workProjectBkp: any;
+  let enableWorkingIssueBkp: any;
+  let workingIssueStatusesBkp: any;
+  let credentialsBkp: any;
+  let counterBkp: any;
+  let globalWorkigIssueBkp: any;
+
   const tests = [
     {
       title: `${CONFIG.BASE_URL} 1`,
@@ -48,7 +58,18 @@ suite('Configuration', () => {
       equal: true
     }
   ];
-  const configuration = new ConfigurationService();
+
+  test(`Backup Settings`, async () => {
+    baseUrlBkp = await configuration.get(CONFIG.BASE_URL);
+    usernameBkp = await configuration.get(CONFIG.USERNAME);
+    workProjectBkp = await configuration.get(CONFIG.WORKING_PROJECT);
+    enableWorkingIssueBkp = await configuration.get(CONFIG.ENABLE_WORKING_ISSUE);
+    workingIssueStatusesBkp = await configuration.get(CONFIG.WORKING_ISSUE_STATUSES);
+    credentialsBkp = await configuration.credentials;
+    counterBkp = await configuration.getGlobalCounter();
+    globalWorkigIssueBkp = await configuration.getGlobalWorkingIssue();
+    assert.equal(1, 1);
+  });
 
   tests.forEach(entry => {
     test(`${entry.title} config`, async () => {
@@ -160,5 +181,17 @@ suite('Configuration', () => {
     await configuration.set(CONFIG.WORKING_ISSUE_STATUSES, 'Abc');
     const statuses = configuration.workingIssueStatuses();
     assert.equal(statuses, `'${DEFAULT_WORKING_ISSUE_STATUS}'`);
+  });
+
+  test(`Restore Settings Backup`, async () => {
+    await configuration.set(CONFIG.BASE_URL, baseUrlBkp);
+    await configuration.set(CONFIG.USERNAME, usernameBkp);
+    await configuration.set(CONFIG.WORKING_PROJECT, workProjectBkp);
+    await configuration.set(CONFIG.ENABLE_WORKING_ISSUE, enableWorkingIssueBkp);
+    await configuration.set(CONFIG.WORKING_ISSUE_STATUSES, workingIssueStatusesBkp);
+    await configuration.setPassword(credentialsBkp.password);
+    await configuration.setGlobalCounter(counterBkp);
+    await configuration.setGlobalWorkingIssue(globalWorkigIssueBkp);
+    assert.equal(1, 1);
   });
 });
