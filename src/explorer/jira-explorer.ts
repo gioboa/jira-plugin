@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { getConfigurationByKey } from '../shared/configuration';
-import { CONFIG, LOADING, LIST_MAX_RESULTS } from '../shared/constants';
-import state from '../state/state';
+import { configuration } from '../services';
+import { CONFIG, LOADING } from '../shared/constants';
+import state from '../store/state';
 import { DividerItem } from './item/divider-item';
 import { FilterInfoItem } from './item/filter-info-item';
 import { IssueItem } from './item/issue-item';
@@ -10,7 +10,7 @@ import { LoadingItem } from './item/loading-item';
 import { NoResultItem } from './item/no-result-item';
 import { StatusItem } from './item/status-item';
 
-export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
+export default class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<IssueItem | undefined> = new vscode.EventEmitter<IssueItem | undefined>();
   readonly onDidChangeTreeData: vscode.Event<IssueItem | undefined> = this._onDidChangeTreeData.event;
 
@@ -25,7 +25,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
   }
 
   async getChildren(element?: IssueItem): Promise<any[]> {
-    let project = await getConfigurationByKey(CONFIG.WORKING_PROJECT);
+    let project = await configuration.get(CONFIG.WORKING_PROJECT);
     const issues = state.issues;
     // generate all the item from issues saved in global state
     if (issues.length > 0) {
@@ -38,7 +38,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
           })
       );
       // add in the firt possition 'filter-info-item' and then the 'divider-item'
-      items.unshift(new FilterInfoItem(project || '', state.currentFilter, issues.length), new DividerItem('------'));
+      items.unshift(new FilterInfoItem(project, state.currentFilter, issues.length), new DividerItem('------'));
 
       // loop items and insert for every status a separator
       const getLabel = (status: string) => `Status: ${status}`;
@@ -54,7 +54,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
         }
       });
 
-      if (issues.length === LIST_MAX_RESULTS) {
+      if (issues.length === configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST)) {
         items.push(new DividerItem('------'), new LimitInfoItem());
       }
       return items;
@@ -64,11 +64,7 @@ export class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
         return [new LoadingItem()];
       }
       // no result
-      return [
-        new FilterInfoItem(project || '', state.currentFilter, issues.length),
-        new DividerItem('------'),
-        new NoResultItem(project || '')
-      ];
+      return [new FilterInfoItem(project, state.currentFilter, issues.length), new DividerItem('------'), new NoResultItem(project)];
     }
   }
 }

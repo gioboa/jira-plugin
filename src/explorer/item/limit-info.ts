@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { STATUS_ICONS } from '../../shared/constants';
-import { getIconsPath } from '../../shared/utilities';
+import { utilities } from '../../services';
 
 export class LimitInfoItem extends vscode.TreeItem {
   constructor() {
@@ -24,8 +24,8 @@ export class LimitInfoItem extends vscode.TreeItem {
   }
 
   iconPath = {
-    light: getIconsPath(`light/${STATUS_ICONS.DEFAULT.file}`),
-    dark: getIconsPath(`dark/${STATUS_ICONS.DEFAULT.file}`)
+    light: utilities.getIconsPath(`light/${STATUS_ICONS.DEFAULT.file}`),
+    dark: utilities.getIconsPath(`dark/${STATUS_ICONS.DEFAULT.file}`)
   };
 
   contextValue = 'LimitInfoItem';

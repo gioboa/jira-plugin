@@ -1,10 +1,10 @@
 import { EventEmitter } from 'events';
 import * as vscode from 'vscode';
+import { logger } from '.';
 import { IIssue } from '../http/api.model';
-import { getConfigurationByKey } from '../shared/configuration';
 import { CONFIG, NO, YES } from '../shared/constants';
-import { printErrorMessageInOutputAndShowAlert } from '../shared/log-utilities';
-import state, { changeStateProject } from '../state/state';
+import state, { changeStateProject } from '../store/state';
+import ConfigurationService from './configuration.service';
 
 /**
  * TODO: overengineering. Implement simplier solution
@@ -70,17 +70,17 @@ interface Ticket {
   issue: string;
 }
 
-export class GitIntegration {
+export default class GitIntegrationService {
   private enabled = false;
   private configWatcher: vscode.Disposable;
   private watcher: BranchWatcher | undefined;
   private currentBranch: string | undefined;
 
   get isEnabled(): boolean {
-    return !!getConfigurationByKey(CONFIG.GIT_INTEGRATION_ENABLED);
+    return !!this.configuration.get(CONFIG.GIT_INTEGRATION_ENABLED);
   }
 
-  constructor() {
+  constructor(private configuration: ConfigurationService) {
     this.configWatcher = vscode.workspace.onDidChangeConfiguration(() => this.toggleWatcher());
 
     this.toggleWatcher();
@@ -132,7 +132,7 @@ export class GitIntegration {
       changeStateProject(ticket.project);
       vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', undefined, issue);
     } catch (e) {
-      printErrorMessageInOutputAndShowAlert(e);
+      logger.printErrorMessageInOutputAndShowAlert(e);
     }
   }
 

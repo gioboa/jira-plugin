@@ -25,6 +25,14 @@
 - [Jira Issue Key+Summary link to open Jira issue in the browser](#link-to-open-jira-issue-in-the-browser)
 - [Git Integration](#settings)
 
+## Support
+
+**jira-plugin** is an open source extension.<br>While being free and open source, if you find it useful, please consider supporting it by donating via PayPal.<br>**Thanks!**
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UANXPBHUX7DJW&item_name=Donation+for+jira-plugin.+Thanks+for+be+a+backer.&currency_code=EUR&source=url">
+  <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"/>
+</a>
+
 ## Installation
 
 Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter.<br>
@@ -62,6 +70,8 @@ The extension store credentials in VS Code settings.<br><br>
   Additional custom statuses, used for manage some Jira wrong behavior
 - **Base Url** <br>
   Your Jira base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)
+- **Default JQL Search**
+  Here you can define your default/custom JQL search. n.b WORKING_PROJECT is the placeholder for the current working project.
 - **Enable Working Issue** <br>
   Enable working issue functionality in status bar
 - **Git Integration** <br>

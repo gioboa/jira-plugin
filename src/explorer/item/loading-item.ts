@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { LOADING } from '../../shared/constants';
-import { getIconsPath } from '../../shared/utilities';
+import { utilities } from '../../services';
 
 export class LoadingItem extends vscode.TreeItem {
   constructor() {
@@ -12,8 +12,8 @@ export class LoadingItem extends vscode.TreeItem {
   }
 
   iconPath = {
-    light: getIconsPath(`light/${LOADING.file}`),
-    dark: getIconsPath(`dark/${LOADING.file}`)
+    light: utilities.getIconsPath(`light/${LOADING.file}`),
+    dark: utilities.getIconsPath(`dark/${LOADING.file}`)
   };
 
   contextValue = 'LoadingItem';

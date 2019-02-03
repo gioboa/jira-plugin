@@ -1,13 +1,14 @@
 import * as vscode from 'vscode';
 import { IProject } from '../http/api.model';
-import { getConfigurationByKey } from './configuration';
+import '../services';
+import { configuration } from '../services';
 import { CONFIG } from './constants';
 
 export class IssueLinkProvider implements vscode.DocumentLinkProvider {
   constructor(private projects: IProject[]) {}
 
   private get baseUrl(): string | undefined {
-    return getConfigurationByKey(CONFIG.BASE_URL);
+    return configuration.get(CONFIG.BASE_URL);
   }
 
   public provideDocumentLinks(document: vscode.TextDocument): vscode.ProviderResult<vscode.DocumentLink[]> {
