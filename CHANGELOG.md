@@ -1,3 +1,10 @@
+## 0.13.0
+
+### Features
+
+- you can decide how many issues are shown in list
+- you can define a default JQL Search
+
 ## 0.12.4
 
 ### Bug Fixes
