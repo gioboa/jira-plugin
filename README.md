@@ -113,20 +113,29 @@ values:<br>
 
 ### Filters
 
+- **Default JQL Search**<br>
+  Your default/custom JQL search<br><br>
 - **All issues**<br>
-  With this command you can search all issues for the current project.<br><br>
+  With this command you can search all issues for the current project.<br>
+  `project = '${project}' ORDER BY status ASC, updated DESC`<br><br>
 - **Current sprint issues**<br>
-  With this command you can search all issues for the current sprint.<br><br>
+  With this command you can search all issues for the current sprint.<br>
+  `project = '${project}' AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`<br><br>
 - **Issue by id**<br>
-  With this command you can search an issue by id.<br><br>
+  With this command you can search an issue by id.<br>
+  `id = '${project}-${id}' ORDER BY status ASC, updated DESC`<br><br>
 - **Issues filtered by status**<br>
-  With this command you can search issues with a particular status.<br><br>
+  With this command you can search issues with a particular status.<br>
+  `project = '${project}' AND status = '${status}' ORDER BY status ASC, updated DESC`<br><br>
 - **Issues filtered by status and assignee**<br>
-  With this command you can search issues with a particular assignee and status.<br><br>
+  With this command you can search issues with a particular assignee and status.<br>
+  `project = '${project}' AND status = '${status}' AND assignee = ${assignee} ORDER BY status ASC, updated DESC`<br><br>
 - **Issues filtered by summary**<br>
-  With this command you can search issues with a particular summary.<br><br>
+  With this command you can search issues with a particular summary.<br>
+  `project = '${project}' AND summary ~ '${summary}' ORDER BY status ASC, updated DESC`<br><br>
 - **My issues filtered by status**<br>
-  With this command you can search your issues with a particular status.<br><br>
+  With this command you can search your issues with a particular status.<br>
+  `project = '${project}' AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`<br><br>
 - **Favourites filters**<br>
   With this command you can use your favoutite filters for search your issues.<br>
   `only coherent "favorites filters" for the working project`<br><br>
