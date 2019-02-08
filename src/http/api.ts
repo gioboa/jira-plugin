@@ -21,6 +21,7 @@ import {
   IStatus,
   ITransitions
 } from './api.model';
+const parseString = require('xml2js').parseString;
 
 const jiraClient = require('jira-connector');
 
@@ -188,5 +189,38 @@ export class Jira implements IJira {
   async getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }> {
     // TODO - need to manage also opposed types. e.g blocks <-> is blocked by
     return await this.jiraInstance.issueLinkType.getAvailableTypes();
+  }
+
+  private convertToActivityEntry(entry: any): any | undefined {
+    const activityEntry = entry['activity:object'][0];
+    if (
+      activityEntry &&
+      activityEntry.title &&
+      activityEntry.title[0] &&
+      activityEntry.summary &&
+      activityEntry.summary[0] &&
+      entry.published &&
+      entry.published[0] &&
+      entry.author &&
+      entry.author[0]
+    ) {
+      return {
+        id: activityEntry.title[0]['_'],
+        summary: activityEntry.summary[0]['_'],
+        date: new Date(entry.published[0]),
+        author: entry.author[0].name[0]
+      };
+    }
+
+    return undefined;
+  }
+
+  async getActivity(): Promise<any> {
+    let activities: any[] = [];
+    const response = await this.customApiCall(this.baseUrl + '/activity');
+    await parseString(response, (err: any, result: any) => {
+      activities = result.feed.entry.map((entry: any) => this.convertToActivityEntry(entry)).filter((entry: any) => entry !== undefined);
+    });
+    return activities;
   }
 }
