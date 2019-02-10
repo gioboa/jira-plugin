@@ -221,20 +221,20 @@ export interface IAvailableLinkIssuesType {
 }
 
 export interface INotification {
-  id: string;
-  notificationId: string;
-  title: string;
-  template: string;
-  objectId: string;
-  eventType: string;
-  timestamp: string;
-  metadata: {
-    content: {
+  id?: string;
+  notificationId?: string;
+  title?: string;
+  template?: string;
+  objectId?: string;
+  eventType?: string;
+  timestamp?: string;
+  metadata?: {
+    content?: {
       id: string;
       title: string;
       url: string;
     };
-    issue: {
+    issue?: {
       summary: string;
       url: string;
       status: {
@@ -245,12 +245,12 @@ export interface INotification {
       issueID: string;
       issueKey: string;
     };
-    user1: {
+    user1?: {
       atlassianId: string;
       name: string;
     };
   };
-  users: {
+  users?: {
     [key: string]: string;
   };
   readState: 'read' | 'unread';
