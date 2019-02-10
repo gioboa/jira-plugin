@@ -1,4 +1,5 @@
 export interface IJira {
+  getCloudSession(): Promise<{ name: string; value: string }>;
   search(params: { jql: string; maxResults: number }): Promise<ISearch>;
   getStatuses(): Promise<IStatus[]>;
   getProjects(): Promise<IProject[]>;
@@ -13,7 +14,7 @@ export interface IJira {
   createIssue(params: ICreateIssue): Promise<any>;
   getAllPriorities(): Promise<IPriority[]>;
   getAllIssueTypesWithFields(project: string): Promise<IIssueType[]>;
-  customApiCall(uri: string): Promise<any>;
+  customRequest(method: 'GET' | 'POST', uri: string, headers?: {}, body?: {}): Promise<any>;
   getFavoriteFilters(): Promise<IFavouriteFilter[]>;
   getCreateIssueEpics(project: string, maxResults: number): Promise<ICreateIssueEpic>;
   getCreateIssueLabels(): Promise<{ suggestions: ILabel[] }>;

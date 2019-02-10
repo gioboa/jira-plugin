@@ -240,7 +240,7 @@ const manageSpecialFields = async (project: string, field: IField, fieldName: st
     }
   }
   if (isLabelsField(fieldName)) {
-    const response = await state.jira.customApiCall(field.autoCompleteUrl);
+    const response = await state.jira.customRequest('GET', field.autoCompleteUrl);
     (<any>preloadedListValues)[fieldName.toString()] = (response.suggestions || []).map((entrie: ILabel) => {
       entrie.key = entrie.label;
       entrie.description = '';
@@ -248,7 +248,7 @@ const manageSpecialFields = async (project: string, field: IField, fieldName: st
     });
   }
   if (isIssuelinksField(fieldName)) {
-    const response = await state.jira.customApiCall(field.autoCompleteUrl);
+    const response = await state.jira.customRequest('GET', field.autoCompleteUrl);
     for (const [key, value] of Object.entries(response)) {
       if (value instanceof Array) {
         if (!!value[0] && !!value[0].issues && value[0].issues instanceof Array) {
@@ -281,7 +281,7 @@ const retrieveValues = async (project: string, field: IField, fieldName: string)
       if (!(<any>preloadedListValues)[fieldName.toString()] && !!field.autoCompleteUrl) {
         try {
           // here the Jira API call
-          const response = await state.jira.customApiCall(field.autoCompleteUrl);
+          const response = await state.jira.customRequest('GET', field.autoCompleteUrl);
           for (const [key, value] of Object.entries(response)) {
             // I assume those are the values because it's an array
             if (value instanceof Array) {
