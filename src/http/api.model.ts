@@ -19,7 +19,7 @@ export interface IJira {
   getCreateIssueEpics(project: string, maxResults: number): Promise<ICreateIssueEpic>;
   getCreateIssueLabels(): Promise<{ suggestions: ILabel[] }>;
   getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }>;
-  getNotifications(): Promise<any>;
+  getNotifications(): Promise<{ data: INotification[]; direct: Boolean }>;
 }
 
 export interface IServerInfo {
@@ -218,4 +218,40 @@ export interface IAvailableLinkIssuesType {
   name: string;
   outward: string;
   self: string;
+}
+
+export interface INotification {
+  id: string;
+  notificationId: string;
+  title: string;
+  template: string;
+  objectId: string;
+  eventType: string;
+  timestamp: string;
+  metadata: {
+    content: {
+      id: string;
+      title: string;
+      url: string;
+    };
+    issue: {
+      summary: string;
+      url: string;
+      status: {
+        id: number;
+        name: string;
+        categoryKey: string;
+      };
+      issueID: string;
+      issueKey: string;
+    };
+    user1: {
+      atlassianId: string;
+      name: string;
+    };
+  };
+  users: {
+    [key: string]: string;
+  };
+  readState: 'read' | 'unread';
 }
