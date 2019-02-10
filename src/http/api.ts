@@ -191,36 +191,8 @@ export class Jira implements IJira {
     return await this.jiraInstance.issueLinkType.getAvailableTypes();
   }
 
-  private convertToActivityEntry(entry: any): any | undefined {
-    const activityEntry = entry['activity:object'][0];
-    if (
-      activityEntry &&
-      activityEntry.title &&
-      activityEntry.title[0] &&
-      activityEntry.summary &&
-      activityEntry.summary[0] &&
-      entry.published &&
-      entry.published[0] &&
-      entry.author &&
-      entry.author[0]
-    ) {
-      return {
-        id: activityEntry.title[0]['_'],
-        summary: activityEntry.summary[0]['_'],
-        date: new Date(entry.published[0]),
-        author: entry.author[0].name[0]
-      };
-    }
-
-    return undefined;
-  }
-
-  async getActivity(): Promise<any> {
-    let activities: any[] = [];
-    const response = await this.customApiCall(this.baseUrl + '/activity');
-    await parseString(response, (err: any, result: any) => {
-      activities = result.feed.entry.map((entry: any) => this.convertToActivityEntry(entry)).filter((entry: any) => entry !== undefined);
-    });
-    return activities;
+  async getNotifications(): Promise<any> {
+    // ?direct=true&includeContent=true
+    return this.customApiCall(this.baseUrl + '/gateway/api/notification-log/api/2/notifications');
   }
 }

@@ -18,7 +18,7 @@ export interface IJira {
   getCreateIssueEpics(project: string, maxResults: number): Promise<ICreateIssueEpic>;
   getCreateIssueLabels(): Promise<{ suggestions: ILabel[] }>;
   getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }>;
-  getActivity(): Promise<any>;
+  getNotifications(): Promise<any>;
 }
 
 export interface IServerInfo {
