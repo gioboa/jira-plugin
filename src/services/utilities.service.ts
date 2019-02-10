@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import { configuration, logger } from '.';
 import { IssueItem } from '../explorer/item/issue-item';
 import { IProject } from '../http/api.model';
-import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS, LATER, NO, STATUS_ICONS, YES } from '../shared/constants';
+import { LATER, NO, STATUS_ICONS, YES } from '../shared/constants';
 import { IssueLinkProvider } from '../shared/document-link-provider';
 import state from '../store/state';
 

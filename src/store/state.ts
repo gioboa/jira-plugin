@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { Jira } from '../http/api';
 import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
-import { configuration, jiraExplorer, logger, statusBar, utilities } from '../services';
+import { configuration, issuesExplorer, logger, statusBar, utilities } from '../services';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
 
 export interface IState {
@@ -91,7 +91,7 @@ export const changeStateIssues = (filter: string, jql: string, issues: IIssue[])
   state.currentFilter = filter;
   state.currentJQL = jql;
   state.issues = issues;
-  jiraExplorer.refresh();
+  issuesExplorer.refresh();
 };
 
 export const changeStateWorkingIssue = async (issue: IIssue, trackingTime: number): Promise<void> => {

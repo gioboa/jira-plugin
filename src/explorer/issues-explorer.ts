@@ -10,7 +10,7 @@ import { LoadingItem } from './item/loading-item';
 import { NoResultItem } from './item/no-result-item';
 import { StatusItem } from './item/status-item';
 
-export default class JiraExplorer implements vscode.TreeDataProvider<IssueItem> {
+export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<IssueItem | undefined> = new vscode.EventEmitter<IssueItem | undefined>();
   readonly onDidChangeTreeData: vscode.Event<IssueItem | undefined> = this._onDidChangeTreeData.event;
 
