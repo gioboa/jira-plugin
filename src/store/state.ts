@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { Jira } from '../http/api';
 import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
-import { configuration, issuesExplorer, logger, statusBar, utilities } from '../services';
+import { configuration, issuesExplorer, logger, notifications, statusBar, utilities } from '../services';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
 
 export interface IState {
@@ -53,6 +53,8 @@ export const connectToJira = async (): Promise<void> => {
     const project = configuration.get(CONFIG.WORKING_PROJECT);
     // refresh Jira explorer list
     if (project) {
+      // start notification service
+      notifications.startNotificationsWatcher();
       await vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand');
     } else {
       vscode.window.showWarningMessage("Working project isn't set.");
@@ -82,6 +84,8 @@ export const changeStateProject = (project: string): void => {
     statusBar.updateWorkingProjectItem(project);
     // loading in Jira explorer
     changeStateIssues(LOADING.text, '', []);
+    // start notification service
+    notifications.startNotificationsWatcher();
     // launch search for the new project
     setTimeout(() => vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand'), 1000);
   }
