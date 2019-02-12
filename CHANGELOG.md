@@ -1,3 +1,9 @@
+## 0.13.1
+
+### Bug Fixes
+
+- manage Tracking Time Mode: never
+
 ## 0.13.0
 
 ### Features
