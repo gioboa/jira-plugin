@@ -87,7 +87,7 @@ The extension store credentials in VS Code settings.<br><br>
 - **Working Project** <br>
   Jira working project
 - **Worklog Minimum Tracking Time** <br>
-  Minimum tracking time for show the Worklog modal and create Jira worklog
+  Minimum tracking time for show the Worklog modal and create Jira worklog (expressed in minutes)
 
 **n.b:** setting: **Tracking Time Mode** <br>
 values:<br>

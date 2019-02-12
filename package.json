@@ -91,7 +91,7 @@
         },
         "jira-plugin.worklogMinimumTrackingTime": {
           "type": "integer",
-          "description": "Minimum tracking time for show the Worklog modal and create Jira worklog",
+          "description": "Minimum tracking time for show the Worklog modal and create Jira worklog (expressed in minutes)",
           "default": 0
         },
         "jira-plugin.workingIssueStatues": {
