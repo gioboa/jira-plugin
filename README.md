@@ -95,6 +95,7 @@ values:<br>
 1.  `hybrid` - will increment tracking time always but if VS Code remain idle more then "trackingTimeModeHybridTimeout" will discard the time addition<br>
 1.  `always` - will increment tracking time always <br>
 1.  `vsCodeFocus` - will increment tracking time only if VS Code is focused<br>
+1.  `never` - will not tracking time<br>
 
 ## Explorer
 

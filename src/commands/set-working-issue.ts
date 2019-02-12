@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { IIssue, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import { configuration, selectValues, statusBar, utilities } from '../services';
-import { CONFIG, NO, NO_WORKING_ISSUE, YES, YES_WITH_COMMENT } from '../shared/constants';
+import { CONFIG, NO, NO_WORKING_ISSUE, YES, YES_WITH_COMMENT, TRACKING_TIME_MODE } from '../shared/constants';
 import state, { changeStateWorkingIssue } from '../store/state';
 
 export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkingIssue, preloadedIssue: IIssue): Promise<void> {
@@ -30,6 +30,7 @@ export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkin
     if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
       if (
         workingIssue.issue.key !== NO_WORKING_ISSUE.key &&
+        configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER &&
         utilities.floorSecondsToMinutes(workingIssue.trackingTime) >= configuration.get(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME)
       ) {
         // old working issue has trackingTime and it's equal or bigger then WORKLOG_MINIMUM_TRACKING_TIME setting
