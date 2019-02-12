@@ -79,7 +79,8 @@
           "enum": [
             "hybrid",
             "always",
-            "vsCodeFocus"
+            "vsCodeFocus",
+            "never"
           ],
           "default": "hybrid"
         },

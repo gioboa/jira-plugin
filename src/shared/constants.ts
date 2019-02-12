@@ -20,7 +20,8 @@ export const CONFIG = {
 export const TRACKING_TIME_MODE = {
   HYBRID: 'hybrid',
   ALWAYS: 'always',
-  VSCODE_FOCUS: 'vsCodeFocus'
+  VSCODE_FOCUS: 'vsCodeFocus',
+  NEVER: 'never'
 };
 
 export const CONFIG_NAME = 'jira-plugin';
