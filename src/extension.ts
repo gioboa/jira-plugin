@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import commands from './commands';
 import './services';
-import { gitIntegration, issuesExplorer, notificationsExplorer, statusBar } from './services';
+import { gitIntegration, issuesExplorer, statusBar } from './services';
 import { CONFIG_NAME } from './shared/constants';
 import state, { connectToJira } from './store/state';
 
@@ -13,7 +13,6 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(channel);
   state.context = context;
   vscode.window.registerTreeDataProvider('issues', issuesExplorer);
-  vscode.window.registerTreeDataProvider('notifications', notificationsExplorer);
   context.subscriptions.push(statusBar);
   context.subscriptions.push(gitIntegration);
   context.subscriptions.push(...commands.register());

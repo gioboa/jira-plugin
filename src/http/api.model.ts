@@ -19,7 +19,8 @@ export interface IJira {
   getCreateIssueEpics(project: string, maxResults: number): Promise<ICreateIssueEpic>;
   getCreateIssueLabels(): Promise<{ suggestions: ILabel[] }>;
   getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }>;
-  getNotifications(): Promise<{ data: INotification[]; direct: Boolean }>;
+  getNotifications(lastId: string): Promise<INotifications>;
+  markNotificationsAsReadUnread(payload: IMarkNotificationAsReadUnread): Promise<any>;
 }
 
 export interface IServerInfo {
@@ -220,8 +221,17 @@ export interface IAvailableLinkIssuesType {
   self: string;
 }
 
+export interface INotifications {
+  data: INotification[];
+  direct: boolean;
+  pageInfo: {
+    firstId: string;
+    lastId: string;
+  };
+}
+
 export interface INotification {
-  id?: string;
+  id: string;
   notificationId?: string;
   title?: string;
   template?: string;
@@ -254,4 +264,9 @@ export interface INotification {
     [key: string]: string;
   };
   readState: 'read' | 'unread';
+}
+
+export interface IMarkNotificationAsReadUnread {
+  ids: string[];
+  toState: 'READ' | 'UNREAD';
 }

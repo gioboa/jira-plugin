@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import { configuration, logger } from '.';
 import { IssueItem } from '../explorer/item/issue-item';
 import { IProject } from '../http/api.model';
-import { LATER, NO, STATUS_ICONS, YES } from '../shared/constants';
+import { ACTIONS, STATUS_ICONS } from '../shared/constants';
 import { IssueLinkProvider } from '../shared/document-link-provider';
 import state from '../store/state';
 
@@ -41,13 +41,13 @@ export default class UtilitiesService {
     const count = configuration.getGlobalCounter() || 0;
     if (count !== -1) {
       if (count % 20 === 0 && count > 0) {
-        let action = await vscode.window.showInformationMessage(`Star Jira Plugin on GitHub?`, YES, LATER, NO);
+        let action = await vscode.window.showInformationMessage(`Star Jira Plugin on GitHub?`, ACTIONS.YES, ACTIONS.LATER, ACTIONS.NO);
         switch (action) {
-          case NO: {
+          case ACTIONS.NO: {
             configuration.setGlobalCounter(-1);
             break;
           }
-          case YES: {
+          case ACTIONS.YES: {
             vscode.commands.executeCommand('jira-plugin.openGitHubRepoCommand');
             configuration.setGlobalCounter(-1);
             break;

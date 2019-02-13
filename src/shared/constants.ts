@@ -30,10 +30,15 @@ export const CONFIG_COUNTER = 'counter';
 export const DEFAULT_WORKING_ISSUE_STATUS = 'In progress';
 
 // modal answers
-export const YES = 'Yes';
-export const YES_WITH_COMMENT = 'Yes with comment';
-export const NO = 'No';
-export const LATER = 'Later';
+export const ACTIONS = {
+  YES: 'Yes',
+  YES_WITH_COMMENT: 'Yes with comment',
+  NO: 'No',
+  LATER: 'Later',
+  CLOSE: 'Close',
+  MARK_AS_READ: 'Mark as read',
+  OPEN_ISSUE: 'Open issue'
+};
 
 // all the search types
 export const SEARCH_MODE = {

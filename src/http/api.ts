@@ -14,6 +14,8 @@ import {
   IIssueType,
   IJira,
   ILabel,
+  IMarkNotificationAsReadUnread,
+  INotifications,
   IPriority,
   IProject,
   ISearch,
@@ -22,7 +24,6 @@ import {
   ITransitions
 } from './api.model';
 import { patchJiraInstance } from './jira-instance-patch';
-const parseString = require('xml2js').parseString;
 
 const jiraClient = require('jira-connector');
 
@@ -62,7 +63,12 @@ export class Jira implements IJira {
 
   async getCloudSession(): Promise<{ name: string; value: string }> {
     if (!this.jiraInstance.cloudSession) {
-      const response = await this.customRequest('POST', this.baseUrl + '/rest/auth/1/session', {}, configuration.credentials);
+      const response = await this.customRequest(
+        'POST',
+        this.baseUrl + '/rest/auth/1/session',
+        { Origin: this.baseUrl },
+        configuration.credentials
+      );
       this.jiraInstance.cloudSession = response.session;
     }
     return this.jiraInstance.cloudSession;
@@ -176,17 +182,31 @@ export class Jira implements IJira {
     return await this.jiraInstance.issueLinkType.getAvailableTypes();
   }
 
-  async getNotifications(): Promise<any> {
-    // ?direct=true&includeContent=true
+  async getNotifications(lastId: string): Promise<INotifications> {
     const cloudSession = await this.getCloudSession();
     return this.customRequest(
       'GET',
-      this.baseUrl + '/gateway/api/notification-log/api/2/notifications',
+      this.baseUrl +
+        `/gateway/api/notification-log/api/2/notifications?direct=true&includeContent=false${!!lastId ? '&after=' + lastId : ''}`,
       {
         cookie: `${cloudSession.name}=${cloudSession.value}`,
         deleteAuth: 'TRUE'
       },
       {}
+    );
+  }
+
+  async markNotificationsAsReadUnread(payload: IMarkNotificationAsReadUnread): Promise<any> {
+    const cloudSession = await this.getCloudSession();
+    return this.customRequest(
+      'POST',
+      this.baseUrl + `/gateway/api/notification-log/api/2/notifications/mark/bulk`,
+      {
+        cookie: `${cloudSession.name}=${cloudSession.value}`,
+        deleteAuth: 'TRUE',
+        Origin: this.baseUrl
+      },
+      payload
     );
   }
 }

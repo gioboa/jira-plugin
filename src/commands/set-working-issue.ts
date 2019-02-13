@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import { IIssue, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import { configuration, selectValues, statusBar, utilities } from '../services';
-import { CONFIG, NO, NO_WORKING_ISSUE, YES, YES_WITH_COMMENT } from '../shared/constants';
 import state, { changeStateWorkingIssue } from '../store/state';
+import { NO_WORKING_ISSUE, CONFIG, ACTIONS } from '../shared/constants';
 
 export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkingIssue, preloadedIssue: IIssue): Promise<void> {
   // run it's called from status bar there is a working issue in the storage
@@ -39,19 +39,19 @@ export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkin
           `Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${utilities.secondsToHHMMSS(
             workingIssue.trackingTime
           )} ?`,
-          YES_WITH_COMMENT,
-          YES,
-          NO
+          ACTIONS.YES_WITH_COMMENT,
+          ACTIONS.YES,
+          ACTIONS.NO
         );
         // menage response
         let comment =
-          action === YES_WITH_COMMENT
+          action === ACTIONS.YES_WITH_COMMENT
             ? await vscode.window.showInputBox({
                 ignoreFocusOut: true,
                 placeHolder: 'Add worklog comment...'
               })
             : '';
-        if (action === YES || action === YES_WITH_COMMENT) {
+        if (action === ACTIONS.YES || action === ACTIONS.YES_WITH_COMMENT) {
           await vscode.commands.executeCommand(
             'jira-plugin.issueAddWorklogCommand',
             state.workingIssue.issue.key,
