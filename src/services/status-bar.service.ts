@@ -38,14 +38,20 @@ export default class StatusBarService {
   }
 
   private workingIssueItemText(workingIssue: IWorkingIssue): string {
-    return workingIssue.issue.key !== NO_WORKING_ISSUE.key
-      ? `Working Issue: ${workingIssue.issue.key || ''} $(watch) ${utilities.secondsToHHMMSS(workingIssue.trackingTime) || ''}` +
-          (workingIssue.awayTime === 0
-            ? ``
-            : workingIssue.awayTime > 0
-            ? ` $(history) ${utilities.secondsToHHMMSS(this.awayTimeout - workingIssue.awayTime)}`
-            : ` $(history) Away too long, issue timer paused`)
-      : NO_WORKING_ISSUE.text;
+    if (workingIssue.issue.key === NO_WORKING_ISSUE.key) {
+      return NO_WORKING_ISSUE.text;
+    }
+    let text = `Working Issue: ${workingIssue.issue.key || ''}`;
+    if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER) {
+      text +=
+        ` $(watch) ${utilities.secondsToHHMMSS(workingIssue.trackingTime) || ''}` +
+        (workingIssue.awayTime === 0
+          ? ``
+          : workingIssue.awayTime > 0
+          ? ` $(history) ${utilities.secondsToHHMMSS(this.awayTimeout - workingIssue.awayTime)}`
+          : ` $(history) Away too long, issue timer paused`);
+    }
+    return text;
   }
 
   // setup working issue item
@@ -64,7 +70,9 @@ export default class StatusBarService {
 
     this.clearWorkingIssueInterval();
     if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
-      this.startWorkingIssueInterval();
+      if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER) {
+        this.startWorkingIssueInterval();
+      }
     } else {
       // if user select NO_WORKING_ISSUE clear the stored working issue
       configuration.setGlobalWorkingIssue(undefined);

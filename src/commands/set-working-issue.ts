@@ -30,6 +30,7 @@ export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkin
     if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
       if (
         workingIssue.issue.key !== NO_WORKING_ISSUE.key &&
+        configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER &&
         utilities.floorSecondsToMinutes(workingIssue.trackingTime) >= configuration.get(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME)
       ) {
         // old working issue has trackingTime and it's equal or bigger then WORKLOG_MINIMUM_TRACKING_TIME setting

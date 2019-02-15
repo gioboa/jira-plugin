@@ -87,7 +87,7 @@ The extension store credentials in VS Code settings.<br><br>
 - **Working Project** <br>
   Jira working project
 - **Worklog Minimum Tracking Time** <br>
-  Minimum tracking time for show the Worklog modal and create Jira worklog
+  Minimum tracking time for show the Worklog modal and create Jira worklog (expressed in minutes)
 
 **n.b:** setting: **Tracking Time Mode** <br>
 values:<br>
@@ -95,6 +95,7 @@ values:<br>
 1.  `hybrid` - will increment tracking time always but if VS Code remain idle more then "trackingTimeModeHybridTimeout" will discard the time addition<br>
 1.  `always` - will increment tracking time always <br>
 1.  `vsCodeFocus` - will increment tracking time only if VS Code is focused<br>
+1.  `never` - will not tracking time<br>
 
 ## Explorer
 

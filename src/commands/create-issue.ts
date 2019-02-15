@@ -164,7 +164,7 @@ const NEW_ISSUE_FIELDS = {
 
 // define if the selector can have multiple choices
 const isCanPickMany = (field: any) => {
-  return field.fieldSchema.type.toString().toLowerCase() === 'array' && !isIssuelinksField(field.field);
+  return isTypeArray(field.fieldSchema.type) && !isIssuelinksField(field.field);
 };
 
 const isAssigneeOrReporterField = (fieldName: string) => {
@@ -185,6 +185,14 @@ const isIssuelinksTypeField = (fieldName: string) => {
 
 const isIssuelinksField = (fieldName: string) => {
   return fieldName.toLowerCase() === 'issuelinks';
+};
+
+const isCustomStraight = (fieldToModifySelection: any) => {
+  return fieldToModifySelection.field.indexOf('customfield_') === 0 && !isTypeArray(fieldToModifySelection.fieldSchema.type);
+};
+
+const isTypeArray = (type: string) => {
+  return type.toString().toLowerCase() === 'array';
 };
 
 // if there is issuelinks field we need also of issuelinksType
@@ -268,8 +276,10 @@ const retrieveValues = async (project: string, field: IField, fieldName: string)
   if (field.schema.type !== 'string' && field.schema.type !== 'number') {
     // those types are not managed
     if (
-      (!!field.schema.custom || field.schema.type === 'date' || field.schema.type === 'timetracking') &&
-      !isEpicLinkFieldSchema(field.schema)
+      !isEpicLinkFieldSchema(field.schema) &&
+      ((!!field.schema.custom && (!field.allowedValues && !field.autoCompleteUrl)) ||
+        field.schema.type === 'date' ||
+        field.schema.type === 'timetracking')
     ) {
       // output log useful for remote debug
       logger.jiraPluginDebugLog(`field`, JSON.stringify(field));
@@ -410,15 +420,23 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
           if (!(<any>fieldsRequest)[fieldToModifySelection.field]) {
             if (!!newValueSelected[0].pickValue.id) {
               const values = newValueSelected.map((value: any) => value.pickValue.id);
-              (<any>fieldsRequest)[fieldToModifySelection.field] = {
-                id: !canPickMany ? values[0] : values
-              };
+              (<any>fieldsRequest)[fieldToModifySelection.field] = !canPickMany
+                ? {
+                    id: values[0]
+                  }
+                : values.map(value => {
+                    return { id: value };
+                  });
             } else {
               if (!!newValueSelected[0].pickValue.key) {
                 const values = newValueSelected.map((value: any) => value.pickValue.key);
-                (<any>fieldsRequest)[fieldToModifySelection.field] = {
-                  key: !canPickMany ? values[0] : values
-                };
+                (<any>fieldsRequest)[fieldToModifySelection.field] = !canPickMany
+                  ? {
+                      key: values[0]
+                    }
+                  : values.map(value => {
+                      return { key: value };
+                    });
               }
             }
           }
