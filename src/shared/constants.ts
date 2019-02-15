@@ -13,7 +13,8 @@ export const CONFIG = {
   ADDITIONAL_STATUSES: 'additionalStatuses',
   GIT_INTEGRATION_ENABLED: 'gitIntegration',
   NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
-  DEFAULT_JQL_SEARCH: 'defaultJQLSearch'
+  DEFAULT_JQL_SEARCH: 'defaultJqlSearch',
+  CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications'
 };
 
 // all the tracking time mode

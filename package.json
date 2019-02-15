@@ -113,13 +113,18 @@
         },
         "jira-plugin.numberOfIssuesInList": {
           "type": "integer",
-          "description": "Number of issues to show in list. n.b: If you define high numbers the research can be slow.",
+          "description": "Number of issues to show in list. n.b: If you define high numbers the research can be slow",
           "default": 50
         },
-        "jira-plugin.defaultJQLSearch": {
+        "jira-plugin.defaultJqlSearch": {
           "type": "string",
-          "description": "Here you can define your default/custom JQL search. n.b WORKING_PROJECT is the placeholder for the current working project.",
+          "description": "Here you can define your default/custom JQL search (n.b: WORKING_PROJECT is the placeholder for the current working project)",
           "default": "project = 'WORKING_PROJECT' ORDER BY status ASC, updated DESC"
+        },
+        "jira-plugin.enableCheckForNotifications": {
+          "type": "boolean",
+          "description": "You can manage your Jira Unread notifications inside VsCode notification center (n.b: only new Jira versions has notifications)",
+          "default": false
         }
       }
     },

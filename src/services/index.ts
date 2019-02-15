@@ -14,4 +14,4 @@ export const utilities = new UtilitiesService();
 export const selectValues = new SelectValuesService();
 export const gitIntegration = new GitIntegrationService(configuration);
 export const statusBar = new StatusBarService(configuration);
-export const notifications = new NotificationService();
+export const notifications = new NotificationService(configuration);

@@ -2,40 +2,50 @@ import * as vscode from 'vscode';
 import { logger } from '.';
 import openIssueCommand from '../commands/open-issue';
 import { INotification, INotifications } from '../http/api.model';
-import { ACTIONS } from '../shared/constants';
+import { ACTIONS, CONFIG } from '../shared/constants';
 import state from '../store/state';
+import ConfigurationService from './configuration.service';
 
 export default class NotificationService {
   private notifications: INotification[] = [];
   private showedIds: string[] = [];
 
+  get isEnabled(): boolean {
+    return !!this.configuration.get(CONFIG.CHECK_FOR_NOTIFICATIONS_ENABLE);
+  }
+
+  constructor(private configuration: ConfigurationService) {}
+
   public async startNotificationsWatcher(): Promise<void> {
-    try {
-      let goOn = true;
-      let lastId = '';
-      while (goOn) {
-        const response: INotifications = await state.jira.getNotifications(lastId);
-        // check if it's enmpty
-        if (!!response.data && !!response.data.length) {
-          for (let notification of response.data) {
-            // when I found the same notification id I assume that all notifications are already saved
-            const storedNotification = this.notifications.find(n => n.id === notification.id);
-            if (!storedNotification) {
-              this.notifications.push(notification);
-            } else {
-              storedNotification.readState = notification.readState;
+    if (this.isEnabled) {
+      try {
+        let goOn = true;
+        let lastId = '';
+        while (goOn) {
+          const response: INotifications = await state.jira.getNotifications(lastId);
+          // check if it's enmpty
+          if (!!response.data && !!response.data.length) {
+            for (let notification of response.data) {
+              // when I found the same notification id I assume that all notifications are already saved
+              const storedNotification = this.notifications.find(n => n.id === notification.id);
+              if (!storedNotification) {
+                this.notifications.push(notification);
+              } else {
+                storedNotification.readState = notification.readState;
+              }
             }
+            lastId = goOn && !!response.pageInfo && !!response.pageInfo.lastId ? response.pageInfo.lastId : '';
+          } else {
+            goOn = false;
           }
-          lastId = goOn && !!response.pageInfo && !!response.pageInfo.lastId ? response.pageInfo.lastId : '';
-        } else {
-          goOn = false;
         }
-      }
-      this.showUnReadNotifications(this.notifications.reverse());
-      setTimeout(() => this.startNotificationsWatcher(), 1000 * 10);
-    } catch (err) {
-      if (!!err && JSON.parse(err).statusCode === '404') {
-        // not available
+        this.showUnReadNotifications(this.notifications.reverse());
+        const ms = 1000 * 60 * 2;
+        setTimeout(() => this.startNotificationsWatcher(), ms);
+      } catch (err) {
+        if (!!err && JSON.parse(err).statusCode === '404') {
+          // not available
+        }
       }
     }
   }
@@ -66,7 +76,7 @@ export default class NotificationService {
       .forEach(notification => {
         if (!!notification.template) {
           if (!this.showedIds.some(id => id === notification.id)) {
-            const message = `${this.parseTemplate(notification)} ${notification.title || ''}`;
+            const message = `${this.parseTemplate(notification)} - ${notification.title || ''}`;
             const issueKey =
               !!(<any>notification.metadata)['issue'] && !!(<any>notification.metadata)['issue'].issueKey
                 ? (<any>notification.metadata)['issue'].issueKey
