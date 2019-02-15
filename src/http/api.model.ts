@@ -1,4 +1,5 @@
 export interface IJira {
+  getCloudSession(): Promise<{ name: string; value: string }>;
   search(params: { jql: string; maxResults: number }): Promise<ISearch>;
   getStatuses(): Promise<IStatus[]>;
   getProjects(): Promise<IProject[]>;
@@ -13,11 +14,13 @@ export interface IJira {
   createIssue(params: ICreateIssue): Promise<any>;
   getAllPriorities(): Promise<IPriority[]>;
   getAllIssueTypesWithFields(project: string): Promise<IIssueType[]>;
-  customApiCall(uri: string): Promise<any>;
+  customRequest(method: 'GET' | 'POST', uri: string, headers?: {}, body?: {}): Promise<any>;
   getFavoriteFilters(): Promise<IFavouriteFilter[]>;
   getCreateIssueEpics(project: string, maxResults: number): Promise<ICreateIssueEpic>;
   getCreateIssueLabels(): Promise<{ suggestions: ILabel[] }>;
   getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }>;
+  getNotifications(lastId: string): Promise<INotifications>;
+  markNotificationsAsReadUnread(payload: IMarkNotificationAsReadUnread): Promise<any>;
 }
 
 export interface IServerInfo {
@@ -218,4 +221,54 @@ export interface IAvailableLinkIssuesType {
   name: string;
   outward: string;
   self: string;
+}
+
+export interface INotifications {
+  data: INotification[];
+  direct: boolean;
+  pageInfo: {
+    firstId: string;
+    lastId: string;
+  };
+}
+
+export interface INotification {
+  id: string;
+  notificationId?: string;
+  title?: string;
+  template?: string;
+  objectId?: string;
+  eventType?: string;
+  timestamp?: string;
+  metadata?: {
+    content?: {
+      id: string;
+      title: string;
+      url: string;
+    };
+    issue?: {
+      summary: string;
+      url: string;
+      status: {
+        id: number;
+        name: string;
+        categoryKey: string;
+      };
+      issueID: string;
+      issueKey: string;
+    };
+    user1?: {
+      atlassianId: string;
+      name: string;
+    };
+  };
+  users?: {
+    [key: string]: string;
+  };
+  readState: 'read' | 'unread';
+}
+
+export interface IMarkNotificationAsReadUnread {
+  ids: string[];
+  toState: 'READ' | 'UNREAD';
 }

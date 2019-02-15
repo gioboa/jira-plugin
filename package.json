@@ -139,7 +139,7 @@
     "views": {
       "jiraExplorer": [
         {
-          "id": "jiraExplorer",
+          "id": "issues",
           "name": "EXPLORER"
         }
       ]

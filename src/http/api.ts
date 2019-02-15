@@ -14,6 +14,8 @@ import {
   IIssueType,
   IJira,
   ILabel,
+  IMarkNotificationAsReadUnread,
+  INotifications,
   IPriority,
   IProject,
   ISearch,
@@ -21,6 +23,7 @@ import {
   IStatus,
   ITransitions
 } from './api.model';
+import { patchJiraInstance } from './jira-instance-patch';
 
 const jiraClient = require('jira-connector');
 
@@ -55,32 +58,20 @@ export class Jira implements IJira {
       basic_auth: configuration.credentials
     });
 
-    // custom event
-    // solve this issue -> https://github.com/floralvikings/jira-connector/issues/115
-    const customGetAllProjects = (opts: any, callback: any) => {
-      const options = this.jiraInstance.project.buildRequestOptions(opts, '', 'GET');
-      if (Object.keys(options.body).length === 0) {
-        delete options.body;
-      }
-      if (Object.keys(options.qs).length === 0) {
-        delete options.qs;
-      }
-      return this.jiraInstance.makeRequest(options, callback);
-    };
-    this.jiraInstance.project.getAllProjects = customGetAllProjects;
+    patchJiraInstance(this.jiraInstance);
+  }
 
-    const customApiCall = (uri: string, callback: any) => {
-      const options = this.jiraInstance.project.buildRequestOptions({}, '', 'GET');
-      if (Object.keys(options.body).length === 0) {
-        delete options.body;
-      }
-      if (Object.keys(options.qs).length === 0) {
-        delete options.qs;
-      }
-      options.uri = uri;
-      return this.jiraInstance.makeRequest(options, callback);
-    };
-    this.jiraInstance.project.customApiCall = customApiCall;
+  async getCloudSession(): Promise<{ name: string; value: string }> {
+    if (!this.jiraInstance.cloudSession) {
+      const response = await this.customRequest(
+        'POST',
+        this.baseUrl + '/rest/auth/1/session',
+        { Origin: this.baseUrl },
+        configuration.credentials
+      );
+      this.jiraInstance.cloudSession = response.session;
+    }
+    return this.jiraInstance.cloudSession;
   }
 
   async search(params: { jql: string; maxResults: number }): Promise<ISearch> {
@@ -167,8 +158,8 @@ export class Jira implements IJira {
     return [];
   }
 
-  async customApiCall(uri: string): Promise<any> {
-    return await this.jiraInstance.project.customApiCall(uri);
+  async customRequest(method: 'GET' | 'POST', uri: string, headers?: {}, body?: {}): Promise<any> {
+    return await this.jiraInstance.project.customRequest(method, uri, headers, body);
   }
 
   async getFavoriteFilters(): Promise<IFavouriteFilter[]> {
@@ -176,17 +167,46 @@ export class Jira implements IJira {
   }
 
   async getCreateIssueEpics(projectKey: string, maxResults: number): Promise<ICreateIssueEpic> {
-    return await this.customApiCall(
+    return await this.customRequest(
+      'GET',
       `${this.baseUrl}/rest/greenhopper/1.0/epics?searchQuery=&projectKey=${projectKey}&maxResults=${maxResults}&hideDone=false`
     );
   }
 
   async getCreateIssueLabels(): Promise<{ suggestions: ILabel[] }> {
-    return await this.customApiCall(this.baseUrl + '/rest/api/1.0/labels/suggest?query=');
+    return await this.customRequest('GET', this.baseUrl + '/rest/api/1.0/labels/suggest?query=');
   }
 
   async getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }> {
     // TODO - need to manage also opposed types. e.g blocks <-> is blocked by
     return await this.jiraInstance.issueLinkType.getAvailableTypes();
+  }
+
+  async getNotifications(lastId: string): Promise<INotifications> {
+    const cloudSession = await this.getCloudSession();
+    return this.customRequest(
+      'GET',
+      this.baseUrl +
+        `/gateway/api/notification-log/api/2/notifications?direct=true&includeContent=false${!!lastId ? '&after=' + lastId : ''}`,
+      {
+        cookie: `${cloudSession.name}=${cloudSession.value}`,
+        deleteAuth: 'TRUE'
+      },
+      {}
+    );
+  }
+
+  async markNotificationsAsReadUnread(payload: IMarkNotificationAsReadUnread): Promise<any> {
+    const cloudSession = await this.getCloudSession();
+    return this.customRequest(
+      'POST',
+      this.baseUrl + `/gateway/api/notification-log/api/2/notifications/mark/bulk`,
+      {
+        cookie: `${cloudSession.name}=${cloudSession.value}`,
+        deleteAuth: 'TRUE',
+        Origin: this.baseUrl
+      },
+      payload
+    );
   }
 }

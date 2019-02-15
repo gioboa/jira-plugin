@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import * as vscode from 'vscode';
 import { logger } from '.';
 import { IIssue } from '../http/api.model';
-import { CONFIG, NO, YES } from '../shared/constants';
+import { ACTIONS, CONFIG } from '../shared/constants';
 import state, { changeStateProject } from '../store/state';
 import ConfigurationService from './configuration.service';
 
@@ -106,10 +106,10 @@ export default class GitIntegrationService {
           const action = await vscode.window.showInformationMessage(
             `Jira plugin detected that current git branch can be related to a Jira issue. ` +
               `Do you want change current working project into ${ticket.project} and issue into ${ticket.issue}?`,
-            YES,
-            NO
+            ACTIONS.YES,
+            ACTIONS.NO
           );
-          if (action === YES) {
+          if (action === ACTIONS.YES) {
             this.setCurrentWorkingProjectAndIssue(ticket, issue);
           }
         }
