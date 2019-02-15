@@ -1,36 +1,37 @@
 const fs = require('fs');
 const path = require('path');
-const dir = '';
-const regExp = '';
-const replace = '';
+var dir = '';
+var regExp = '';
+var replace = '';
 
 switch (process.env.TYPE) {
-  case 1: {
-    dir = '../out/test/setup-configuration ';
+  case '1': {
+    dir = './out/test/setup-configuration';
     regExp = '.js';
     replace = '._js';
     break;
   }
-  case 2: {
-    dir = '../out/test/setup-configuration';
+  case '2': {
+    dir = './out/test/setup-configuration';
     regExp = '._js';
     replace = '.js';
     break;
   }
-  case 3: {
-    dir = ' ../out/test/tests';
+  case '3': {
+    dir = './out/test/tests';
     regExp = '.js';
     replace = '._js';
     break;
   }
-  case 4: {
-    dir = ' ../out/test/tests';
+  case '4': {
+    dir = './out/test/tests';
     regExp = '._js';
     replace = '.js';
     break;
   }
 }
-const match = RegExp(replace, 'g');
+
+const match = RegExp(regExp, 'g');
 const files = fs.readdirSync(dir);
 
 files

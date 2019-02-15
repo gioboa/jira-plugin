@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import { IIssue, IWorkingIssue } from '../http/api.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import { configuration, selectValues, statusBar, utilities } from '../services';
+import { ACTIONS, CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';
 import state, { changeStateWorkingIssue } from '../store/state';
-import { NO_WORKING_ISSUE, CONFIG, ACTIONS } from '../shared/constants';
 
 export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkingIssue, preloadedIssue: IIssue): Promise<void> {
   // run it's called from status bar there is a working issue in the storage

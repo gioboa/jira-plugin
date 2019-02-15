@@ -39,9 +39,9 @@
     "compile": "npm run clean && tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && TYPE=1 node ./scripts/remane-files.js && node ./node_modules/vscode/bin/test && TYPE=2 node ./scripts/remane-files.js",
-    "setup:config": "npm run compile && TYPE=3 node ./scripts/remane-files.js && node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/remane-files.js",
-    "setup:config:insiders": "npm run compile && TYPE=3 node ./scripts/remane-files.js && CODE_VERSION='insiders' node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/remane-files.js",
+    "test": "npm run compile && TYPE=1 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=2 node ./scripts/rename-files.js",
+    "setup:config": "npm run compile && TYPE=3 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
+    "setup:config:insiders": "npm run compile && TYPE=3 node ./scripts/rename-files.js && CODE_VERSION='insiders' node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
     "prelint": "prettier --print-width 140 --single-quote --write 'src/**/*.ts'",
     "lint": "tslint 'src/**/*.ts' --format stylish --fix"
   },

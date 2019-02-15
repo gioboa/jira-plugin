@@ -4,7 +4,7 @@
     "target": "es6",
     "outDir": "out",
     "lib": ["dom", "es2017"],
-    "sourceMap": false,
+    "sourceMap": true,
     "rootDir": ".",
     "strict": true,
     "experimentalDecorators": true,
