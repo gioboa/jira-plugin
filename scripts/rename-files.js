@@ -1,12 +1,37 @@
-var fs = require('fs'),
-  path = require('path'),
-  args = process.argv.slice(2),
-  dir = args[0],
-  match = RegExp(args[1], 'g'),
-  replace = args[2],
-  files;
+const fs = require('fs');
+const path = require('path');
+const dir = '';
+const regExp = '';
+const replace = '';
 
-files = fs.readdirSync(dir);
+switch (process.env.TYPE) {
+  case 1: {
+    dir = '../out/test/setup-configuration ';
+    regExp = '.js';
+    replace = '._js';
+    break;
+  }
+  case 2: {
+    dir = '../out/test/setup-configuration';
+    regExp = '._js';
+    replace = '.js';
+    break;
+  }
+  case 3: {
+    dir = ' ../out/test/tests';
+    regExp = '.js';
+    replace = '._js';
+    break;
+  }
+  case 4: {
+    dir = ' ../out/test/tests';
+    regExp = '._js';
+    replace = '.js';
+    break;
+  }
+}
+const match = RegExp(replace, 'g');
+const files = fs.readdirSync(dir);
 
 files
   .filter(function(file) {
