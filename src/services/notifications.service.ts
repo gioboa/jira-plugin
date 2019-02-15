@@ -92,6 +92,7 @@ export default class NotificationService {
                 switch (action) {
                   case ACTIONS.OPEN_ISSUE:
                     openIssueCommand(issueKey);
+                    this.showedIds = this.showedIds.filter(id => id !== notification.id);
                     break;
                   case ACTIONS.MARK_AS_READ:
                     const response = await state.jira.markNotificationsAsReadUnread({
