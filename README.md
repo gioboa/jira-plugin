@@ -24,6 +24,7 @@
 - Insert current Working Issue Key+Summary comment
 - [Jira Issue Key+Summary link to open Jira issue in the browser](#link-to-open-jira-issue-in-the-browser)
 - [Git Integration](#settings)
+- [Enable Check Notifications](#settings)
 
 ## Support
 
@@ -71,11 +72,15 @@ The extension store credentials in VS Code settings.<br><br>
 - **Base Url** <br>
   Your Jira base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)
 - **Default JQL Search**
-  Here you can define your default/custom JQL search. n.b WORKING_PROJECT is the placeholder for the current working project.
+  Here you can define your default/custom JQL search (n.b: WORKING_PROJECT is the placeholder for the current working project)
+- **Enable Check Notifications**
+  You can manage your Jira **Unread** notifications inside VsCode notification center (n.b: only new Jira versions has notifications)
 - **Enable Working Issue** <br>
   Enable working issue functionality in status bar
 - **Git Integration** <br>
   Automatically watch for branch switching and select appropriate project and working issue
+- **Number Of Issues In List**
+  Number of issues to show in list. n.b: If you define high numbers the research can be slow
 - **Tracking Time Mode** <br>
   Configure how the plugin tracking time for the working issue
 - **Tracking Time Mode Hybrid Timeout** <br>
