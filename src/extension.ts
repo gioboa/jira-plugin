@@ -12,7 +12,7 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
   state.channel = channel;
   context.subscriptions.push(channel);
   state.context = context;
-  vscode.window.registerTreeDataProvider('issues', issuesExplorer);
+  vscode.window.registerTreeDataProvider('issuesExplorer', issuesExplorer);
   context.subscriptions.push(statusBar);
   context.subscriptions.push(gitIntegration);
   context.subscriptions.push(...commands.register());

@@ -8,6 +8,8 @@ export interface ISetupConfiguration {
 
 // START - configuration example file
 
+// import { ISetupConfiguration } from './configuration.model';
+
 // export const configuration: ISetupConfiguration = {
 //   baseUrl: 'xxx',
 //   username: 'xxx',

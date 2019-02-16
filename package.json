@@ -131,16 +131,16 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "jiraExplorer",
+          "id": "issuesExplorer",
           "title": "Jira",
           "icon": "images/icons/jira-explorer-icon.svg"
         }
       ]
     },
     "views": {
-      "jiraExplorer": [
+      "issuesExplorer": [
         {
-          "id": "jiraExplorer",
+          "id": "issuesExplorer",
           "name": "EXPLORER"
         }
       ]
@@ -244,67 +244,67 @@
       "view/title": [
         {
           "command": "jira-plugin.defaultIssuesCommand",
-          "when": "view == jiraExplorer"
+          "when": "view == issuesExplorer"
         },
         {
           "command": "jira-plugin.allIssuesCommand",
-          "when": "view == jiraExplorer"
+          "when": "view == issuesExplorer"
         },
         {
           "command": "jira-plugin.currentSprintCommand",
-          "when": "view == jiraExplorer"
+          "when": "view == issuesExplorer"
         },
         {
           "command": "jira-plugin.issueByIdCommand",
-          "when": "view == jiraExplorer"
+          "when": "view == issuesExplorer"
         },
         {
           "command": "jira-plugin.issuesByStatusCommand",
-          "when": "view == jiraExplorer"
+          "when": "view == issuesExplorer"
         },
         {
           "command": "jira-plugin.myIssuesByStatusCommand",
-          "when": "view == jiraExplorer"
+          "when": "view == issuesExplorer"
         },
         {
           "command": "jira-plugin.favouritesFilters",
-          "when": "view == jiraExplorer"
+          "when": "view == issuesExplorer"
         },
         {
           "command": "jira-plugin.issuesByStatusAssigneeCommand",
-          "when": "view == jiraExplorer"
+          "when": "view == issuesExplorer"
         },
         {
           "command": "jira-plugin.issuesBySummaryCommand",
-          "when": "view == jiraExplorer"
+          "when": "view == issuesExplorer"
         },
         {
           "command": "jira-plugin.refresh",
-          "when": "view == jiraExplorer",
+          "when": "view == issuesExplorer",
           "group": "navigation"
         },
         {
           "command": "jira-plugin.createIssueCommand",
-          "when": "view == jiraExplorer",
+          "when": "view == issuesExplorer",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "jira-plugin.changeIssueStatusCommand",
-          "when": "view == jiraExplorer && viewItem == IssueItem"
+          "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
           "command": "jira-plugin.issueAddCommentCommand",
-          "when": "view == jiraExplorer && viewItem == IssueItem"
+          "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
           "command": "jira-plugin.changeIssueAssigneeCommand",
-          "when": "view == jiraExplorer && viewItem == IssueItem"
+          "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
           "command": "jira-plugin.copyJiraSummary",
-          "when": "view == jiraExplorer && viewItem == IssueItem"
+          "when": "view == issuesExplorer && viewItem == IssueItem"
         }
       ]
     }
