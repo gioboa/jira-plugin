@@ -1,10 +1,22 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import { ICreateIssueEpicList, IField, IFieldSchema, IIssue, ILabel } from '../http/api.model';
+import { ICreateIssueEpicList, IField, IIssue, ILabel } from '../http/api.model';
 import { configuration, logger, selectValues } from '../services';
 import { IPickValue } from '../services/configuration.model';
 import { CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
 import state, { verifyCurrentProject } from '../store/state';
+import {
+  isAssigneeOrReporterField,
+  isCanPickMany,
+  isEpicLinkFieldSchema,
+  isIssuelinksField,
+  isIssuelinksTypeField,
+  isLabelsField,
+  isStringItems,
+  mandatoryFieldsOk,
+  NEW_ISSUE_FIELDS,
+  NEW_ISSUE_STATUS
+} from './create-issue.helper';
 import openIssueCommand from './open-issue';
 
 // this object store all user choices
@@ -101,7 +113,7 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
               switch (fieldToModifySelection.field) {
                 case NEW_ISSUE_FIELDS.INSERT_ISSUE.field:
                   // check if the mandatory field are populated, if not, we go on
-                  loopStatus = mandatoryFieldsOk(issueTypeSelected.fields) ? NEW_ISSUE_STATUS.INSERT : loopStatus;
+                  loopStatus = mandatoryFieldsOk(issueTypeSelected.fields, fieldsRequest) ? NEW_ISSUE_STATUS.INSERT : loopStatus;
                   break;
                 case NEW_ISSUE_FIELDS.EXIT.field:
                   loopStatus = NEW_ISSUE_STATUS.STOP;
@@ -125,76 +137,6 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
     }
   }
 }
-
-// statuses for new issue loop
-const NEW_ISSUE_STATUS = {
-  STOP: -1,
-  CONTINUE: 0,
-  INSERT: 1
-};
-
-// items available inside the selector
-const NEW_ISSUE_FIELDS = {
-  ISSUE_LINKS: {
-    field: 'issuelinks',
-    label: 'Linked issues',
-    description: ''
-  },
-  ISSUE_LINKS_TYPES: {
-    field: 'issuelinksTypes',
-    label: 'Linked issues type',
-    description: ''
-  },
-  DIVIDER: {
-    field: 'divider',
-    label: '--- $(star) required ---',
-    description: ''
-  },
-  INSERT_ISSUE: {
-    field: 'insert_issue',
-    label: 'Insert issue',
-    description: ''
-  },
-  EXIT: {
-    field: 'exit',
-    label: 'Exit',
-    description: ''
-  }
-};
-
-// define if the selector can have multiple choices
-const isCanPickMany = (field: any) => {
-  return isTypeArray(field.fieldSchema.type) && !isIssuelinksField(field.field);
-};
-
-const isAssigneeOrReporterField = (fieldName: string) => {
-  return fieldName.toLowerCase() === 'assignee' || fieldName.toLowerCase() === 'reporter';
-};
-
-const isEpicLinkFieldSchema = (fieldSchema: IFieldSchema) => {
-  return !!fieldSchema.custom && fieldSchema.custom.toLowerCase() === 'com.pyxis.greenhopper.jira:gh-epic-link';
-};
-
-const isLabelsField = (fieldName: string) => {
-  return fieldName.toLowerCase() === 'labels';
-};
-
-const isIssuelinksTypeField = (fieldName: string) => {
-  return fieldName === NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field;
-};
-
-const isIssuelinksField = (fieldName: string) => {
-  return fieldName.toLowerCase() === 'issuelinks';
-};
-
-const isCustomStraight = (fieldToModifySelection: any) => {
-  return fieldToModifySelection.field.indexOf('customfield_') === 0 && !isTypeArray(fieldToModifySelection.fieldSchema.type);
-};
-
-const isTypeArray = (type: string) => {
-  return type.toString().toLowerCase() === 'array';
-};
-
 // if there is issuelinks field we need also of issuelinksType
 // so we add the field in selector available items
 const addDefaultIssueLinkTypesIfNessesary = (newIssuePicks: any[]) => {
@@ -314,17 +256,6 @@ const retrieveValues = async (project: string, field: IField, fieldName: string)
   }
 };
 
-const mandatoryFieldsOk = (fields: any): boolean => {
-  for (const key in fields) {
-    if (!!fields[key].required && !(<any>fieldsRequest)[key]) {
-      // output log useful for remote debug
-      logger.printErrorMessageInOutput(`${key} field missing : ${JSON.stringify(fields[key])}`);
-      return false;
-    }
-  }
-  return true;
-};
-
 // from the preloaded values we generate selector items
 const generatePicks = (values: any[]) => {
   return values
@@ -393,7 +324,7 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
         (<any>newIssueIstance)[fieldToModifySelection.field] = undefined;
         // clear previous payload
         delete (<any>fieldsRequest)[fieldToModifySelection.field];
-        if (!canPickMany ? !!selected : selected.length > 0) {
+        if (!canPickMany ? !!selected : !!selected && selected.length > 0) {
           // update user choices
           const newValueSelected: IPickValue[] = !canPickMany ? [selected] : [...selected];
           (<any>newIssueIstance)[fieldToModifySelection.field] = newValueSelected.map((value: any) => value.label).join(' ');
@@ -406,7 +337,8 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
           if (
             isEpicLinkFieldSchema(fieldToModifySelection.fieldSchema) ||
             isLabelsField(fieldToModifySelection.field) ||
-            isIssuelinksField(fieldToModifySelection.field)
+            isIssuelinksField(fieldToModifySelection.field) ||
+            isStringItems(fieldToModifySelection.fieldSchema)
           ) {
             const values = newValueSelected.map((value: any) => value.pickValue.key);
             (<any>fieldsRequest)[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
