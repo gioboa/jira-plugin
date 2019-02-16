@@ -1,8 +1,14 @@
+## 0.13.2
+
+### Bug Fixes
+
+- managed more custom fields
+
 ## 0.13.1
 
 ### Bug Fixes
 
-- manage Tracking Time Mode: never
+- managed Tracking Time Mode: never
 
 ## 0.13.0
 
