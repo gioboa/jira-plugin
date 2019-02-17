@@ -79,9 +79,13 @@ export default class CreateIssueService {
     return this.issueTypeSelected.fields[fieldName];
   }
 
+  public getPickValue(value: any): string {
+    return value.inward || value.name || value.value || value.key || value.label || Object.values(value)[0]; // do not change order
+  }
+
   // define if the selector can have multiple choices
   public isCanPickMany(field: any) {
-    return this.isTypeArray(field.fieldSchema.type) && !this.isIssuelinksField(field.field);
+    return this.isArrayType(field.fieldSchema.type) && !this.isIssuelinksField(field.field);
   }
 
   public isAssigneeOrReporterField(fieldName: string) {
@@ -92,12 +96,16 @@ export default class CreateIssueService {
     return !!fieldSchema.custom && fieldSchema.custom.toLowerCase() === 'com.pyxis.greenhopper.jira:gh-epic-link';
   }
 
+  public isSprintFieldSchema(fieldSchema: IFieldSchema) {
+    return !!fieldSchema.custom && fieldSchema.custom.toLowerCase() === 'com.pyxis.greenhopper.jira:gh-sprint';
+  }
+
   public isLabelsField(fieldName: string) {
     return fieldName.toLowerCase() === 'labels';
   }
 
-  public isStringItems(fieldSchema: IFieldSchema) {
-    return (fieldSchema.items || '').toLowerCase() === 'string';
+  public isArrayOfStringField(fieldSchema: IFieldSchema) {
+    return this.isArrayType && (fieldSchema.items || '').toLowerCase() === 'string';
   }
 
   public isIssuelinksTypeField(fieldName: string) {
@@ -108,7 +116,7 @@ export default class CreateIssueService {
     return fieldName.toLowerCase() === 'issuelinks';
   }
 
-  public isTypeArray(type: string) {
+  public isArrayType(type: string) {
     return type.toString().toLowerCase() === 'array';
   }
 
@@ -156,6 +164,10 @@ export default class CreateIssueService {
         this.preloadedListValues[fieldName] = list || [];
       }
     }
+    if (this.isSprintFieldSchema(field.schema)) {
+      const response = await state.jira.getSprints();
+      this.preloadedListValues[fieldName] = response.suggestions || [];
+    }
     if (this.isLabelsField(fieldName)) {
       const response = await state.jira.customRequest('GET', field.autoCompleteUrl);
       this.preloadedListValues[fieldName] = (response.suggestions || []).map((entrie: ILabel) => {
@@ -187,6 +199,7 @@ export default class CreateIssueService {
       // those types are not managed
       if (
         !this.isEpicLinkFieldSchema(field.schema) &&
+        !this.isSprintFieldSchema(field.schema) &&
         ((!!field.schema.custom && (!field.allowedValues && !field.autoCompleteUrl)) ||
           field.schema.type === 'date' ||
           field.schema.type === 'timetracking')

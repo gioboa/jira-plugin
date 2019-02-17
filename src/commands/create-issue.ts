@@ -120,7 +120,7 @@ const generatePicks = (values: any[]) => {
     .map(value => {
       return {
         pickValue: value,
-        label: value.inward || value.name || value.value || value.key || value.label || Object.values(value)[0], // do not change order
+        label: createIssue.getPickValue(value),
         description: value.description || value.summary || ''
       };
     })
@@ -199,11 +199,17 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
             createIssue.isEpicLinkFieldSchema(fieldToModifySelection.fieldSchema) ||
             createIssue.isLabelsField(fieldToModifySelection.field) ||
             createIssue.isIssuelinksField(fieldToModifySelection.field) ||
-            createIssue.isStringItems(fieldToModifySelection.fieldSchema)
+            createIssue.isArrayOfStringField(fieldToModifySelection.fieldSchema)
           ) {
             const values = newValueSelected.map((value: any) => value.pickValue.key || value.pickValue.label);
             createIssue.requestJson[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
           }
+
+          if (createIssue.isSprintFieldSchema(fieldToModifySelection.fieldSchema)) {
+            const values = newValueSelected.map((value: any) => value.id);
+            createIssue.requestJson[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
+          }
+
           // save inward for issuelinksType
           if (createIssue.isIssuelinksTypeField(fieldToModifySelection.field)) {
             const values = newValueSelected.map((value: any) => value.pickValue.inward);
