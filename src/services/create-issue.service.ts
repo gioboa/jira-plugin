@@ -170,10 +170,10 @@ export default class CreateIssueService {
     }
     if (this.isLabelsField(fieldName)) {
       const response = await state.jira.customRequest('GET', field.autoCompleteUrl);
-      this.preloadedListValues[fieldName] = (response.suggestions || []).map((entrie: ILabel) => {
-        entrie.key = entrie.label;
-        entrie.description = '';
-        return entrie;
+      this.preloadedListValues[fieldName] = (response.suggestions || []).map((entry: ILabel) => {
+        entry.key = entry.label;
+        entry.description = '';
+        return entry;
       });
     }
     if (this.isIssuelinksField(fieldName)) {
