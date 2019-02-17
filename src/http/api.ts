@@ -20,6 +20,7 @@ import {
   IProject,
   ISearch,
   ISetTransition,
+  ISprint,
   IStatus,
   ITransitions
 } from './api.model';
@@ -208,5 +209,9 @@ export class Jira implements IJira {
       },
       payload
     );
+  }
+
+  async getSprints(): Promise<{ allMatches: any[]; suggestions: ISprint[] }> {
+    return await this.customRequest('GET', this.baseUrl + '/rest/greenhopper/1.0/sprint/picker');
   }
 }

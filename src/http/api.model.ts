@@ -21,6 +21,7 @@ export interface IJira {
   getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }>;
   getNotifications(lastId: string): Promise<INotifications>;
   markNotificationsAsReadUnread(payload: IMarkNotificationAsReadUnread): Promise<any>;
+  getSprints(): Promise<{ allMatches: any[]; suggestions: ISprint[] }>;
 }
 
 export interface IServerInfo {
@@ -271,4 +272,12 @@ export interface INotification {
 export interface IMarkNotificationAsReadUnread {
   ids: string[];
   toState: 'READ' | 'UNREAD';
+}
+
+export interface ISprint {
+  name: string;
+  id: number;
+  stateKey: string;
+  boardName: string;
+  date: string;
 }
