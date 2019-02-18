@@ -197,16 +197,12 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
           // straight string or string[]
           if (
             createIssue.isEpicLinkFieldSchema(fieldToModifySelection.fieldSchema) ||
+            createIssue.isSprintFieldSchema(fieldToModifySelection.fieldSchema) ||
             createIssue.isLabelsField(fieldToModifySelection.field) ||
             createIssue.isIssuelinksField(fieldToModifySelection.field) ||
             createIssue.isArrayOfStringField(fieldToModifySelection.fieldSchema)
           ) {
-            const values = newValueSelected.map((value: any) => value.pickValue.key || value.pickValue.label);
-            createIssue.requestJson[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
-          }
-
-          if (createIssue.isSprintFieldSchema(fieldToModifySelection.fieldSchema)) {
-            const values = newValueSelected.map((value: any) => value.id);
+            const values = newValueSelected.map((value: any) => value.pickValue.id || value.pickValue.key || value.pickValue.label);
             createIssue.requestJson[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
           }
 

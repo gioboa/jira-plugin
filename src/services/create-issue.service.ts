@@ -60,7 +60,7 @@ export default class CreateIssueService {
   }
 
   public get project(): string {
-    return this.newIssueIstance.data.project;
+    return this.newIssueIstance.project;
   }
 
   public get mandatoryFieldsOk(): boolean {
@@ -85,7 +85,7 @@ export default class CreateIssueService {
 
   // define if the selector can have multiple choices
   public isCanPickMany(field: any) {
-    return this.isArrayType(field.fieldSchema.type) && !this.isIssuelinksField(field.field);
+    return this.isArrayType(field.fieldSchema.type) && !this.isIssuelinksField(field.field) && !this.isSprintFieldSchema(field.fieldSchema);
   }
 
   public isAssigneeOrReporterField(fieldName: string) {
@@ -121,11 +121,11 @@ export default class CreateIssueService {
   }
 
   public populateNewIssue(data: {}) {
-    this.newIssueIstance = { ...this.newIssueIstance, data };
+    this.newIssueIstance = { ...this.newIssueIstance, ...data };
   }
 
   public populateRequest(data: {}) {
-    this.requestJson = { ...this.requestJson, data };
+    this.requestJson = { ...this.requestJson, ...data };
   }
 
   // custom behavior for some custom/particular fields
