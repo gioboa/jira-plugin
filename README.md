@@ -26,6 +26,12 @@
 - [Git Integration](#settings)
 - [Enable Check Notifications](#settings)
 
+## Changelog
+
+[Learn about the latest improvements][changelog].
+
+[changelog]: https://github.com/gioboa/jira-plugin/blob/develop/CHANGELOG.md
+
 ## Support
 
 **jira-plugin** is an open source extension.<br>While being free and open source, if you find it useful, please consider supporting it by donating via PayPal.<br>**Thanks!**
@@ -74,7 +80,7 @@ The extension store credentials in VS Code settings.<br><br>
 - **Default JQL Search**
   Here you can define your default/custom JQL search (n.b: WORKING_PROJECT is the placeholder for the current working project)
 - **Enable Check Notifications**
-  You can manage your Jira **Unread** notifications inside VsCode notification center (n.b: only new Jira versions has notifications)
+  You can manage your Jira **unread** notifications inside VsCode notification center (n.b: only new Jira versions has notifications)
 - **Enable Working Issue** <br>
   Enable working issue functionality in status bar
 - **Git Integration** <br>
