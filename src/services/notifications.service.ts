@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { logger } from '.';
 import openIssueCommand from '../commands/open-issue';
-import { INotification, INotifications } from '../http/api.model';
+import { INotification, INotifications } from './http.model';
 import { ACTIONS, CONFIG } from '../shared/constants';
 import state from '../store/state';
 import ConfigurationService from './configuration.service';

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { IIssue } from '../../http/api.model';
+import { IIssue } from '../../services/http.model';
 
 export class IssueItem extends vscode.TreeItem {
   constructor(public readonly issue: IIssue, public readonly command?: vscode.Command) {

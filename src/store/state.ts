@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { Jira } from '../http/api';
-import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../http/api.model';
+import { Jira } from '../services/http.service';
+import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../services/http.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import { configuration, issuesExplorer, logger, notifications, statusBar, utilities } from '../services';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';

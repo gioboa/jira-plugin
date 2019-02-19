@@ -1,4 +1,4 @@
-import { configuration, logger } from '../services';
+import { configuration, logger } from '.';
 import { ASSIGNEES_MAX_RESULTS, CONFIG } from '../shared/constants';
 import {
   IAddComment,
@@ -23,8 +23,8 @@ import {
   ISprint,
   IStatus,
   ITransitions
-} from './api.model';
-import { patchJiraInstance } from './jira-instance-patch';
+} from './http.model';
+import { patchJiraInstance } from '../shared/jira-instance-patch';
 
 const jiraClient = require('jira-connector');
 

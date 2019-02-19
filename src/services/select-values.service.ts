@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { configuration, logger, utilities } from '.';
-import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from '../http/api.model';
+import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from './http.model';
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';

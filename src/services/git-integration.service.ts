@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import * as vscode from 'vscode';
 import { logger } from '.';
-import { IIssue } from '../http/api.model';
+import { IIssue } from './http.model';
 import { ACTIONS, CONFIG } from '../shared/constants';
 import state, { changeStateProject } from '../store/state';
 import ConfigurationService from './configuration.service';

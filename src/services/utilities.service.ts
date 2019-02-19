@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { configuration, logger } from '.';
 import { IssueItem } from '../explorer/item/issue-item';
-import { IProject } from '../http/api.model';
+import { IProject } from './http.model';
 import { ACTIONS, STATUS_ICONS } from '../shared/constants';
 import { IssueLinkProvider } from '../shared/document-link-provider';
 import state from '../store/state';
