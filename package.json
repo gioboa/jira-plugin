@@ -2,7 +2,7 @@
   "name": "jira-plugin",
   "displayName": "Jira Plugin",
   "description": "Jira integration for vscode",
-  "version": "0.13.2",
+  "version": "0.14.0",
   "publisher": "gioboa",
   "icon": "images/icons/icon.png",
   "galleryBanner": {
@@ -123,7 +123,7 @@
         },
         "jira-plugin.enableCheckForNotifications": {
           "type": "boolean",
-          "description": "You can manage your Jira Unread notifications inside VsCode notification center (n.b: only new Jira versions has notifications)",
+          "description": "You can manage your Jira unread notifications inside VsCode notification center (n.b: only new Jira versions has notifications)",
           "default": false
         }
       }

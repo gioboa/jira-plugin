@@ -1,3 +1,14 @@
+## 0.14.0
+
+### Features
+
+- you can manage your Jira unread notifications inside VsCode notification center
+- managed sprint field
+
+### Breaking change
+
+- defaultJQLSearch now is defaultJqlSearch, so you have to copy manually the old setting in the new one
+
 ## 0.13.2
 
 ### Bug Fixes
