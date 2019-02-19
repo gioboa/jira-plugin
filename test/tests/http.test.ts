@@ -26,30 +26,33 @@ suite('Jira API', () => {
       awayTime: 0
     }
   };
-  const tests = [
-    'getCloudSession',
-    'getStatuses',
-    'getProjects',
-    'getAllIssueTypes',
-    'getAllPriorities',
-    'getFavoriteFilters',
-    'getSprints',
-    'search',
-    'getIssueByKey'
+  interface ITest {
+    name: string;
+    type: 'none' | 'project' | 'issueKey' | 'jql';
+  }
+  const tests: ITest[] = [
+    { name: 'getCloudSession', type: 'none' },
+    { name: 'getStatuses', type: 'none' },
+    { name: 'getProjects', type: 'none' },
+    { name: 'getAllIssueTypes', type: 'none' },
+    { name: 'getAllPriorities', type: 'none' },
+    { name: 'getFavoriteFilters', type: 'none' },
+    { name: 'getSprints', type: 'none' },
+    { name: 'search', type: 'jql' },
+    { name: 'getIssueByKey', type: 'issueKey' },
+    { name: 'getAssignees', type: 'project' },
+    { name: 'getTransitions', type: 'issueKey' },
+    { name: 'getAllIssueTypesWithFields', type: 'project' },
+    { name: 'getCreateIssueEpics', type: 'project' },
+    { name: 'getCreateIssueLabels', type: 'none' },
+    { name: 'getAvailableLinkIssuesType', type: 'none' },
+    { name: 'getNotifications', type: 'none' }
   ];
-  // getIssueByKey(issueKey: string): Promise<IIssue>;
-  // getAssignees(project: string): Promise<IAssignee[]>;
-  // getTransitions(issueKey: string): Promise<ITransitions>;
   // setTransition(params: { issueKey: string; transition: ISetTransition }): Promise<void>;
   // setAssignIssue(params: { issueKey: string; assignee: string }): Promise<void>;
   // addNewComment(params: { issueKey: string; comment: IAddComment }): Promise<IAddCommentResponse>;
   // addWorkLog(params: { issueKey: string; worklog: IAddWorkLog }): Promise<void>;
   // createIssue(params: ICreateIssue): Promise<any>;
-  // getAllIssueTypesWithFields(project: string): Promise<IIssueType[]>;
-  // getCreateIssueEpics(project: string, maxResults: number): Promise<ICreateIssueEpic>;
-  // getCreateIssueLabels(): Promise<{ suggestions: ILabel[] }>;
-  // getAvailableLinkIssuesType(): Promise<{ issueLinkTypes: IAvailableLinkIssuesType[] }>;
-  // getNotifications(lastId: string): Promise<INotifications>;
   // markNotificationsAsReadUnread(payload: IMarkNotificationAsReadUnread): Promise<any>;
   let project = '';
   let issue: IIssue;
@@ -66,23 +69,26 @@ suite('Jira API', () => {
     assert.strictEqual(1, 1);
   });
 
-  const preparePaylod = (funcName: string): any => {
+  const preparePaylod = (test: ITest): any => {
     let payload;
-    if (funcName === 'search') {
+    if (test.type === 'jql') {
       payload = { jql: `project = '${project}' ORDER BY status ASC, updated DESC`, maxResults: 20 };
     }
-    if (funcName === 'getIssueByKey') {
+    if (test.type === 'issueKey') {
       payload = issue.key;
+    }
+    if (test.type === 'project') {
+      payload = project;
     }
     return payload;
   };
-  tests.forEach(name => {
-    test(name, async () => {
-      const response = await (<any>state.jira)[name](preparePaylod(name));
-      if (name === 'getProjects') {
+  tests.forEach(t => {
+    test(t.name, async () => {
+      const response = await (<any>state.jira)[t.name](preparePaylod(t));
+      if (t.name === 'getProjects') {
         project = response[0].key;
       }
-      if (name === 'search') {
+      if (t.name === 'search') {
         issue = response.issues[0];
       }
       // console.log(JSON.stringify(response));

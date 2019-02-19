@@ -1,5 +1,6 @@
 import { configuration, logger } from '.';
 import { ASSIGNEES_MAX_RESULTS, CONFIG } from '../shared/constants';
+import { patchJiraInstance } from '../shared/jira-instance-patch';
 import {
   IAddComment,
   IAddCommentResponse,
@@ -24,7 +25,6 @@ import {
   IStatus,
   ITransitions
 } from './http.model';
-import { patchJiraInstance } from '../shared/jira-instance-patch';
 
 const jiraClient = require('jira-connector');
 
@@ -170,7 +170,7 @@ export class Jira implements IJira {
   async getCreateIssueEpics(projectKey: string, maxResults: number): Promise<ICreateIssueEpic> {
     return await this.customRequest(
       'GET',
-      `${this.baseUrl}/rest/greenhopper/1.0/epics?searchQuery=&projectKey=${projectKey}&maxResults=${maxResults}&hideDone=false`
+      `${this.baseUrl}/rest/greenhopper/1.0/epics?searchQuery=&projectKey=${projectKey}&maxResults=${maxResults || 25}&hideDone=false`
     );
   }
 
