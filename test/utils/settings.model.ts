@@ -8,20 +8,3 @@ export interface ISettings {
   counter: number;
   workingIssue: any;
 }
-
-// START - settings example file
-
-// import { ISettings } from "./configuration.model";
-
-// export const settings: ISettings = {
-//   baseUrl: 'xxx',
-//   username: 'xxx',
-//   password: 'xxx',
-//   workingProject: '',
-//   enableWorkingIssue: false,
-//   workingIssueStatues: 'In Progress',
-//   counter: 0,
-//   workingIssue: undefined
-// };
-
-// END - configuration example file

@@ -1,4 +1,4 @@
-import { ISettings } from "./settings.model";
+import { ISettings } from './settings.model';
 
 export const settings: ISettings = {
   baseUrl: 'xxx',
