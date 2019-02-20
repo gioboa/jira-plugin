@@ -217,6 +217,11 @@
         "category": "Jira-plugin"
       },
       {
+        "command": "jira-plugin.createGitBranch",
+        "title": "Create git branch for this issue",
+        "category": "Jira-plugin"
+      },
+      {
         "command": "jira-plugin.refresh",
         "title": "Refresh",
         "category": "Jira-plugin",
@@ -305,6 +310,10 @@
         {
           "command": "jira-plugin.copyJiraSummary",
           "when": "view == issuesExplorer && viewItem == IssueItem"
+        },
+        {
+          "command": "jira-plugin.createGitBranch",
+          "when": "view == issuesExplorer && viewItem == IssueItem && gitEnabled == 1"
         }
       ]
     }

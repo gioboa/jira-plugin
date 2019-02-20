@@ -1,10 +1,10 @@
 import { EventEmitter } from 'events';
 import * as vscode from 'vscode';
 import { logger } from '.';
-import { IIssue } from './http.model';
 import { ACTIONS, CONFIG } from '../shared/constants';
 import state, { changeStateProject } from '../store/state';
 import ConfigurationService from './configuration.service';
+import { IIssue } from './http.model';
 
 /**
  * TODO: overengineering. Implement simplier solution
@@ -14,24 +14,25 @@ class BranchWatcher extends EventEmitter {
     BRANCH_CHANED: 'branch:changed'
   };
 
-  git: vscode.Extension<any> | undefined;
-
-  constructor() {
+  constructor(private gitExtension: vscode.Extension<any>) {
     super();
-    this.git = vscode.extensions.getExtension('vscode.git');
     this.startWatchingBranchChange();
   }
 
-  public async getHeadBranch(): Promise<string | void> {
-    if (!this.git) {
-      return;
-    }
-
-    const activated = await this.git.activate();
+  private async getGitRepositories(): Promise<any> {
+    const activated = await this.gitExtension.activate();
     const api = activated.getAPI(1);
-    const [repo] = api.repositories;
-    const head = repo && repo.state && repo.state.HEAD;
+    return api.repositories;
+  }
 
+  public async getHeadBranch(): Promise<string | void> {
+    const [repo] = await this.getGitRepositories();
+    if (repo) {
+      vscode.commands.executeCommand('setContext', 'gitEnabled', '1');
+    } else {
+      vscode.commands.executeCommand('setContext', 'gitEnabled', '0');
+    }
+    const head = repo && repo.state && repo.state.HEAD;
     return head && head.name;
   }
 
@@ -39,15 +40,10 @@ class BranchWatcher extends EventEmitter {
     if (this.interval) {
       clearInterval(this.interval);
     }
-
     this.removeAllListeners();
   }
 
-  public get currentBranch(): string | undefined {
-    return this._currentBranch;
-  }
-
-  private _currentBranch: string | undefined;
+  private currentBranch: string | undefined;
   private interval: any;
 
   /**
@@ -56,18 +52,12 @@ class BranchWatcher extends EventEmitter {
   private startWatchingBranchChange(): void {
     this.interval = setInterval(async () => {
       const actualBranch = await this.getHeadBranch();
-      if (actualBranch !== this._currentBranch) {
-        this.emit(BranchWatcher.EVENTS.BRANCH_CHANED, actualBranch, this._currentBranch);
+      if (actualBranch !== this.currentBranch) {
+        this.emit(BranchWatcher.EVENTS.BRANCH_CHANED, actualBranch, this.currentBranch);
       }
-
-      this._currentBranch = actualBranch || undefined;
+      this.currentBranch = actualBranch || undefined;
     }, 1000); // FIXME: hardcoded value
   }
-}
-
-interface Ticket {
-  project: string;
-  issue: string;
 }
 
 export default class GitIntegrationService {
@@ -75,23 +65,26 @@ export default class GitIntegrationService {
   private configWatcher: vscode.Disposable;
   private watcher: BranchWatcher | undefined;
   private currentBranch: string | undefined;
+  private gitExtension: vscode.Extension<any> | undefined;
 
-  get isEnabled(): boolean {
+  get isGitIntegrationEnabled(): boolean {
     return !!this.configuration.get(CONFIG.GIT_INTEGRATION_ENABLED);
   }
 
   constructor(private configuration: ConfigurationService) {
+    this.gitExtension = vscode.extensions.getExtension('vscode.git');
+    vscode.commands.executeCommand('setContext', 'gitEnabled', '0');
     this.configWatcher = vscode.workspace.onDidChangeConfiguration(() => this.toggleWatcher());
-
     this.toggleWatcher();
   }
 
-  private toggleWatcher(enabled = this.isEnabled): void {
-    if (enabled !== this.enabled) {
-      enabled ? this.subscribeToWatcher() : this.disposeWatcher();
+  private toggleWatcher(enabled = this.isGitIntegrationEnabled): void {
+    if (!!this.gitExtension) {
+      if (enabled !== this.enabled) {
+        enabled ? this.subscribeToWatcher() : this.disposeWatcher();
+        this.enabled = enabled;
+      }
     }
-
-    this.enabled = enabled;
   }
 
   private async onBranchChanged(newBranch?: string, oldBrarnch?: string): Promise<void> {
@@ -117,7 +110,7 @@ export default class GitIntegrationService {
     }
   }
 
-  private parseTicket(branchName: string): Ticket | null {
+  private parseTicket(branchName: string): { project: string; issue: string } | null {
     const matched = branchName.match(/([A-Z0-9]+)-(\d+)/);
     return (
       matched && {
@@ -127,7 +120,7 @@ export default class GitIntegrationService {
     );
   }
 
-  private async setCurrentWorkingProjectAndIssue(ticket: Ticket, issue: IIssue): Promise<void> {
+  private async setCurrentWorkingProjectAndIssue(ticket: { project: string; issue: string }, issue: IIssue): Promise<void> {
     try {
       changeStateProject(ticket.project);
       vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', undefined, issue);
@@ -137,8 +130,10 @@ export default class GitIntegrationService {
   }
 
   private subscribeToWatcher() {
-    this.watcher = new BranchWatcher();
-    this.watcher.on(BranchWatcher.EVENTS.BRANCH_CHANED, this.onBranchChanged.bind(this));
+    if (!!this.gitExtension) {
+      this.watcher = new BranchWatcher(this.gitExtension);
+      this.watcher.on(BranchWatcher.EVENTS.BRANCH_CHANED, this.onBranchChanged.bind(this));
+    }
   }
 
   private disposeWatcher() {
@@ -147,5 +142,10 @@ export default class GitIntegrationService {
 
   public dispose(): any {
     this.configWatcher.dispose();
+  }
+
+  // plugin command
+  public invokeCreateBranch() {
+    vscode.commands.executeCommand('git.branch', 'abc');
   }
 }

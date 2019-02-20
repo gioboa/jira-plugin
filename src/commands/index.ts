@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { selectValues, utilities } from '../services';
+import { gitIntegration, selectValues, utilities } from '../services';
 import { SEARCH_MODE } from '../shared/constants';
 import changeIssueAssigneeCommand from './change-issue-assignee';
 import changeIssueStatusCommand from './change-issue-status';
@@ -56,7 +56,10 @@ export default {
       registerCommand('jira-plugin.copyJiraSummary', utilities.copyToClipboard),
 
       // auxilary commands
-      registerCommand('jira-plugin.openGitHubRepoCommand', openGitHubRepoCommand)
+      registerCommand('jira-plugin.openGitHubRepoCommand', openGitHubRepoCommand),
+
+      // git integration commands
+      registerCommand('jira-plugin.createGitBranch', gitIntegration.invokeCreateBranch)
     ];
   }
 };
