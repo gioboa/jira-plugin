@@ -3,10 +3,10 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { configuration, logger } from '.';
 import { IssueItem } from '../explorer/item/issue-item';
-import { IProject } from './http.model';
 import { ACTIONS, STATUS_ICONS } from '../shared/constants';
 import { IssueLinkProvider } from '../shared/document-link-provider';
 import state from '../store/state';
+import { IProject } from './http.model';
 
 export default class UtilitiesService {
   // generate icon + status
@@ -86,6 +86,6 @@ export default class UtilitiesService {
     if (!!state.documentLinkDisposable) {
       state.documentLinkDisposable.dispose();
     }
-    state.documentLinkDisposable = vscode.languages.registerDocumentLinkProvider('*', new IssueLinkProvider(projects));
+    state.documentLinkDisposable = vscode.languages.registerDocumentLinkProvider({ scheme: '*' }, new IssueLinkProvider(projects));
   }
 }
