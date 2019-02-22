@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { Jira } from '../services/http.service';
-import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../services/http.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
-import { configuration, issuesExplorer, logger, notifications, statusBar, utilities } from '../services';
+import { configuration, gitIntegration, issuesExplorer, logger, notifications, statusBar, utilities } from '../services';
+import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from '../services/http.model';
+import { Jira } from '../services/http.service';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
 
 export interface IState {
@@ -99,6 +99,9 @@ export const changeStateIssues = (filter: string, jql: string, issues: IIssue[])
 };
 
 export const changeStateWorkingIssue = async (issue: IIssue, trackingTime: number): Promise<void> => {
+  if (issue.key !== NO_WORKING_ISSUE.key) {
+    await gitIntegration.switchToWorkingTicketBranch(issue);
+  }
   const awayTime: number = 0; // FIXME: We don't need awayTime when changing issues, not sure best way to handle this.
   state.workingIssue = { issue, trackingTime, awayTime };
   statusBar.updateWorkingIssueItem(false);
