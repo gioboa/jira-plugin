@@ -297,22 +297,27 @@
       "view/item/context": [
         {
           "command": "jira-plugin.changeIssueStatusCommand",
+          "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
           "command": "jira-plugin.issueAddCommentCommand",
+          "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
           "command": "jira-plugin.changeIssueAssigneeCommand",
+          "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
           "command": "jira-plugin.copyJiraSummary",
+          "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
           "command": "jira-plugin.createGitBranch",
+          "group": "2_git",
           "when": "view == issuesExplorer && viewItem == IssueItem && gitEnabled == 1"
         }
       ]
