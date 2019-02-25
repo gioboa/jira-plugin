@@ -14,7 +14,8 @@ export const CONFIG = {
   GIT_INTEGRATION_ENABLED: 'gitIntegration',
   NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
   DEFAULT_JQL_SEARCH: 'defaultJqlSearch',
-  CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications'
+  CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications',
+  ADDITIONAL_CERTIFICATE: 'additionalCertificate'
 };
 
 // all the tracking time mode

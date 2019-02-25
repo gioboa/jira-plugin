@@ -73,6 +73,8 @@ After setup you have to set the working project, you can click on status-bar ico
 The extension store credentials in VS Code settings.<br><br>
 **n.b:** the extension store the password in VS Code internal storage so it's safe and hidden. :wink: <br>
 
+- **Additional Certificate** <br>
+  Additional certificate settings
 - **Additional Statuses** <br>
   Additional custom statuses, used for manage some Jira wrong behavior
 - **Base Url** <br>
