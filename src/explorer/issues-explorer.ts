@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { configuration } from '../services';
+import { IIssue } from '../services/http.model';
 import { CONFIG, LOADING } from '../shared/constants';
 import state from '../store/state';
 import { DividerItem } from './item/divider-item';
@@ -25,46 +26,59 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
   }
 
   async getChildren(element?: IssueItem): Promise<any[]> {
-    let project = await configuration.get(CONFIG.WORKING_PROJECT);
-    const issues = state.issues;
-    // generate all the item from issues saved in global state
-    if (issues.length > 0) {
-      const items: any[] = issues.map(
-        issue =>
-          new IssueItem(issue, {
+    // issue
+    if (!element) {
+      let project = await configuration.get(CONFIG.WORKING_PROJECT);
+      const issues = state.issues;
+      // generate all the item from issues saved in global state
+      if (issues.length > 0) {
+        const items: any[] = issues.map(
+          issue =>
+            new IssueItem(issue, {
+              command: 'jira-plugin.openIssueCommand',
+              title: 'Open issue in the browser',
+              arguments: [`${issue.key}`]
+            })
+        );
+        // add in the firt possition 'filter-info-item' and then the 'divider-item'
+        items.unshift(new FilterInfoItem(project, state.currentFilter, issues.length), new DividerItem('------'));
+
+        // loop items and insert for every status a separator
+        const getLabel = (status: string) => `Status: ${status}`;
+        items.map((item: any, index: number) => {
+          if (item.issue) {
+            if (
+              !items.find(
+                el => el.contextValue === new StatusItem('', '').contextValue && getLabel(item.issue.fields.status.name) === el.label
+              )
+            ) {
+              items.splice(index, 0, new StatusItem(getLabel(item.issue.fields.status.name), item.issue.fields.status.name));
+            }
+          }
+        });
+
+        if (issues.length === configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST)) {
+          items.push(new DividerItem('------'), new LimitInfoItem());
+        }
+        return items;
+      } else {
+        // used for show loading item in the explorer
+        if (state.currentFilter === LOADING.text) {
+          return [new LoadingItem()];
+        }
+        // no result
+        return [new FilterInfoItem(project, state.currentFilter, issues.length), new DividerItem('------'), new NoResultItem(project)];
+      }
+    } else {
+      // subtasks
+      return element.issue.fields.subtasks.map(
+        (subtask: IIssue) =>
+          new IssueItem(subtask, {
             command: 'jira-plugin.openIssueCommand',
             title: 'Open issue in the browser',
-            arguments: [`${issue.key}`]
+            arguments: [`${subtask.key}`]
           })
       );
-      // add in the firt possition 'filter-info-item' and then the 'divider-item'
-      items.unshift(new FilterInfoItem(project, state.currentFilter, issues.length), new DividerItem('------'));
-
-      // loop items and insert for every status a separator
-      const getLabel = (status: string) => `Status: ${status}`;
-      items.map((item: any, index: number) => {
-        if (item.issue) {
-          if (
-            !items.find(
-              el => el.contextValue === new StatusItem('', '').contextValue && getLabel(item.issue.fields.status.name) === el.label
-            )
-          ) {
-            items.splice(index, 0, new StatusItem(getLabel(item.issue.fields.status.name), item.issue.fields.status.name));
-          }
-        }
-      });
-
-      if (issues.length === configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST)) {
-        items.push(new DividerItem('------'), new LimitInfoItem());
-      }
-      return items;
-    } else {
-      // used for show loading item in the explorer
-      if (state.currentFilter === LOADING.text) {
-        return [new LoadingItem()];
-      }
-      // no result
-      return [new FilterInfoItem(project, state.currentFilter, issues.length), new DividerItem('------'), new NoResultItem(project)];
     }
   }
 }
