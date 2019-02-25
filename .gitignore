@@ -65,6 +65,3 @@ typings/
 
 # out
 out/
-
-# credentials
-test/*/settings.ts
