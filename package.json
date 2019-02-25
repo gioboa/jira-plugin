@@ -245,8 +245,8 @@
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.createGitBranch",
-        "title": "Create git branch for this issue",
+        "command": "jira-plugin.checkoutGitBranch",
+        "title": "Checkout or create git branch",
         "category": "Jira-plugin"
       },
       {
@@ -344,7 +344,7 @@
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
-          "command": "jira-plugin.createGitBranch",
+          "command": "jira-plugin.checkoutGitBranch",
           "group": "2_git",
           "when": "view == issuesExplorer && viewItem == IssueItem && gitEnabled == 1"
         }

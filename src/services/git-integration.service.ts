@@ -189,8 +189,8 @@ export default class GitIntegrationService {
 
   // plugin command
 
-  public invokeCreateBranch() {
-    vscode.commands.executeCommand('git.branch');
+  public invokeCheckoutBranch() {
+    vscode.commands.executeCommand('git.checkout');
   }
 
   public async switchToWorkingTicketBranch(issue: IIssue) {
