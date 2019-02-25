@@ -1,3 +1,9 @@
+## 0.14.1
+
+### Bug Fixes
+
+- added additional certificate settings
+
 ## 0.14.0
 
 ### Features
