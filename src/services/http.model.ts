@@ -51,7 +51,7 @@ export interface IIssue {
       key: string;
       name: string;
     };
-    subtasks: IIssue[];
+    subtasks?: IIssue[];
   };
 }
 

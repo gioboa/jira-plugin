@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import ConfigurationService from '../../src/services/configuration.service';
+import { IWorkingIssue } from '../../src/services/http.model';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS } from '../../src/shared/constants';
 import state from '../../src/store/state';
 import { backupSettings, restoreSettings } from '../utils/utils';
@@ -97,7 +98,7 @@ suite('Configuration', () => {
   });
 
   test(`Global working issue`, async () => {
-    const workingIssue = {
+    const workingIssue: IWorkingIssue = {
       issue: {
         id: '',
         key: 'TEST',

@@ -71,7 +71,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
       }
     } else {
       // subtasks
-      return element.issue.fields.subtasks.map(
+      return (element.issue.fields.subtasks || []).map(
         (subtask: IIssue) =>
           new IssueItem(subtask, {
             command: 'jira-plugin.openIssueCommand',
