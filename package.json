@@ -135,6 +135,11 @@
             "false"
           ],
           "default": ""
+        },
+        "jira-plugin.projectsToHide": {
+          "type": "string",
+          "description": "Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3) - restart required",
+          "default": ""
         }
       }
     },

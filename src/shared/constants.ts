@@ -15,7 +15,8 @@ export const CONFIG = {
   NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
   DEFAULT_JQL_SEARCH: 'defaultJqlSearch',
   CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications',
-  STRICT_SSL: 'strictSSL'
+  STRICT_SSL: 'strictSSL',
+  PROJECTS_TO_HIDE: 'projectsToHide'
 };
 
 // all the tracking time mode

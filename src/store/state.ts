@@ -46,7 +46,7 @@ export const connectToJira = async (): Promise<void> => {
     addAdditionalStatuses();
     state.statuses.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
-    state.projects = await state.jira.getProjects();
+    state.projects = utilities.hideProjects(await state.jira.getProjects());
     utilities.createDocumentLinkProvider(state.projects);
     statusBar.updateWorkingProjectItem('');
 
