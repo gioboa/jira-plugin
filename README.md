@@ -87,6 +87,8 @@ The extension store credentials in VS Code settings.<br><br>
   Automatically watch for branch switching and select appropriate project and working issue
 - **Number Of Issues In List**
   Number of issues to show in list. n.b: If you define high numbers the research can be slow
+- **StrictSSL param**
+  Set strictSSL param value for all request
 - **Tracking Time Mode** <br>
   Configure how the plugin tracking time for the working issue
 - **Tracking Time Mode Hybrid Timeout** <br>

@@ -1,3 +1,6 @@
+import { configuration } from '../services';
+import { CONFIG } from './constants';
+
 const cleanOptions = (options: any): void => {
   if (!!options.headers && Object.keys(options.headers).length === 0) {
     delete options.header;
@@ -46,6 +49,10 @@ export const patchJiraInstance = (jiraInstance: any) => {
 
   jiraInstance.originalMakeRequest = jiraInstance.makeRequest;
   const customMakeRequest = (options: any, callback: any, successString: any) => {
+    const strictSSL = configuration.get(CONFIG.STRICT_SSL);
+    if (strictSSL !== '') {
+      options.strictSSL = strictSSL === 'true';
+    }
     return jiraInstance.originalMakeRequest(options, callback, successString);
   };
   jiraInstance.makeRequest = customMakeRequest;

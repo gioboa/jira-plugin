@@ -125,6 +125,16 @@
           "type": "boolean",
           "description": "You can manage your Jira unread notifications inside VsCode notification center (n.b: only new Jira versions has notifications)",
           "default": false
+        },
+        "jira-plugin.strictSSL": {
+          "type": "string",
+          "description": "Request strictSSL param (n.b: if you have problem with certificates, set it to false)",
+          "enum": [
+            "",
+            "true",
+            "false"
+          ],
+          "default": ""
         }
       }
     },
