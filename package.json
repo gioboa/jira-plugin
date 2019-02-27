@@ -125,34 +125,6 @@
           "type": "boolean",
           "description": "You can manage your Jira unread notifications inside VsCode notification center (n.b: only new Jira versions has notifications)",
           "default": false
-        },
-        "jira-plugin.additionalCertificate": {
-          "type": "object",
-          "title": "Additional certificate settings",
-          "properties": {
-            "ca": {
-              "type": "array",
-              "description": "CA full files path (n.b: necessary only if the server uses a self-signed certificate)",
-              "items": {
-                "type": "string"
-              }
-            },
-            "cert": {
-              "type": "string",
-              "description": "Certificate authority full file path (n.b: necessary only if the server requires client certificate authentication)"
-            },
-            "key": {
-              "type": "string",
-              "description": "Private key full file path (n.b: necessary only if the server requires client certificate authentication)"
-            }
-          },
-          "default": {
-            "ca": [
-              ""
-            ],
-            "cert": "",
-            "key": ""
-          }
         }
       }
     },
