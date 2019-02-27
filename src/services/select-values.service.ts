@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import { configuration, logger, utilities } from '.';
-import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from './http.model';
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
 import { BACK_PICK_LABEL, CONFIG, LOADING, NO_WORKING_ISSUE, SEARCH_MAX_RESULTS, SEARCH_MODE, UNASSIGNED } from '../shared/constants';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../store/state';
+import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from './http.model';
 
 export default class SelectValuesService {
   // selection for projects
@@ -157,6 +157,8 @@ export default class SelectValuesService {
             if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
               // exclude issues with project key different from current working project
               searchResult.issues = searchResult.issues.filter((issue: IIssue) => (issue.fields.project.key || '') === project);
+              // exclude subtask issues are allready inside parent issue
+              searchResult.issues = utilities.excludeSubtasks(searchResult.issues);
               changeStateIssues(filter, jql, searchResult.issues);
             } else {
               changeStateIssues(filter, jql, []);

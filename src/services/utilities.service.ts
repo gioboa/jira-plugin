@@ -6,7 +6,7 @@ import { IssueItem } from '../explorer/item/issue-item';
 import { ACTIONS, CONFIG, STATUS_ICONS } from '../shared/constants';
 import { IssueLinkProvider } from '../shared/document-link-provider';
 import state from '../store/state';
-import { IProject } from './http.model';
+import { IIssue, IProject } from './http.model';
 
 export default class UtilitiesService {
   // generate icon + status
@@ -96,5 +96,17 @@ export default class UtilitiesService {
       projects = projects.filter((project: IProject) => !projectsToHide.includes(project.key));
     }
     return projects;
+  }
+
+  excludeSubtasks(issues: IIssue[]): IIssue[] {
+    const subtasks: string[] = [];
+    issues.forEach((issue: IIssue) => {
+      if (!!issue.fields.subtasks) {
+        for (let subtask of issue.fields.subtasks) {
+          subtasks.push(subtask.key);
+        }
+      }
+    });
+    return issues.filter((issue: IIssue) => !subtasks.includes(issue.key));
   }
 }
