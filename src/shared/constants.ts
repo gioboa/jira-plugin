@@ -15,7 +15,8 @@ export const CONFIG = {
   NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
   DEFAULT_JQL_SEARCH: 'defaultJqlSearch',
   CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications',
-  ADDITIONAL_CERTIFICATE: 'additionalCertificate'
+  STRICT_SSL: 'strictSSL',
+  PROJECTS_TO_HIDE: 'projectsToHide'
 };
 
 // all the tracking time mode
@@ -74,10 +75,17 @@ export const STATUS_ICONS = {
 };
 
 export const LOADING = { text: 'LOADING', file: 'cloud.png' };
-export const DIVIDER = { text: 'DIVIDER', file: 'divider.png' };
 export const UNASSIGNED = 'Unassigned';
 export const NO_WORKING_ISSUE = { text: 'No working issue', key: 'NO_WORKING_ISSUE' };
 export const BACK_PICK_LABEL = '$(arrow-left) Back';
 
 export const SEARCH_MAX_RESULTS = 1000;
 export const ASSIGNEES_MAX_RESULTS = 1000;
+
+export const GROUP_BY_FIELDS = {
+  STATUS: { label: 'Status', value: 'status' },
+  ASSIGNEE: { label: 'Assignee', value: 'assignee' },
+  TYPE: { label: 'Type', value: 'issuetype' },
+  PRIORITY: { label: 'Priority', value: 'priority' },
+  UPDATED: { label: 'Updated', value: 'updated' }
+};

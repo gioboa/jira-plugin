@@ -4,6 +4,7 @@
 
 - [View Jira issues](#explorer)
 - Create new Jira issue
+- Change explorer 'Group By' field
 - [Search/Filter Jira issues](#filters)
   - All issues
   - Current sprint issues
@@ -18,6 +19,7 @@
 - Change Jira issue assignee
 - Add comment to Jira issue
 - Copy to clipboard Jira Key+Summary
+- Checkout or create git branch
 - [Set current working project](#working-project)
 - [Set current working issue](#working-issue)
 - [Trace the time spended on the current working issue](#working-issue)
@@ -30,7 +32,7 @@
 
 [Learn about the latest improvements][changelog].
 
-[changelog]: https://github.com/gioboa/jira-plugin/blob/develop/CHANGELOG.md
+[changelog]: https://github.com/gioboa/jira-plugin/blob/master/CHANGELOG.md
 
 ## Support
 
@@ -73,22 +75,24 @@ After setup you have to set the working project, you can click on status-bar ico
 The extension store credentials in VS Code settings.<br><br>
 **n.b:** the extension store the password in VS Code internal storage so it's safe and hidden. :wink: <br>
 
-- **Additional Certificate** <br>
-  Additional certificate settings
 - **Additional Statuses** <br>
   Additional custom statuses, used for manage some Jira wrong behavior
 - **Base Url** <br>
   Your Jira base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)
-- **Default JQL Search**
+- **Default JQL Search** <br>
   Here you can define your default/custom JQL search (n.b: WORKING_PROJECT is the placeholder for the current working project)
-- **Enable Check Notifications**
+- **Enable Check Notifications** <br>
   You can manage your Jira **unread** notifications inside VsCode notification center (n.b: only new Jira versions has notifications)
 - **Enable Working Issue** <br>
   Enable working issue functionality in status bar
 - **Git Integration** <br>
   Automatically watch for branch switching and select appropriate project and working issue
-- **Number Of Issues In List**
+- **Number Of Issues In List** <br>
   Number of issues to show in list. n.b: If you define high numbers the research can be slow
+- **Projects To Hide** <br>
+  Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)
+- **StrictSSL param** <br>
+  Set strictSSL param value for all request
 - **Tracking Time Mode** <br>
   Configure how the plugin tracking time for the working issue
 - **Tracking Time Mode Hybrid Timeout** <br>
@@ -112,18 +116,19 @@ values:<br>
 
 ## Explorer
 
-- In the explorer you can use all the extension command
+- In the explorer you can use all these extension command
 
-![Explorer](images/readme/explorer.gif)
+![Explorer](images/readme/explorer.png)
 
 ## Explorer commands
 
 - **Create new ticket**<br>
   With this command you can create new ticket.<br><br>
-
 - **Insert Working Issue Key+Summary comment**<br>
   With this command you can insert Working Issue Key+Summary comment at the current position in the code.<br>
   `You can set your custom keyboard shortcut to retrieve this command`<br><br>
+- **Group By**<br>
+  You can define how visualize issues inside the explorer.<br><br>
 
 ### Filters
 
@@ -166,6 +171,8 @@ values:<br>
   With this command you can change an issue status.<br><br>
 - **Copy Jira Key+Summary**<br>
   With this command you can copy to clipboard Jira Key+Summary.<br><br>
+- **Checkout or create git branch**<br>
+  Whit this command you can manage git from explorer.<br><br>
 
 ## Status bar
 

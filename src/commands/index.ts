@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { selectValues, utilities } from '../services';
+import { gitIntegration, selectValues, utilities } from '../services';
 import { SEARCH_MODE } from '../shared/constants';
 import changeIssueAssigneeCommand from './change-issue-assignee';
 import changeIssueStatusCommand from './change-issue-status';
@@ -36,6 +36,9 @@ export default {
       // explorer header
       registerCommand('jira-plugin.createIssueCommand', createIssueCommand),
 
+      // explorer group by
+      registerCommand('jira-plugin.changeExplorerGroupBy', selectValues.changeExplorerGroupBy),
+
       // explorer filters
       registerCommand('jira-plugin.refresh', issueSelector(SEARCH_MODE.REFRESH)),
       registerCommand('jira-plugin.defaultIssuesCommand', issueSelector(SEARCH_MODE.DEFAULT)),
@@ -56,7 +59,10 @@ export default {
       registerCommand('jira-plugin.copyJiraSummary', utilities.copyToClipboard),
 
       // auxilary commands
-      registerCommand('jira-plugin.openGitHubRepoCommand', openGitHubRepoCommand)
+      registerCommand('jira-plugin.openGitHubRepoCommand', openGitHubRepoCommand),
+
+      // git integration commands
+      registerCommand('jira-plugin.checkoutGitBranch', gitIntegration.invokeCheckoutBranch)
     ];
   }
 };

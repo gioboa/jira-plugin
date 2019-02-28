@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { IProject } from '../http/api.model';
+import { IProject } from '../services/http.model';
 import '../services';
 import { configuration } from '../services';
 import { CONFIG } from './constants';

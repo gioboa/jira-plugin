@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { logger } from '.';
-import { IWorkingIssue } from '../http/api.model';
+import { IWorkingIssue } from './http.model';
 import {
   CONFIG,
   CONFIG_COUNTER,

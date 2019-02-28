@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { IIssue, IWorkingIssue } from '../http/api.model';
+import { IIssue, IWorkingIssue } from '../services/http.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import { configuration, selectValues, statusBar, utilities } from '../services';
 import { ACTIONS, CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';

@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import { STATUS_ICONS } from '../../shared/constants';
 import { utilities } from '../../services';
+import { STATUS_ICONS } from '../../shared/constants';
 
-export class StatusItem extends vscode.TreeItem {
-  constructor(label: string, public statusName: string, collapsibleState?: vscode.TreeItemCollapsibleState) {
+export class GroupItem extends vscode.TreeItem {
+  constructor(label: string, public fileName: string) {
     super(label, vscode.TreeItemCollapsibleState.None);
   }
 
@@ -24,9 +24,9 @@ export class StatusItem extends vscode.TreeItem {
   }
 
   iconPath = {
-    light: utilities.getIconsPath(`light/${this.icon(this.statusName)}`),
-    dark: utilities.getIconsPath(`dark/${this.icon(this.statusName)}`)
+    light: utilities.getIconsPath(`light/${this.icon(this.fileName)}`),
+    dark: utilities.getIconsPath(`dark/${this.icon(this.fileName)}`)
   };
 
-  contextValue = 'StatusItem';
+  contextValue = 'GroupItem';
 }

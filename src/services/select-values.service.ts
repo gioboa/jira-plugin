@@ -1,11 +1,20 @@
 import * as vscode from 'vscode';
-import { configuration, logger, utilities } from '.';
-import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from '../http/api.model';
+import { configuration, issuesExplorer, logger, utilities } from '.';
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
-import { BACK_PICK_LABEL, CONFIG, LOADING, NO_WORKING_ISSUE, SEARCH_MAX_RESULTS, SEARCH_MODE, UNASSIGNED } from '../shared/constants';
+import {
+  BACK_PICK_LABEL,
+  CONFIG,
+  GROUP_BY_FIELDS,
+  LOADING,
+  NO_WORKING_ISSUE,
+  SEARCH_MAX_RESULTS,
+  SEARCH_MODE,
+  UNASSIGNED
+} from '../shared/constants';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../store/state';
+import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from './http.model';
 
 export default class SelectValuesService {
   // selection for projects
@@ -13,7 +22,7 @@ export default class SelectValuesService {
     try {
       if (canExecuteJiraAPI()) {
         if (state.projects.length === 0) {
-          state.projects = await state.jira.getProjects();
+          state.projects = utilities.hideProjects(await state.jira.getProjects());
           utilities.createDocumentLinkProvider(state.projects);
         }
         const picks = state.projects.map(project => ({
@@ -157,6 +166,8 @@ export default class SelectValuesService {
             if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
               // exclude issues with project key different from current working project
               searchResult.issues = searchResult.issues.filter((issue: IIssue) => (issue.fields.project.key || '') === project);
+              // exclude subtask issues are allready inside parent issue
+              searchResult.issues = utilities.excludeSubtasks(searchResult.issues);
               changeStateIssues(filter, jql, searchResult.issues);
             } else {
               changeStateIssues(filter, jql, []);
@@ -390,5 +401,20 @@ export default class SelectValuesService {
       logger.printErrorMessageInOutputAndShowAlert(err);
     }
     return undefined;
+  }
+
+  public async changeExplorerGroupBy(): Promise<void> {
+    const picks = [];
+    picks.push({ ...GROUP_BY_FIELDS.STATUS });
+    picks.push({ ...GROUP_BY_FIELDS.ASSIGNEE });
+    picks.push({ ...GROUP_BY_FIELDS.TYPE });
+    picks.push({ ...GROUP_BY_FIELDS.PRIORITY });
+    picks.push({ ...GROUP_BY_FIELDS.UPDATED });
+    const selected = await vscode.window.showQuickPick(picks, {
+      placeHolder: `Select Group By field`,
+      matchOnDescription: true
+    });
+    issuesExplorer.setGroupByField(selected || undefined);
+    await vscode.commands.executeCommand('jira-plugin.refresh');
   }
 }

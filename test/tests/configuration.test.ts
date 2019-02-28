@@ -1,19 +1,12 @@
 import * as assert from 'assert';
 import ConfigurationService from '../../src/services/configuration.service';
+import { IWorkingIssue } from '../../src/services/http.model';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS } from '../../src/shared/constants';
 import state from '../../src/store/state';
+import { backupSettings, restoreSettings } from '../utils/utils';
 
 suite('Configuration', () => {
-  const configuration = new ConfigurationService();
-  let baseUrlBkp: any;
-  let usernameBkp: any;
-  let workProjectBkp: any;
-  let enableWorkingIssueBkp: any;
-  let workingIssueStatusesBkp: any;
-  let credentialsBkp: any;
-  let counterBkp: any;
-  let globalWorkigIssueBkp: any;
-
+  const configurationService = new ConfigurationService();
   const tests = [
     {
       title: `${CONFIG.BASE_URL} 1`,
@@ -58,60 +51,54 @@ suite('Configuration', () => {
       equal: true
     }
   ];
+  let settingsBkp = <any>{};
 
   test(`Backup Settings`, async () => {
-    baseUrlBkp = await configuration.get(CONFIG.BASE_URL);
-    usernameBkp = await configuration.get(CONFIG.USERNAME);
-    workProjectBkp = await configuration.get(CONFIG.WORKING_PROJECT);
-    enableWorkingIssueBkp = await configuration.get(CONFIG.ENABLE_WORKING_ISSUE);
-    workingIssueStatusesBkp = await configuration.get(CONFIG.WORKING_ISSUE_STATUSES);
-    credentialsBkp = await configuration.credentials;
-    counterBkp = await configuration.getGlobalCounter();
-    globalWorkigIssueBkp = await configuration.getGlobalWorkingIssue();
-    assert.equal(1, 1);
+    await backupSettings(configurationService, settingsBkp);
+    assert.strictEqual(1, 1);
   });
 
   tests.forEach(entry => {
     test(`${entry.title} config`, async () => {
-      await configuration.set(entry.config, entry.value);
-      const actual = await configuration.get(entry.config);
+      await configurationService.set(entry.config, entry.value);
+      const actual = await configurationService.get(entry.config);
       if (entry.equal) {
-        assert.equal(entry.expected, actual);
+        assert.strictEqual(entry.expected, actual);
       } else {
-        assert.notEqual(entry.expected, actual);
+        assert.notStrictEqual(entry.expected, actual);
       }
     });
   });
 
   test(`Password config`, async () => {
     const password = 'my_password';
-    await configuration.setPassword(password);
-    const { password: result } = configuration.credentials;
-    assert.equal(password, result);
+    await configurationService.setPassword(password);
+    const { password: result } = configurationService.credentials;
+    assert.strictEqual(password, result);
   });
 
   test(`Valid config`, async () => {
-    await configuration.set(CONFIG.BASE_URL, 'baseUrl');
-    await configuration.set(CONFIG.USERNAME, 'my_username');
-    await configuration.setPassword('my_password');
-    assert.equal(configuration.isValid(), true);
+    await configurationService.set(CONFIG.BASE_URL, 'baseUrl');
+    await configurationService.set(CONFIG.USERNAME, 'my_username');
+    await configurationService.setPassword('my_password');
+    assert.strictEqual(configurationService.isValid(), true);
   });
 
   test(`NOT valid config`, async () => {
-    await configuration.set(CONFIG.BASE_URL, 'baseUrl');
-    await configuration.set(CONFIG.USERNAME, undefined);
-    await configuration.setPassword('my_password');
-    assert.equal(configuration.isValid(), false);
+    await configurationService.set(CONFIG.BASE_URL, 'baseUrl');
+    await configurationService.set(CONFIG.USERNAME, undefined);
+    await configurationService.setPassword('my_password');
+    assert.strictEqual(configurationService.isValid(), false);
   });
 
   test(`Global counter config`, async () => {
-    await configuration.setGlobalCounter(0);
-    await configuration.setGlobalCounter(1);
-    assert.equal(configuration.getGlobalCounter(), 1);
+    await configurationService.setGlobalCounter(0);
+    await configurationService.setGlobalCounter(1);
+    assert.strictEqual(configurationService.getGlobalCounter(), 1);
   });
 
   test(`Global working issue`, async () => {
-    const workingIssue = {
+    const workingIssue: IWorkingIssue = {
       issue: {
         id: '',
         key: 'TEST',
@@ -130,9 +117,9 @@ suite('Configuration', () => {
       trackingTime: 0,
       awayTime: 0
     };
-    await configuration.setGlobalWorkingIssue(workingIssue);
-    const storedWOrkingIssue = await configuration.getGlobalWorkingIssue();
-    assert.equal(storedWOrkingIssue, JSON.stringify(workingIssue));
+    await configurationService.setGlobalWorkingIssue(workingIssue);
+    const storedWOrkingIssue = await configurationService.getGlobalWorkingIssue();
+    assert.strictEqual(storedWOrkingIssue, JSON.stringify(workingIssue));
   });
 
   test(`WorkingIssueStatuses in statuses list`, async () => {
@@ -146,9 +133,9 @@ suite('Configuration', () => {
         name: 'Closed'
       }
     ];
-    await configuration.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Closed');
-    const statuses = configuration.workingIssueStatuses();
-    assert.equal(statuses, `'In Progress','Closed'`);
+    await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Closed');
+    const statuses = configurationService.workingIssueStatuses();
+    assert.strictEqual(statuses, `'In Progress','Closed'`);
   });
 
   test(`WorkingIssueStatuses only one in statuses list`, async () => {
@@ -162,9 +149,9 @@ suite('Configuration', () => {
         name: 'Closed'
       }
     ];
-    await configuration.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Abc');
-    const statuses = configuration.workingIssueStatuses();
-    assert.equal(statuses, `'In Progress'`);
+    await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Abc');
+    const statuses = configurationService.workingIssueStatuses();
+    assert.strictEqual(statuses, `'In Progress'`);
   });
 
   test(`WorkingIssueStatuses not in statuses list`, async () => {
@@ -178,20 +165,13 @@ suite('Configuration', () => {
         name: 'Closed'
       }
     ];
-    await configuration.set(CONFIG.WORKING_ISSUE_STATUSES, 'Abc');
-    const statuses = configuration.workingIssueStatuses();
-    assert.equal(statuses, `'${DEFAULT_WORKING_ISSUE_STATUS}'`);
+    await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'Abc');
+    const statuses = configurationService.workingIssueStatuses();
+    assert.strictEqual(statuses, `'${DEFAULT_WORKING_ISSUE_STATUS}'`);
   });
 
   test(`Restore Settings Backup`, async () => {
-    await configuration.set(CONFIG.BASE_URL, baseUrlBkp);
-    await configuration.set(CONFIG.USERNAME, usernameBkp);
-    await configuration.set(CONFIG.WORKING_PROJECT, workProjectBkp);
-    await configuration.set(CONFIG.ENABLE_WORKING_ISSUE, enableWorkingIssueBkp);
-    await configuration.set(CONFIG.WORKING_ISSUE_STATUSES, workingIssueStatusesBkp);
-    await configuration.setPassword(credentialsBkp.password);
-    await configuration.setGlobalCounter(counterBkp);
-    await configuration.setGlobalWorkingIssue(globalWorkigIssueBkp);
-    assert.equal(1, 1);
+    await restoreSettings(configurationService, settingsBkp);
+    assert.strictEqual(1, 1);
   });
 });

@@ -76,7 +76,7 @@ suite(`Issue Document Link`, () => {
         content: entry.text
       });
       const links: vscode.ProviderResult<vscode.DocumentLink[]> = await linkProvider.provideDocumentLinks(document);
-      assert.equal((links || []).length, entry.numberOfLinks);
+      assert.strictEqual((links || []).length, entry.numberOfLinks);
     });
   });
 });

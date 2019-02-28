@@ -2,7 +2,7 @@
   "name": "jira-plugin",
   "displayName": "Jira Plugin",
   "description": "Jira integration for vscode",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "publisher": "gioboa",
   "icon": "images/icons/icon.png",
   "galleryBanner": {
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/gioboa/jira-plugin#readme",
   "engines": {
-    "vscode": "^1.24.0"
+    "vscode": "^1.31.0"
   },
   "categories": [
     "Other"
@@ -38,10 +38,10 @@
     "vscode:prepublish": "npm run compile",
     "compile": "npm run clean && tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install",
+    "postinstall": "git update-index --skip-worktree ./test/utils/settings.ts && node ./node_modules/vscode/bin/install",
     "test": "npm run compile && TYPE=1 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=2 node ./scripts/rename-files.js",
-    "setup:config": "npm run compile && TYPE=3 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
-    "setup:config:insiders": "npm run compile && TYPE=3 node ./scripts/rename-files.js && CODE_VERSION='insiders' node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
+    "setup:settings": "npm run compile && TYPE=3 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
+    "setup:settings:insiders": "npm run compile && TYPE=3 node ./scripts/rename-files.js && CODE_VERSION='insiders' node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
     "prelint": "prettier --print-width 140 --single-quote --write 'src/**/*.ts'",
     "lint": "tslint 'src/**/*.ts' --format stylish --fix"
   },
@@ -126,33 +126,20 @@
           "description": "You can manage your Jira unread notifications inside VsCode notification center (n.b: only new Jira versions has notifications)",
           "default": false
         },
-        "jira-plugin.additionalCertificate": {
-          "type": "object",
-          "title": "Additional certificate settings",
-          "properties": {
-            "ca": {
-              "type": "array",
-              "description": "CA full files path (n.b: necessary only if the server uses a self-signed certificate)",
-              "items": {
-                "type": "string"
-              }
-            },
-            "cert": {
-              "type": "string",
-              "description": "Certificate authority full file path (n.b: necessary only if the server requires client certificate authentication)"
-            },
-            "key": {
-              "type": "string",
-              "description": "Private key full file path (n.b: necessary only if the server requires client certificate authentication)"
-            }
-          },
-          "default": {
-            "ca": [
-              ""
-            ],
-            "cert": "",
-            "key": ""
-          }
+        "jira-plugin.strictSSL": {
+          "type": "string",
+          "description": "Request strictSSL param (n.b: if you have problem with certificates, set it to false)",
+          "enum": [
+            "",
+            "true",
+            "false"
+          ],
+          "default": ""
+        },
+        "jira-plugin.projectsToHide": {
+          "type": "string",
+          "description": "Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3) - restart required",
+          "default": ""
         }
       }
     },
@@ -177,6 +164,11 @@
       {
         "command": "jira-plugin.setupCredentialsCommand",
         "title": "Setup credentials",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.changeExplorerGroupBy",
+        "title": "Change explorer 'Group By' field",
         "category": "Jira-plugin"
       },
       {
@@ -245,6 +237,11 @@
         "category": "Jira-plugin"
       },
       {
+        "command": "jira-plugin.checkoutGitBranch",
+        "title": "Checkout or create git branch",
+        "category": "Jira-plugin"
+      },
+      {
         "command": "jira-plugin.refresh",
         "title": "Refresh",
         "category": "Jira-plugin",
@@ -271,40 +268,54 @@
     "menus": {
       "view/title": [
         {
+          "command": "jira-plugin.changeExplorerGroupBy",
+          "when": "view == issuesExplorer",
+          "group": "group_by"
+        },
+        {
           "command": "jira-plugin.defaultIssuesCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.allIssuesCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.currentSprintCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.issueByIdCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.issuesByStatusCommand",
-          "when": "view == issuesExplorer"
-        },
-        {
-          "command": "jira-plugin.myIssuesByStatusCommand",
-          "when": "view == issuesExplorer"
-        },
-        {
-          "command": "jira-plugin.favouritesFilters",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.issuesByStatusAssigneeCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.issuesBySummaryCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
+        },
+        {
+          "command": "jira-plugin.myIssuesByStatusCommand",
+          "when": "view == issuesExplorer",
+          "group": "jql"
+        },
+        {
+          "command": "jira-plugin.favouritesFilters",
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.refresh",
@@ -320,36 +331,45 @@
       "view/item/context": [
         {
           "command": "jira-plugin.changeIssueStatusCommand",
+          "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
           "command": "jira-plugin.issueAddCommentCommand",
+          "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
           "command": "jira-plugin.changeIssueAssigneeCommand",
+          "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
           "command": "jira-plugin.copyJiraSummary",
+          "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
+        },
+        {
+          "command": "jira-plugin.checkoutGitBranch",
+          "group": "2_git",
+          "when": "view == issuesExplorer && viewItem == IssueItem && gitEnabled == 1"
         }
       ]
     }
   },
   "devDependencies": {
     "@types/copy-paste": "^1.1.30",
-    "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.18",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^11.9.5",
     "husky": "^1.3.1",
-    "mocha": "^5.2.0",
-    "prettier": "^1.15.3",
-    "tslint": "^5.11.0",
-    "typescript": "^3.0.1",
-    "vscode": "^1.1.18"
+    "mocha": "^6.0.2",
+    "prettier": "^1.16.4",
+    "tslint": "^5.13.0",
+    "typescript": "^3.3.3333",
+    "vscode": "^1.1.30"
   },
   "dependencies": {
     "copy-paste": "^1.3.0",
-    "jira-connector": "^2.8.0"
+    "jira-connector": "^2.10.0"
   }
 }

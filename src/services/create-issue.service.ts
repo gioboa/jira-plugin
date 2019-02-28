@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { configuration, logger } from '.';
 import openIssueCommand from '../commands/open-issue';
-import { ICreateIssueEpicList, IField, IFieldSchema, IIssue, IIssueType, ILabel } from '../http/api.model';
+import { ICreateIssueEpicList, IField, IFieldSchema, IIssue, IIssueType, ILabel } from './http.model';
 import { CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
 import state from '../store/state';
 

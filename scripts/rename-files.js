@@ -6,27 +6,27 @@ var replace = '';
 
 switch (process.env.TYPE) {
   case '1': {
-    dir = './out/test/setup-configuration';
-    regExp = '.js';
-    replace = '._js';
+    dir = './out/test/utils';
+    regExp = '.test.js';
+    replace = '.test._js';
     break;
   }
   case '2': {
-    dir = './out/test/setup-configuration';
-    regExp = '._js';
-    replace = '.js';
+    dir = './out/test/utils';
+    regExp = '.test._js';
+    replace = '.test.js';
     break;
   }
   case '3': {
     dir = './out/test/tests';
-    regExp = '.js';
-    replace = '._js';
+    regExp = '.test.js';
+    replace = '.test._js';
     break;
   }
   case '4': {
     dir = './out/test/tests';
-    regExp = '._js';
-    replace = '.js';
+    regExp = '.test._js';
+    replace = '.test.js';
     break;
   }
 }

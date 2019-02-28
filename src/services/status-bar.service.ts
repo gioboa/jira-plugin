@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { configuration, utilities } from '.';
-import { IWorkingIssue } from '../http/api.model';
+import { IWorkingIssue } from './http.model';
 import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';
 import state, { incrementStateWorkingIssueTimePerSecond } from '../store/state';
 import ConfigurationService from './configuration.service';
