@@ -264,39 +264,48 @@
       "view/title": [
         {
           "command": "jira-plugin.defaultIssuesCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.allIssuesCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.currentSprintCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.issueByIdCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.issuesByStatusCommand",
-          "when": "view == issuesExplorer"
-        },
-        {
-          "command": "jira-plugin.myIssuesByStatusCommand",
-          "when": "view == issuesExplorer"
-        },
-        {
-          "command": "jira-plugin.favouritesFilters",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.issuesByStatusAssigneeCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.issuesBySummaryCommand",
-          "when": "view == issuesExplorer"
+          "when": "view == issuesExplorer",
+          "group": "jql"
+        },
+        {
+          "command": "jira-plugin.myIssuesByStatusCommand",
+          "when": "view == issuesExplorer",
+          "group": "jql"
+        },
+        {
+          "command": "jira-plugin.favouritesFilters",
+          "when": "view == issuesExplorer",
+          "group": "jql"
         },
         {
           "command": "jira-plugin.refresh",
