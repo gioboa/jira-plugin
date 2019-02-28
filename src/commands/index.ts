@@ -36,6 +36,9 @@ export default {
       // explorer header
       registerCommand('jira-plugin.createIssueCommand', createIssueCommand),
 
+      // explorer group by
+      registerCommand('jira-plugin.changeExplorerGroupBy', selectValues.changeExplorerGroupBy),
+
       // explorer filters
       registerCommand('jira-plugin.refresh', issueSelector(SEARCH_MODE.REFRESH)),
       registerCommand('jira-plugin.defaultIssuesCommand', issueSelector(SEARCH_MODE.DEFAULT)),

@@ -81,3 +81,11 @@ export const BACK_PICK_LABEL = '$(arrow-left) Back';
 
 export const SEARCH_MAX_RESULTS = 1000;
 export const ASSIGNEES_MAX_RESULTS = 1000;
+
+export const GROUP_BY_FIELDS = {
+  STATUS: { label: 'Status', value: 'status' },
+  ASSIGNEE: { label: 'Assignee', value: 'assignee' },
+  TYPE: { label: 'Type', value: 'issuetype' },
+  PRIORITY: { label: 'Priority', value: 'priority' },
+  UPDATED: { label: 'Updated', value: 'updated' }
+};

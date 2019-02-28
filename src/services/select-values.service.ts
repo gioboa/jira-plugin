@@ -1,9 +1,18 @@
 import * as vscode from 'vscode';
-import { configuration, logger, utilities } from '.';
+import { configuration, issuesExplorer, logger, utilities } from '.';
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
-import { BACK_PICK_LABEL, CONFIG, LOADING, NO_WORKING_ISSUE, SEARCH_MAX_RESULTS, SEARCH_MODE, UNASSIGNED } from '../shared/constants';
+import {
+  BACK_PICK_LABEL,
+  CONFIG,
+  GROUP_BY_FIELDS,
+  LOADING,
+  NO_WORKING_ISSUE,
+  SEARCH_MAX_RESULTS,
+  SEARCH_MODE,
+  UNASSIGNED
+} from '../shared/constants';
 import state, { canExecuteJiraAPI, changeStateIssues, verifyCurrentProject } from '../store/state';
 import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from './http.model';
 
@@ -392,5 +401,20 @@ export default class SelectValuesService {
       logger.printErrorMessageInOutputAndShowAlert(err);
     }
     return undefined;
+  }
+
+  public async changeExplorerGroupBy(): Promise<void> {
+    const picks = [];
+    picks.push({ ...GROUP_BY_FIELDS.STATUS });
+    picks.push({ ...GROUP_BY_FIELDS.ASSIGNEE });
+    picks.push({ ...GROUP_BY_FIELDS.TYPE });
+    picks.push({ ...GROUP_BY_FIELDS.PRIORITY });
+    picks.push({ ...GROUP_BY_FIELDS.UPDATED });
+    const selected = await vscode.window.showQuickPick(picks, {
+      placeHolder: `Select Group By field`,
+      matchOnDescription: true
+    });
+    issuesExplorer.setGroupByField(selected || undefined);
+    await vscode.commands.executeCommand('jira-plugin.refresh');
   }
 }

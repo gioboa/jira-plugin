@@ -167,6 +167,11 @@
         "category": "Jira-plugin"
       },
       {
+        "command": "jira-plugin.changeExplorerGroupBy",
+        "title": "Change Group by",
+        "category": "Jira-plugin"
+      },
+      {
         "command": "jira-plugin.defaultIssuesCommand",
         "title": "0 - Default JQL Search",
         "category": "Jira-plugin"
@@ -262,6 +267,11 @@
     ],
     "menus": {
       "view/title": [
+        {
+          "command": "jira-plugin.changeExplorerGroupBy",
+          "when": "view == issuesExplorer",
+          "group": "group_by"
+        },
         {
           "command": "jira-plugin.defaultIssuesCommand",
           "when": "view == issuesExplorer",
