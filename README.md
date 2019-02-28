@@ -77,19 +77,19 @@ The extension store credentials in VS Code settings.<br><br>
   Additional custom statuses, used for manage some Jira wrong behavior
 - **Base Url** <br>
   Your Jira base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)
-- **Default JQL Search**
+- **Default JQL Search** <br>
   Here you can define your default/custom JQL search (n.b: WORKING_PROJECT is the placeholder for the current working project)
-- **Enable Check Notifications**
+- **Enable Check Notifications** <br>
   You can manage your Jira **unread** notifications inside VsCode notification center (n.b: only new Jira versions has notifications)
 - **Enable Working Issue** <br>
   Enable working issue functionality in status bar
 - **Git Integration** <br>
   Automatically watch for branch switching and select appropriate project and working issue
-- **Number Of Issues In List**
+- **Number Of Issues In List** <br>
   Number of issues to show in list. n.b: If you define high numbers the research can be slow
-- **Projects To Hide**
+- **Projects To Hide** <br>
   Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)
-- **StrictSSL param**
+- **StrictSSL param** <br>
   Set strictSSL param value for all request
 - **Tracking Time Mode** <br>
   Configure how the plugin tracking time for the working issue
@@ -122,10 +122,11 @@ values:<br>
 
 - **Create new ticket**<br>
   With this command you can create new ticket.<br><br>
-
 - **Insert Working Issue Key+Summary comment**<br>
   With this command you can insert Working Issue Key+Summary comment at the current position in the code.<br>
   `You can set your custom keyboard shortcut to retrieve this command`<br><br>
+- **Group By**<br>
+  You can define how visualize issues inside the explorer.<br><br>
 
 ### Filters
 
@@ -168,6 +169,8 @@ values:<br>
   With this command you can change an issue status.<br><br>
 - **Copy Jira Key+Summary**<br>
   With this command you can copy to clipboard Jira Key+Summary.<br><br>
+- **Checkout or create git branch**<br>
+  Whit this command you can manage git from explorer.<br><br>
 
 ## Status bar
 
