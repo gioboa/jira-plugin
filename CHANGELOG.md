@@ -1,3 +1,17 @@
+## 0.15.0
+
+### Features
+
+- checkout or create git branch
+- change explorer 'Group By' field
+- group issue and subtasks in explorer
+- added projectsToHide setting
+- added strictSSL setting
+
+### Breaking change
+
+- remove additionalCertificate setting
+
 ## 0.14.1
 
 ### Bug Fixes

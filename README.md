@@ -4,7 +4,7 @@
 
 - [View Jira issues](#explorer)
 - Create new Jira issue
-- Change explorer issues 'Group By' field
+- Change explorer 'Group By' field
 - [Search/Filter Jira issues](#filters)
   - All issues
   - Current sprint issues
@@ -118,9 +118,7 @@ values:<br>
 
 - In the explorer you can use all these extension command
 
-![Explorer_1](images/readme/explorer_1.png)
-
-![Explorer_2](images/readme/explorer_2.png)
+![Explorer](images/readme/explorer.png)
 
 ## Explorer commands
 

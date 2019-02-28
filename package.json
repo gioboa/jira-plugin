@@ -2,7 +2,7 @@
   "name": "jira-plugin",
   "displayName": "Jira Plugin",
   "description": "Jira integration for vscode",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "publisher": "gioboa",
   "icon": "images/icons/icon.png",
   "galleryBanner": {
@@ -168,7 +168,7 @@
       },
       {
         "command": "jira-plugin.changeExplorerGroupBy",
-        "title": "Change Group by",
+        "title": "Change explorer 'Group By' field",
         "category": "Jira-plugin"
       },
       {
