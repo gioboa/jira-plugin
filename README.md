@@ -19,6 +19,7 @@
 - Change Jira issue assignee
 - Add comment to Jira issue
 - Copy to clipboard Jira Key+Summary
+- Checkout or create git branch
 - [Set current working project](#working-project)
 - [Set current working issue](#working-issue)
 - [Trace the time spended on the current working issue](#working-issue)
