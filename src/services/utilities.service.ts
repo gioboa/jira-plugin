@@ -97,17 +97,4 @@ export default class UtilitiesService {
     }
     return projects;
   }
-
-  // exclude subtask issues are allready inside parent issue
-  excludeSubtasks(issues: IIssue[]): IIssue[] {
-    const subtasks: string[] = [];
-    issues.forEach((issue: IIssue) => {
-      if (!!issue.fields.subtasks) {
-        for (let subtask of issue.fields.subtasks) {
-          subtasks.push(subtask.key);
-        }
-      }
-    });
-    return issues.filter((issue: IIssue) => !subtasks.includes(issue.key));
-  }
 }

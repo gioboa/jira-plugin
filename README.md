@@ -87,6 +87,8 @@ The extension store credentials in VS Code settings.<br><br>
   Enable working issue functionality in status bar
 - **Git Integration** <br>
   Automatically watch for branch switching and select appropriate project and working issue
+- **Group Task And Subtasks** <br>
+  Group task and subtasks into explorer
 - **Number Of Issues In List** <br>
   Number of issues to show in list. n.b: If you define high numbers the research can be slow
 - **Projects To Hide** <br>

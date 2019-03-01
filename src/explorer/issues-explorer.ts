@@ -74,43 +74,85 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
     return `${field}: ${label}`;
   }
 
+  // exclude subtask issues are allready inside parent issue
+  groupTaskAndSubtasks(issues: IIssue[]): IIssue[] {
+    const issueKeyToRemove: string[] = [];
+    issues.forEach((issue: any) => {
+      if (!!issue.fields.subtasks && !!issue.fields.subtasks.length) {
+        const subtasksKeysToRemove: string[] = [];
+        // check if subtasks has same field group value
+        for (let subtask of issue.fields.subtasks) {
+          const issuesElement = issues.find(issue => issue.key === subtask.key);
+          // if isn't in issue list in not filter compliant
+          if (!issuesElement) {
+            subtasksKeysToRemove.push(subtask.key);
+          } else {
+            subtask = issuesElement;
+            if (
+              this.descPropertyFromField(issue.fields[this.groupByField.value]) ===
+              this.descPropertyFromField(subtask.fields[this.groupByField.value])
+            ) {
+              issueKeyToRemove.push(subtask.key);
+            } else {
+              subtasksKeysToRemove.push(subtask.key);
+            }
+          }
+        }
+        // if subtask has different group field value I will delete from subtasks list and I will change issue label
+        issue.fields.subtasks = issue.fields.subtasks.filter((subtask: IIssue) => !subtasksKeysToRemove.includes(subtask.key));
+        for (let subtaskKey of subtasksKeysToRemove) {
+          const element = issues.find(issue => issue.key === subtaskKey);
+          if (element) {
+            element.fields.summary += ` - Parent Task: ${issue.key}`;
+          }
+        }
+      }
+    });
+    return issues.filter((issue: any) => !issueKeyToRemove.includes(issue.key));
+  }
+
   async getChildren(element?: IssueItem): Promise<any[]> {
     // issue
     if (!element) {
       let project = await configuration.get(CONFIG.WORKING_PROJECT);
-      const issues = state.issues;
+      let issues = state.issues;
       // generate all the item from issues saved in global state
       if (issues.length > 0) {
-        const items: any[] = issues.map(
-          issue =>
-            new IssueItem(issue, {
-              command: 'jira-plugin.openIssueCommand',
-              title: 'Open issue in the browser',
-              arguments: [`${issue.key}`]
-            })
-        );
-
-        if (items.some(item => !item.issue.fields.hasOwnProperty(this.groupByField.value))) {
+        if (issues.some(issue => !issue.fields.hasOwnProperty(this.groupByField.value))) {
           logger.printErrorMessageInOutputAndShowAlert(
             `Invalid grouping field: ${this.groupByField.value} - fallback is ${this.fallbackGroupByField.label}`
           );
           // fallback to status if field is not present
           this.groupByField = this.fallbackGroupByField;
         }
-        items.sort((itemA: IssueItem, itemB: IssueItem) => {
-          const descA = this.descPropertyFromField((<any>itemA.issue.fields)[this.groupByField.value], true);
-          const descB = this.descPropertyFromField((<any>itemB.issue.fields)[this.groupByField.value], true);
-          if (this.groupByField.value === GROUP_BY_FIELDS.UPDATED.value) {
-            return descA < descB ? 1 : descA > descB ? -1 : 0;
-          }
-          return descA < descB ? -1 : descA > descB ? 1 : 0;
-        });
+        if (configuration.get(CONFIG.GROUP_TASK_AND_SUBTASKS)) {
+          // exclude subtask issues are allready inside parent issue
+          issues = this.groupTaskAndSubtasks(issues);
+        }
+
+        const items: IssueItem[] = issues
+          .map(
+            issue =>
+              new IssueItem(issue, {
+                command: 'jira-plugin.openIssueCommand',
+                title: 'Open issue in the browser',
+                arguments: [`${issue.key}`]
+              })
+          )
+          .sort((itemA: IssueItem, itemB: IssueItem) => {
+            const descA = this.descPropertyFromField((<any>itemA.issue.fields)[this.groupByField.value], true);
+            const descB = this.descPropertyFromField((<any>itemB.issue.fields)[this.groupByField.value], true);
+            if (this.groupByField.value === GROUP_BY_FIELDS.UPDATED.value) {
+              return descA < descB ? 1 : descA > descB ? -1 : 0;
+            }
+            return descA < descB ? -1 : descA > descB ? 1 : 0;
+          });
         // add in the firt possition 'filter-info-item' and then the 'divider-item'
-        items.unshift(new FilterInfoItem(project, state.currentFilter, issues.length), new DividerItem('------'));
+        items.unshift(<any>new FilterInfoItem(project, state.currentFilter, issues.length), <any>new DividerItem('------'));
         // loop items and insert a separator when field value change
         this.addSeparators(items, this.groupByField);
         if (issues.length === configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST)) {
-          items.push(new DividerItem('------'), new LimitInfoItem());
+          items.push(<any>new DividerItem('------'), <any>new LimitInfoItem());
         }
 
         return items;

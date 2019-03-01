@@ -2,7 +2,7 @@
   "name": "jira-plugin",
   "displayName": "Jira Plugin",
   "description": "Jira integration for vscode",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "publisher": "gioboa",
   "icon": "images/icons/icon.png",
   "galleryBanner": {
@@ -109,6 +109,11 @@
         "jira-plugin.gitIntegration": {
           "type": "boolean",
           "description": "Automatically watch for branch switching and select appropriate project and working issue",
+          "default": false
+        },
+        "jira-plugin.groupTaskAndSubtasks": {
+          "type": "boolean",
+          "description": "Group task and subtasks into explorer",
           "default": false
         },
         "jira-plugin.numberOfIssuesInList": {
