@@ -16,7 +16,8 @@ export const CONFIG = {
   DEFAULT_JQL_SEARCH: 'defaultJqlSearch',
   CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications',
   STRICT_SSL: 'strictSSL',
-  PROJECTS_TO_HIDE: 'projectsToHide'
+  PROJECTS_TO_HIDE: 'projectsToHide',
+  GROUP_TASK_AND_SUBTASKS: 'groupTaskAndSubtasks'
 };
 
 // all the tracking time mode

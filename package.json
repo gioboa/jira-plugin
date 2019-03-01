@@ -111,6 +111,11 @@
           "description": "Automatically watch for branch switching and select appropriate project and working issue",
           "default": false
         },
+        "jira-plugin.groupTaskAndSubtasks": {
+          "type": "boolean",
+          "description": "Group task and subtasks into explorer",
+          "default": false
+        },
         "jira-plugin.numberOfIssuesInList": {
           "type": "integer",
           "description": "Number of issues to show in list. n.b: If you define high numbers the research can be slow",
