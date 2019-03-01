@@ -1,3 +1,10 @@
+## 0.15.1
+
+### Bug Fixes
+
+- solve issue in subtasks logic
+- added groupTaskAndSubtasks setting for backward compatibility
+
 ## 0.15.0
 
 ### Features
