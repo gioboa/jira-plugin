@@ -166,10 +166,6 @@ export default class SelectValuesService {
             if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
               // exclude issues with project key different from current working project
               searchResult.issues = searchResult.issues.filter((issue: IIssue) => (issue.fields.project.key || '') === project);
-              if (configuration.get(CONFIG.GROUP_TASK_AND_SUBTASKS)) {
-                // exclude subtask issues are allready inside parent issue
-                searchResult.issues = utilities.excludeSubtasks(searchResult.issues);
-              }
               changeStateIssues(filter, jql, searchResult.issues);
             } else {
               changeStateIssues(filter, jql, []);
