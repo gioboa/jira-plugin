@@ -1,4 +1,3 @@
-const copyPaste = require('copy-paste');
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { configuration, logger } from '.';
@@ -6,7 +5,7 @@ import { IssueItem } from '../explorer/item/issue-item';
 import { ACTIONS, CONFIG, STATUS_ICONS } from '../shared/constants';
 import { IssueLinkProvider } from '../shared/document-link-provider';
 import state from '../store/state';
-import { IIssue, IProject } from './http.model';
+import { IProject } from './http.model';
 
 export default class UtilitiesService {
   // generate icon + status
@@ -63,7 +62,7 @@ export default class UtilitiesService {
 
   copyToClipboard(issue: IssueItem) {
     if (issue) {
-      copyPaste.copy(issue.label);
+      vscode.env.clipboard.writeText(issue.label || '');
       vscode.window.showInformationMessage('Jira Plugin - Copied to clipboard');
     } else {
       logger.printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
