@@ -164,15 +164,17 @@ export default class SelectValuesService {
             logger.jiraPluginDebugLog(`issues`, JSON.stringify(searchResult));
             if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
               // exclude issues with project key different from current working project
-              searchResult.issues = searchResult.issues.filter((issue: IIssue) => (issue.fields.project.key || '') === project);
+              searchResult.issues = searchResult.issues.filter(
+                (issue: IIssue) => (issue.fields.project.key || '') === state.workingProject
+              );
               changeStateIssues(filter, jql, searchResult.issues);
             } else {
               changeStateIssues(filter, jql, []);
-              vscode.window.showInformationMessage(`No issues found for ${project} project`);
+              vscode.window.showInformationMessage(`No issues found for ${state.workingProject} project`);
             }
           } else {
             changeStateIssues('', '', []);
-            throw new Error(`Wrong parameter. No issues found for ${project} project.`);
+            throw new Error(`Wrong parameter. No issues found for ${state.workingProject} project.`);
           }
         } else {
           changeStateIssues('', '', []);
@@ -228,7 +230,7 @@ export default class SelectValuesService {
               });
               return selected ? selected.pickValue : undefined;
             } else {
-              vscode.window.showInformationMessage(`No ${filter} issues found for your user in ${project} project`);
+              vscode.window.showInformationMessage(`No ${filter} issues found for your user in ${state.workingProject} project`);
               // limit case, there is a working issue selected but the user has no more ${filter} issue. i.e: change of status of the working issue
               if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
                 const picks = [new NoWorkingIssuePick()];

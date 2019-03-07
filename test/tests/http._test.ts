@@ -20,6 +20,7 @@ suite('Jira API', () => {
     issues: [],
     currentFilter: LOADING.text,
     currentJQL: '',
+    workingProject: '',
     workingIssue: {
       issue: new NoWorkingIssuePick().pickValue,
       trackingTime: 0,
