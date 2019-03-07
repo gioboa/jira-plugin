@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import { configuration, utilities } from '.';
-import { IWorkingIssue } from './http.model';
 import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';
 import state, { incrementStateWorkingIssueTimePerSecond } from '../store/state';
 import ConfigurationService from './configuration.service';
+import { IWorkingIssue } from './http.model';
 
 export default class StatusBarService {
   private workingProjectItem: vscode.StatusBarItem;
@@ -20,9 +20,6 @@ export default class StatusBarService {
   public async updateWorkingProjectItem(project: string): Promise<void> {
     if (!state.jira) {
       return;
-    }
-    if (!project) {
-      project = await configuration.get(CONFIG.WORKING_PROJECT);
     }
     this.workingProjectItem.tooltip = 'Set working project';
     this.workingProjectItem.command = 'jira-plugin.setWorkingProjectCommand';

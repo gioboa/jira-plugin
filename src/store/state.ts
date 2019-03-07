@@ -15,6 +15,7 @@ export interface IState {
   issues: IIssue[];
   currentFilter: string;
   currentJQL: string;
+  workingProject: string;
   workingIssue: IWorkingIssue;
 }
 
@@ -29,6 +30,7 @@ const state: IState = {
   issues: [],
   currentFilter: LOADING.text,
   currentJQL: '',
+  workingProject: '',
   workingIssue: {
     issue: new NoWorkingIssuePick().pickValue,
     trackingTime: 0,
@@ -48,19 +50,22 @@ export const connectToJira = async (): Promise<void> => {
 
     state.projects = utilities.hideProjects(await state.jira.getProjects());
     utilities.createDocumentLinkProvider(state.projects);
-    statusBar.updateWorkingProjectItem('');
 
     const project = configuration.get(CONFIG.WORKING_PROJECT);
+    statusBar.updateWorkingProjectItem(project);
     // refresh Jira explorer list
     if (project) {
+      state.workingProject = project;
       // start notification service
       notifications.startNotificationsWatcher();
       await vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand');
     } else {
       vscode.window.showWarningMessage("Working project isn't set.");
     }
+    
   } catch (err) {
     configuration.set(CONFIG.WORKING_PROJECT, '');
+    state.workingProject = '';
     setTimeout(() => {
       statusBar.updateWorkingProjectItem('');
     }, 1000);
@@ -78,7 +83,8 @@ export const verifyCurrentProject = (project: string | undefined): boolean => {
 };
 
 export const changeStateProject = (project: string): void => {
-  if (configuration.get(CONFIG.WORKING_PROJECT) !== project) {
+  if (state.workingProject !== project) {
+    state.workingProject = project;
     configuration.set(CONFIG.WORKING_PROJECT, project);
     // update project item in the status bar
     statusBar.updateWorkingProjectItem(project);

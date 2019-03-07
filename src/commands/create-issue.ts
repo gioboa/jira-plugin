@@ -1,22 +1,20 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import { configuration, createIssue, logger, selectValues } from '../services';
+import { createIssue, logger, selectValues } from '../services';
 import { IPickValue } from '../services/configuration.model';
-import { CONFIG } from '../shared/constants';
 import state, { verifyCurrentProject } from '../store/state';
 
 export default async function createIssueCommand(issueItem: IssueItem): Promise<void> {
-  const project = configuration.get(CONFIG.WORKING_PROJECT);
-  if (verifyCurrentProject(project)) {
+  if (verifyCurrentProject(state.workingProject)) {
     try {
       // first of first we decide the type of the ticket
-      const availableTypes = await state.jira.getAllIssueTypesWithFields(project);
+      const availableTypes = await state.jira.getAllIssueTypesWithFields(state.workingProject);
       if (!!availableTypes) {
         // here the user select which type of issue create
         createIssue.init(await selectValues.selectIssueType(false, availableTypes));
         if (!!createIssue.issueTypeSelected) {
           // store project
-          createIssue.populateNewIssue({ project });
+          createIssue.populateNewIssue({ project: state.workingProject });
           // store issueType and project in payload
           // user cannot modify the values
           createIssue.populateRequest({
@@ -24,7 +22,7 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
               id: createIssue.issueTypeSelected.id
             },
             project: {
-              key: project
+              key: state.workingProject
             }
           });
           let loopStatus = createIssue.NEW_ISSUE_STATUS.CONTINUE;
