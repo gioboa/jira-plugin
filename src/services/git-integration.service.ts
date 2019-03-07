@@ -1,8 +1,7 @@
 import { EventEmitter } from 'events';
 import * as vscode from 'vscode';
-import { gitIntegration, logger, store } from '.';
+import { configuration, gitIntegration, logger, store } from '.';
 import { ACTIONS, CONFIG } from '../shared/constants';
-import ConfigurationService from './configuration.service';
 import { IIssue } from './http.model';
 
 /**
@@ -49,10 +48,10 @@ export default class GitIntegrationService {
   private gitExtension: vscode.Extension<any>;
 
   get isGitIntegrationEnabled(): boolean {
-    return !!this.configuration.get(CONFIG.GIT_INTEGRATION_ENABLED);
+    return !!configuration.get(CONFIG.GIT_INTEGRATION_ENABLED);
   }
 
-  constructor(private configuration: ConfigurationService) {
+  constructor() {
     this.gitExtension = vscode.extensions.getExtension('vscode.git') || (undefined as any);
     vscode.commands.executeCommand('setContext', 'gitEnabled', '0');
     if (!!this.gitExtension) {

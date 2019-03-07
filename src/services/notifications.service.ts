@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
-import { logger, store } from '.';
+import { configuration, logger, store } from '.';
 import openIssueCommand from '../commands/open-issue';
 import { ACTIONS, CONFIG } from '../shared/constants';
-import ConfigurationService from './configuration.service';
 import { INotification, INotifications } from './http.model';
 
 export default class NotificationService {
@@ -10,10 +9,8 @@ export default class NotificationService {
   private showedIds: string[] = [];
 
   get isEnabled(): boolean {
-    return !!this.configuration.get(CONFIG.CHECK_FOR_NOTIFICATIONS_ENABLE);
+    return !!configuration.get(CONFIG.CHECK_FOR_NOTIFICATIONS_ENABLE);
   }
-
-  constructor(private configuration: ConfigurationService) {}
 
   public async startNotificationsWatcher(): Promise<void> {
     if (this.isEnabled) {

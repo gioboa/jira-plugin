@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { configuration, utilities, store } from '.';
+import { configuration, store, utilities } from '.';
 import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';
-import ConfigurationService from './configuration.service';
 import { IWorkingIssue } from './http.model';
 
 export default class StatusBarService {
@@ -9,7 +8,7 @@ export default class StatusBarService {
   private workingIssueItem: vscode.StatusBarItem;
   private intervalId: NodeJS.Timer | undefined;
   private awayTimeout = 30 * 60; // Default to 30 minutes
-  constructor(configuration: ConfigurationService) {
+  constructor() {
     this.workingIssueItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     this.workingProjectItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 200);
     this.awayTimeout = configuration.get(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) * 60;
