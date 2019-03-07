@@ -1,3 +1,10 @@
+## 0.15.2
+
+### Bug Fixes
+
+- removed copy-paste lib and use new clipboard API
+- solved issue in application state when there are multiple VsCode instances
+
 ## 0.15.1
 
 ### Bug Fixes
