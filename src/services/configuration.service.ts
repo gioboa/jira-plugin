@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { logger, store } from '.';
+import { store } from '.';
 import {
   CONFIG,
   CONFIG_COUNTER,
@@ -12,7 +12,8 @@ import { IConfiguration } from './configuration.model';
 import { IWorkingIssue } from './http.model';
 
 export default class ConfigurationService {
-  private config: IConfiguration = { ...vscode.workspace.getConfiguration(CONFIG_NAME) };
+  // all the plugin settings
+  private settings: IConfiguration = { ...vscode.workspace.getConfiguration(CONFIG_NAME) };
 
   public isValid(): boolean {
     if (!this.settings) {
@@ -22,17 +23,6 @@ export default class ConfigurationService {
     const { username, password } = this.credentials;
 
     return !!(baseUrl && username && password);
-  }
-
-  // all the plugin settings
-  private get settings(): IConfiguration {
-    if (!this.config) {
-      this.config = vscode.workspace.getConfiguration(CONFIG_NAME);
-      if (!this.config) {
-        logger.printErrorMessageInOutputAndShowAlert('No settings found. Probably an error in VsCode');
-      }
-    }
-    return this.config;
   }
 
   public get credentials(): { username: string; password: string } {
@@ -48,7 +38,7 @@ export default class ConfigurationService {
     if (!this.settings) {
       return fallbackValue;
     }
-    return this.settings.get(entry, fallbackValue);
+    return this.settings[entry] || fallbackValue;
   }
 
   // used for set only one setting
@@ -57,7 +47,9 @@ export default class ConfigurationService {
     if (entry === CONFIG.BASE_URL && typeof value === 'string') {
       value = value.replace(/\/$/, '');
     }
-    (<any>this.config)[entry] = value;
+    // update settings object - Fix issue #97
+    (<any>this.settings)[entry] = value;
+    // update VsCode settings
     return this.settings && this.settings.update(entry, value, true);
   }
 

@@ -67,16 +67,18 @@ export default class StoreService {
   }
 
   public changeStateProject(project: string): void {
-    if (configuration.get(CONFIG.WORKING_PROJECT) !== project) {
-      configuration.set(CONFIG.WORKING_PROJECT, project);
-      // update project item in the status bar
-      statusBar.updateWorkingProjectItem(project);
-      // loading in Jira explorer
-      this.changeStateIssues(LOADING.text, '', []);
-      // start notification service
-      notifications.startNotificationsWatcher();
-      // launch search for the new project
-      setTimeout(() => vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand'), 1000);
+    if (!!project) {
+      if (configuration.get(CONFIG.WORKING_PROJECT) !== project) {
+        configuration.set(CONFIG.WORKING_PROJECT, project);
+        // update project item in the status bar
+        statusBar.updateWorkingProjectItem(project);
+        // loading in Jira explorer
+        this.changeStateIssues(LOADING.text, '', []);
+        // start notification service
+        notifications.startNotificationsWatcher();
+        // launch search for the new project
+        setTimeout(() => vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand'), 1000);
+      }
     }
   }
 
