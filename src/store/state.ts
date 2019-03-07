@@ -13,8 +13,7 @@ export interface IState {
   statuses: IStatus[];
   projects: IProject[];
   issues: IIssue[];
-  currentFilter: string;
-  currentJQL: string;
+  currentSearch: { filter: string; jql: string };
   workingProject: string;
   workingIssue: IWorkingIssue;
 }
@@ -28,8 +27,10 @@ const state: IState = {
   statuses: [],
   projects: [],
   issues: [],
-  currentFilter: LOADING.text,
-  currentJQL: '',
+  currentSearch: {
+    filter: LOADING.text,
+    jql: ''
+  },
   workingProject: '',
   workingIssue: {
     issue: new NoWorkingIssuePick().pickValue,
@@ -62,7 +63,6 @@ export const connectToJira = async (): Promise<void> => {
     } else {
       vscode.window.showWarningMessage("Working project isn't set.");
     }
-    
   } catch (err) {
     configuration.set(CONFIG.WORKING_PROJECT, '');
     state.workingProject = '';
@@ -98,8 +98,8 @@ export const changeStateProject = (project: string): void => {
 };
 
 export const changeStateIssues = (filter: string, jql: string, issues: IIssue[]): void => {
-  state.currentFilter = filter;
-  state.currentJQL = jql;
+  state.currentSearch.filter = filter;
+  state.currentSearch.jql = jql;
   state.issues = issues;
   issuesExplorer.refresh();
 };

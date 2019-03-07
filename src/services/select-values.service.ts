@@ -127,7 +127,7 @@ export default class SelectValuesService {
         break;
       }
       case SEARCH_MODE.REFRESH: {
-        return [state.currentFilter, state.currentJQL];
+        return [state.currentSearch.filter, state.currentSearch.jql];
       }
       case SEARCH_MODE.MY_WORKING_ISSUES: {
         const statuses = configuration.workingIssueStatuses();

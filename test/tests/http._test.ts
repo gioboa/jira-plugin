@@ -18,8 +18,10 @@ suite('Jira API', () => {
     statuses: [],
     projects: [],
     issues: [],
-    currentFilter: LOADING.text,
-    currentJQL: '',
+    currentSearch: {
+      filter: LOADING.text,
+      jql: ''
+    },
     workingProject: '',
     workingIssue: {
       issue: new NoWorkingIssuePick().pickValue,
