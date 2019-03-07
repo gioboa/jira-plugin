@@ -2,11 +2,12 @@ import * as assert from 'assert';
 import ConfigurationService from '../../src/services/configuration.service';
 import { IWorkingIssue } from '../../src/services/http.model';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS } from '../../src/shared/constants';
-import state from '../../src/store/state';
 import { backupSettings, restoreSettings } from '../utils/utils';
+import StoreService from '../../src/services/store.service';
 
 suite('Configuration', () => {
   const configurationService = new ConfigurationService();
+  const store = new StoreService();
   const tests = [
     {
       title: `${CONFIG.BASE_URL} 1`,
@@ -123,7 +124,7 @@ suite('Configuration', () => {
   });
 
   test(`WorkingIssueStatuses in statuses list`, async () => {
-    state.statuses = [
+    store.state.statuses = [
       {
         description: 'In Progress',
         name: 'In Progress'
@@ -139,7 +140,7 @@ suite('Configuration', () => {
   });
 
   test(`WorkingIssueStatuses only one in statuses list`, async () => {
-    state.statuses = [
+    store.state.statuses = [
       {
         description: 'In Progress',
         name: 'In Progress'
@@ -155,7 +156,7 @@ suite('Configuration', () => {
   });
 
   test(`WorkingIssueStatuses not in statuses list`, async () => {
-    state.statuses = [
+    store.state.statuses = [
       {
         description: 'In Progress',
         name: 'In Progress'

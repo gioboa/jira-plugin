@@ -1,10 +1,9 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { configuration, logger } from '.';
+import { configuration, logger, store } from '.';
 import { IssueItem } from '../explorer/item/issue-item';
 import { ACTIONS, CONFIG, STATUS_ICONS } from '../shared/constants';
 import { IssueLinkProvider } from '../shared/document-link-provider';
-import state from '../store/state';
 import { IProject } from './http.model';
 
 export default class UtilitiesService {
@@ -71,9 +70,9 @@ export default class UtilitiesService {
 
   insertWorkingIssueComment() {
     const editor = vscode.window.activeTextEditor;
-    if (editor && state.workingIssue) {
+    if (editor && store.state.workingIssue) {
       editor.edit(edit => {
-        const workingIssue = state.workingIssue;
+        const workingIssue = store.state.workingIssue;
         edit.insert(editor.selection.active, `// ${workingIssue.issue.key} - ${workingIssue.issue.fields.summary}`);
       });
     } else {
@@ -82,10 +81,10 @@ export default class UtilitiesService {
   }
 
   createDocumentLinkProvider(projects: IProject[]) {
-    if (!!state.documentLinkDisposable) {
-      state.documentLinkDisposable.dispose();
+    if (!!store.state.documentLinkDisposable) {
+      store.state.documentLinkDisposable.dispose();
     }
-    state.documentLinkDisposable = vscode.languages.registerDocumentLinkProvider({ scheme: '*' }, new IssueLinkProvider(projects));
+    store.state.documentLinkDisposable = vscode.languages.registerDocumentLinkProvider({ scheme: '*' }, new IssueLinkProvider(projects));
   }
 
   hideProjects(projects: IProject[]): IProject[] {

@@ -1,10 +1,9 @@
 import * as vscode from 'vscode';
-import { logger } from '.';
+import { logger, store } from '.';
 import openIssueCommand from '../commands/open-issue';
-import { INotification, INotifications } from './http.model';
 import { ACTIONS, CONFIG } from '../shared/constants';
-import state from '../store/state';
 import ConfigurationService from './configuration.service';
+import { INotification, INotifications } from './http.model';
 
 export default class NotificationService {
   private notifications: INotification[] = [];
@@ -22,7 +21,7 @@ export default class NotificationService {
         let goOn = true;
         let lastId = '';
         while (goOn) {
-          const response: INotifications = await state.jira.getNotifications(lastId);
+          const response: INotifications = await store.state.jira.getNotifications(lastId);
           // check if it's enmpty
           if (!!response.data && !!response.data.length) {
             for (let notification of response.data) {
@@ -95,7 +94,7 @@ export default class NotificationService {
                     this.showedIds = this.showedIds.filter(id => id !== notification.id);
                     break;
                   case ACTIONS.MARK_AS_READ:
-                    const response = await state.jira.markNotificationsAsReadUnread({
+                    const response = await store.state.jira.markNotificationsAsReadUnread({
                       ids: [notification.id],
                       toState: 'READ'
                     });

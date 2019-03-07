@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { configuration, utilities } from '.';
+import { configuration, utilities, store } from '.';
 import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';
-import state, { incrementStateWorkingIssueTimePerSecond } from '../store/state';
 import ConfigurationService from './configuration.service';
 import { IWorkingIssue } from './http.model';
 
@@ -18,7 +17,7 @@ export default class StatusBarService {
 
   // setup working project item
   public async updateWorkingProjectItem(project: string): Promise<void> {
-    if (!state.jira) {
+    if (!store.state.jira) {
       return;
     }
     this.workingProjectItem.tooltip = 'Set working project';
@@ -66,7 +65,7 @@ export default class StatusBarService {
     }
 
     this.clearWorkingIssueInterval();
-    if (state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
+    if (store.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
       if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER) {
         this.startWorkingIssueInterval();
       }
@@ -74,10 +73,10 @@ export default class StatusBarService {
       // if user select NO_WORKING_ISSUE clear the stored working issue
       configuration.setGlobalWorkingIssue(undefined);
     }
-    this.workingIssueItem.tooltip = this.workingIssueItemTooltip(state.workingIssue);
+    this.workingIssueItem.tooltip = this.workingIssueItemTooltip(store.state.workingIssue);
     this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';
-    state.workingIssue.awayTime = 0;
-    this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
+    store.state.workingIssue.awayTime = 0;
+    this.workingIssueItem.text = this.workingIssueItemText(store.state.workingIssue);
     this.workingIssueItem.show();
   }
 
@@ -94,27 +93,27 @@ export default class StatusBarService {
         if (configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
           // If we are coming back from an away period catch up our logging time
           // If the away time was > awayTimeout, workingIssue.awayTime will be -1, so we won't log the away time.
-          if (state.workingIssue.awayTime && state.workingIssue.awayTime > 0) {
-            state.workingIssue.trackingTime += state.workingIssue.awayTime;
+          if (store.state.workingIssue.awayTime && store.state.workingIssue.awayTime > 0) {
+            store.state.workingIssue.trackingTime += store.state.workingIssue.awayTime;
           }
           // Clear the away timer
-          state.workingIssue.awayTime = 0;
+          store.state.workingIssue.awayTime = 0;
         }
         // Update as normal
-        incrementStateWorkingIssueTimePerSecond();
+        store.incrementStateWorkingIssueTimePerSecond();
       } else if (configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
         // If we are away from the Window capture the time, if it's less than our awayTimeout
-        if (state.workingIssue.awayTime >= 0) {
-          if (this.awayTimeout - state.workingIssue.awayTime > 0) {
-            state.workingIssue.awayTime++;
+        if (store.state.workingIssue.awayTime >= 0) {
+          if (this.awayTimeout - store.state.workingIssue.awayTime > 0) {
+            store.state.workingIssue.awayTime++;
           } else {
             // We've been away longer than the away timeout, we are probably working on something else
             // we set the away timer to -1 to disable it until the next away period
-            state.workingIssue.awayTime = -1;
+            store.state.workingIssue.awayTime = -1;
           }
         }
       }
-      this.workingIssueItem.text = this.workingIssueItemText(state.workingIssue);
+      this.workingIssueItem.text = this.workingIssueItemText(store.state.workingIssue);
     }, 1000);
   }
 

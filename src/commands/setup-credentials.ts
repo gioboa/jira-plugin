@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { configuration } from '../services';
+import { configuration, store } from '../services';
 import { CONFIG } from '../shared/constants';
-import { connectToJira } from '../store/state';
 
 export default async function setupCredentials(): Promise<void> {
   const baseUrl = configuration.get(CONFIG.BASE_URL);
@@ -41,5 +40,5 @@ export default async function setupCredentials(): Promise<void> {
     })
   );
 
-  await connectToJira();
+  await store.connectToJira();
 }

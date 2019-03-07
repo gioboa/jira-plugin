@@ -1,6 +1,5 @@
-import { selectValues } from '../services';
-import { changeStateProject } from '../store/state';
+import { selectValues, store } from '../services';
 
 export default async function setWorkingProjectCommand(): Promise<void> {
-  changeStateProject(await selectValues.selectProject());
+  store.changeStateProject(await selectValues.selectProject());
 }

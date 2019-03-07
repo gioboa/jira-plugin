@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import { logger } from '.';
-import { IWorkingIssue } from './http.model';
+import { logger, store } from '.';
 import {
   CONFIG,
   CONFIG_COUNTER,
@@ -9,15 +8,14 @@ import {
   CREDENTIALS_SEPARATOR,
   DEFAULT_WORKING_ISSUE_STATUS
 } from '../shared/constants';
-import state from '../store/state';
 import { IConfiguration } from './configuration.model';
+import { IWorkingIssue } from './http.model';
 
 export default class ConfigurationService {
   public isValid(): boolean {
     if (!this.settings) {
       return false;
     }
-
     const { baseUrl } = this.settings;
     const { username, password } = this.credentials;
 
@@ -25,7 +23,7 @@ export default class ConfigurationService {
   }
 
   // all the plugin settings
-  private get settings(): IConfiguration | undefined {
+  public get settings(): IConfiguration | undefined {
     const config: IConfiguration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
     if (!config) {
       logger.printErrorMessageInOutputAndShowAlert('No settings found. Probably an error in vscode');
@@ -46,7 +44,6 @@ export default class ConfigurationService {
     if (!this.settings) {
       return fallbackValue;
     }
-
     return this.settings.get(entry, fallbackValue);
   }
 
@@ -56,7 +53,6 @@ export default class ConfigurationService {
     if (entry === CONFIG.BASE_URL && typeof value === 'string') {
       value = value.replace(/\/$/, '');
     }
-
     return this.settings && this.settings.update(entry, value, true);
   }
 
@@ -70,7 +66,7 @@ export default class ConfigurationService {
 
   // get inside VS Code local storage the settings
   public get globalState(): vscode.Memento {
-    return state.context.globalState;
+    return store.state.context.globalState;
   }
 
   // set inside VS Code local storage the last working issue
@@ -104,7 +100,7 @@ export default class ConfigurationService {
     let statusList = (this.get(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
       .split(',')
       .map((status: string) => status.trim())
-      .filter((status: string) => state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
+      .filter((status: string) => store.state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
     return statusList && statusList.length > 0
       ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
       : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;

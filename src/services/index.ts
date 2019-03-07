@@ -1,13 +1,15 @@
 import IssuesExplorer from '../explorer/issues-explorer';
 import ConfigurationService from './configuration.service';
+import CreateIssueService from './create-issue.service';
 import GitIntegrationService from './git-integration.service';
 import LoggerService from './logger.service';
 import NotificationService from './notifications.service';
 import SelectValuesService from './select-values.service';
 import StatusBarService from './status-bar.service';
+import StoreService from './store.service';
 import UtilitiesService from './utilities.service';
-import CreateIssueService from './create-issue.service';
 
+export const store = new StoreService();
 export const configuration = new ConfigurationService();
 export const issuesExplorer = new IssuesExplorer();
 export const logger = new LoggerService();

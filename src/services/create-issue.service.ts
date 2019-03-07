@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
-import { logger } from '.';
+import { logger, store } from '.';
 import openIssueCommand from '../commands/open-issue';
 import { SEARCH_MAX_RESULTS } from '../shared/constants';
-import state from '../store/state';
 import { ICreateIssueEpicList, IField, IFieldSchema, IIssue, IIssueType, ILabel } from './http.model';
 
 export default class CreateIssueService {
@@ -133,11 +132,11 @@ export default class CreateIssueService {
     const field = this.getField(fieldName);
     if (this.isAssigneeOrReporterField(fieldName)) {
       // assignee autoCompleteUrl sometimes don't work, I use custom one
-      // this.preloadedListValues[fieldName] = await state.jira.customRequest('GET', field.autoCompleteUrl);
-      this.preloadedListValues[fieldName] = await state.jira.getAssignees(this.project);
+      // this.preloadedListValues[fieldName] = await store.state.jira.customRequest('GET', field.autoCompleteUrl);
+      this.preloadedListValues[fieldName] = await store.state.jira.getAssignees(this.project);
     }
     if (this.isEpicLinkFieldSchema(field.schema)) {
-      const response = await state.jira.getCreateIssueEpics(state.workingProject, SEARCH_MAX_RESULTS);
+      const response = await store.state.jira.getCreateIssueEpics(store.state.workingProject, SEARCH_MAX_RESULTS);
       // format issues in standard way
       if (!!response && !!response.epicLists) {
         const list: IIssue[] = [];
@@ -165,11 +164,11 @@ export default class CreateIssueService {
       }
     }
     if (this.isSprintFieldSchema(field.schema)) {
-      const response = await state.jira.getSprints();
+      const response = await store.state.jira.getSprints();
       this.preloadedListValues[fieldName] = response.suggestions || [];
     }
     if (this.isLabelsField(fieldName)) {
-      const response = await state.jira.customRequest('GET', field.autoCompleteUrl);
+      const response = await store.state.jira.customRequest('GET', field.autoCompleteUrl);
       this.preloadedListValues[fieldName] = (response.suggestions || []).map((entry: ILabel) => {
         entry.key = entry.label;
         entry.description = '';
@@ -177,7 +176,7 @@ export default class CreateIssueService {
       });
     }
     if (this.isIssuelinksField(fieldName)) {
-      const response = await state.jira.customRequest('GET', field.autoCompleteUrl);
+      const response = await store.state.jira.customRequest('GET', field.autoCompleteUrl);
       for (const [key, value] of Object.entries(response)) {
         if (value instanceof Array) {
           if (!!value[0] && !!value[0].issues && value[0].issues instanceof Array) {
@@ -187,7 +186,7 @@ export default class CreateIssueService {
       }
       if (!!this.preloadedListValues[fieldName]) {
         // issueLinkedType field
-        const types = await state.jira.getAvailableLinkIssuesType();
+        const types = await store.state.jira.getAvailableLinkIssuesType();
         this.preloadedListValues[this.NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field] = types.issueLinkTypes || [];
       }
     }
@@ -214,7 +213,7 @@ export default class CreateIssueService {
         if (!this.preloadedListValues[fieldName] && !!field.autoCompleteUrl) {
           try {
             // here the Jira API call
-            const response = await state.jira.customRequest('GET', field.autoCompleteUrl);
+            const response = await store.state.jira.customRequest('GET', field.autoCompleteUrl);
             for (const value of Object.values(response)) {
               // I assume those are the values because it's an array
               if (value instanceof Array) {
@@ -303,7 +302,7 @@ export default class CreateIssueService {
     if (!!update) {
       payload = { ...payload, update: { ...update } };
     }
-    const createdIssue = await state.jira.createIssue(payload);
+    const createdIssue = await store.state.jira.createIssue(payload);
     if (!!createdIssue && !!createdIssue.key) {
       // if the response is ok, we will open the created issue
       const action = await vscode.window.showInformationMessage('Issue created', 'Open in browser');

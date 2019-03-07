@@ -3,18 +3,20 @@ import NoWorkingIssuePick from '../../src/picks/no-working-issue-pick';
 import ConfigurationService from '../../src/services/configuration.service';
 import { IAssignee, IIssue, INotification, ISetTransition } from '../../src/services/http.model';
 import { Jira } from '../../src/services/http.service';
+import StoreService from '../../src/services/store.service';
 import { LOADING } from '../../src/shared/constants';
-import { IState } from '../../src/store/state';
 import { settings } from '../utils/settings';
 import { backupSettings, restoreSettings } from '../utils/utils';
 
 suite('Jira API', () => {
   const configurationService = new ConfigurationService();
-  const state: IState = {
+  const store = new StoreService();
+  store.state = {
     jira: undefined as any,
     context: undefined as any,
     channel: undefined as any,
     documentLinkDisposable: undefined as any,
+    config: undefined,
     statuses: [],
     projects: [],
     issues: [],
@@ -83,7 +85,7 @@ suite('Jira API', () => {
   test(`Setup Test Settings`, async () => {
     await restoreSettings(configurationService, settings);
     project = settings.workingProject;
-    state.jira = new Jira();
+    store.state.jira = new Jira();
     assert.strictEqual(1, 1);
   });
 
@@ -148,7 +150,7 @@ suite('Jira API', () => {
 
   tests.forEach(t => {
     test(t.name, async () => {
-      const response = await (<any>state.jira)[t.name](preparePaylod(t));
+      const response = await (<any>store.state.jira)[t.name](preparePaylod(t));
       storeResponse(t.name, response);
       if (t.name === 'getIssueByKey') {
         if (response.key !== issueKey || response.fields.assignee.key !== assigneeKey) {

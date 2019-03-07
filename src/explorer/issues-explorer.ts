@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
-import { configuration, logger } from '../services';
+import { configuration, logger, store } from '../services';
 import { IIssue } from '../services/http.model';
 import { CONFIG, GROUP_BY_FIELDS, LOADING } from '../shared/constants';
-import state from '../store/state';
 import { DividerItem } from './item/divider-item';
 import { FilterInfoItem } from './item/filter-info-item';
 import { IssueItem } from './item/issue-item';
@@ -114,7 +113,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
   async getChildren(element?: IssueItem): Promise<any[]> {
     // issue
     if (!element) {
-      let issues = state.issues;
+      let issues = store.state.issues;
       // generate all the item from issues saved in global state
       if (issues.length > 0) {
         if (issues.some(issue => !issue.fields.hasOwnProperty(this.groupByField.value))) {
@@ -148,7 +147,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
           });
         // add in the firt possition 'filter-info-item' and then the 'divider-item'
         items.unshift(
-          <any>new FilterInfoItem(state.workingProject, state.currentSearch.filter, issues.length),
+          <any>new FilterInfoItem(store.state.workingProject, store.state.currentSearch.filter, issues.length),
           <any>new DividerItem('------')
         );
         // loop items and insert a separator when field value change
@@ -160,14 +159,14 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
         return items;
       } else {
         // used for show loading item in the explorer
-        if (state.currentSearch.filter === LOADING.text) {
+        if (store.state.currentSearch.filter === LOADING.text) {
           return [new LoadingItem()];
         }
         // no result
         return [
-          new FilterInfoItem(state.workingProject, state.currentSearch.filter, issues.length),
+          new FilterInfoItem(store.state.workingProject, store.state.currentSearch.filter, issues.length),
           new DividerItem('------'),
-          new NoResultItem(state.workingProject)
+          new NoResultItem(store.state.workingProject)
         ];
       }
     } else {
