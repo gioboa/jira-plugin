@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { configuration, issuesExplorer, logger, utilities, store } from '.';
+import { configuration, issuesExplorer, logger, store, utilities } from '.';
 import BackPick from '../picks/back-pick';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import UnassignedAssigneePick from '../picks/unassigned-assignee-pick';
@@ -149,8 +149,9 @@ export default class SelectValuesService {
   public async selectIssue(mode: string, filterAndJQL?: string[]): Promise<void> {
     try {
       if (store.canExecuteJiraAPI()) {
-        if (store.verifyCurrentProject(store.state.workingProject)) {
-          const [filter, jql] = filterAndJQL || (await this.getFilterAndJQL(mode, store.state.workingProject));
+        const project = configuration.get(CONFIG.WORKING_PROJECT);
+        if (store.verifyCurrentProject(project)) {
+          const [filter, jql] = filterAndJQL || (await this.getFilterAndJQL(mode, project));
           store.changeStateIssues(LOADING.text, '', []);
           if (!!jql) {
             logger.jiraPluginDebugLog(`${filter} jql`, jql);
@@ -163,17 +164,15 @@ export default class SelectValuesService {
             logger.jiraPluginDebugLog(`issues`, JSON.stringify(searchResult));
             if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
               // exclude issues with project key different from current working project
-              searchResult.issues = searchResult.issues.filter(
-                (issue: IIssue) => (issue.fields.project.key || '') === store.state.workingProject
-              );
+              searchResult.issues = searchResult.issues.filter((issue: IIssue) => (issue.fields.project.key || '') === project);
               store.changeStateIssues(filter, jql, searchResult.issues);
             } else {
               store.changeStateIssues(filter, jql, []);
-              vscode.window.showInformationMessage(`No issues found for ${store.state.workingProject} project`);
+              vscode.window.showInformationMessage(`No issues found for ${project} project`);
             }
           } else {
             store.changeStateIssues('', '', []);
-            throw new Error(`Wrong parameter. No issues found for ${store.state.workingProject} project.`);
+            throw new Error(`Wrong parameter. No issues found for ${project} project.`);
           }
         } else {
           store.changeStateIssues('', '', []);
@@ -193,8 +192,9 @@ export default class SelectValuesService {
     let issues: IIssue[] = [];
     try {
       if (store.canExecuteJiraAPI()) {
-        if (store.verifyCurrentProject(store.state.workingProject)) {
-          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, store.state.workingProject);
+        const project = configuration.get(CONFIG.WORKING_PROJECT);
+        if (store.verifyCurrentProject(project)) {
+          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project);
           if (!!jql) {
             const result = await store.state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
             issues = result.issues || [];
@@ -211,8 +211,9 @@ export default class SelectValuesService {
   public async selectChangeWorkingIssue(): Promise<IIssue | undefined> {
     try {
       if (store.canExecuteJiraAPI()) {
-        if (store.verifyCurrentProject(store.state.workingProject)) {
-          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, store.state.workingProject);
+        const project = configuration.get(CONFIG.WORKING_PROJECT);
+        if (store.verifyCurrentProject(project)) {
+          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project);
           if (!!jql) {
             // call Jira API
             const issues = await store.state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
@@ -229,7 +230,7 @@ export default class SelectValuesService {
               });
               return selected ? selected.pickValue : undefined;
             } else {
-              vscode.window.showInformationMessage(`No ${filter} issues found for your user in ${store.state.workingProject} project`);
+              vscode.window.showInformationMessage(`No ${filter} issues found for your user in ${project} project`);
               // limit case, there is a working issue selected but the user has no more ${filter} issue. i.e: change of status of the working issue
               if (store.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
                 const picks = [new NoWorkingIssuePick()];
@@ -257,8 +258,9 @@ export default class SelectValuesService {
     preLoadedPicks: IAssignee[] | undefined
   ): Promise<string | IAssignee> {
     try {
-      if (store.verifyCurrentProject(store.state.workingProject)) {
-        const assignees = preLoadedPicks || (await store.state.jira.getAssignees(store.state.workingProject));
+      const project = configuration.get(CONFIG.WORKING_PROJECT);
+      if (store.verifyCurrentProject(project)) {
+        const assignees = preLoadedPicks || (await store.state.jira.getAssignees(project));
         const picks = (assignees || [])
           .filter((assignee: IAssignee) => assignee.active === true)
           .map((assignee: IAssignee) => {
@@ -330,7 +332,8 @@ export default class SelectValuesService {
   }
 
   public async selectStatusAndAssignee(): Promise<{ status: string; assignee: string }> {
-    if (store.verifyCurrentProject(store.state.workingProject)) {
+    const project = configuration.get(CONFIG.WORKING_PROJECT);
+    if (store.verifyCurrentProject(project)) {
       const { firstChoise, secondChoise } = await this.doubleSelection(
         this.selectStatus,
         async () => await this.selectAssignee(true, true, true, undefined)
@@ -366,7 +369,8 @@ export default class SelectValuesService {
   public async selectFavoriteFilters(): Promise<IFavouriteFilter | undefined> {
     try {
       if (store.canExecuteJiraAPI()) {
-        if (store.verifyCurrentProject(store.state.workingProject)) {
+        const project = configuration.get(CONFIG.WORKING_PROJECT);
+        if (store.verifyCurrentProject(project)) {
           const favFilters = await store.state.jira.getFavoriteFilters();
           if (favFilters && favFilters.length > 0) {
             const selected = await vscode.window.showQuickPick(

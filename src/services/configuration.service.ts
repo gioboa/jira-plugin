@@ -12,6 +12,8 @@ import { IConfiguration } from './configuration.model';
 import { IWorkingIssue } from './http.model';
 
 export default class ConfigurationService {
+  private config: IConfiguration = { ...vscode.workspace.getConfiguration(CONFIG_NAME) };
+
   public isValid(): boolean {
     if (!this.settings) {
       return false;
@@ -23,12 +25,14 @@ export default class ConfigurationService {
   }
 
   // all the plugin settings
-  public get settings(): IConfiguration | undefined {
-    const config: IConfiguration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
-    if (!config) {
-      logger.printErrorMessageInOutputAndShowAlert('No settings found. Probably an error in vscode');
+  private get settings(): IConfiguration {
+    if (!this.config) {
+      this.config = vscode.workspace.getConfiguration(CONFIG_NAME);
+      if (!this.config) {
+        logger.printErrorMessageInOutputAndShowAlert('No settings found. Probably an error in VsCode');
+      }
     }
-    return config;
+    return this.config;
   }
 
   public get credentials(): { username: string; password: string } {
@@ -53,6 +57,7 @@ export default class ConfigurationService {
     if (entry === CONFIG.BASE_URL && typeof value === 'string') {
       value = value.replace(/\/$/, '');
     }
+    (<any>this.config)[entry] = value;
     return this.settings && this.settings.update(entry, value, true);
   }
 

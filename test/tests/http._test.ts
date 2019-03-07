@@ -16,7 +16,6 @@ suite('Jira API', () => {
     context: undefined as any,
     channel: undefined as any,
     documentLinkDisposable: undefined as any,
-    config: undefined,
     statuses: [],
     projects: [],
     issues: [],
@@ -24,7 +23,6 @@ suite('Jira API', () => {
       filter: LOADING.text,
       jql: ''
     },
-    workingProject: '',
     workingIssue: {
       issue: new NoWorkingIssuePick().pickValue,
       trackingTime: 0,

@@ -19,6 +19,9 @@ export default class StatusBarService {
     if (!store.state.jira) {
       return;
     }
+    if (!project) {
+      project = await configuration.get(CONFIG.WORKING_PROJECT);
+    }
     this.workingProjectItem.tooltip = 'Set working project';
     this.workingProjectItem.command = 'jira-plugin.setWorkingProjectCommand';
     this.workingProjectItem.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);

@@ -113,6 +113,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
   async getChildren(element?: IssueItem): Promise<any[]> {
     // issue
     if (!element) {
+      let project = await configuration.get(CONFIG.WORKING_PROJECT);
       let issues = store.state.issues;
       // generate all the item from issues saved in global state
       if (issues.length > 0) {
@@ -146,10 +147,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
             return descA < descB ? -1 : descA > descB ? 1 : 0;
           });
         // add in the firt possition 'filter-info-item' and then the 'divider-item'
-        items.unshift(
-          <any>new FilterInfoItem(store.state.workingProject, store.state.currentSearch.filter, issues.length),
-          <any>new DividerItem('------')
-        );
+        items.unshift(<any>new FilterInfoItem(project, store.state.currentSearch.filter, issues.length), <any>new DividerItem('------'));
         // loop items and insert a separator when field value change
         this.addSeparators(items, this.groupByField);
         if (issues.length === configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST)) {
@@ -164,9 +162,9 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
         }
         // no result
         return [
-          new FilterInfoItem(store.state.workingProject, store.state.currentSearch.filter, issues.length),
+          new FilterInfoItem(project, store.state.currentSearch.filter, issues.length),
           new DividerItem('------'),
-          new NoResultItem(store.state.workingProject)
+          new NoResultItem(project)
         ];
       }
     } else {

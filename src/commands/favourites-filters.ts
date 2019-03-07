@@ -1,5 +1,5 @@
+import { logger, selectValues } from '../services';
 import { SEARCH_MODE } from '../shared/constants';
-import { selectValues, logger } from '../services';
 
 export default async function favouritesFiltersCommand(): Promise<void> {
   try {

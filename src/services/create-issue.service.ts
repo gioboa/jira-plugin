@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { logger, store } from '.';
+import { configuration, logger, store } from '.';
 import openIssueCommand from '../commands/open-issue';
-import { SEARCH_MAX_RESULTS } from '../shared/constants';
+import { CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
 import { ICreateIssueEpicList, IField, IFieldSchema, IIssue, IIssueType, ILabel } from './http.model';
 
 export default class CreateIssueService {
@@ -136,7 +136,7 @@ export default class CreateIssueService {
       this.preloadedListValues[fieldName] = await store.state.jira.getAssignees(this.project);
     }
     if (this.isEpicLinkFieldSchema(field.schema)) {
-      const response = await store.state.jira.getCreateIssueEpics(store.state.workingProject, SEARCH_MAX_RESULTS);
+      const response = await store.state.jira.getCreateIssueEpics(configuration.get(CONFIG.WORKING_PROJECT), SEARCH_MAX_RESULTS);
       // format issues in standard way
       if (!!response && !!response.epicLists) {
         const list: IIssue[] = [];

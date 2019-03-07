@@ -13,7 +13,6 @@ export default class StoreService {
     context: undefined as any,
     channel: undefined as any,
     documentLinkDisposable: undefined as any,
-    config: undefined,
     statuses: [],
     projects: [],
     issues: [],
@@ -21,7 +20,6 @@ export default class StoreService {
       filter: LOADING.text,
       jql: ''
     },
-    workingProject: '',
     workingIssue: {
       issue: new NoWorkingIssuePick().pickValue,
       trackingTime: 0,
@@ -44,7 +42,6 @@ export default class StoreService {
       statusBar.updateWorkingProjectItem(project);
       // refresh Jira explorer list
       if (project) {
-        this.state.workingProject = project;
         // start notification service
         notifications.startNotificationsWatcher();
         await vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand');
@@ -53,7 +50,6 @@ export default class StoreService {
       }
     } catch (err) {
       configuration.set(CONFIG.WORKING_PROJECT, '');
-      this.state.workingProject = '';
       setTimeout(() => {
         statusBar.updateWorkingProjectItem('');
       }, 1000);
@@ -71,8 +67,7 @@ export default class StoreService {
   }
 
   public changeStateProject(project: string): void {
-    if (this.state.workingProject !== project) {
-      this.state.workingProject = project;
+    if (configuration.get(CONFIG.WORKING_PROJECT) !== project) {
       configuration.set(CONFIG.WORKING_PROJECT, project);
       // update project item in the status bar
       statusBar.updateWorkingProjectItem(project);
