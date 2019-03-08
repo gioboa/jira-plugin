@@ -19,10 +19,7 @@ suite('Jira API', () => {
     statuses: [],
     projects: [],
     issues: [],
-    currentSearch: {
-      filter: LOADING.text,
-      jql: ''
-    },
+    currentSearch: { filter: LOADING.text, jql: '' },
     workingIssue: {
       issue: new NoWorkingIssuePick().pickValue,
       trackingTime: 0,
@@ -103,7 +100,7 @@ suite('Jira API', () => {
               key: project
             },
             issuetype: {
-              id: '10007'
+              id: '10001'
             },
             summary: 'VsCode npm test',
             description: 'created by VsCode npm test'
@@ -148,15 +145,19 @@ suite('Jira API', () => {
 
   tests.forEach(t => {
     test(t.name, async () => {
-      const response = await (<any>store.state.jira)[t.name](preparePaylod(t));
-      storeResponse(t.name, response);
-      if (t.name === 'getIssueByKey') {
-        if (response.key !== issueKey || response.fields.assignee.key !== assigneeKey) {
-          throw new Error('getIssueByKey -> issue not correct');
+      if (t.name !== 'markNotificationsAsReadUnread' || !!notification) {
+        const response = await (<any>store.state.jira)[t.name](preparePaylod(t));
+        storeResponse(t.name, response);
+        if (t.name === 'getIssueByKey') {
+          if (response.key !== issueKey || response.fields.assignee.key !== assigneeKey) {
+            throw new Error('getIssueByKey -> issue not correct');
+          }
         }
+        // console.log(JSON.stringify(response));
+        assert.strictEqual(1, 1);
+      } else {
+        assert.strictEqual(1, 1);
       }
-      // console.log(JSON.stringify(response));
-      assert.strictEqual(1, 1);
     });
   });
 
