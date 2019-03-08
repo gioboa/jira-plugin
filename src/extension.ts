@@ -4,12 +4,10 @@ import './services';
 import { gitIntegration, issuesExplorer, statusBar, store } from './services';
 import { CONFIG_NAME } from './shared/constants';
 
-let channel: vscode.OutputChannel;
-
 export const activate = async (context: vscode.ExtensionContext): Promise<void> => {
-  channel = vscode.window.createOutputChannel(CONFIG_NAME.toUpperCase());
-  store.state.channel = channel;
+  const channel: vscode.OutputChannel = vscode.window.createOutputChannel(CONFIG_NAME.toUpperCase());
   context.subscriptions.push(channel);
+  store.state.channel = channel;
   store.state.context = context;
   vscode.window.registerTreeDataProvider('issuesExplorer', issuesExplorer);
   context.subscriptions.push(statusBar);

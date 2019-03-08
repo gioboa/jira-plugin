@@ -100,7 +100,7 @@ suite('Jira API', () => {
               key: project
             },
             issuetype: {
-              id: '10001'
+              id: '10004'
             },
             summary: 'VsCode npm test',
             description: 'created by VsCode npm test'

@@ -9,7 +9,7 @@ import {
   DEFAULT_WORKING_ISSUE_STATUS
 } from '../shared/constants';
 import { IConfiguration } from './configuration.model';
-import { IWorkingIssue } from './http.model';
+import { IStatus, IWorkingIssue } from './http.model';
 
 export default class ConfigurationService {
   // all the plugin settings
@@ -94,11 +94,13 @@ export default class ConfigurationService {
     return this.globalState.get(`${CONFIG_NAME}:${CONFIG_COUNTER}`);
   }
 
-  public workingIssueStatuses(): string {
+  public workingIssueStatuses(statuses?: IStatus[]): string {
     let statusList = (this.get(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
       .split(',')
       .map((status: string) => status.trim())
-      .filter((status: string) => store.state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
+      .filter((status: string) =>
+        (statuses || store.state.statuses).some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase())
+      );
     return statusList && statusList.length > 0
       ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
       : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;

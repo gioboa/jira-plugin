@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { IConfiguration } from './configuration.model';
 import { IIssue, IJira, IProject, IStatus, IWorkingIssue } from './http.model';
 
 export interface IState {
