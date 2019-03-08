@@ -1,16 +1,15 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import { configuration, createIssue, logger, selectValues } from '../services';
+import { configuration, createIssue, logger, selectValues, store } from '../services';
 import { IPickValue } from '../services/configuration.model';
 import { CONFIG } from '../shared/constants';
-import state, { verifyCurrentProject } from '../store/state';
 
 export default async function createIssueCommand(issueItem: IssueItem): Promise<void> {
   const project = configuration.get(CONFIG.WORKING_PROJECT);
-  if (verifyCurrentProject(project)) {
+  if (store.verifyCurrentProject(project)) {
     try {
       // first of first we decide the type of the ticket
-      const availableTypes = await state.jira.getAllIssueTypesWithFields(project);
+      const availableTypes = await store.state.jira.getAllIssueTypesWithFields(project);
       if (!!availableTypes) {
         // here the user select which type of issue create
         createIssue.init(await selectValues.selectIssueType(false, availableTypes));

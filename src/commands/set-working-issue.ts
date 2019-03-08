@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
-import { IIssue, IWorkingIssue } from '../services/http.model';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
-import { configuration, selectValues, statusBar, utilities } from '../services';
+import { configuration, selectValues, statusBar, store, utilities } from '../services';
+import { IIssue, IWorkingIssue } from '../services/http.model';
 import { ACTIONS, CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';
-import state, { changeStateWorkingIssue } from '../store/state';
 
 export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkingIssue, preloadedIssue: IIssue): Promise<void> {
   // run it's called from status bar there is a working issue in the storage
@@ -13,19 +12,21 @@ export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkin
     const issue = workingIssues.find((issue: IIssue) => issue.key === storedWorkingIssue.issue.key);
     if (!!issue) {
       // YES - restart tracking time for the stored working issue
-      state.workingIssue = storedWorkingIssue;
+      store.state.workingIssue = storedWorkingIssue;
       vscode.window.showInformationMessage(
-        `PENDING WORKING ISSUE: ${state.workingIssue.issue.key} | timeSpent: ${utilities.secondsToHHMMSS(state.workingIssue.trackingTime)}`
+        `PENDING WORKING ISSUE: ${store.state.workingIssue.issue.key} | timeSpent: ${utilities.secondsToHHMMSS(
+          store.state.workingIssue.trackingTime
+        )}`
       );
       // set stored working issue
-      changeStateWorkingIssue(state.workingIssue.issue, state.workingIssue.trackingTime);
+      store.changeStateWorkingIssue(store.state.workingIssue.issue, store.state.workingIssue.trackingTime);
     } else {
       // NO - set no working issue
-      changeStateWorkingIssue(new NoWorkingIssuePick().pickValue, 0);
+      store.changeStateWorkingIssue(new NoWorkingIssuePick().pickValue, 0);
     }
   } else {
     // normal workflow, user must select a working issue
-    const workingIssue = state.workingIssue || new NoWorkingIssuePick().pickValue;
+    const workingIssue = store.state.workingIssue || new NoWorkingIssuePick().pickValue;
     const newIssue = preloadedIssue || (await selectValues.selectChangeWorkingIssue());
     if (!!newIssue && newIssue.key !== workingIssue.issue.key) {
       if (
@@ -55,14 +56,14 @@ export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkin
         if (action === ACTIONS.YES || action === ACTIONS.YES_WITH_COMMENT) {
           await vscode.commands.executeCommand(
             'jira-plugin.issueAddWorklogCommand',
-            state.workingIssue.issue.key,
-            state.workingIssue.trackingTime,
+            store.state.workingIssue.issue.key,
+            store.state.workingIssue.trackingTime,
             comment || ''
           );
         }
       }
       // set the new working issue
-      changeStateWorkingIssue(newIssue, 0);
+      store.changeStateWorkingIssue(newIssue, 0);
     }
   }
 }

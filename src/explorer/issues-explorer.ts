@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
-import { configuration, logger } from '../services';
+import { configuration, logger, store } from '../services';
 import { IIssue } from '../services/http.model';
 import { CONFIG, GROUP_BY_FIELDS, LOADING } from '../shared/constants';
-import state from '../store/state';
 import { DividerItem } from './item/divider-item';
 import { FilterInfoItem } from './item/filter-info-item';
 import { IssueItem } from './item/issue-item';
@@ -115,7 +114,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
     // issue
     if (!element) {
       let project = await configuration.get(CONFIG.WORKING_PROJECT);
-      let issues = state.issues;
+      let issues = store.state.issues;
       // generate all the item from issues saved in global state
       if (issues.length > 0) {
         if (issues.some(issue => !issue.fields.hasOwnProperty(this.groupByField.value))) {
@@ -148,7 +147,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
             return descA < descB ? -1 : descA > descB ? 1 : 0;
           });
         // add in the firt possition 'filter-info-item' and then the 'divider-item'
-        items.unshift(<any>new FilterInfoItem(project, state.currentFilter, issues.length), <any>new DividerItem('------'));
+        items.unshift(<any>new FilterInfoItem(project, store.state.currentSearch.filter, issues.length), <any>new DividerItem('------'));
         // loop items and insert a separator when field value change
         this.addSeparators(items, this.groupByField);
         if (issues.length === configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST)) {
@@ -158,11 +157,15 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
         return items;
       } else {
         // used for show loading item in the explorer
-        if (state.currentFilter === LOADING.text) {
-          return [new LoadingItem()];
+        if (store.state.currentSearch.filter === LOADING.text) {
+          return [!!project ? new LoadingItem() : []];
         }
         // no result
-        return [new FilterInfoItem(project, state.currentFilter, issues.length), new DividerItem('------'), new NoResultItem(project)];
+        return [
+          new FilterInfoItem(project, store.state.currentSearch.filter, issues.length),
+          new DividerItem('------'),
+          new NoResultItem(project)
+        ];
       }
     } else {
       // subtasks

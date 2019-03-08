@@ -1,12 +1,13 @@
 import * as assert from 'assert';
 import ConfigurationService from '../../src/services/configuration.service';
 import { IWorkingIssue } from '../../src/services/http.model';
+import StoreService from '../../src/services/store.service';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS } from '../../src/shared/constants';
-import state from '../../src/store/state';
 import { backupSettings, restoreSettings } from '../utils/utils';
 
 suite('Configuration', () => {
   const configurationService = new ConfigurationService();
+  const store = new StoreService();
   const tests = [
     {
       title: `${CONFIG.BASE_URL} 1`,
@@ -123,50 +124,30 @@ suite('Configuration', () => {
   });
 
   test(`WorkingIssueStatuses in statuses list`, async () => {
-    state.statuses = [
-      {
-        description: 'In Progress',
-        name: 'In Progress'
-      },
-      {
-        description: 'Closed',
-        name: 'Closed'
-      }
-    ];
+    console.log('store.state.statuses', store.state.statuses);
     await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Closed');
-    const statuses = configurationService.workingIssueStatuses();
+    const statuses = configurationService.workingIssueStatuses([
+      { description: 'In Progress', name: 'In Progress' },
+      { description: 'Closed', name: 'Closed' }
+    ]);
     assert.strictEqual(statuses, `'In Progress','Closed'`);
   });
 
   test(`WorkingIssueStatuses only one in statuses list`, async () => {
-    state.statuses = [
-      {
-        description: 'In Progress',
-        name: 'In Progress'
-      },
-      {
-        description: 'Closed',
-        name: 'Closed'
-      }
-    ];
     await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Abc');
-    const statuses = configurationService.workingIssueStatuses();
+    const statuses = configurationService.workingIssueStatuses([
+      { description: 'In Progress', name: 'In Progress' },
+      { description: 'Closed', name: 'Closed' }
+    ]);
     assert.strictEqual(statuses, `'In Progress'`);
   });
 
   test(`WorkingIssueStatuses not in statuses list`, async () => {
-    state.statuses = [
-      {
-        description: 'In Progress',
-        name: 'In Progress'
-      },
-      {
-        description: 'Closed',
-        name: 'Closed'
-      }
-    ];
     await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'Abc');
-    const statuses = configurationService.workingIssueStatuses();
+    const statuses = configurationService.workingIssueStatuses([
+      { description: 'In Progress', name: 'In Progress' },
+      { description: 'Closed', name: 'Closed' }
+    ]);
     assert.strictEqual(statuses, `'${DEFAULT_WORKING_ISSUE_STATUS}'`);
   });
 

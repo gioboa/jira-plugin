@@ -1,12 +1,11 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
+import { configuration, logger, selectValues, store } from '../services';
 import { CONFIG } from '../shared/constants';
-import state, { canExecuteJiraAPI } from '../store/state';
-import { selectValues, logger, configuration } from '../services';
 
 export default async function issueAddCommentCommand(issueItem: IssueItem): Promise<void> {
   try {
-    if (issueItem && issueItem.issue && canExecuteJiraAPI()) {
+    if (issueItem && issueItem.issue && store.canExecuteJiraAPI()) {
       let issue = issueItem.issue;
       let text = await vscode.window.showInputBox({
         ignoreFocusOut: true,
@@ -25,7 +24,7 @@ export default async function issueAddCommentCommand(issueItem: IssueItem): Prom
           }
         }
         // call Jira API
-        const response = await state.jira.addNewComment({ issueKey: issue.key, comment: { body: text } });
+        const response = await store.state.jira.addNewComment({ issueKey: issue.key, comment: { body: text } });
         await vscode.commands.executeCommand('jira-plugin.refresh');
         // modal
         const action = await vscode.window.showInformationMessage('Comment created', 'Open in browser');
@@ -40,7 +39,7 @@ export default async function issueAddCommentCommand(issueItem: IssueItem): Prom
         }
       }
     } else {
-      if (canExecuteJiraAPI()) {
+      if (store.canExecuteJiraAPI()) {
         logger.printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
       }
     }

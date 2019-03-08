@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import { logger } from '.';
-import { IWorkingIssue } from './http.model';
+import { store } from '.';
 import {
   CONFIG,
   CONFIG_COUNTER,
@@ -9,28 +8,22 @@ import {
   CREDENTIALS_SEPARATOR,
   DEFAULT_WORKING_ISSUE_STATUS
 } from '../shared/constants';
-import state from '../store/state';
 import { IConfiguration } from './configuration.model';
+import { IStatus, IWorkingIssue } from './http.model';
 
 export default class ConfigurationService {
+  // all the plugin settings
+  private settings: IConfiguration = { ...vscode.workspace.getConfiguration(CONFIG_NAME) };
+
   public isValid(): boolean {
     if (!this.settings) {
       return false;
     }
-
     const { baseUrl } = this.settings;
-    const { username, password } = this.credentials;
+    const { username } = this.settings;
+    const { password } = this.credentials;
 
     return !!(baseUrl && username && password);
-  }
-
-  // all the plugin settings
-  private get settings(): IConfiguration | undefined {
-    const config: IConfiguration | undefined = vscode.workspace.getConfiguration(CONFIG_NAME);
-    if (!config) {
-      logger.printErrorMessageInOutputAndShowAlert('No settings found. Probably an error in vscode');
-    }
-    return config;
   }
 
   public get credentials(): { username: string; password: string } {
@@ -46,8 +39,7 @@ export default class ConfigurationService {
     if (!this.settings) {
       return fallbackValue;
     }
-
-    return this.settings.get(entry, fallbackValue);
+    return this.settings[entry] || fallbackValue;
   }
 
   // used for set only one setting
@@ -56,7 +48,9 @@ export default class ConfigurationService {
     if (entry === CONFIG.BASE_URL && typeof value === 'string') {
       value = value.replace(/\/$/, '');
     }
-
+    // update settings object - Fix issue #97
+    (<any>this.settings)[entry] = value;
+    // update VsCode settings
     return this.settings && this.settings.update(entry, value, true);
   }
 
@@ -70,7 +64,7 @@ export default class ConfigurationService {
 
   // get inside VS Code local storage the settings
   public get globalState(): vscode.Memento {
-    return state.context.globalState;
+    return store.state.context.globalState;
   }
 
   // set inside VS Code local storage the last working issue
@@ -100,11 +94,13 @@ export default class ConfigurationService {
     return this.globalState.get(`${CONFIG_NAME}:${CONFIG_COUNTER}`);
   }
 
-  public workingIssueStatuses(): string {
+  public workingIssueStatuses(statuses?: IStatus[]): string {
     let statusList = (this.get(CONFIG.WORKING_ISSUE_STATUSES) || DEFAULT_WORKING_ISSUE_STATUS)
       .split(',')
       .map((status: string) => status.trim())
-      .filter((status: string) => state.statuses.some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase()));
+      .filter((status: string) =>
+        (statuses || store.state.statuses).some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase())
+      );
     return statusList && statusList.length > 0
       ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
       : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;

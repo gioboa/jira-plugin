@@ -1,17 +1,17 @@
 import * as vscode from 'vscode';
-import state from '../store/state';
+import { store } from '.';
 
 export default class LoggerService {
   public printErrorMessageInOutputAndShowAlert(err: any) {
-    if (state.channel) {
+    if (store.state.channel) {
       vscode.window.showErrorMessage(`Error: Check logs in Jira Plugin terminal output.`);
-      state.channel.append(`Error: ${err}\n`);
+      store.state.channel.append(`Error: ${err}\n`);
     }
   }
 
   public printErrorMessageInOutput(err: any) {
-    if (state.channel) {
-      state.channel.append(`Error: ${err}\n`);
+    if (store.state.channel) {
+      store.state.channel.append(`Error: ${err}\n`);
     }
   }
 
@@ -27,8 +27,8 @@ export default class LoggerService {
   }
 
   public jiraPluginDebugLog(message: string, value: any) {
-    if (this.debugMode() && state.channel) {
-      state.channel.append(`${message}: ${value}\n`);
+    if (this.debugMode() && store.state.channel) {
+      store.state.channel.append(`${message}: ${value}\n`);
     }
   }
 }

@@ -1,9 +1,7 @@
 import { EventEmitter } from 'events';
 import * as vscode from 'vscode';
-import { gitIntegration, logger } from '.';
+import { configuration, gitIntegration, logger, store } from '.';
 import { ACTIONS, CONFIG } from '../shared/constants';
-import state, { changeStateProject } from '../store/state';
-import ConfigurationService from './configuration.service';
 import { IIssue } from './http.model';
 
 /**
@@ -50,10 +48,10 @@ export default class GitIntegrationService {
   private gitExtension: vscode.Extension<any>;
 
   get isGitIntegrationEnabled(): boolean {
-    return !!this.configuration.get(CONFIG.GIT_INTEGRATION_ENABLED);
+    return !!configuration.get(CONFIG.GIT_INTEGRATION_ENABLED);
   }
 
-  constructor(private configuration: ConfigurationService) {
+  constructor() {
     this.gitExtension = vscode.extensions.getExtension('vscode.git') || (undefined as any);
     vscode.commands.executeCommand('setContext', 'gitEnabled', '0');
     if (!!this.gitExtension) {
@@ -113,9 +111,9 @@ export default class GitIntegrationService {
     if (!!newBranch) {
       const ticket = this.parseTicket(newBranch);
       if (ticket) {
-        const issue = await state.jira.getIssueByKey(ticket.issue);
+        const issue = await store.state.jira.getIssueByKey(ticket.issue);
         // if issue exist and is different from current working issue
-        const workingIssueKey = state.workingIssue.issue.key;
+        const workingIssueKey = store.state.workingIssue.issue.key;
         if (!!issue && issue.key !== workingIssueKey) {
           // modal
           const action = await vscode.window.showInformationMessage(
@@ -165,7 +163,7 @@ export default class GitIntegrationService {
 
   private async setCurrentWorkingProjectAndIssue(ticket: { project: string; issue: string }, issue: IIssue): Promise<void> {
     try {
-      changeStateProject(ticket.project);
+      store.changeStateProject(ticket.project);
       vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', undefined, issue);
     } catch (e) {
       logger.printErrorMessageInOutputAndShowAlert(e);
