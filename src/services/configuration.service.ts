@@ -20,7 +20,8 @@ export default class ConfigurationService {
       return false;
     }
     const { baseUrl } = this.settings;
-    const { username, password } = this.credentials;
+    const { username } = this.settings;
+    const { password } = this.credentials;
 
     return !!(baseUrl && username && password);
   }
