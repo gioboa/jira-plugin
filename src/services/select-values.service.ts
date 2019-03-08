@@ -315,7 +315,7 @@ export default class SelectValuesService {
   public async doubleSelection(
     firstSelection: Function,
     secondSelection: Function
-  ): Promise<{ firstChoise: string; secondChoise: string }> {
+  ): Promise<{ firstChoise: string; secondChoise: string | IAssignee }> {
     let ok = false;
     let firstChoise = '';
     let secondChoise = '';
@@ -336,9 +336,9 @@ export default class SelectValuesService {
     if (store.verifyCurrentProject(project)) {
       const { firstChoise, secondChoise } = await this.doubleSelection(
         this.selectStatus,
-        async () => await this.selectAssignee(true, true, true, undefined)
+        async () => await this.selectAssignee(true, true, false, undefined)
       );
-      return { status: firstChoise, assignee: secondChoise };
+      return { status: firstChoise, assignee: (<IAssignee>secondChoise).name };
     } else {
       throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
     }
