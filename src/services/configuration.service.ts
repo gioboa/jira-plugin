@@ -39,7 +39,7 @@ export default class ConfigurationService {
     if (!this.settings) {
       return fallbackValue;
     }
-    return this.settings[entry] || fallbackValue;
+    return this.settings.hasOwnProperty(entry) && this.settings[entry] !== undefined ? this.settings[entry] : fallbackValue;
   }
 
   // used for set only one setting
