@@ -1,3 +1,9 @@
+## 0.15.3
+
+### Bug Fixes
+
+- time not being tracked on Jira
+
 ## 0.15.2
 
 ### Bug Fixes
