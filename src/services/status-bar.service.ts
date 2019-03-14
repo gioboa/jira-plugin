@@ -15,7 +15,7 @@ export default class StatusBarService {
   }
 
   // setup working project item
-  public async updateWorkingProjectItem(project: string): Promise<void> {
+  public async updateWorkingProjectItem(project: string, checkGlobalStore: boolean): Promise<void> {
     if (!store.state.jira) {
       return;
     }
@@ -26,7 +26,7 @@ export default class StatusBarService {
     this.workingProjectItem.command = 'jira-plugin.setWorkingProjectCommand';
     this.workingProjectItem.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
     this.workingProjectItem.show();
-    if (configuration.get(CONFIG.ENABLE_WORKING_ISSUE)) {
+    if (configuration.get(CONFIG.ENABLE_WORKING_ISSUE) && !!checkGlobalStore) {
       this.updateWorkingIssueItem(true);
     }
   }
