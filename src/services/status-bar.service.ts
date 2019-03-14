@@ -54,13 +54,18 @@ export default class StatusBarService {
 
   // setup working issue item
   public updateWorkingIssueItem(checkGlobalStore: boolean): void {
-    let issue;
+    let data;
     // verify stored working issue
     if (checkGlobalStore) {
-      issue = configuration.getGlobalWorkingIssue();
-      if (!!issue) {
+      data = configuration.getGlobalWorkingIssue();
+      if (!!data) {
+        data = JSON.parse(data);
         // if there is a stored working issue we will use it
-        vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', JSON.parse(issue), undefined);
+        // working issue stored from another project
+        if (data.issue.fields.project.key !== configuration.get(CONFIG.WORKING_PROJECT)) {
+          return;
+        }
+        vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', data, undefined);
         configuration.setGlobalWorkingIssue(undefined);
         return;
       }
