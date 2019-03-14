@@ -1,5 +1,9 @@
 export const CREDENTIALS_SEPARATOR = '##';
 
+export const CONFIG_NAME = 'jira-plugin';
+export const CONFIG_WORKING_ISSUE = 'working-issue';
+export const CONFIG_COUNTER = 'counter';
+
 // all the plugin settings
 export const CONFIG = {
   BASE_URL: 'baseUrl',
@@ -28,10 +32,6 @@ export const TRACKING_TIME_MODE = {
   VSCODE_FOCUS: 'vsCodeFocus',
   NEVER: 'never'
 };
-
-export const CONFIG_NAME = 'jira-plugin';
-export const CONFIG_WORKING_ISSUE = 'working-issue';
-export const CONFIG_COUNTER = 'counter';
 
 export const DEFAULT_WORKING_ISSUE_STATUS = 'In progress';
 export const DEFAULT_WORKING_ISSUE_ASSIGNEE = 'currentUser()';

@@ -52,7 +52,9 @@ export default class ConfigurationService {
     // update settings object - Fix issue #97
     (<any>this.settings)[entry] = value;
     // update VsCode settings
-    return this.settings && this.settings.update(entry, value, true);
+    // save inside workspace folder if exist - Close #98
+    const globalConfigurationTarget = entry !== CONFIG.WORKING_PROJECT || !vscode.workspace.workspaceFolders;
+    return this.settings && this.settings.update(entry, value, globalConfigurationTarget);
   }
 
   // set inside VS Code local storage the settings
