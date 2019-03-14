@@ -95,7 +95,7 @@ export default class StoreService {
     }
     const awayTime: number = 0; // FIXME: We don't need awayTime when changing issues, not sure best way to handle this.
     this.state.workingIssue = { issue, trackingTime, awayTime };
-    statusBar.updateWorkingIssueItem(false);
+    statusBar.updateWorkingIssueItem();
   }
 
   public incrementStateWorkingIssueTimePerSecond(): void {

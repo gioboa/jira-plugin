@@ -15,19 +15,16 @@ export default class StatusBarService {
   }
 
   // setup working project item
-  public async updateWorkingProjectItem(project: string, checkGlobalStore: boolean): Promise<void> {
+  public async updateWorkingProjectItem(project: string, verifyStoredWorkingIssue: boolean): Promise<void> {
     if (!store.state.jira) {
       return;
-    }
-    if (!project) {
-      project = await configuration.get(CONFIG.WORKING_PROJECT);
     }
     this.workingProjectItem.tooltip = 'Set working project';
     this.workingProjectItem.command = 'jira-plugin.setWorkingProjectCommand';
     this.workingProjectItem.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
     this.workingProjectItem.show();
-    if (configuration.get(CONFIG.ENABLE_WORKING_ISSUE) && !!checkGlobalStore) {
-      this.updateWorkingIssueItem(true);
+    if (configuration.get(CONFIG.ENABLE_WORKING_ISSUE) && !!verifyStoredWorkingIssue) {
+      this.verifyStoredWorkingIssue();
     }
   }
 
@@ -52,25 +49,23 @@ export default class StatusBarService {
     return text;
   }
 
-  // setup working issue item
-  public updateWorkingIssueItem(checkGlobalStore: boolean): void {
+  public verifyStoredWorkingIssue(): void {
     let data;
-    // verify stored working issue
-    if (checkGlobalStore) {
-      data = configuration.getGlobalWorkingIssue();
-      if (!!data) {
-        data = JSON.parse(data);
-        // if there is a stored working issue we will use it
-        // working issue stored from another project
-        if (data.issue.fields.project.key !== configuration.get(CONFIG.WORKING_PROJECT)) {
-          return;
-        }
+    data = configuration.getGlobalWorkingIssue();
+    if (!!data) {
+      data = JSON.parse(data);
+      // if there is a stored working issue we will use it
+      if (data.issue.fields.project.key === configuration.get(CONFIG.WORKING_PROJECT)) {
         vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', data, undefined);
         configuration.setGlobalWorkingIssue(undefined);
         return;
       }
     }
+    this.updateWorkingIssueItem();
+  }
 
+  // setup working issue item
+  public updateWorkingIssueItem(): void {
     this.clearWorkingIssueInterval();
     if (store.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
       if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER) {
