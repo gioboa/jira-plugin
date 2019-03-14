@@ -128,11 +128,12 @@ export default class SelectValuesService {
       case SEARCH_MODE.REFRESH: {
         return [store.state.currentSearch.filter, store.state.currentSearch.jql];
       }
-      case SEARCH_MODE.MY_WORKING_ISSUES: {
+      case SEARCH_MODE.WORKING_ISSUES: {
         const statuses = configuration.workingIssueStatuses();
+        const assignees = configuration.workingIssueAssignees();
         return [
-          `STATUS: ${statuses}`,
-          `project = '${project}' AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
+          `STATUS: ${statuses}, ASSIGNEES: ${assignees}`,
+          `project = '${project}' AND status in (${statuses}) AND assignee in (${assignees}) ORDER BY status ASC, updated DESC`
         ];
       }
       case SEARCH_MODE.CURRENT_SPRINT: {
@@ -194,7 +195,7 @@ export default class SelectValuesService {
       if (store.canExecuteJiraAPI()) {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (store.verifyCurrentProject(project)) {
-          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project);
+          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.WORKING_ISSUES, project);
           if (!!jql) {
             const result = await store.state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
             issues = result.issues || [];
@@ -213,7 +214,7 @@ export default class SelectValuesService {
       if (store.canExecuteJiraAPI()) {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (store.verifyCurrentProject(project)) {
-          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project);
+          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.WORKING_ISSUES, project);
           if (!!jql) {
             // call Jira API
             const issues = await store.state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
@@ -230,7 +231,7 @@ export default class SelectValuesService {
               });
               return selected ? selected.pickValue : undefined;
             } else {
-              vscode.window.showInformationMessage(`No ${filter} issues found for your user in ${project} project`);
+              vscode.window.showInformationMessage(`No ${filter} issues found in ${project} project`);
               // limit case, there is a working issue selected but the user has no more ${filter} issue. i.e: change of status of the working issue
               if (store.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
                 const picks = [new NoWorkingIssuePick()];

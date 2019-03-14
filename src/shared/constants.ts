@@ -9,6 +9,7 @@ export const CONFIG = {
   TRACKING_TIME_MODE: 'trackingTimeMode',
   TRACKING_TIME_MODE_HYBRID_TIMEOUT: 'trackingTimeModeHybridTimeout',
   WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime',
+  WORKING_ISSUE_ASSIGNEES: 'workingIssueAssignees',
   WORKING_ISSUE_STATUSES: 'workingIssueStatues',
   ADDITIONAL_STATUSES: 'additionalStatuses',
   GIT_INTEGRATION_ENABLED: 'gitIntegration',
@@ -33,6 +34,7 @@ export const CONFIG_WORKING_ISSUE = 'working-issue';
 export const CONFIG_COUNTER = 'counter';
 
 export const DEFAULT_WORKING_ISSUE_STATUS = 'In progress';
+export const DEFAULT_WORKING_ISSUE_ASSIGNEE = 'currentUser()';
 
 // modal answers
 export const ACTIONS = {
@@ -54,7 +56,7 @@ export const SEARCH_MODE = {
   STATUS: 'STATUS',
   MY_STATUS: 'MY_STATUS',
   STATUS_ASSIGNEE: 'STATUS_ASSIGNEE',
-  MY_WORKING_ISSUES: 'MY_WORKING_ISSUES',
+  WORKING_ISSUES: 'WORKING_ISSUES',
   FAVOURITES_FILTERS: 'FAVOURITES_FILTERS',
   SUMMARY: 'SUMMARY',
   REFRESH: 'REFRESH'

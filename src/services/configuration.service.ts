@@ -6,6 +6,7 @@ import {
   CONFIG_NAME,
   CONFIG_WORKING_ISSUE,
   CREDENTIALS_SEPARATOR,
+  DEFAULT_WORKING_ISSUE_ASSIGNEE,
   DEFAULT_WORKING_ISSUE_STATUS
 } from '../shared/constants';
 import { IConfiguration } from './configuration.model';
@@ -104,5 +105,16 @@ export default class ConfigurationService {
     return statusList && statusList.length > 0
       ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
       : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
+  }
+
+  public workingIssueAssignees(): string {
+    let assignees = (this.get(CONFIG.WORKING_ISSUE_ASSIGNEES).toString() || DEFAULT_WORKING_ISSUE_ASSIGNEE)
+      .split(',')
+      .map((status: string) => status.replace(/CURRENT_USER/g, 'currentUser()').trim());
+    return assignees && assignees.length > 0
+      ? assignees
+          .reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
+          .replace(`'currentUser()'`, `currentUser()`)
+      : DEFAULT_WORKING_ISSUE_ASSIGNEE;
   }
 }

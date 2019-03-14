@@ -96,6 +96,11 @@
           "description": "Minimum tracking time for show the Worklog modal and create Jira worklog (expressed in minutes)",
           "default": 0
         },
+        "jira-plugin.workingIssueAssignees": {
+          "type": "string",
+          "description": "Assignees used for extract working issue list (e.g. robert.smith, michael.jones) (n.b: CURRENT_USER is the placeholder for the current user)",
+          "default": "CURRENT_USER"
+        },
         "jira-plugin.workingIssueStatues": {
           "type": "string",
           "description": "Statuses used for extract working issue list (e.g. In Progress, Development In Progress, Test in Progress)",
@@ -143,7 +148,7 @@
         },
         "jira-plugin.projectsToHide": {
           "type": "string",
-          "description": "Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3) - restart required",
+          "description": "Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)",
           "default": ""
         }
       }
