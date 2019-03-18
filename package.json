@@ -242,6 +242,11 @@
         "category": "Jira-plugin"
       },
       {
+        "command": "jira-plugin.issueAddInternalCommentCommand",
+        "title": "Add internal comment",
+        "category": "Jira-plugin"
+      },
+      {
         "command": "jira-plugin.copyJiraSummary",
         "title": "Copy Jira Key+Summary",
         "category": "Jira-plugin"
@@ -346,6 +351,11 @@
         },
         {
           "command": "jira-plugin.issueAddCommentCommand",
+          "group": "1_issue",
+          "when": "view == issuesExplorer && viewItem == IssueItem"
+        },
+        {
+          "command": "jira-plugin.issueAddInternalCommentCommand",
           "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },

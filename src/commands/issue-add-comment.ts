@@ -3,7 +3,7 @@ import { IssueItem } from '../explorer/item/issue-item';
 import { configuration, logger, selectValues, store } from '../services';
 import { CONFIG } from '../shared/constants';
 
-export default async function issueAddCommentCommand(issueItem: IssueItem): Promise<void> {
+export default async function issueAddCommentCommand(issueItem: IssueItem, markAsInternal: boolean): Promise<void> {
   try {
     if (issueItem && issueItem.issue && store.canExecuteJiraAPI()) {
       let issue = issueItem.issue;
@@ -24,7 +24,20 @@ export default async function issueAddCommentCommand(issueItem: IssueItem): Prom
           }
         }
         // call Jira API
-        const response = await store.state.jira.addNewComment({ issueKey: issue.key, comment: { body: text } });
+        const comment = !markAsInternal
+          ? { body: text }
+          : {
+              body: text,
+              properties: [
+                {
+                  key: 'sd.public.comment',
+                  value: {
+                    internal: true
+                  }
+                }
+              ]
+            };
+        const response = await store.state.jira.addNewComment({ issueKey: issue.key, comment });
         await vscode.commands.executeCommand('jira-plugin.refresh');
         // modal
         const action = await vscode.window.showInformationMessage('Comment created', 'Open in browser');

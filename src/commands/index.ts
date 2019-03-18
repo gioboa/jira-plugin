@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { IssueItem } from '../explorer/item/issue-item';
 import { gitIntegration, selectValues, utilities } from '../services';
 import { SEARCH_MODE } from '../shared/constants';
 import changeIssueAssigneeCommand from './change-issue-assignee';
@@ -54,7 +55,8 @@ export default {
       // explorer issue
       registerCommand('jira-plugin.changeIssueStatusCommand', changeIssueStatusCommand),
       registerCommand('jira-plugin.changeIssueAssigneeCommand', changeIssueAssigneeCommand),
-      registerCommand('jira-plugin.issueAddCommentCommand', issueAddCommentCommand),
+      registerCommand('jira-plugin.issueAddCommentCommand', (issue: IssueItem) => issueAddCommentCommand(issue, false)),
+      registerCommand('jira-plugin.issueAddInternalCommentCommand', (issue: IssueItem) => issueAddCommentCommand(issue, true)),
       registerCommand('jira-plugin.openIssueCommand', openIssueCommand),
       registerCommand('jira-plugin.copyJiraSummary', utilities.copyToClipboard),
 
