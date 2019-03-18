@@ -20,7 +20,7 @@ export default class StatusBarService {
       return;
     }
     this.workingProjectItem.tooltip = 'Set working project';
-    this.workingProjectItem.command = 'jira-plugin.setWorkingProjectCommand';
+    this.workingProjectItem.command = 'jira-plugin.setWorkingProject';
     this.workingProjectItem.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
     this.workingProjectItem.show();
     if (configuration.get(CONFIG.ENABLE_WORKING_ISSUE) && !!verifyStoredWorkingIssue) {
@@ -56,7 +56,7 @@ export default class StatusBarService {
       data = JSON.parse(data);
       // if there is a stored working issue we will use it
       if (data.issue.fields.project.key === configuration.get(CONFIG.WORKING_PROJECT)) {
-        vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', data, undefined);
+        vscode.commands.executeCommand('jira-plugin.setWorkingIssue', data, undefined);
         configuration.setGlobalWorkingIssue(undefined);
         return;
       }
@@ -76,7 +76,7 @@ export default class StatusBarService {
       configuration.setGlobalWorkingIssue(undefined);
     }
     this.workingIssueItem.tooltip = this.workingIssueItemTooltip(store.state.workingIssue);
-    this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';
+    this.workingIssueItem.command = 'jira-plugin.setWorkingIssue';
     store.state.workingIssue.awayTime = 0;
     this.workingIssueItem.text = this.workingIssueItemText(store.state.workingIssue);
     this.workingIssueItem.show();

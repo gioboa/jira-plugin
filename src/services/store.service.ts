@@ -44,7 +44,7 @@ export default class StoreService {
       if (project) {
         // start notification service
         notifications.startNotificationsWatcher();
-        await vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand');
+        await vscode.commands.executeCommand('jira-plugin.defaultIssues');
       } else {
         vscode.window.showWarningMessage("Working project isn't set.");
       }
@@ -77,7 +77,7 @@ export default class StoreService {
         // start notification service
         notifications.startNotificationsWatcher();
         // launch search for the new project
-        setTimeout(() => vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand'), 1000);
+        setTimeout(() => vscode.commands.executeCommand('jira-plugin.defaultIssues'), 1000);
       }
     }
   }

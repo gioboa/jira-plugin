@@ -2,16 +2,16 @@ import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { gitIntegration, selectValues, utilities } from '../services';
 import { SEARCH_MODE } from '../shared/constants';
-import changeIssueAssigneeCommand from './change-issue-assignee';
-import changeIssueStatusCommand from './change-issue-status';
-import createIssueCommand from './create-issue';
-import favouritesFiltersCommand from './favourites-filters';
-import issueAddCommentCommand from './issue-add-comment';
-import issueAddWorklogCommand from './issue-add-worklog';
-import openGitHubRepoCommand from './open-github-repo';
-import openIssueCommand from './open-issue';
-import setWorkingIssueCommand from './set-working-issue';
-import setWorkingProjectCommand from './set-working-project';
+import changeIssueAssignee from './change-issue-assignee';
+import changeIssueStatus from './change-issue-status';
+import createIssue from './create-issue';
+import favouritesFilters from './favourites-filters';
+import issueAddComment from './issue-add-comment';
+import issueAddWorklog from './issue-add-worklog';
+import openGitHubRepo from './open-github-repo';
+import openIssue from './open-issue';
+import setWorkingIssue from './set-working-issue';
+import setWorkingProject from './set-working-project';
 import setupCredentials from './setup-credentials';
 
 const { registerCommand } = vscode.commands;
@@ -26,42 +26,42 @@ export default {
   register(): vscode.Disposable[] {
     return [
       // initial setup
-      registerCommand('jira-plugin.setupCredentialsCommand', setupCredentials),
+      registerCommand('jira-plugin.setupCredentials', setupCredentials),
 
       // working project / issue
-      registerCommand('jira-plugin.setWorkingProjectCommand', setWorkingProjectCommand),
-      registerCommand('jira-plugin.setWorkingIssueCommand', setWorkingIssueCommand),
+      registerCommand('jira-plugin.setWorkingProject', setWorkingProject),
+      registerCommand('jira-plugin.setWorkingIssue', setWorkingIssue),
       registerCommand('jira-plugin.insertWorkingIssueComment', utilities.insertWorkingIssueComment),
-      registerCommand('jira-plugin.issueAddWorklogCommand', issueAddWorklogCommand),
+      registerCommand('jira-plugin.issueAddWorklog', issueAddWorklog),
 
       // explorer header
-      registerCommand('jira-plugin.createIssueCommand', createIssueCommand),
+      registerCommand('jira-plugin.createIssue', createIssue),
 
       // explorer group by
       registerCommand('jira-plugin.changeExplorerGroupBy', selectValues.changeExplorerGroupBy),
 
       // explorer filters
       registerCommand('jira-plugin.refresh', issueSelector(SEARCH_MODE.REFRESH)),
-      registerCommand('jira-plugin.defaultIssuesCommand', issueSelector(SEARCH_MODE.DEFAULT)),
-      registerCommand('jira-plugin.allIssuesCommand', issueSelector(SEARCH_MODE.ALL)),
-      registerCommand('jira-plugin.currentSprintCommand', issueSelector(SEARCH_MODE.CURRENT_SPRINT)),
-      registerCommand('jira-plugin.myIssuesByStatusCommand', issueSelector(SEARCH_MODE.MY_STATUS)),
-      registerCommand('jira-plugin.issuesByStatusAssigneeCommand', issueSelector(SEARCH_MODE.STATUS_ASSIGNEE)),
-      registerCommand('jira-plugin.issuesByStatusCommand', issueSelector(SEARCH_MODE.STATUS)),
-      registerCommand('jira-plugin.issueByIdCommand', issueSelector(SEARCH_MODE.ID)),
-      registerCommand('jira-plugin.issuesBySummaryCommand', issueSelector(SEARCH_MODE.SUMMARY)),
-      registerCommand('jira-plugin.favouritesFilters', favouritesFiltersCommand),
+      registerCommand('jira-plugin.defaultIssues', issueSelector(SEARCH_MODE.DEFAULT)),
+      registerCommand('jira-plugin.allIssues', issueSelector(SEARCH_MODE.ALL)),
+      registerCommand('jira-plugin.currentSprint', issueSelector(SEARCH_MODE.CURRENT_SPRINT)),
+      registerCommand('jira-plugin.myIssuesByStatus', issueSelector(SEARCH_MODE.MY_STATUS)),
+      registerCommand('jira-plugin.issuesByStatusAssignee', issueSelector(SEARCH_MODE.STATUS_ASSIGNEE)),
+      registerCommand('jira-plugin.issuesByStatus', issueSelector(SEARCH_MODE.STATUS)),
+      registerCommand('jira-plugin.issueById', issueSelector(SEARCH_MODE.ID)),
+      registerCommand('jira-plugin.issuesBySummary', issueSelector(SEARCH_MODE.SUMMARY)),
+      registerCommand('jira-plugin.favouritesFilters', favouritesFilters),
 
       // explorer issue
-      registerCommand('jira-plugin.changeIssueStatusCommand', changeIssueStatusCommand),
-      registerCommand('jira-plugin.changeIssueAssigneeCommand', changeIssueAssigneeCommand),
-      registerCommand('jira-plugin.issueAddCommentCommand', (issue: IssueItem) => issueAddCommentCommand(issue, false)),
-      registerCommand('jira-plugin.issueAddInternalCommentCommand', (issue: IssueItem) => issueAddCommentCommand(issue, true)),
-      registerCommand('jira-plugin.openIssueCommand', openIssueCommand),
+      registerCommand('jira-plugin.changeIssueStatus', changeIssueStatus),
+      registerCommand('jira-plugin.changeIssueAssignee', changeIssueAssignee),
+      registerCommand('jira-plugin.issueAddComment', (issue: IssueItem) => issueAddComment(issue, false)),
+      registerCommand('jira-plugin.issueAddInternalComment', (issue: IssueItem) => issueAddComment(issue, true)),
+      registerCommand('jira-plugin.openIssue', openIssue),
       registerCommand('jira-plugin.copyJiraSummary', utilities.copyToClipboard),
 
       // auxilary commands
-      registerCommand('jira-plugin.openGitHubRepoCommand', openGitHubRepoCommand),
+      registerCommand('jira-plugin.openGitHubRepo', openGitHubRepo),
 
       // git integration commands
       registerCommand('jira-plugin.checkoutGitBranch', gitIntegration.invokeCheckoutBranch)

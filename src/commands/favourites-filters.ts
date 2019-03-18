@@ -1,7 +1,7 @@
 import { logger, selectValues } from '../services';
 import { SEARCH_MODE } from '../shared/constants';
 
-export default async function favouritesFiltersCommand(): Promise<void> {
+export default async function favouritesFilters(): Promise<void> {
   try {
     const filter = await selectValues.selectFavoriteFilters();
     if (filter) {

@@ -1,7 +1,7 @@
 import { logger, store } from '../services';
 import { NO_WORKING_ISSUE } from '../shared/constants';
 
-export default async function issueAddWorklogCommand(issueKey: string, timeSpentSeconds: number, comment: string): Promise<void> {
+export default async function issueAddWorklog(issueKey: string, timeSpentSeconds: number, comment: string): Promise<void> {
   try {
     if (issueKey !== NO_WORKING_ISSUE.key) {
       if (store.canExecuteJiraAPI()) {

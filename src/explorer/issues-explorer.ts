@@ -133,7 +133,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
           .map(
             issue =>
               new IssueItem(issue, {
-                command: 'jira-plugin.openIssueCommand',
+                command: 'jira-plugin.openIssue',
                 title: 'Open issue in the browser',
                 arguments: [`${issue.key}`]
               })
@@ -172,7 +172,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
       return (element.issue.fields.subtasks || []).map(
         (subtask: IIssue) =>
           new IssueItem(subtask, {
-            command: 'jira-plugin.openIssueCommand',
+            command: 'jira-plugin.openIssue',
             title: 'Open issue in the browser',
             arguments: [`${subtask.key}`]
           })

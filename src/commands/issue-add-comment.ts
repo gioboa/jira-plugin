@@ -3,7 +3,7 @@ import { IssueItem } from '../explorer/item/issue-item';
 import { configuration, logger, selectValues, store } from '../services';
 import { CONFIG } from '../shared/constants';
 
-export default async function issueAddCommentCommand(issueItem: IssueItem, markAsInternal: boolean): Promise<void> {
+export default async function issueAddComment(issueItem: IssueItem, markAsInternal: boolean): Promise<void> {
   try {
     if (issueItem && issueItem.issue && store.canExecuteJiraAPI()) {
       let issue = issueItem.issue;

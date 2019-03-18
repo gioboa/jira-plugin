@@ -172,7 +172,7 @@
     },
     "commands": [
       {
-        "command": "jira-plugin.setupCredentialsCommand",
+        "command": "jira-plugin.setupCredentials",
         "title": "Setup credentials",
         "category": "Jira-plugin"
       },
@@ -182,42 +182,42 @@
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.defaultIssuesCommand",
+        "command": "jira-plugin.defaultIssues",
         "title": "0 - Default JQL Search",
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.allIssuesCommand",
+        "command": "jira-plugin.allIssues",
         "title": "1 - All issues",
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.currentSprintCommand",
+        "command": "jira-plugin.currentSprint",
         "title": "2 - Current sprint issues",
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.issueByIdCommand",
+        "command": "jira-plugin.issueById",
         "title": "3 - Issue by id",
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.issuesByStatusCommand",
+        "command": "jira-plugin.issuesByStatus",
         "title": "4 - Issues filtered by status",
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.issuesByStatusAssigneeCommand",
+        "command": "jira-plugin.issuesByStatusAssignee",
         "title": "5 - Issues filtered by status and assignee",
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.issuesBySummaryCommand",
+        "command": "jira-plugin.issuesBySummary",
         "title": "6 - Issues filtered by summary",
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.myIssuesByStatusCommand",
+        "command": "jira-plugin.myIssuesByStatus",
         "title": "7 - My issues filtered by status",
         "category": "Jira-plugin"
       },
@@ -227,22 +227,22 @@
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.changeIssueStatusCommand",
+        "command": "jira-plugin.changeIssueStatus",
         "title": "Change issue status",
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.changeIssueAssigneeCommand",
+        "command": "jira-plugin.changeIssueAssignee",
         "title": "Change issue assignee",
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.issueAddCommentCommand",
+        "command": "jira-plugin.issueAddComment",
         "title": "Add comment",
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.issueAddInternalCommentCommand",
+        "command": "jira-plugin.issueAddInternalComment",
         "title": "Add internal comment",
         "category": "Jira-plugin"
       },
@@ -266,7 +266,7 @@
         }
       },
       {
-        "command": "jira-plugin.createIssueCommand",
+        "command": "jira-plugin.createIssue",
         "title": "Create issue",
         "category": "Jira-plugin",
         "icon": {
@@ -288,42 +288,42 @@
           "group": "group_by"
         },
         {
-          "command": "jira-plugin.defaultIssuesCommand",
+          "command": "jira-plugin.defaultIssues",
           "when": "view == issuesExplorer",
           "group": "jql"
         },
         {
-          "command": "jira-plugin.allIssuesCommand",
+          "command": "jira-plugin.allIssues",
           "when": "view == issuesExplorer",
           "group": "jql"
         },
         {
-          "command": "jira-plugin.currentSprintCommand",
+          "command": "jira-plugin.currentSprint",
           "when": "view == issuesExplorer",
           "group": "jql"
         },
         {
-          "command": "jira-plugin.issueByIdCommand",
+          "command": "jira-plugin.issueById",
           "when": "view == issuesExplorer",
           "group": "jql"
         },
         {
-          "command": "jira-plugin.issuesByStatusCommand",
+          "command": "jira-plugin.issuesByStatus",
           "when": "view == issuesExplorer",
           "group": "jql"
         },
         {
-          "command": "jira-plugin.issuesByStatusAssigneeCommand",
+          "command": "jira-plugin.issuesByStatusAssignee",
           "when": "view == issuesExplorer",
           "group": "jql"
         },
         {
-          "command": "jira-plugin.issuesBySummaryCommand",
+          "command": "jira-plugin.issuesBySummary",
           "when": "view == issuesExplorer",
           "group": "jql"
         },
         {
-          "command": "jira-plugin.myIssuesByStatusCommand",
+          "command": "jira-plugin.myIssuesByStatus",
           "when": "view == issuesExplorer",
           "group": "jql"
         },
@@ -338,29 +338,29 @@
           "group": "navigation"
         },
         {
-          "command": "jira-plugin.createIssueCommand",
+          "command": "jira-plugin.createIssue",
           "when": "view == issuesExplorer",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "jira-plugin.changeIssueStatusCommand",
+          "command": "jira-plugin.changeIssueStatus",
           "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
-          "command": "jira-plugin.issueAddCommentCommand",
+          "command": "jira-plugin.issueAddComment",
           "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
-          "command": "jira-plugin.issueAddInternalCommentCommand",
+          "command": "jira-plugin.issueAddInternalComment",
           "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
-          "command": "jira-plugin.changeIssueAssigneeCommand",
+          "command": "jira-plugin.changeIssueAssignee",
           "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },

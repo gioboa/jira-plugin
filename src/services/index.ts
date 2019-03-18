@@ -1,7 +1,7 @@
 import IssuesExplorer from '../explorer/issues-explorer';
 import ConfigurationService from './configuration.service';
-import CreateIssueService from './create-issue.service';
 import GitIntegrationService from './git-integration.service';
+import IssueHelperService from './issue-helper.service';
 import LoggerService from './logger.service';
 import NotificationService from './notifications.service';
 import SelectValuesService from './select-values.service';
@@ -18,4 +18,4 @@ export const selectValues = new SelectValuesService();
 export const gitIntegration = new GitIntegrationService();
 export const statusBar = new StatusBarService();
 export const notifications = new NotificationService();
-export const createIssue = new CreateIssueService();
+export const issueHelper = new IssueHelperService();

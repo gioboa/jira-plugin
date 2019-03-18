@@ -164,7 +164,7 @@ export default class GitIntegrationService {
   private async setCurrentWorkingProjectAndIssue(ticket: { project: string; issue: string }, issue: IIssue): Promise<void> {
     try {
       store.changeStateProject(ticket.project, false);
-      vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', undefined, issue);
+      vscode.commands.executeCommand('jira-plugin.setWorkingIssue', undefined, issue);
     } catch (e) {
       logger.printErrorMessageInOutputAndShowAlert(e);
     }

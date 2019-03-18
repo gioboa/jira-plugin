@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
 import { logger, selectValues, store } from '../services';
 
-export default async function changeIssueStatusCommand(issueItem: IssueItem): Promise<void> {
+export default async function changeIssueStatus(issueItem: IssueItem): Promise<void> {
   try {
     if (issueItem && issueItem.issue && store.canExecuteJiraAPI()) {
       let issue = issueItem.issue;
