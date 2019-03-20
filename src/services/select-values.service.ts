@@ -16,6 +16,8 @@ import {
 import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from './http.model';
 
 export default class SelectValuesService {
+  private intervalInstance: NodeJS.Timer | undefined;
+
   // selection for projects
   public async selectProject(): Promise<string> {
     try {
@@ -125,7 +127,8 @@ export default class SelectValuesService {
         }
         break;
       }
-      case SEARCH_MODE.REFRESH: {
+      case SEARCH_MODE.REFRESH:
+      case SEARCH_MODE.AUTO_REFRESH: {
         return [store.state.currentSearch.filter, store.state.currentSearch.jql];
       }
       case SEARCH_MODE.WORKING_ISSUES: {
@@ -146,14 +149,35 @@ export default class SelectValuesService {
     return ['', ''];
   }
 
+  private get autoRefreshValue(): number {
+    return configuration.get(CONFIG.ISSUE_LIST_AUTO_REFRESH_INTERVAL);
+  }
+
+  private get isAutoRefreshEnabled(): boolean {
+    return this.autoRefreshValue !== 0;
+  }
+
+  private stopTimeout(): void {
+    if (this.intervalInstance) {
+      clearInterval(this.intervalInstance);
+    }
+  }
+
+  private startTimeout(): void {
+    this.intervalInstance = setTimeout(() => this.selectIssue(SEARCH_MODE.AUTO_REFRESH), this.autoRefreshValue * 1000 * 60);
+  }
+
   // perform the search calling Jira API
   public async selectIssue(mode: string, filterAndJQL?: string[]): Promise<void> {
     try {
+      this.stopTimeout();
       if (store.canExecuteJiraAPI()) {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (store.verifyCurrentProject(project)) {
           const [filter, jql] = filterAndJQL || (await this.getFilterAndJQL(mode, project));
-          store.changeStateIssues(LOADING.text, '', []);
+          if (!this.isAutoRefreshEnabled || mode === SEARCH_MODE.REFRESH) {
+            store.changeStateIssues(LOADING.text, '', []);
+          }
           if (!!jql) {
             logger.jiraPluginDebugLog(`${filter} jql`, jql);
             // call Jira API with the generated JQL
@@ -163,13 +187,18 @@ export default class SelectValuesService {
               maxResults
             });
             logger.jiraPluginDebugLog(`issues`, JSON.stringify(searchResult));
+            if (this.isAutoRefreshEnabled) {
+              this.startTimeout();
+            }
             if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
               // exclude issues with project key different from current working project
               searchResult.issues = searchResult.issues.filter((issue: IIssue) => (issue.fields.project.key || '') === project);
               store.changeStateIssues(filter, jql, searchResult.issues);
             } else {
               store.changeStateIssues(filter, jql, []);
-              vscode.window.showInformationMessage(`No issues found for ${project} project`);
+              if (!this.isAutoRefreshEnabled) {
+                vscode.window.showInformationMessage(`No issues found for ${project} project`);
+              }
             }
           } else {
             store.changeStateIssues('', '', []);

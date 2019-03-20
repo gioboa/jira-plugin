@@ -15,7 +15,6 @@ import setWorkingProject from './set-working-project';
 import setupCredentials from './setup-credentials';
 
 const { registerCommand } = vscode.commands;
-const issueSelector = (mode: string) => () => selectValues.selectIssue(mode);
 
 export default {
   /**
@@ -41,15 +40,15 @@ export default {
       registerCommand('jira-plugin.changeExplorerGroupBy', selectValues.changeExplorerGroupBy),
 
       // explorer filters
-      registerCommand('jira-plugin.refresh', issueSelector(SEARCH_MODE.REFRESH)),
-      registerCommand('jira-plugin.defaultIssues', issueSelector(SEARCH_MODE.DEFAULT)),
-      registerCommand('jira-plugin.allIssues', issueSelector(SEARCH_MODE.ALL)),
-      registerCommand('jira-plugin.currentSprint', issueSelector(SEARCH_MODE.CURRENT_SPRINT)),
-      registerCommand('jira-plugin.myIssuesByStatus', issueSelector(SEARCH_MODE.MY_STATUS)),
-      registerCommand('jira-plugin.issuesByStatusAssignee', issueSelector(SEARCH_MODE.STATUS_ASSIGNEE)),
-      registerCommand('jira-plugin.issuesByStatus', issueSelector(SEARCH_MODE.STATUS)),
-      registerCommand('jira-plugin.issueById', issueSelector(SEARCH_MODE.ID)),
-      registerCommand('jira-plugin.issuesBySummary', issueSelector(SEARCH_MODE.SUMMARY)),
+      registerCommand('jira-plugin.refresh', () => selectValues.selectIssue(SEARCH_MODE.REFRESH)),
+      registerCommand('jira-plugin.defaultIssues', () => selectValues.selectIssue(SEARCH_MODE.DEFAULT)),
+      registerCommand('jira-plugin.allIssues', () => selectValues.selectIssue(SEARCH_MODE.ALL)),
+      registerCommand('jira-plugin.currentSprint', () => selectValues.selectIssue(SEARCH_MODE.CURRENT_SPRINT)),
+      registerCommand('jira-plugin.myIssuesByStatus', () => selectValues.selectIssue(SEARCH_MODE.MY_STATUS)),
+      registerCommand('jira-plugin.issuesByStatusAssignee', () => selectValues.selectIssue(SEARCH_MODE.STATUS_ASSIGNEE)),
+      registerCommand('jira-plugin.issuesByStatus', () => selectValues.selectIssue(SEARCH_MODE.STATUS)),
+      registerCommand('jira-plugin.issueById', () => selectValues.selectIssue(SEARCH_MODE.ID)),
+      registerCommand('jira-plugin.issuesBySummary', () => selectValues.selectIssue(SEARCH_MODE.SUMMARY)),
       registerCommand('jira-plugin.favouritesFilters', favouritesFilters),
 
       // explorer issue

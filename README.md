@@ -89,8 +89,10 @@ The extension store credentials in VS Code settings.<br><br>
   Automatically watch for branch switching and select appropriate project and working issue
 - **Group Task And Subtasks** <br>
   Group task and subtasks into explorer
+- **Issue List Auto Refresh Interval** <br>  
+  Refresh explorer every x minutes (n.b: setting to 0 disables auto-refresh)
 - **Number Of Issues In List** <br>
-  Number of issues to show in list. n.b: If you define high numbers the research can be slow
+  Number of issues to show in list (n.b: If you define high numbers the research can be slow)
 - **Projects To Hide** <br>
   Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)
 - **StrictSSL param** <br>

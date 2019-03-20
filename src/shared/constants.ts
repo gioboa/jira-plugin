@@ -19,6 +19,7 @@ export const CONFIG = {
   ADDITIONAL_STATUSES: 'additionalStatuses',
   GIT_INTEGRATION_ENABLED: 'gitIntegration',
   NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
+  ISSUE_LIST_AUTO_REFRESH_INTERVAL: 'issueListAutoRefreshInterval',
   DEFAULT_JQL_SEARCH: 'defaultJqlSearch',
   CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications',
   STRICT_SSL: 'strictSSL',
@@ -60,7 +61,8 @@ export const SEARCH_MODE = {
   WORKING_ISSUES: 'WORKING_ISSUES',
   FAVOURITES_FILTERS: 'FAVOURITES_FILTERS',
   SUMMARY: 'SUMMARY',
-  REFRESH: 'REFRESH'
+  REFRESH: 'REFRESH',
+  AUTO_REFRESH: 'AUTO_REFRESH'
 };
 
 // status icons, used for show the correct icon

@@ -126,9 +126,14 @@
           "description": "Group task and subtasks into explorer",
           "default": false
         },
+        "jira-plugin.issueListAutoRefreshInterval": {
+          "type": "integer",
+          "description": "Refresh explorer every x minutes (n.b: setting to 0 disables auto-refresh)",
+          "default": 0
+        },
         "jira-plugin.numberOfIssuesInList": {
           "type": "integer",
-          "description": "Number of issues to show in list. n.b: If you define high numbers the research can be slow",
+          "description": "Number of issues to show in list (n.b: If you define high numbers the research can be slow)",
           "default": 50
         },
         "jira-plugin.defaultJqlSearch": {
