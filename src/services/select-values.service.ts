@@ -150,7 +150,8 @@ export default class SelectValuesService {
   }
 
   private get autoRefreshValue(): number {
-    return configuration.get(CONFIG.ISSUE_LIST_AUTO_REFRESH_INTERVAL);
+    const value = configuration.get(CONFIG.ISSUE_LIST_AUTO_REFRESH_INTERVAL);
+    return !isNaN(parseInt(value)) ? value : 0;
   }
 
   private get isAutoRefreshEnabled(): boolean {
@@ -164,6 +165,7 @@ export default class SelectValuesService {
   }
 
   private startTimeout(): void {
+    this.stopTimeout();
     this.intervalInstance = setTimeout(() => this.selectIssue(SEARCH_MODE.AUTO_REFRESH), this.autoRefreshValue * 1000 * 60);
   }
 
@@ -175,7 +177,7 @@ export default class SelectValuesService {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (store.verifyCurrentProject(project)) {
           const [filter, jql] = filterAndJQL || (await this.getFilterAndJQL(mode, project));
-          if (!this.isAutoRefreshEnabled || mode === SEARCH_MODE.REFRESH) {
+          if (mode !== SEARCH_MODE.AUTO_REFRESH) {
             store.changeStateIssues(LOADING.text, '', []);
           }
           if (!!jql) {
@@ -196,7 +198,7 @@ export default class SelectValuesService {
               store.changeStateIssues(filter, jql, searchResult.issues);
             } else {
               store.changeStateIssues(filter, jql, []);
-              if (!this.isAutoRefreshEnabled) {
+              if (mode !== SEARCH_MODE.AUTO_REFRESH) {
                 vscode.window.showInformationMessage(`No issues found for ${project} project`);
               }
             }
