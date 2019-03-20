@@ -15,6 +15,7 @@ export const CONFIG = {
   WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime',
   WORKING_ISSUE_ASSIGNEES: 'workingIssueAssignees',
   WORKING_ISSUE_STATUSES: 'workingIssueStatues',
+  WORKING_ISSUE_SHOW_TIMER: 'workingIssueShowTimer',
   ADDITIONAL_STATUSES: 'additionalStatuses',
   GIT_INTEGRATION_ENABLED: 'gitIntegration',
   NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',

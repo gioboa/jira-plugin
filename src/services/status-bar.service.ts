@@ -37,7 +37,7 @@ export default class StatusBarService {
       return NO_WORKING_ISSUE.text;
     }
     let text = `Working Issue: ${workingIssue.issue.key || ''}`;
-    if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER) {
+    if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER && !!configuration.get(CONFIG.WORKING_ISSUE_SHOW_TIMER)) {
       text +=
         ` $(watch) ${utilities.secondsToHHMMSS(workingIssue.trackingTime) || ''}` +
         (workingIssue.awayTime === 0
