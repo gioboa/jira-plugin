@@ -105,6 +105,8 @@ The extension store credentials in VS Code settings.<br><br>
   Your Jira username or full email for OAuth
 - **Working Issue Assignees** <br>
   Assignees used for extract working issue list (e.g. robert.smith, michael.jones) (n.b: CURRENT_USER is the placeholder for the current user)
+- **Working Issue Change Status After Selection** <br>
+  Change working issue status after selection
 - **Working Issue Show Timer** <br>
   Show/Hide working issue timer in status bar
 - **Working Issue Statues** <br>

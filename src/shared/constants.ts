@@ -6,25 +6,26 @@ export const CONFIG_COUNTER = 'counter';
 
 // all the plugin settings
 export const CONFIG = {
+  ADDITIONAL_STATUSES: 'additionalStatuses',
   BASE_URL: 'baseUrl',
-  USERNAME: 'username',
-  WORKING_PROJECT: 'workingProject',
+  CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications',
+  DEFAULT_JQL_SEARCH: 'defaultJqlSearch',
   ENABLE_WORKING_ISSUE: 'enableWorkingIssue',
+  GIT_INTEGRATION_ENABLED: 'gitIntegration',
+  GROUP_TASK_AND_SUBTASKS: 'groupTaskAndSubtasks',
+  ISSUE_LIST_AUTO_REFRESH_INTERVAL: 'issueListAutoRefreshInterval',
+  NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
+  PROJECTS_TO_HIDE: 'projectsToHide',
+  STRICT_SSL: 'strictSSL',
   TRACKING_TIME_MODE: 'trackingTimeMode',
   TRACKING_TIME_MODE_HYBRID_TIMEOUT: 'trackingTimeModeHybridTimeout',
-  WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime',
+  USERNAME: 'username',
   WORKING_ISSUE_ASSIGNEES: 'workingIssueAssignees',
-  WORKING_ISSUE_STATUSES: 'workingIssueStatues',
+  WORKING_ISSUE_CHANGE_STATUS_AFTER_SELECTION: 'workingIssueChangeStatusAfterSelection',
   WORKING_ISSUE_SHOW_TIMER: 'workingIssueShowTimer',
-  ADDITIONAL_STATUSES: 'additionalStatuses',
-  GIT_INTEGRATION_ENABLED: 'gitIntegration',
-  NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
-  ISSUE_LIST_AUTO_REFRESH_INTERVAL: 'issueListAutoRefreshInterval',
-  DEFAULT_JQL_SEARCH: 'defaultJqlSearch',
-  CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications',
-  STRICT_SSL: 'strictSSL',
-  PROJECTS_TO_HIDE: 'projectsToHide',
-  GROUP_TASK_AND_SUBTASKS: 'groupTaskAndSubtasks'
+  WORKING_ISSUE_STATUSES: 'workingIssueStatues',
+  WORKING_PROJECT: 'workingProject',
+  WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime'
 };
 
 // all the tracking time mode

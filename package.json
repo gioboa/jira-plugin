@@ -55,66 +55,30 @@
       "type": "object",
       "title": "Jira configuration",
       "properties": {
+        "jira-plugin.additionalStatuses": {
+          "type": "string",
+          "description": "Additional custom statuses, used for manage some Jira wrong behavior",
+          "default": ""
+        },
         "jira-plugin.baseUrl": {
           "type": "string",
           "description": "Your Jira base URL (e.g. https://your_jira_base_url.com or http://your_jira_base_url.com:your_port)",
           "default": ""
         },
-        "jira-plugin.username": {
+        "jira-plugin.defaultJqlSearch": {
           "type": "string",
-          "description": "Your Jira username or full email for OAuth",
-          "default": ""
+          "description": "Here you can define your default/custom JQL search (n.b: WORKING_PROJECT is the placeholder for the current working project)",
+          "default": "project = 'WORKING_PROJECT' ORDER BY status ASC, updated DESC"
         },
-        "jira-plugin.workingProject": {
-          "type": "string",
-          "description": "Jira working project",
-          "default": ""
+        "jira-plugin.enableCheckForNotifications": {
+          "type": "boolean",
+          "description": "You can manage your Jira unread notifications inside VsCode notification center (n.b: only new Jira versions has notifications)",
+          "default": false
         },
         "jira-plugin.enableWorkingIssue": {
           "type": "boolean",
           "description": "Enable working issue functionality in status bar",
           "default": "true"
-        },
-        "jira-plugin.trackingTimeMode": {
-          "type": "string",
-          "description": "Configure how the plugin tracking time for the working issue",
-          "enum": [
-            "hybrid",
-            "always",
-            "vsCodeFocus",
-            "never"
-          ],
-          "default": "hybrid"
-        },
-        "jira-plugin.trackingTimeModeHybridTimeout": {
-          "type": "integer",
-          "description": "Number of minutes to wait for the user to return to VSCode before discarding away time in hybrid time tracking mode",
-          "default": 30
-        },
-        "jira-plugin.worklogMinimumTrackingTime": {
-          "type": "integer",
-          "description": "Minimum tracking time for show the Worklog modal and create Jira worklog (expressed in minutes)",
-          "default": 0
-        },
-        "jira-plugin.workingIssueAssignees": {
-          "type": "string",
-          "description": "Assignees used for extract working issue list (e.g. robert.smith, michael.jones) (n.b: CURRENT_USER is the placeholder for the current user)",
-          "default": "CURRENT_USER"
-        },
-        "jira-plugin.workingIssueStatues": {
-          "type": "string",
-          "description": "Statuses used for extract working issue list (e.g. In Progress, Development In Progress, Test in Progress)",
-          "default": "In progress"
-        },
-        "jira-plugin.workingIssueShowTimer": {
-          "type": "boolean",
-          "description": "Show/Hide working issue timer in status bar",
-          "default": true
-        },
-        "jira-plugin.additionalStatuses": {
-          "type": "string",
-          "description": "Additional custom statuses, used for manage some Jira wrong behavior",
-          "default": ""
         },
         "jira-plugin.gitIntegration": {
           "type": "boolean",
@@ -136,15 +100,10 @@
           "description": "Number of issues to show in list (n.b: If you define high numbers the research can be slow)",
           "default": 50
         },
-        "jira-plugin.defaultJqlSearch": {
+        "jira-plugin.projectsToHide": {
           "type": "string",
-          "description": "Here you can define your default/custom JQL search (n.b: WORKING_PROJECT is the placeholder for the current working project)",
-          "default": "project = 'WORKING_PROJECT' ORDER BY status ASC, updated DESC"
-        },
-        "jira-plugin.enableCheckForNotifications": {
-          "type": "boolean",
-          "description": "You can manage your Jira unread notifications inside VsCode notification center (n.b: only new Jira versions has notifications)",
-          "default": false
+          "description": "Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)",
+          "default": ""
         },
         "jira-plugin.strictSSL": {
           "type": "string",
@@ -156,10 +115,56 @@
           ],
           "default": ""
         },
-        "jira-plugin.projectsToHide": {
+        "jira-plugin.trackingTimeMode": {
           "type": "string",
-          "description": "Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)",
+          "description": "Configure how the plugin tracking time for the working issue",
+          "enum": [
+            "hybrid",
+            "always",
+            "vsCodeFocus",
+            "never"
+          ],
+          "default": "hybrid"
+        },
+        "jira-plugin.trackingTimeModeHybridTimeout": {
+          "type": "integer",
+          "description": "Number of minutes to wait for the user to return to VSCode before discarding away time in hybrid time tracking mode",
+          "default": 30
+        },
+        "jira-plugin.username": {
+          "type": "string",
+          "description": "Your Jira username or full email for OAuth",
           "default": ""
+        },
+        "jira-plugin.workingIssueAssignees": {
+          "type": "string",
+          "description": "Assignees used for extract working issue list (e.g. robert.smith, michael.jones) (n.b: CURRENT_USER is the placeholder for the current user)",
+          "default": "CURRENT_USER"
+        },
+        "jira-plugin.workingIssueChangeStatusAfterSelection": {
+          "type": "boolean",
+          "description": "Change working issue status after selection",
+          "default": false
+        },
+        "jira-plugin.workingIssueShowTimer": {
+          "type": "boolean",
+          "description": "Show/Hide working issue timer in status bar",
+          "default": true
+        },
+        "jira-plugin.workingIssueStatues": {
+          "type": "string",
+          "description": "Statuses used for extract working issue list (e.g. In Progress, Development In Progress, Test in Progress)",
+          "default": "In progress"
+        },
+        "jira-plugin.workingProject": {
+          "type": "string",
+          "description": "Jira working project",
+          "default": ""
+        },
+        "jira-plugin.worklogMinimumTrackingTime": {
+          "type": "integer",
+          "description": "Minimum tracking time for show the Worklog modal and create Jira worklog (expressed in minutes)",
+          "default": 0
         }
       }
     },
