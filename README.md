@@ -105,10 +105,10 @@ The extension store credentials in VS Code settings.<br><br>
   Your Jira username or full email for OAuth
 - **Working Issue Assignees** <br>
   Assignees used for extract working issue list (e.g. robert.smith, michael.jones) (n.b: CURRENT_USER is the placeholder for the current user)
-- **Working Issue Statues** <br>
-  Statuses used for extract working issue list (e.g. In Progress, Development In Progress, Test in Progress)
 - **Working Issue Show Timer** <br>
   Show/Hide working issue timer in status bar
+- **Working Issue Statues** <br>
+  Statuses used for extract working issue list (e.g. In Progress, Development In Progress, Test in Progress)
 - **Working Project** <br>
   Jira working project
 - **Worklog Minimum Tracking Time** <br>
