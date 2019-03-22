@@ -1,5 +1,6 @@
 import IssuesExplorer from '../explorer/issues-explorer';
 import ConfigurationService from './configuration.service';
+import CreateIssueService from './create-issue.service';
 import GitIntegrationService from './git-integration.service';
 import IssueHelperService from './issue-helper.service';
 import LoggerService from './logger.service';
