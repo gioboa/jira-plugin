@@ -6,21 +6,18 @@ export default async function changeIssueStatus(issueItem: IssueItem): Promise<v
   try {
     if (issueItem && issueItem.issue && store.canExecuteJiraAPI()) {
       let issue = issueItem.issue;
-      // verify if it's the current working issue
-      if (!store.isWorkingIssue(issue.key)) {
-        const newTransitionId = await selectValues.selectTransition(issue.key);
-        if (newTransitionId) {
-          // call Jira API
-          const result = await store.state.jira.setTransition({
-            issueKey: issue.key,
+      const newTransitionId = await selectValues.selectTransition(issue.key);
+      if (newTransitionId) {
+        // call Jira API
+        const result = await store.state.jira.setTransition({
+          issueKey: issue.key,
+          transition: {
             transition: {
-              transition: {
-                id: newTransitionId
-              }
+              id: newTransitionId
             }
-          });
-          await vscode.commands.executeCommand('jira-plugin.refresh');
-        }
+          }
+        });
+        await vscode.commands.executeCommand('jira-plugin.refresh');
       }
     } else {
       if (store.canExecuteJiraAPI()) {

@@ -108,14 +108,6 @@ export default class StoreService {
     }
   }
 
-  // verify if it's the current working issue
-  public isWorkingIssue(issueKey: string): boolean {
-    if (issueKey === this.state.workingIssue.issue.key) {
-      vscode.window.showErrorMessage(`Issue ${issueKey} has pending worklog. Resolve the conflict and retry the action.`);
-    }
-    return issueKey === this.state.workingIssue.issue.key;
-  }
-
   public addAdditionalStatuses() {
     try {
       const additionalStatuses = configuration.get(CONFIG.ADDITIONAL_STATUSES);

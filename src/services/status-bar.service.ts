@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import { configuration, store, utilities } from '.';
+import changeIssueStatus from '../commands/change-issue-status';
+import { IssueItem } from '../explorer/item/issue-item';
 import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';
 import { IWorkingIssue } from './http.model';
 
@@ -80,6 +82,12 @@ export default class StatusBarService {
     store.state.workingIssue.awayTime = 0;
     this.workingIssueItem.text = this.workingIssueItemText(store.state.workingIssue);
     this.workingIssueItem.show();
+    if (
+      !!configuration.get(CONFIG.WORKING_ISSUE_CHANGE_STATUS_AFTER_SELECTION) &&
+      store.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key
+    ) {
+      changeIssueStatus(new IssueItem(store.state.workingIssue.issue));
+    }
   }
 
   public clearWorkingIssueInterval(): void {
