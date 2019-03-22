@@ -4,7 +4,7 @@ import { configuration, selectValues, statusBar, store, utilities } from '../ser
 import { IIssue, IWorkingIssue } from '../services/http.model';
 import { ACTIONS, CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';
 
-export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkingIssue, preloadedIssue: IIssue): Promise<void> {
+export default async function setWorkingIssue(storedWorkingIssue: IWorkingIssue, preloadedIssue: IIssue): Promise<void> {
   // run it's called from status bar there is a working issue in the storage
   if (!!storedWorkingIssue) {
     const workingIssues = await selectValues.selectWorkingIssues();
@@ -55,7 +55,7 @@ export default async function setWorkingIssueCommand(storedWorkingIssue: IWorkin
             : '';
         if (action === ACTIONS.YES || action === ACTIONS.YES_WITH_COMMENT) {
           await vscode.commands.executeCommand(
-            'jira-plugin.issueAddWorklogCommand',
+            'jira-plugin.issueAddWorklog',
             store.state.workingIssue.issue.key,
             store.state.workingIssue.trackingTime,
             comment || ''

@@ -39,19 +39,19 @@ export default class StoreService {
       utilities.createDocumentLinkProvider(this.state.projects);
 
       const project = configuration.get(CONFIG.WORKING_PROJECT);
-      statusBar.updateWorkingProjectItem(project);
+      statusBar.updateWorkingProjectItem(project, true);
       // refresh Jira explorer list
       if (project) {
         // start notification service
         notifications.startNotificationsWatcher();
-        await vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand');
+        await vscode.commands.executeCommand('jira-plugin.defaultIssues');
       } else {
         vscode.window.showWarningMessage("Working project isn't set.");
       }
     } catch (err) {
       configuration.set(CONFIG.WORKING_PROJECT, '');
       setTimeout(() => {
-        statusBar.updateWorkingProjectItem('');
+        statusBar.updateWorkingProjectItem('', true);
       }, 1000);
       this.changeStateIssues('', '', []);
       logger.printErrorMessageInOutputAndShowAlert(err);
@@ -66,18 +66,18 @@ export default class StoreService {
     return !!project && this.state.projects.filter((prj: IProject) => prj.key === project).length > 0;
   }
 
-  public changeStateProject(project: string): void {
+  public changeStateProject(project: string, checkGlobalStore: boolean): void {
     if (!!project) {
       if (configuration.get(CONFIG.WORKING_PROJECT) !== project) {
         configuration.set(CONFIG.WORKING_PROJECT, project);
         // update project item in the status bar
-        statusBar.updateWorkingProjectItem(project);
+        statusBar.updateWorkingProjectItem(project, checkGlobalStore);
         // loading in Jira explorer
         this.changeStateIssues(LOADING.text, '', []);
         // start notification service
         notifications.startNotificationsWatcher();
         // launch search for the new project
-        setTimeout(() => vscode.commands.executeCommand('jira-plugin.defaultIssuesCommand'), 1000);
+        setTimeout(() => vscode.commands.executeCommand('jira-plugin.defaultIssues'), 1000);
       }
     }
   }
@@ -95,7 +95,7 @@ export default class StoreService {
     }
     const awayTime: number = 0; // FIXME: We don't need awayTime when changing issues, not sure best way to handle this.
     this.state.workingIssue = { issue, trackingTime, awayTime };
-    statusBar.updateWorkingIssueItem(false);
+    statusBar.updateWorkingIssueItem();
   }
 
   public incrementStateWorkingIssueTimePerSecond(): void {
@@ -106,14 +106,6 @@ export default class StoreService {
         configuration.setGlobalWorkingIssue(this.state.workingIssue);
       }
     }
-  }
-
-  // verify if it's the current working issue
-  public isWorkingIssue(issueKey: string): boolean {
-    if (issueKey === this.state.workingIssue.issue.key) {
-      vscode.window.showErrorMessage(`Issue ${issueKey} has pending worklog. Resolve the conflict and retry the action.`);
-    }
-    return issueKey === this.state.workingIssue.issue.key;
   }
 
   public addAdditionalStatuses() {

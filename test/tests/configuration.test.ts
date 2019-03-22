@@ -124,7 +124,6 @@ suite('Configuration', () => {
   });
 
   test(`WorkingIssueStatuses in statuses list`, async () => {
-    console.log('store.state.statuses', store.state.statuses);
     await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Closed');
     const statuses = configurationService.workingIssueStatuses([
       { description: 'In Progress', name: 'In Progress' },

@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import { configuration, store, utilities } from '.';
+import changeIssueStatus from '../commands/change-issue-status';
+import { IssueItem } from '../explorer/item/issue-item';
 import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';
 import { IWorkingIssue } from './http.model';
 
@@ -15,19 +17,16 @@ export default class StatusBarService {
   }
 
   // setup working project item
-  public async updateWorkingProjectItem(project: string): Promise<void> {
+  public async updateWorkingProjectItem(project: string, verifyStoredWorkingIssue: boolean): Promise<void> {
     if (!store.state.jira) {
       return;
     }
-    if (!project) {
-      project = await configuration.get(CONFIG.WORKING_PROJECT);
-    }
     this.workingProjectItem.tooltip = 'Set working project';
-    this.workingProjectItem.command = 'jira-plugin.setWorkingProjectCommand';
+    this.workingProjectItem.command = 'jira-plugin.setWorkingProject';
     this.workingProjectItem.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
     this.workingProjectItem.show();
-    if (configuration.get(CONFIG.ENABLE_WORKING_ISSUE)) {
-      this.updateWorkingIssueItem(true);
+    if (configuration.get(CONFIG.ENABLE_WORKING_ISSUE) && !!verifyStoredWorkingIssue) {
+      this.verifyStoredWorkingIssue();
     }
   }
 
@@ -40,7 +39,7 @@ export default class StatusBarService {
       return NO_WORKING_ISSUE.text;
     }
     let text = `Working Issue: ${workingIssue.issue.key || ''}`;
-    if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER) {
+    if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER && !!configuration.get(CONFIG.WORKING_ISSUE_SHOW_TIMER)) {
       text +=
         ` $(watch) ${utilities.secondsToHHMMSS(workingIssue.trackingTime) || ''}` +
         (workingIssue.awayTime === 0
@@ -52,20 +51,23 @@ export default class StatusBarService {
     return text;
   }
 
-  // setup working issue item
-  public updateWorkingIssueItem(checkGlobalStore: boolean): void {
-    let issue;
-    // verify stored working issue
-    if (checkGlobalStore) {
-      issue = configuration.getGlobalWorkingIssue();
-      if (!!issue) {
-        // if there is a stored working issue we will use it
-        vscode.commands.executeCommand('jira-plugin.setWorkingIssueCommand', JSON.parse(issue), undefined);
+  public verifyStoredWorkingIssue(): void {
+    let data;
+    data = configuration.getGlobalWorkingIssue();
+    if (!!data) {
+      data = JSON.parse(data);
+      // if there is a stored working issue we will use it
+      if (data.issue.fields.project.key === configuration.get(CONFIG.WORKING_PROJECT)) {
+        vscode.commands.executeCommand('jira-plugin.setWorkingIssue', data, undefined);
         configuration.setGlobalWorkingIssue(undefined);
         return;
       }
     }
+    this.updateWorkingIssueItem();
+  }
 
+  // setup working issue item
+  public updateWorkingIssueItem(): void {
     this.clearWorkingIssueInterval();
     if (store.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
       if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER) {
@@ -76,10 +78,16 @@ export default class StatusBarService {
       configuration.setGlobalWorkingIssue(undefined);
     }
     this.workingIssueItem.tooltip = this.workingIssueItemTooltip(store.state.workingIssue);
-    this.workingIssueItem.command = 'jira-plugin.setWorkingIssueCommand';
+    this.workingIssueItem.command = 'jira-plugin.setWorkingIssue';
     store.state.workingIssue.awayTime = 0;
     this.workingIssueItem.text = this.workingIssueItemText(store.state.workingIssue);
     this.workingIssueItem.show();
+    if (
+      !!configuration.get(CONFIG.WORKING_ISSUE_CHANGE_STATUS_AFTER_SELECTION) &&
+      store.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key
+    ) {
+      changeIssueStatus(new IssueItem(store.state.workingIssue.issue));
+    }
   }
 
   public clearWorkingIssueInterval(): void {

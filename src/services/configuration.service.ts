@@ -6,6 +6,7 @@ import {
   CONFIG_NAME,
   CONFIG_WORKING_ISSUE,
   CREDENTIALS_SEPARATOR,
+  DEFAULT_WORKING_ISSUE_ASSIGNEE,
   DEFAULT_WORKING_ISSUE_STATUS
 } from '../shared/constants';
 import { IConfiguration } from './configuration.model';
@@ -51,7 +52,9 @@ export default class ConfigurationService {
     // update settings object - Fix issue #97
     (<any>this.settings)[entry] = value;
     // update VsCode settings
-    return this.settings && this.settings.update(entry, value, true);
+    // save inside workspace folder if exist - Close #98
+    const globalConfigurationTarget = entry !== CONFIG.WORKING_PROJECT || !vscode.workspace.workspaceFolders;
+    return this.settings && this.settings.update(entry, value, globalConfigurationTarget);
   }
 
   // set inside VS Code local storage the settings
@@ -104,5 +107,16 @@ export default class ConfigurationService {
     return statusList && statusList.length > 0
       ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
       : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
+  }
+
+  public workingIssueAssignees(): string {
+    let assignees = (this.get(CONFIG.WORKING_ISSUE_ASSIGNEES).toString() || DEFAULT_WORKING_ISSUE_ASSIGNEE)
+      .split(',')
+      .map((status: string) => status.replace(/CURRENT_USER/g, 'currentUser()').trim());
+    return assignees && assignees.length > 0
+      ? assignees
+          .reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
+          .replace(`'currentUser()'`, `currentUser()`)
+      : DEFAULT_WORKING_ISSUE_ASSIGNEE;
   }
 }

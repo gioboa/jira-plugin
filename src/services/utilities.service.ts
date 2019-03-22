@@ -46,7 +46,7 @@ export default class UtilitiesService {
             break;
           }
           case ACTIONS.YES: {
-            vscode.commands.executeCommand('jira-plugin.openGitHubRepoCommand');
+            vscode.commands.executeCommand('jira-plugin.openGitHubRepo');
             configuration.setGlobalCounter(-1);
             break;
           }

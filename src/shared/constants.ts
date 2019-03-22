@@ -1,23 +1,31 @@
 export const CREDENTIALS_SEPARATOR = '##';
 
+export const CONFIG_NAME = 'jira-plugin';
+export const CONFIG_WORKING_ISSUE = 'working-issue';
+export const CONFIG_COUNTER = 'counter';
+
 // all the plugin settings
 export const CONFIG = {
+  ADDITIONAL_STATUSES: 'additionalStatuses',
   BASE_URL: 'baseUrl',
-  USERNAME: 'username',
-  WORKING_PROJECT: 'workingProject',
+  CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications',
+  DEFAULT_JQL_SEARCH: 'defaultJqlSearch',
   ENABLE_WORKING_ISSUE: 'enableWorkingIssue',
+  GIT_INTEGRATION_ENABLED: 'gitIntegration',
+  GROUP_TASK_AND_SUBTASKS: 'groupTaskAndSubtasks',
+  ISSUE_LIST_AUTO_REFRESH_INTERVAL: 'issueListAutoRefreshInterval',
+  NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
+  PROJECTS_TO_HIDE: 'projectsToHide',
+  STRICT_SSL: 'strictSSL',
   TRACKING_TIME_MODE: 'trackingTimeMode',
   TRACKING_TIME_MODE_HYBRID_TIMEOUT: 'trackingTimeModeHybridTimeout',
-  WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime',
+  USERNAME: 'username',
+  WORKING_ISSUE_ASSIGNEES: 'workingIssueAssignees',
+  WORKING_ISSUE_CHANGE_STATUS_AFTER_SELECTION: 'workingIssueChangeStatusAfterSelection',
+  WORKING_ISSUE_SHOW_TIMER: 'workingIssueShowTimer',
   WORKING_ISSUE_STATUSES: 'workingIssueStatues',
-  ADDITIONAL_STATUSES: 'additionalStatuses',
-  GIT_INTEGRATION_ENABLED: 'gitIntegration',
-  NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
-  DEFAULT_JQL_SEARCH: 'defaultJqlSearch',
-  CHECK_FOR_NOTIFICATIONS_ENABLE: 'enableCheckForNotifications',
-  STRICT_SSL: 'strictSSL',
-  PROJECTS_TO_HIDE: 'projectsToHide',
-  GROUP_TASK_AND_SUBTASKS: 'groupTaskAndSubtasks'
+  WORKING_PROJECT: 'workingProject',
+  WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime'
 };
 
 // all the tracking time mode
@@ -28,11 +36,8 @@ export const TRACKING_TIME_MODE = {
   NEVER: 'never'
 };
 
-export const CONFIG_NAME = 'jira-plugin';
-export const CONFIG_WORKING_ISSUE = 'working-issue';
-export const CONFIG_COUNTER = 'counter';
-
 export const DEFAULT_WORKING_ISSUE_STATUS = 'In progress';
+export const DEFAULT_WORKING_ISSUE_ASSIGNEE = 'currentUser()';
 
 // modal answers
 export const ACTIONS = {
@@ -54,10 +59,11 @@ export const SEARCH_MODE = {
   STATUS: 'STATUS',
   MY_STATUS: 'MY_STATUS',
   STATUS_ASSIGNEE: 'STATUS_ASSIGNEE',
-  MY_WORKING_ISSUES: 'MY_WORKING_ISSUES',
+  WORKING_ISSUES: 'WORKING_ISSUES',
   FAVOURITES_FILTERS: 'FAVOURITES_FILTERS',
   SUMMARY: 'SUMMARY',
-  REFRESH: 'REFRESH'
+  REFRESH: 'REFRESH',
+  AUTO_REFRESH: 'AUTO_REFRESH'
 };
 
 // status icons, used for show the correct icon

@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { CONFIG } from '../shared/constants';
 import { configuration } from '../services';
+import { CONFIG } from '../shared/constants';
 
-export default async function openIssueCommand(issueId: string): Promise<void> {
+export default async function openIssue(issueId: string): Promise<void> {
   // open the issue in the browser
   const url = `${configuration.get(CONFIG.BASE_URL)}/browse/${issueId}`;
   vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { configuration, logger, store } from '.';
-import openIssueCommand from '../commands/open-issue';
+import openIssue from '../commands/open-issue';
 import { ACTIONS, CONFIG } from '../shared/constants';
 import { INotification, INotifications } from './http.model';
 
@@ -87,7 +87,7 @@ export default class NotificationService {
                 );
                 switch (action) {
                   case ACTIONS.OPEN_ISSUE:
-                    openIssueCommand(issueKey);
+                    openIssue(issueKey);
                     this.showedIds = this.showedIds.filter(id => id !== notification.id);
                     break;
                   case ACTIONS.MARK_AS_READ:

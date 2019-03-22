@@ -16,6 +16,8 @@ import {
 import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from './http.model';
 
 export default class SelectValuesService {
+  private intervalInstance: NodeJS.Timer | undefined;
+
   // selection for projects
   public async selectProject(): Promise<string> {
     try {
@@ -125,14 +127,16 @@ export default class SelectValuesService {
         }
         break;
       }
-      case SEARCH_MODE.REFRESH: {
+      case SEARCH_MODE.REFRESH:
+      case SEARCH_MODE.AUTO_REFRESH: {
         return [store.state.currentSearch.filter, store.state.currentSearch.jql];
       }
-      case SEARCH_MODE.MY_WORKING_ISSUES: {
+      case SEARCH_MODE.WORKING_ISSUES: {
         const statuses = configuration.workingIssueStatuses();
+        const assignees = configuration.workingIssueAssignees();
         return [
-          `STATUS: ${statuses}`,
-          `project = '${project}' AND status in (${statuses}) AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
+          `STATUS: ${statuses}, ASSIGNEES: ${assignees}`,
+          `project = '${project}' AND status in (${statuses}) AND assignee in (${assignees}) ORDER BY status ASC, updated DESC`
         ];
       }
       case SEARCH_MODE.CURRENT_SPRINT: {
@@ -145,14 +149,37 @@ export default class SelectValuesService {
     return ['', ''];
   }
 
+  private get autoRefreshValue(): number {
+    const value = configuration.get(CONFIG.ISSUE_LIST_AUTO_REFRESH_INTERVAL);
+    return !isNaN(parseInt(value)) ? value : 0;
+  }
+
+  private get isAutoRefreshEnabled(): boolean {
+    return this.autoRefreshValue !== 0;
+  }
+
+  private stopTimeout(): void {
+    if (this.intervalInstance) {
+      clearInterval(this.intervalInstance);
+    }
+  }
+
+  private startTimeout(): void {
+    this.stopTimeout();
+    this.intervalInstance = setTimeout(() => this.selectIssue(SEARCH_MODE.AUTO_REFRESH), this.autoRefreshValue * 1000 * 60);
+  }
+
   // perform the search calling Jira API
   public async selectIssue(mode: string, filterAndJQL?: string[]): Promise<void> {
     try {
+      this.stopTimeout();
       if (store.canExecuteJiraAPI()) {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (store.verifyCurrentProject(project)) {
           const [filter, jql] = filterAndJQL || (await this.getFilterAndJQL(mode, project));
-          store.changeStateIssues(LOADING.text, '', []);
+          if (mode !== SEARCH_MODE.AUTO_REFRESH) {
+            store.changeStateIssues(LOADING.text, '', []);
+          }
           if (!!jql) {
             logger.jiraPluginDebugLog(`${filter} jql`, jql);
             // call Jira API with the generated JQL
@@ -162,13 +189,18 @@ export default class SelectValuesService {
               maxResults
             });
             logger.jiraPluginDebugLog(`issues`, JSON.stringify(searchResult));
+            if (this.isAutoRefreshEnabled) {
+              this.startTimeout();
+            }
             if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
               // exclude issues with project key different from current working project
               searchResult.issues = searchResult.issues.filter((issue: IIssue) => (issue.fields.project.key || '') === project);
               store.changeStateIssues(filter, jql, searchResult.issues);
             } else {
               store.changeStateIssues(filter, jql, []);
-              vscode.window.showInformationMessage(`No issues found for ${project} project`);
+              if (mode !== SEARCH_MODE.AUTO_REFRESH) {
+                vscode.window.showInformationMessage(`No issues found for ${project} project`);
+              }
             }
           } else {
             store.changeStateIssues('', '', []);
@@ -194,7 +226,7 @@ export default class SelectValuesService {
       if (store.canExecuteJiraAPI()) {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (store.verifyCurrentProject(project)) {
-          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project);
+          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.WORKING_ISSUES, project);
           if (!!jql) {
             const result = await store.state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
             issues = result.issues || [];
@@ -213,7 +245,7 @@ export default class SelectValuesService {
       if (store.canExecuteJiraAPI()) {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
         if (store.verifyCurrentProject(project)) {
-          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.MY_WORKING_ISSUES, project);
+          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.WORKING_ISSUES, project);
           if (!!jql) {
             // call Jira API
             const issues = await store.state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
@@ -230,7 +262,7 @@ export default class SelectValuesService {
               });
               return selected ? selected.pickValue : undefined;
             } else {
-              vscode.window.showInformationMessage(`No ${filter} issues found for your user in ${project} project`);
+              vscode.window.showInformationMessage(`No ${filter} issues found in ${project} project`);
               // limit case, there is a working issue selected but the user has no more ${filter} issue. i.e: change of status of the working issue
               if (store.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
                 const picks = [new NoWorkingIssuePick()];

@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import { IssueItem } from '../explorer/item/issue-item';
-import { configuration, createIssue, logger, selectValues, store } from '../services';
+import { configuration, issueHelper, logger, selectValues, store } from '../services';
 import { IPickValue } from '../services/configuration.model';
 import { CONFIG } from '../shared/constants';
 
-export default async function createIssueCommand(issueItem: IssueItem): Promise<void> {
+export default async function createIssue(issueItem: IssueItem): Promise<void> {
   const project = configuration.get(CONFIG.WORKING_PROJECT);
   if (store.verifyCurrentProject(project)) {
     try {
@@ -12,46 +12,46 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
       const availableTypes = await store.state.jira.getAllIssueTypesWithFields(project);
       if (!!availableTypes) {
         // here the user select which type of issue create
-        createIssue.init(await selectValues.selectIssueType(false, availableTypes));
-        if (!!createIssue.issueTypeSelected) {
+        issueHelper.init(await selectValues.selectIssueType(false, availableTypes));
+        if (!!issueHelper.issueTypeSelected) {
           // store project
-          createIssue.populateNewIssue({ project });
+          issueHelper.populateNewIssue({ project });
           // store issueType and project in payload
           // user cannot modify the values
-          createIssue.populateRequest({
+          issueHelper.populateRequest({
             issuetype: {
-              id: createIssue.issueTypeSelected.id
+              id: issueHelper.issueTypeSelected.id
             },
             project: {
               key: project
             }
           });
-          let loopStatus = createIssue.NEW_ISSUE_STATUS.CONTINUE;
+          let loopStatus = issueHelper.NEW_ISSUE_STATUS.CONTINUE;
           // this variable is used for retrieve only one time the available values inside the loop
           let executeretrieveValues = true;
-          while (loopStatus === createIssue.NEW_ISSUE_STATUS.CONTINUE) {
+          while (loopStatus === issueHelper.NEW_ISSUE_STATUS.CONTINUE) {
             // all selector available items
             const newIssuePicks = [];
-            for (const fieldName in createIssue.issueTypeSelected.fields) {
+            for (const fieldName in issueHelper.issueTypeSelected.fields) {
               // type and project forced before in the payload
               if (fieldName !== 'issuetype' && fieldName !== 'project') {
                 // load values for every field if necessary
                 if (executeretrieveValues) {
-                  await createIssue.retrieveValues(fieldName);
+                  await issueHelper.retrieveValues(fieldName);
                 }
                 // if there is issuelinks field we need also of issuelinksType
                 // so we add the field in selector available items
-                if (fieldName === createIssue.NEW_ISSUE_FIELDS.ISSUE_LINKS.field) {
-                  createIssue.addDefaultIssueLinkTypesIfNessesary(newIssuePicks);
+                if (fieldName === issueHelper.NEW_ISSUE_FIELDS.ISSUE_LINKS.field) {
+                  issueHelper.addDefaultIssueLinkTypesIfNessesary(newIssuePicks);
                 }
-                const field = createIssue.getField(fieldName);
+                const field = issueHelper.getField(fieldName);
                 if (!field.hideField) {
                   // create the item, use preselected value or default label 'Insert + fieldName'
                   newIssuePicks.push({
                     field: fieldName,
-                    label: `${createIssue.issueTypeSelected.fields[fieldName].required ? '$(star) ' : ''}${field.name}`,
-                    description: !!createIssue.newIssueIstance[fieldName]
-                      ? createIssue.newIssueIstance[fieldName].toString()
+                    label: `${issueHelper.issueTypeSelected.fields[fieldName].required ? '$(star) ' : ''}${field.name}`,
+                    description: !!issueHelper.newIssueIstance[fieldName]
+                      ? issueHelper.newIssueIstance[fieldName].toString()
                       : `Insert ${field.name}`,
                     pickValue: field,
                     fieldSchema: field.schema
@@ -63,19 +63,19 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
             // add last 3 custom items in the list
             newIssuePicks.push(
               {
-                field: createIssue.NEW_ISSUE_FIELDS.DIVIDER.field,
-                label: createIssue.NEW_ISSUE_FIELDS.DIVIDER.label,
-                description: createIssue.NEW_ISSUE_FIELDS.DIVIDER.description
+                field: issueHelper.NEW_ISSUE_FIELDS.DIVIDER.field,
+                label: issueHelper.NEW_ISSUE_FIELDS.DIVIDER.label,
+                description: issueHelper.NEW_ISSUE_FIELDS.DIVIDER.description
               },
               {
-                field: createIssue.NEW_ISSUE_FIELDS.INSERT_ISSUE.field,
-                label: createIssue.NEW_ISSUE_FIELDS.INSERT_ISSUE.label,
-                description: createIssue.NEW_ISSUE_FIELDS.INSERT_ISSUE.description
+                field: issueHelper.NEW_ISSUE_FIELDS.INSERT_ISSUE.field,
+                label: issueHelper.NEW_ISSUE_FIELDS.INSERT_ISSUE.label,
+                description: issueHelper.NEW_ISSUE_FIELDS.INSERT_ISSUE.description
               },
               {
-                field: createIssue.NEW_ISSUE_FIELDS.EXIT.field,
-                label: createIssue.NEW_ISSUE_FIELDS.EXIT.label,
-                description: createIssue.NEW_ISSUE_FIELDS.EXIT.description
+                field: issueHelper.NEW_ISSUE_FIELDS.EXIT.field,
+                label: issueHelper.NEW_ISSUE_FIELDS.EXIT.label,
+                description: issueHelper.NEW_ISSUE_FIELDS.EXIT.description
               }
             );
             // second selector with all the fields
@@ -84,14 +84,14 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
               matchOnDescription: true
             });
             // manage the selected field from selector
-            if (!!fieldToModifySelection && fieldToModifySelection.field !== createIssue.NEW_ISSUE_FIELDS.DIVIDER.field) {
+            if (!!fieldToModifySelection && fieldToModifySelection.field !== issueHelper.NEW_ISSUE_FIELDS.DIVIDER.field) {
               switch (fieldToModifySelection.field) {
-                case createIssue.NEW_ISSUE_FIELDS.INSERT_ISSUE.field:
+                case issueHelper.NEW_ISSUE_FIELDS.INSERT_ISSUE.field:
                   // check if the mandatory field are populated, if not, we go on
-                  loopStatus = createIssue.mandatoryFieldsOk ? createIssue.NEW_ISSUE_STATUS.INSERT : loopStatus;
+                  loopStatus = issueHelper.mandatoryFieldsOk ? issueHelper.NEW_ISSUE_STATUS.INSERT : loopStatus;
                   break;
-                case createIssue.NEW_ISSUE_FIELDS.EXIT.field:
-                  loopStatus = createIssue.NEW_ISSUE_STATUS.STOP;
+                case issueHelper.NEW_ISSUE_FIELDS.EXIT.field:
+                  loopStatus = issueHelper.NEW_ISSUE_STATUS.STOP;
                   break;
                 default:
                   // with the field selected values populate the palyload
@@ -99,9 +99,9 @@ export default async function createIssueCommand(issueItem: IssueItem): Promise<
               }
             }
           }
-          if (loopStatus === createIssue.NEW_ISSUE_STATUS.INSERT) {
+          if (loopStatus === issueHelper.NEW_ISSUE_STATUS.INSERT) {
             // Jira create issue API
-            await createIssue.insertNewTicket();
+            await issueHelper.insertNewTicket();
           } else {
             // Exit
           }
@@ -119,7 +119,7 @@ const generatePicks = (values: any[]) => {
     .map(value => {
       return {
         pickValue: value,
-        label: createIssue.getPickValue(value),
+        label: issueHelper.getPickValue(value),
         description: value.description || value.summary || ''
       };
     })
@@ -141,9 +141,9 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
               : undefined
         });
         // update user choices
-        createIssue.newIssueIstance[fieldToModifySelection.field] = text;
+        issueHelper.newIssueIstance[fieldToModifySelection.field] = text;
         // update payload
-        createIssue.requestJson[fieldToModifySelection.field] = text;
+        issueHelper.requestJson[fieldToModifySelection.field] = text;
       }
       break;
     case 'number':
@@ -159,21 +159,21 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
         });
         if (!!text) {
           // update user choices
-          createIssue.newIssueIstance[fieldToModifySelection.field] = parseInt(text);
+          issueHelper.newIssueIstance[fieldToModifySelection.field] = parseInt(text);
           // update payload
-          createIssue.requestJson[fieldToModifySelection.field] = parseInt(text);
+          issueHelper.requestJson[fieldToModifySelection.field] = parseInt(text);
         }
       }
       break;
     default: {
       // if there are some preloaded values for the field
       if (
-        !!createIssue.preloadedListValues[fieldToModifySelection.field] &&
-        createIssue.preloadedListValues[fieldToModifySelection.field].length > 0
+        !!issueHelper.preloadedListValues[fieldToModifySelection.field] &&
+        issueHelper.preloadedListValues[fieldToModifySelection.field].length > 0
       ) {
-        const canPickMany = createIssue.isCanPickMany(fieldToModifySelection);
+        const canPickMany = issueHelper.isCanPickMany(fieldToModifySelection);
         const selected = await vscode.window.showQuickPick<any>(
-          generatePicks(createIssue.preloadedListValues[fieldToModifySelection.field]),
+          generatePicks(issueHelper.preloadedListValues[fieldToModifySelection.field]),
           {
             placeHolder: `Insert value`,
             matchOnDescription: true,
@@ -181,37 +181,37 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
           }
         );
         // clear previous selection
-        createIssue.newIssueIstance[fieldToModifySelection.field] = undefined;
+        issueHelper.newIssueIstance[fieldToModifySelection.field] = undefined;
         // clear previous payload
-        delete createIssue.requestJson[fieldToModifySelection.field];
+        delete issueHelper.requestJson[fieldToModifySelection.field];
         if (!canPickMany ? !!selected : !!selected && selected.length > 0) {
           // update user choices
           const newValueSelected: IPickValue[] = !canPickMany ? [selected] : [...selected];
-          createIssue.newIssueIstance[fieldToModifySelection.field] = newValueSelected.map((value: any) => value.label).join(' ');
+          issueHelper.newIssueIstance[fieldToModifySelection.field] = newValueSelected.map((value: any) => value.label).join(' ');
           // assignee/reporter want a name prop and NOT id or key
-          if (createIssue.isAssigneeOrReporterField(fieldToModifySelection.field)) {
+          if (issueHelper.isAssigneeOrReporterField(fieldToModifySelection.field)) {
             const values = newValueSelected.map((value: any) => value.pickValue.name);
-            createIssue.requestJson[fieldToModifySelection.field] = { name: !canPickMany ? values[0] : values };
+            issueHelper.requestJson[fieldToModifySelection.field] = { name: !canPickMany ? values[0] : values };
           }
           // straight string or string[]
           if (
-            createIssue.isEpicLinkFieldSchema(fieldToModifySelection.fieldSchema) ||
-            createIssue.isSprintFieldSchema(fieldToModifySelection.fieldSchema) ||
-            createIssue.isLabelsField(fieldToModifySelection.field) ||
-            createIssue.isIssuelinksField(fieldToModifySelection.field) ||
-            createIssue.isArrayOfStringField(fieldToModifySelection.fieldSchema)
+            issueHelper.isEpicLinkFieldSchema(fieldToModifySelection.fieldSchema) ||
+            issueHelper.isSprintFieldSchema(fieldToModifySelection.fieldSchema) ||
+            issueHelper.isLabelsField(fieldToModifySelection.field) ||
+            issueHelper.isIssuelinksField(fieldToModifySelection.field) ||
+            issueHelper.isArrayOfStringField(fieldToModifySelection.fieldSchema)
           ) {
             const values = newValueSelected.map((value: any) => value.pickValue.id || value.pickValue.key || value.pickValue.label);
-            createIssue.requestJson[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
+            issueHelper.requestJson[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
           }
 
           // save inward for issuelinksType
-          if (createIssue.isIssuelinksTypeField(fieldToModifySelection.field)) {
+          if (issueHelper.isIssuelinksTypeField(fieldToModifySelection.field)) {
             const values = newValueSelected.map((value: any) => value.pickValue.inward);
-            createIssue.requestJson[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
+            issueHelper.requestJson[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
           }
           // update payload statndard way use id or key
-          if (!createIssue.requestJson[fieldToModifySelection.field]) {
+          if (!issueHelper.requestJson[fieldToModifySelection.field]) {
             let jsonField = '';
             // do not change order
             if (!jsonField && !!newValueSelected[0].pickValue.name) {
@@ -224,7 +224,7 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
               jsonField = 'key';
             }
             const values = newValueSelected.map((value: any) => value.pickValue[jsonField]);
-            createIssue.requestJson[fieldToModifySelection.field] = !canPickMany
+            issueHelper.requestJson[fieldToModifySelection.field] = !canPickMany
               ? {
                   [jsonField]: values[0]
                 }
