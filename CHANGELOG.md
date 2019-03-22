@@ -1,3 +1,19 @@
+## 0.16.0
+
+### Features
+
+- added auto refresh interval setting
+- added show/hide working issue timer
+- change working issue status after selection
+- managed internal comment
+- added working issue assignees setting
+- save 'project' and 'working issue' settings inside workspace folder if exist
+
+### Bug Fixes
+
+- refresh issue list after issue creation
+- minor fixes
+
 ## 0.15.3
 
 ### Bug Fixes
