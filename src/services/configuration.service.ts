@@ -81,14 +81,6 @@ export default class ConfigurationService {
     );
   }
 
-  // DEPRECATED
-  public async OLD_setPassword(password: string | undefined): Promise<void> {
-    const config = this.settings;
-    return (
-      config && this.globalState.update(`${CONFIG_NAME}:${config.baseUrl}`, `${config.username}${CREDENTIALS_SEPARATOR}${password || ''}`)
-    );
-  }
-
   // get inside VS Code local storage the settings
   public get globalState(): vscode.Memento {
     return store.state.context.globalState;
