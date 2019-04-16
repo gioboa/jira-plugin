@@ -30,7 +30,22 @@ export default class ConfigurationService {
   public get credentials(): { username: string; password: string } {
     const config = this.settings;
     const credentials: string = (config && this.globalState.get(`${CONFIG_NAME}:${config.baseUrl}`)) || '';
+    let jsonCredentials = undefined;
+    try {
+      jsonCredentials = JSON.parse(credentials);
+    } catch (e) {
+      //
+    }
+    if (!!jsonCredentials) {
+      return jsonCredentials;
+    }
+    return this.OLD_credentials;
+  }
 
+  // DEPRECATED
+  public get OLD_credentials(): { username: string; password: string } {
+    const config = this.settings;
+    const credentials: string = (config && this.globalState.get(`${CONFIG_NAME}:${config.baseUrl}`)) || '';
     const [username = '', password = ''] = credentials.split(CREDENTIALS_SEPARATOR);
     return { username, password };
   }
@@ -59,6 +74,15 @@ export default class ConfigurationService {
 
   // set inside VS Code local storage the settings
   public async setPassword(password: string | undefined): Promise<void> {
+    const config = this.settings;
+    return (
+      config &&
+      this.globalState.update(`${CONFIG_NAME}:${config.baseUrl}`, JSON.stringify({ username: config.username, password: password || '' }))
+    );
+  }
+
+  // DEPRECATED
+  public async OLD_setPassword(password: string | undefined): Promise<void> {
     const config = this.settings;
     return (
       config && this.globalState.update(`${CONFIG_NAME}:${config.baseUrl}`, `${config.username}${CREDENTIALS_SEPARATOR}${password || ''}`)
