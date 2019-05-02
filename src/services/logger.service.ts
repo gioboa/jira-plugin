@@ -5,13 +5,13 @@ export default class LoggerService {
   public printErrorMessageInOutputAndShowAlert(err: any) {
     if (store.state.channel) {
       vscode.window.showErrorMessage(`Error: Check logs in Jira Plugin terminal output.`);
-      store.state.channel.append(`Error: ${err}\n`);
+      store.state.channel.append(`Error: ${err.message || err}\n`);
     }
   }
 
   public printErrorMessageInOutput(err: any) {
     if (store.state.channel) {
-      store.state.channel.append(`Error: ${err}\n`);
+      store.state.channel.append(`Error: ${err.message || err}\n`);
     }
   }
 
