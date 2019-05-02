@@ -35,7 +35,7 @@ export class Jira implements IJira {
   constructor() {
     if (!configuration.isValid()) {
       if (!!configuration.get(CONFIG.BASE_URL) && !!configuration.credentials.username && !!configuration.credentials.password) {
-        logger.printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
+        logger.printErrorMessageInOutputAndShowAlert('Check Jira Plugin settings in VSCode.');
       }
       this.baseUrl = '';
       throw new Error(ERROR_WRONG_CONFIGURATION);
