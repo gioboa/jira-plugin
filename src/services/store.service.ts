@@ -54,7 +54,7 @@ export default class StoreService {
         statusBar.updateWorkingProjectItem('', true);
       }, 1000);
       this.changeStateIssues('', '', []);
-      logger.printErrorMessageInOutputAndShowAlert(err);
+      logger.printErrorMessageInOutput(err);
     }
   }
 

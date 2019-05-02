@@ -1,4 +1,5 @@
 export interface IJira {
+  baseUrl: string;
   getCloudSession(): Promise<{ name: string; value: string }>;
   search(params: { jql: string; maxResults: number }): Promise<ISearch>;
   getStatuses(): Promise<IStatus[]>;

@@ -1,5 +1,5 @@
 import { configuration, logger } from '.';
-import { ASSIGNEES_MAX_RESULTS, CONFIG } from '../shared/constants';
+import { ASSIGNEES_MAX_RESULTS, CONFIG, ERROR_WRONG_CONFIGURATION } from '../shared/constants';
 import { patchJiraInstance } from '../shared/jira-instance-patch';
 import {
   IAddComment,
@@ -34,9 +34,11 @@ export class Jira implements IJira {
 
   constructor() {
     if (!configuration.isValid()) {
+      if (!!configuration.get(CONFIG.BASE_URL) && !!configuration.credentials.username && !!configuration.credentials.password) {
+        logger.printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
+      }
       this.baseUrl = '';
-      logger.printErrorMessageInOutputAndShowAlert('Error: Check Jira Plugin settings in VSCode.');
-      return;
+      throw new Error(ERROR_WRONG_CONFIGURATION);
     }
 
     this.baseUrl = configuration.get(CONFIG.BASE_URL);
