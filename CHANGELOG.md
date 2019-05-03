@@ -1,3 +1,10 @@
+## 0.16.1
+
+### Bug Fixes
+
+- managed error message when configuration is empty
+- credentials in json format
+
 ## 0.16.0
 
 ### Features
