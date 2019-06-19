@@ -1,3 +1,9 @@
+## 0.17.0
+
+### Features
+
+- now, after ticket creation, you can set the new ticket as working issue
+
 ## 0.16.1
 
 ### Bug Fixes
