@@ -58,7 +58,8 @@ export class Jira implements IJira {
       host,
       port,
       protocol,
-      basic_auth: configuration.credentials
+      basic_auth: configuration.credentials,
+      timeout: configuration.get(CONFIG.REQUESTS_TIMEOUT) * 1000 * 60
     });
 
     patchJiraInstance(this.jiraInstance);
