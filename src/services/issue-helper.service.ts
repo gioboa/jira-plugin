@@ -306,7 +306,11 @@ export default class IssueHelperService {
     if (!!createdIssue && !!createdIssue.key) {
       // if the response is ok, we will open the created issue
       vscode.commands.executeCommand('jira-plugin.refresh');
-      const action = await vscode.window.showInformationMessage(`Issue created: ${createdIssue.key}`, 'Open in browser', 'Set as working issue');
+      const action = await vscode.window.showInformationMessage(
+        `Issue created: ${createdIssue.key}`,
+        'Open in browser',
+        'Set as working issue'
+      );
       if (action === 'Open in browser') {
         openIssue(createdIssue.key);
       }
