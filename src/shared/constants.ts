@@ -16,6 +16,7 @@ export const CONFIG = {
   ISSUE_LIST_AUTO_REFRESH_INTERVAL: 'issueListAutoRefreshInterval',
   NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
   PROJECTS_TO_HIDE: 'projectsToHide',
+  REQUESTS_TIMEOUT: 'requestsTimeout',
   STRICT_SSL: 'strictSSL',
   TRACKING_TIME_MODE: 'trackingTimeMode',
   TRACKING_TIME_MODE_HYBRID_TIMEOUT: 'trackingTimeModeHybridTimeout',
