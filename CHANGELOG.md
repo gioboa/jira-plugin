@@ -1,3 +1,9 @@
+## 0.18.0
+
+### Features
+
+- added requests timeout setting
+
 ## 0.17.0
 
 ### Features
