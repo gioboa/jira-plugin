@@ -10,7 +10,7 @@ export interface IJira {
   setTransition(params: { issueKey: string; transition: ISetTransition }): Promise<void>;
   setAssignIssue(params: { issueKey: string; assignee: string }): Promise<void>;
   addNewComment(params: { issueKey: string; comment: IAddComment }): Promise<IAddCommentResponse>;
-  addWorkLog(params: { issueKey: string; worklog: IAddWorkLog }): Promise<void>;
+  addWorkLog(params: IAddWorkLog): Promise<void>;
   getAllIssueTypes(): Promise<IIssueType[]>;
   createIssue(params: ICreateIssue): Promise<any>;
   getAllPriorities(): Promise<IPriority[]>;
@@ -109,6 +109,7 @@ export interface IWorkingIssue {
 }
 
 export interface IAddWorkLog {
+  issueKey: string;
   timeSpentSeconds: number;
   comment?: string;
 }
