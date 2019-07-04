@@ -1,3 +1,9 @@
+## 0.18.1
+
+### Bug Fixes
+
+- solved work log submitting
+
 ## 0.18.0
 
 ### Features
