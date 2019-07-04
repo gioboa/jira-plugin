@@ -2,7 +2,7 @@
   "name": "jira-plugin",
   "displayName": "Jira Plugin",
   "description": "Manage your on-premises/cloud Jira in vscode",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "publisher": "gioboa",
   "icon": "images/icons/icon.png",
   "galleryBanner": {
@@ -408,6 +408,6 @@
     "vscode": "^1.1.35"
   },
   "dependencies": {
-    "jira-connector": "^2.15.3"
+    "jira-connector": "^2.15.5"
   }
 }
