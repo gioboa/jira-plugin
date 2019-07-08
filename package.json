@@ -42,7 +42,7 @@
     "test": "npm run compile && TYPE=1 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=2 node ./scripts/rename-files.js",
     "setup:settings": "npm run compile && TYPE=3 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
     "setup:settings:insiders": "npm run compile && TYPE=3 node ./scripts/rename-files.js && CODE_VERSION='insiders' node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
-    "prelint": "prettier --print-width 140 --single-quote --write 'src/**/*.ts'",
+    "prelint": "prettier --write 'src/**/*.ts'",
     "lint": "tslint 'src/**/*.ts' --format stylish --fix"
   },
   "husky": {
