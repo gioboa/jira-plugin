@@ -408,6 +408,6 @@
     "vscode": "^1.1.35"
   },
   "dependencies": {
-    "jira-connector": "^2.15.5"
+    "jira-connector": "^2.15.6"
   }
 }
