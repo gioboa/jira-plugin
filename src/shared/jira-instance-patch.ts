@@ -49,10 +49,6 @@ export const patchJiraInstance = (jiraInstance: any) => {
 
   jiraInstance.originalMakeRequest = jiraInstance.makeRequest;
   const customMakeRequest = (options: any, callback: any, successString: any) => {
-    const strictSSL = configuration.get(CONFIG.STRICT_SSL);
-    if (strictSSL !== '') {
-      options.strictSSL = strictSSL === 'true';
-    }
     return jiraInstance.originalMakeRequest(options, callback, successString);
   };
   jiraInstance.makeRequest = customMakeRequest;
