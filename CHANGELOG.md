@@ -1,3 +1,9 @@
+## 0.18.2
+
+### Bug Fixes
+
+- solved problem with strictSSL
+
 ## 0.18.1
 
 ### Bug Fixes
