@@ -93,7 +93,16 @@ export class Jira implements IJira {
   }
 
   async getProjects(): Promise<IProject[]> {
-    return await this.jiraInstance.project.getAllProjects();
+    let projects = [];
+    try {
+      projects = await this.jiraInstance.project.getAllProjects({ apiVersion: '3' });
+    } catch {
+      //
+    }
+    if (!projects.length) {
+      projects = await this.jiraInstance.project.getAllProjects();
+    }
+    return projects;
   }
 
   async getIssueByKey(issueKey: string): Promise<IIssue> {
