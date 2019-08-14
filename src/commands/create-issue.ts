@@ -143,7 +143,19 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
         // update user choices
         issueHelper.newIssueIstance[fieldToModifySelection.field] = text;
         // update payload
-        issueHelper.requestJson[fieldToModifySelection.field] = text;
+        if (issueHelper.isIssueTimetrackingOriginalEstimateField(fieldToModifySelection.field)) {
+          issueHelper.requestJson[issueHelper.timetrakingJsonField] = {
+            ...issueHelper.requestJson[issueHelper.timetrakingJsonField],
+            originalEstimate: text
+          };
+        } else if (issueHelper.isIssueTimetrackingRemainingEstimateField(fieldToModifySelection.field)) {
+          issueHelper.requestJson[issueHelper.timetrakingJsonField] = {
+            ...issueHelper.requestJson[issueHelper.timetrakingJsonField],
+            remainingEstimate: text
+          };
+        } else {
+          issueHelper.requestJson[fieldToModifySelection.field] = text;
+        }
       }
       break;
     case 'number':
