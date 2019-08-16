@@ -153,6 +153,9 @@ export default class GitIntegrationService {
 
   private parseTicket(branchName: string): { project: string; issue: string } | null {
     const matched = branchName.match(/([A-Z0-9]+)-(\d+)/);
+    // read settings and map custom names here
+    // project: matched[1].replace('MYPROJ', 'MYNEWPROJ'),
+    // issue: matched[0].replace('MYPROJ', 'MYNEWPROJ')
     return (
       matched && {
         project: matched[1],
