@@ -101,7 +101,7 @@ export default class StoreService {
   public incrementStateWorkingIssueTimePerSecond(): void {
     this.state.workingIssue.trackingTime += 1;
     // prevent writing to much on storage
-    if (this.state.workingIssue.trackingTime % 60 === 0) {
+    if (this.state.workingIssue.trackingTime % 5 === 0) {
       if (this.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
         configuration.setGlobalWorkingIssue(this.state.workingIssue);
       }
