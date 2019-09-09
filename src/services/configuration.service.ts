@@ -125,14 +125,21 @@ export default class ConfigurationService {
       : `'${DEFAULT_WORKING_ISSUE_STATUS}'`;
   }
 
+  private quoteValueIfNeeded(assignee: string): string {
+    const isQuoteNeeded = assignee !== 'currentUser()' && assignee.indexOf('membersOf(') === -1;
+    return isQuoteNeeded ? `'${assignee}'` : assignee;
+  }
+
   public workingIssueAssignees(): string {
     let assignees = (this.get(CONFIG.WORKING_ISSUE_ASSIGNEES).toString() || DEFAULT_WORKING_ISSUE_ASSIGNEE)
       .split(',')
       .map((status: string) => status.replace(/CURRENT_USER/g, 'currentUser()').trim());
+
     return assignees && assignees.length > 0
-      ? assignees
-          .reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
-          .replace(`'currentUser()'`, `currentUser()`)
+      ? assignees.reduce((a: string, b: string, index: number) => {
+          const quotedB = this.quoteValueIfNeeded(b);
+          return index === 0 ? `${quotedB}` : `${a},${quotedB}`;
+        }, '')
       : DEFAULT_WORKING_ISSUE_ASSIGNEE;
   }
 }
