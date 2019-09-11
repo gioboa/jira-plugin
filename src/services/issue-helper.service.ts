@@ -55,7 +55,29 @@ export default class IssueHelperService {
     this.newIssueIstance = {};
     this.preloadedListValues = {};
     this.requestJson = {};
-    this.issueTypeSelected = typeSelected;
+    this.issueTypeSelected = this.customIssueTypeSelected(typeSelected);
+  }
+
+  private customIssueTypeSelected(typeSelected: IIssueType | undefined): IIssueType | undefined {
+    if (!!typeSelected && !!typeSelected.fields) {
+      // we split timetraking field in two new fields and we will manage them as string
+      if (typeSelected.fields['timetracking']) {
+        typeSelected.fields['timetracking_originalestimate'] = {
+          ...typeSelected.fields['timetracking'],
+          key: 'timetracking_originalestimate',
+          name: 'Original Estimate',
+          schema: { ...typeSelected.fields['timetracking'].schema, type: 'string' }
+        };
+        typeSelected.fields['timetracking_remainingestimate'] = {
+          ...typeSelected.fields['timetracking'],
+          key: 'timetracking_remainingestimate',
+          name: 'Remaining Estimate',
+          schema: { ...typeSelected.fields['timetracking'].schema, type: 'string' }
+        };
+        delete typeSelected.fields['timetracking'];
+      }
+    }
+    return typeSelected;
   }
 
   public get project(): string {
@@ -113,6 +135,18 @@ export default class IssueHelperService {
 
   public isIssuelinksField(fieldName: string) {
     return fieldName.toLowerCase() === 'issuelinks';
+  }
+
+  public get timetrakingJsonField(): string {
+    return 'timetracking';
+  }
+
+  public isIssueTimetrackingOriginalEstimateField(fieldName: string) {
+    return fieldName.toLowerCase() === 'timetracking_originalestimate';
+  }
+
+  public isIssueTimetrackingRemainingEstimateField(fieldName: string) {
+    return fieldName.toLowerCase() === 'timetracking_remainingestimate';
   }
 
   public isArrayType(type: string) {
@@ -199,9 +233,7 @@ export default class IssueHelperService {
       if (
         !this.isEpicLinkFieldSchema(field.schema) &&
         !this.isSprintFieldSchema(field.schema) &&
-        ((!!field.schema.custom && (!field.allowedValues && !field.autoCompleteUrl)) ||
-          field.schema.type === 'date' ||
-          field.schema.type === 'timetracking')
+        ((!!field.schema.custom && (!field.allowedValues && !field.autoCompleteUrl)) || field.schema.type === 'date')
       ) {
         // output log useful for remote debug
         logger.jiraPluginDebugLog(`field`, JSON.stringify(field));

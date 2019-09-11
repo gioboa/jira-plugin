@@ -1,6 +1,3 @@
-import { configuration } from '../services';
-import { CONFIG } from './constants';
-
 const cleanOptions = (options: any): void => {
   if (!!options.headers && Object.keys(options.headers).length === 0) {
     delete options.header;
@@ -19,6 +16,9 @@ export const patchJiraInstance = (jiraInstance: any) => {
   const customGetAllProjects = (opts: any, callback: any) => {
     const options = jiraInstance.project.buildRequestOptions(opts, '', 'GET');
     cleanOptions(options);
+    if (!!opts && !!opts.apiVersion) {
+      options.uri = options.uri.replace('rest/api/2/', `rest/api/${opts.apiVersion}/`);
+    }
     return jiraInstance.makeRequest(options, callback);
   };
   jiraInstance.project.getAllProjects = customGetAllProjects;
