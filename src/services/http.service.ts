@@ -65,10 +65,6 @@ export class Jira implements IJira {
     });
 
     patchJiraInstance(this.jiraInstance);
-
-    if (!!this.jiraInstance.testConnection) {
-      this.jiraInstance.testConnection();
-    }
   }
 
   async getCloudSession(): Promise<{ name: string; value: string }> {
