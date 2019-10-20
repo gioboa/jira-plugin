@@ -1,3 +1,9 @@
+## 0.18.3
+
+### Bug Fixes
+
+- minor fixes
+
 ## 0.18.2
 
 ### Bug Fixes
