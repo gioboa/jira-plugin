@@ -1,3 +1,9 @@
+## 0.18.4
+
+### Bug Fixes
+
+- removed obsolete method
+
 ## 0.18.3
 
 ### Bug Fixes
