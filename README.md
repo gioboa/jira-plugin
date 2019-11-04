@@ -36,11 +36,10 @@
 
 ## Support
 
-**jira-plugin** is an open source extension.<br>While being free and open source, if you find it useful, please consider supporting it by donating via PayPal.<br>**Thanks!**
+**jira-plugin** is an open source extension.<br>While being free and open source, if you find it useful, please consider supporting it by donating.<br>**Thanks!**
 
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UANXPBHUX7DJW&item_name=Donation+for+jira-plugin.+Thanks+for+be+a+backer.&currency_code=EUR&source=url">
-  <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"/>
-</a>
+[[Become a backer](https://opencollective.com/jira-plugin#backers)]
+<a href="https://opencollective.com/jira-plugin#backers" target="_blank"><img src="https://opencollective.com/jira-plugin/backers.svg?width=890"></a>
 
 ## Installation
 
