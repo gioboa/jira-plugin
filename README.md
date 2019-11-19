@@ -93,7 +93,7 @@ The extension store credentials in VS Code settings.<br><br>
 - **Number Of Issues In List** <br>
   Number of issues to show in list (n.b: If you define high numbers the research can be slow)
 - **Project Key Mapping** <br>
-  Setting for map projects key for git integration (e.g. JIRAKEY=CUSTOMKEY)
+  Setting for map projects key for git integration (e.g. CUSTOMKEY=JIRAKEY)
 - **Projects To Hide** <br>
   Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)
 - **Requests Timeout** <br>

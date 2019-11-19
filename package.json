@@ -105,7 +105,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Setting for map projects key for git integration (e.g. JIRAKEY=CUSTOMKEY)",
+          "description": "Setting for map projects key for git integration (e.g. CUSTOMKEY=JIRAKEY)",
           "default": []
         },
         "jira-plugin.projectsToHide": {
