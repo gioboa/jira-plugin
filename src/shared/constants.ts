@@ -15,6 +15,7 @@ export const CONFIG = {
   GROUP_TASK_AND_SUBTASKS: 'groupTaskAndSubtasks',
   ISSUE_LIST_AUTO_REFRESH_INTERVAL: 'issueListAutoRefreshInterval',
   NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
+  PROJECT_KEY_MAPPING: 'projectKeyMapping',
   PROJECTS_TO_HIDE: 'projectsToHide',
   REQUESTS_TIMEOUT: 'requestsTimeout',
   STRICT_SSL: 'strictSSL',
