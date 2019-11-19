@@ -61,7 +61,8 @@ export default class GitIntegrationService {
   }
 
   public async getHeadBranchName(): Promise<string | void> {
-    const [repo] = await this.getGitRepositories();
+    const repos = await this.getGitRepositories();
+    const repo = !!repos ? repos[repos.length - 1] : undefined;
     if (repo) {
       vscode.commands.executeCommand('setContext', 'gitEnabled', '1');
     } else {
