@@ -23,7 +23,7 @@ export default class SelectValuesService {
     try {
       if (store.canExecuteJiraAPI()) {
         if (store.state.projects.length === 0) {
-          store.state.projects = utilities.hideProjects(await store.state.jira.getProjects());
+          store.state.projects = utilities.hideProjects(utilities.projectsToShow(await store.state.jira.getProjects()));
           utilities.createDocumentLinkProvider(store.state.projects);
         }
         const picks = store.state.projects.map(project => ({

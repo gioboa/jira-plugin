@@ -95,4 +95,13 @@ export default class UtilitiesService {
     }
     return projects;
   }
+
+  projectsToShow(projects: IProject[]): IProject[] {
+    let projectsToShow = configuration.get(CONFIG.PROJECTS_TO_SHOW);
+    if (!!projectsToShow) {
+      projectsToShow = projectsToShow.split(',').map((p: string) => p.trim());
+      projects = projects.filter((project: IProject) => projectsToShow.includes(project.key));
+    }
+    return projects;
+  }
 }

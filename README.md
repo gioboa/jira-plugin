@@ -96,6 +96,8 @@ The extension store credentials in VS Code settings.<br><br>
   Setting for map projects key for git integration (e.g. CUSTOMKEY=JIRAKEY)
 - **Projects To Hide** <br>
   Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)
+- **Projects To Show** <br>
+  Here you can define which projects you want to show (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)
 - **Requests Timeout** <br>
   Jira requests timeout (expressed in minutes)
 - **StrictSSL param** <br>

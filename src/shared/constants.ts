@@ -17,6 +17,7 @@ export const CONFIG = {
   NUMBER_ISSUES_IN_LIST: 'numberOfIssuesInList',
   PROJECT_KEY_MAPPING: 'projectKeyMapping',
   PROJECTS_TO_HIDE: 'projectsToHide',
+  PROJECTS_TO_SHOW: 'projectsToShow',
   REQUESTS_TIMEOUT: 'requestsTimeout',
   STRICT_SSL: 'strictSSL',
   TRACKING_TIME_MODE: 'trackingTimeMode',

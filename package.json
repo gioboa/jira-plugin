@@ -113,6 +113,11 @@
           "description": "Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)",
           "default": ""
         },
+        "jira-plugin.projectsToShow": {
+          "type": "string",
+          "description": "Here you can define which projects you want to show (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)",
+          "default": ""
+        },
         "jira-plugin.requestsTimeout": {
           "type": "integer",
           "description": "Jira requests timeout (expressed in minutes)",
