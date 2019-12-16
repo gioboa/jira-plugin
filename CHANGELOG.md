@@ -1,3 +1,9 @@
+## 0.19.0
+
+### Features
+
+- added projectsToShow setting
+
 ## 0.18.4
 
 ### Bug Fixes

@@ -61,7 +61,8 @@ export default class GitIntegrationService {
   }
 
   public async getHeadBranchName(): Promise<string | void> {
-    const [repo] = await this.getGitRepositories();
+    const repos = await this.getGitRepositories();
+    const repo = !!repos ? repos[repos.length - 1] : undefined;
     if (repo) {
       vscode.commands.executeCommand('setContext', 'gitEnabled', '1');
     } else {
@@ -142,9 +143,12 @@ export default class GitIntegrationService {
       if (refs.length === 1) {
         newBranch = refs[0].name;
       } else {
-        const selected = await vscode.window.showQuickPick<CheckoutItem>(refs.map((ref: any) => new CheckoutItem(ref)), {
-          placeHolder: 'Select a branch'
-        });
+        const selected = await vscode.window.showQuickPick<CheckoutItem>(
+          refs.map((ref: any) => new CheckoutItem(ref)),
+          {
+            placeHolder: 'Select a branch'
+          }
+        );
         newBranch = selected ? selected.label : undefined;
       }
     }
@@ -152,16 +156,24 @@ export default class GitIntegrationService {
   }
 
   private parseTicket(branchName: string): { project: string; issue: string } | null {
-    const matched = branchName.match(/([A-Z0-9]+)-(\d+)/);
-    // read settings and map custom names here
-    // project: matched[1].replace('MYPROJ', 'MYNEWPROJ'),
-    // issue: matched[0].replace('MYPROJ', 'MYNEWPROJ')
+    const matched = branchName.match(/([A-Za-z0-9]+)-(\d+)/);
     return (
       matched && {
-        project: matched[1],
-        issue: matched[0]
+        project: this.mapProjectKeyIfNeeed(matched[1]),
+        issue: this.mapProjectKeyIfNeeed(matched[0])
       }
     );
+  }
+
+  private mapProjectKeyIfNeeed(value: string): string {
+    const projectKeyToMap = configuration.get(CONFIG.PROJECT_KEY_MAPPING);
+    projectKeyToMap.forEach((k: string) => {
+      if (k.indexOf('=') > 0) {
+        const keys = k.split('=');
+        value = value.replace(keys[0], keys[1]);
+      }
+    });
+    return value;
   }
 
   private async setCurrentWorkingProjectAndIssue(ticket: { project: string; issue: string }, issue: IIssue): Promise<void> {

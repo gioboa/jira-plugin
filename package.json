@@ -2,7 +2,7 @@
   "name": "jira-plugin",
   "displayName": "Jira Plugin",
   "description": "Manage your on-premises/cloud Jira in vscode",
-  "version": "0.18.4",
+  "version": "0.19.0",
   "publisher": "gioboa",
   "icon": "images/icons/icon.png",
   "galleryBanner": {
@@ -100,9 +100,22 @@
           "description": "Number of issues to show in list (n.b: If you define high numbers the research can be slow)",
           "default": 50
         },
+        "jira-plugin.projectKeyMapping": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Setting for map projects key for git integration (e.g. CUSTOMKEY=JIRAKEY)",
+          "default": []
+        },
         "jira-plugin.projectsToHide": {
           "type": "string",
           "description": "Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)",
+          "default": ""
+        },
+        "jira-plugin.projectsToShow": {
+          "type": "string",
+          "description": "Here you can define which projects you want to show (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)",
           "default": ""
         },
         "jira-plugin.requestsTimeout": {

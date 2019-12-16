@@ -36,11 +36,10 @@
 
 ## Support
 
-**jira-plugin** is an open source extension.<br>While being free and open source, if you find it useful, please consider supporting it by donating via PayPal.<br>**Thanks!**
+**jira-plugin** is an open source extension.<br>While being free and open source, if you find it useful, please consider supporting it by donating.<br>**Thanks!**
 
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=UANXPBHUX7DJW&item_name=Donation+for+jira-plugin.+Thanks+for+be+a+backer.&currency_code=EUR&source=url">
-  <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"/>
-</a>
+[[Become a backer](https://opencollective.com/jira-plugin#backers)]
+<a href="https://opencollective.com/jira-plugin#backers" target="_blank"><img src="https://opencollective.com/jira-plugin/backers.svg?width=890"></a>
 
 ## Installation
 
@@ -93,8 +92,12 @@ The extension store credentials in VS Code settings.<br><br>
   Refresh explorer every x minutes (n.b: setting to 0 disables auto-refresh)
 - **Number Of Issues In List** <br>
   Number of issues to show in list (n.b: If you define high numbers the research can be slow)
+- **Project Key Mapping** <br>
+  Setting for map projects key for git integration (e.g. CUSTOMKEY=JIRAKEY)
 - **Projects To Hide** <br>
   Here you can define which projects you want to hide (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)
+- **Projects To Show** <br>
+  Here you can define which projects you want to show (e.g. PROJECT-KEY-1, PROJECT-KEY-2, PROJECT-KEY-3)
 - **Requests Timeout** <br>
   Jira requests timeout (expressed in minutes)
 - **StrictSSL param** <br>

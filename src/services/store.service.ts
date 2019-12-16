@@ -35,7 +35,7 @@ export default class StoreService {
       this.addAdditionalStatuses();
       this.state.statuses.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
-      this.state.projects = utilities.hideProjects(await this.state.jira.getProjects());
+      this.state.projects = utilities.hideProjects(utilities.projectsToShow(await this.state.jira.getProjects()));
       utilities.createDocumentLinkProvider(this.state.projects);
 
       const project = configuration.get(CONFIG.WORKING_PROJECT);
