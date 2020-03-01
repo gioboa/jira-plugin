@@ -298,7 +298,7 @@ export default class SelectValuesService {
           .map((assignee: IAssignee) => {
             return {
               pickValue: onlyKey ? assignee.key : assignee,
-              label: assignee.key,
+              label: assignee.key || assignee.displayName,
               description: assignee.displayName
             };
           });
@@ -311,7 +311,7 @@ export default class SelectValuesService {
         const selected = await vscode.window.showQuickPick(picks, {
           matchOnDescription: true,
           matchOnDetail: true,
-          placeHolder: 'Select an issue'
+          placeHolder: 'Select an assignee'
         });
         return selected ? selected.pickValue : '';
       } else {
