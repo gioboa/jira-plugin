@@ -8,11 +8,13 @@ import { IWorkingIssue } from './http.model';
 export default class StatusBarService {
   private workingProjectItem: vscode.StatusBarItem;
   private workingIssueItem: vscode.StatusBarItem;
+  private toggleWorkingIssueTimerItem: vscode.StatusBarItem;
   private intervalId: NodeJS.Timer | undefined;
   private awayTimeout = 30 * 60; // Default to 30 minutes
   constructor() {
-    this.workingIssueItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-    this.workingProjectItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 200);
+    this.toggleWorkingIssueTimerItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    this.workingIssueItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 200);
+    this.workingProjectItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 300);
     this.awayTimeout = configuration.get(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) * 60;
   }
 
@@ -92,12 +94,17 @@ export default class StatusBarService {
 
   public clearWorkingIssueInterval(): void {
     if (this.intervalId) {
+      this.toggleWorkingIssueTimer();
+      if (store.state.workingIssue.issue.key === NO_WORKING_ISSUE.key) {
+        this.toggleWorkingIssueTimerItem.hide();
+      }
       clearInterval(this.intervalId);
     }
   }
 
   public startWorkingIssueInterval(): void {
     this.clearWorkingIssueInterval();
+    this.updateToggleWorkingIssueTimerItem();
     this.intervalId = setInterval(() => {
       if (vscode.window.state.focused || configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.ALWAYS) {
         if (configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
@@ -125,6 +132,18 @@ export default class StatusBarService {
       }
       this.workingIssueItem.text = this.workingIssueItemText(store.state.workingIssue);
     }, 1000);
+  }
+
+  public updateToggleWorkingIssueTimerItem(): void {
+    this.toggleWorkingIssueTimerItem.tooltip = (store.state.workingIssue.stopped ? 'Play' : 'Stop') + ' working issue timer';
+    this.toggleWorkingIssueTimerItem.command = 'jira-plugin.toggleWorkingIssueTimer';
+    this.toggleWorkingIssueTimerItem.text = store.state.workingIssue.stopped ? `$(play)` : `$(primitive-square)`;
+    this.toggleWorkingIssueTimerItem.show();
+  }
+
+  public toggleWorkingIssueTimer(): void {
+    store.state.workingIssue.stopped = !store.state.workingIssue.stopped;
+    this.updateToggleWorkingIssueTimerItem();
   }
 
   public async dispose(): Promise<void> {

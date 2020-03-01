@@ -23,7 +23,8 @@ export default class StoreService {
     workingIssue: {
       issue: new NoWorkingIssuePick().pickValue,
       trackingTime: 0,
-      awayTime: 0
+      awayTime: 0,
+      stopped: false
     }
   };
 
@@ -94,16 +95,18 @@ export default class StoreService {
       await gitIntegration.switchToWorkingTicketBranch(issue);
     }
     const awayTime: number = 0; // FIXME: We don't need awayTime when changing issues, not sure best way to handle this.
-    this.state.workingIssue = { issue, trackingTime, awayTime };
+    this.state.workingIssue = { issue, trackingTime, awayTime, stopped: false };
     statusBar.updateWorkingIssueItem();
   }
 
   public incrementStateWorkingIssueTimePerSecond(): void {
-    this.state.workingIssue.trackingTime += 1;
-    // prevent writing to much on storage
-    if (this.state.workingIssue.trackingTime % 5 === 0) {
-      if (this.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
-        configuration.setGlobalWorkingIssue(this.state.workingIssue);
+    if (!this.state.workingIssue.stopped) {
+      this.state.workingIssue.trackingTime += 1;
+      // prevent writing to much on storage
+      if (this.state.workingIssue.trackingTime % 5 === 0) {
+        if (this.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
+          configuration.setGlobalWorkingIssue(this.state.workingIssue);
+        }
       }
     }
   }

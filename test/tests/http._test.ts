@@ -23,7 +23,8 @@ suite('Jira API', () => {
     workingIssue: {
       issue: new NoWorkingIssuePick().pickValue,
       trackingTime: 0,
-      awayTime: 0
+      awayTime: 0,
+      stopped: false
     }
   };
   interface ITest {

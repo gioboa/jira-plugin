@@ -106,6 +106,7 @@ export interface IWorkingIssue {
   issue: IIssue;
   trackingTime: number;
   awayTime: number;
+  stopped: boolean;
 }
 
 export interface IAddWorkLog {

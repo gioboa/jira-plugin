@@ -116,7 +116,8 @@ suite('Configuration', () => {
         }
       },
       trackingTime: 0,
-      awayTime: 0
+      awayTime: 0,
+      stopped: false
     };
     await configurationService.setGlobalWorkingIssue(workingIssue);
     const storedWOrkingIssue = await configurationService.getGlobalWorkingIssue();
