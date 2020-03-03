@@ -112,7 +112,7 @@ export default class GitIntegrationService {
     if (!!newBranch) {
       const ticket = this.parseTicket(newBranch);
       if (ticket) {
-        const issue = await store.state.jira.getIssueByKey(ticket.issue);
+        const issue = !!ticket.issue ? await this.findIssue(ticket.issue) : undefined;
         // if issue exist and is different from current working issue
         const workingIssueKey = store.state.workingIssue.issue.key;
         if (!!issue && issue.key !== workingIssueKey) {
@@ -131,6 +131,13 @@ export default class GitIntegrationService {
     }
   }
 
+  private async findIssue(issue: string) {
+    return (
+      (await store.state.jira.getIssueByKey(issue.toUpperCase())) ||
+      (await store.state.jira.getIssueByKey(issue.toLocaleLowerCase()))
+    );
+  }
+
   private async onSwitchToWorkingTicketBranch(refs: any[]): Promise<string> {
     let newBranch;
     const action = await vscode.window.showInformationMessage(
@@ -143,12 +150,9 @@ export default class GitIntegrationService {
       if (refs.length === 1) {
         newBranch = refs[0].name;
       } else {
-        const selected = await vscode.window.showQuickPick<CheckoutItem>(
-          refs.map((ref: any) => new CheckoutItem(ref)),
-          {
-            placeHolder: 'Select a branch'
-          }
-        );
+        const selected = await vscode.window.showQuickPick<CheckoutItem>(refs.map((ref: any) => new CheckoutItem(ref)), {
+          placeHolder: 'Select a branch'
+        });
         newBranch = selected ? selected.label : undefined;
       }
     }
@@ -156,7 +160,7 @@ export default class GitIntegrationService {
   }
 
   private parseTicket(branchName: string): { project: string; issue: string } | null {
-    const matched = branchName.match(/([A-Za-z0-9]+)-(\d+)/);
+    const matched = branchName.match(/([A-Za-z0-9.]+)-(\d+)/);
     return (
       matched && {
         project: this.mapProjectKeyIfNeeed(matched[1]),
