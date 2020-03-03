@@ -40,17 +40,7 @@ export default class StatusBarService {
     if (workingIssue.issue.key === NO_WORKING_ISSUE.key) {
       return NO_WORKING_ISSUE.text;
     }
-    let text = `Working Issue: ${workingIssue.issue.key || ''}`;
-    if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER && !!configuration.get(CONFIG.WORKING_ISSUE_SHOW_TIMER)) {
-      text +=
-        ` $(watch) ${utilities.secondsToHHMMSS(workingIssue.trackingTime) || ''}` +
-        (workingIssue.awayTime === 0
-          ? ``
-          : workingIssue.awayTime > 0
-          ? ` $(history) ${utilities.secondsToHHMMSS(this.awayTimeout - workingIssue.awayTime)}`
-          : ` $(history) Away too long, issue timer paused`);
-    }
-    return text;
+    return `Working Issue: ${workingIssue.issue.key || ''}`;
   }
 
   public verifyStoredWorkingIssue(): void {
@@ -130,15 +120,31 @@ export default class StatusBarService {
           }
         }
       }
-      this.workingIssueItem.text = this.workingIssueItemText(store.state.workingIssue);
+      this.toggleWorkingIssueTimerItem.text = this.toggleWorkingIssueTimerItemText(store.state.workingIssue);
     }, 1000);
   }
 
   public updateToggleWorkingIssueTimerItem(): void {
     this.toggleWorkingIssueTimerItem.tooltip = (store.state.workingIssue.stopped ? 'Play' : 'Stop') + ' working issue timer';
     this.toggleWorkingIssueTimerItem.command = 'jira-plugin.toggleWorkingIssueTimer';
-    this.toggleWorkingIssueTimerItem.text = store.state.workingIssue.stopped ? `$(play)` : `$(primitive-square)`;
-    this.toggleWorkingIssueTimerItem.show();
+    this.toggleWorkingIssueTimerItem.text = this.toggleWorkingIssueTimerItemText(store.state.workingIssue);
+    if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER && !!configuration.get(CONFIG.WORKING_ISSUE_SHOW_TIMER)) {
+      this.toggleWorkingIssueTimerItem.show();
+    } else {
+      this.toggleWorkingIssueTimerItem.hide();
+    }
+  }
+
+  private toggleWorkingIssueTimerItemText(workingIssue: IWorkingIssue): string {
+    let text =
+      ` $(watch) ${utilities.secondsToHHMMSS(workingIssue.trackingTime) || ''}` +
+      (workingIssue.awayTime === 0
+        ? ``
+        : workingIssue.awayTime > 0
+        ? ` $(history) ${utilities.secondsToHHMMSS(this.awayTimeout - workingIssue.awayTime)}`
+        : ` $(history) Away too long, issue timer paused`);
+    text += store.state.workingIssue.stopped ? ` $(play)` : ` $(primitive-square)`;
+    return text;
   }
 
   public toggleWorkingIssueTimer(): void {
