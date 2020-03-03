@@ -47,7 +47,7 @@ export default class StoreService {
         notifications.startNotificationsWatcher();
         await vscode.commands.executeCommand('jira-plugin.defaultIssues');
       } else {
-        vscode.window.showWarningMessage("Working project isn't set.");
+        // vscode.window.showWarningMessage("Working project isn't set.");
       }
     } catch (err) {
       configuration.set(CONFIG.WORKING_PROJECT, '');
