@@ -1,3 +1,13 @@
+## 0.20.0
+
+### Features
+
+- added start/stop issue timer
+
+### Bug Fixes
+
+- minor fixes
+
 ## 0.19.0
 
 ### Features
