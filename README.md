@@ -39,7 +39,10 @@
 **jira-plugin** is an open source extension.<br>While being free and open source, if you find it useful, please consider supporting it by donating.<br>**Thanks!**
 
 [[Become a backer](https://opencollective.com/jira-plugin#backers)]
-<a href="https://opencollective.com/jira-plugin#backers" target="_blank"><img src="https://opencollective.com/jira-plugin/backers.svg?width=890"></a>
+<a href="https://opencollective.com/jira-plugin#backers" target="_blank"><img src="https://opencollective.com/jira-plugin/backers.svg?width=890"></a><br><br>
+Your logo will show up here with a link to your website.
+<br><br>
+[<img src="https://blog.wan-ifra.org/sites/default/files/imagecache/default_col_4/field_blog_entry_image/dumont_logo4_0.jpg" width="160">](https://www.dumont.de/)
 
 ## Installation
 
