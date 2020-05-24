@@ -100,7 +100,7 @@ export default class StatusBarService {
         if (configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
           // If we are coming back from an away period catch up our logging time
           // If the away time was > awayTimeout, workingIssue.awayTime will be -1, so we won't log the away time.
-          if (store.state.workingIssue.awayTime && store.state.workingIssue.awayTime > 0) {
+          if (store.state.workingIssue.awayTime && store.state.workingIssue.awayTime > 0 && !store.state.workingIssue.stopped) {
             store.state.workingIssue.trackingTime += store.state.workingIssue.awayTime;
           }
           // Clear the away timer
