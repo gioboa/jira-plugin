@@ -59,9 +59,18 @@ export default class UtilitiesService {
     }
   }
 
-  copyToClipboard(issue: IssueItem) {
-    if (issue) {
-      vscode.env.clipboard.writeText(issue.label || '');
+  copyIssueKeySummary(issueItem: IssueItem) {
+    if (issueItem) {
+      vscode.env.clipboard.writeText(issueItem.label || '');
+      vscode.window.showInformationMessage('Jira Plugin - Copied to clipboard');
+    } else {
+      logger.printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
+    }
+  }
+
+  copyIssueRemoteUrl(issueItem: IssueItem) {
+    if (issueItem) {
+      vscode.env.clipboard.writeText(`${configuration.get(CONFIG.BASE_URL)}/browse/${issueItem.issue.key}` || '');
       vscode.window.showInformationMessage('Jira Plugin - Copied to clipboard');
     } else {
       logger.printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');

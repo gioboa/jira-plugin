@@ -18,7 +18,8 @@
 - Change Jira issue status
 - Change Jira issue assignee
 - Add comment to Jira issue
-- Copy to clipboard Jira Key+Summary
+- Copy to clipboard Jira issue Key+Summary
+- Copy to clipboard Jira issue remote url
 - Checkout or create git branch
 - [Set current working project](#working-project)
 - [Set current working issue](#working-issue)
@@ -39,7 +40,10 @@
 **jira-plugin** is an open source extension.<br>While being free and open source, if you find it useful, please consider supporting it by donating.<br>**Thanks!**
 
 [[Become a backer](https://opencollective.com/jira-plugin#backers)]
-<a href="https://opencollective.com/jira-plugin#backers" target="_blank"><img src="https://opencollective.com/jira-plugin/backers.svg?width=890"></a>
+<a href="https://opencollective.com/jira-plugin#backers" target="_blank"><img src="https://opencollective.com/jira-plugin/backers.svg?width=890"></a><br><br>
+Your logo will show up here with a link to your website.
+<br><br>
+[<img src="https://blog.wan-ifra.org/sites/default/files/imagecache/default_col_4/field_blog_entry_image/dumont_logo4_0.jpg" width="160">](https://www.dumont.de/)
 
 ## Installation
 
@@ -184,8 +188,10 @@ values:<br>
   With this command you can change an issue assignee.<br><br>
 - **Change issue status**<br>
   With this command you can change an issue status.<br><br>
-- **Copy Jira Key+Summary**<br>
-  With this command you can copy to clipboard Jira Key+Summary.<br><br>
+- **Copy Jira issue Key+Summary**<br>
+  With this command you can copy to clipboard Jira issue Key+Summary.<br><br>
+- **Copy Jira issue remote url**<br>
+  With this command you can copy to clipboard Jira issue remote url.<br><br>
 - **Checkout or create git branch**<br>
   Whit this command you can manage git from explorer.<br><br>
 
@@ -217,8 +223,8 @@ If you want to file a bug, contribute some code or improve documentation, read u
 
 ## [Contributors](https://github.com/gioboa/jira-plugin/graphs/contributors)
 
-| [<img src="https://avatars2.githubusercontent.com/u/35845425?v=4" width="50px;" /><br /><sub><b>Giorgio Boa</b></sub>](https://github.com/gioboa) | [<img src="https://avatars1.githubusercontent.com/u/4991612?v=4" width="50px;" /><br /><sub><b>jumpkick</b></sub>](https://github.com/jumpkick)<br /> | [<img src="https://avatars3.githubusercontent.com/u/25907722?v=4" width="50px;" /><br /><sub><b>tiago-pullup</b></sub>](https://github.com/tiago-pullup)<br /> | [<img src="https://avatars1.githubusercontent.com/u/29225316?v=4" width="50px;" /><br /><sub><b>MXM-7</b></sub>](https://github.com/MXM-7)<br /> | [<img src="https://avatars0.githubusercontent.com/u/40208329?v=4" width="50px;" /><br /><sub><b>Diogo Paschoal</b></sub>](https://github.com/diogogeru)<br /> | [<img src="https://avatars3.githubusercontent.com/u/7826229?s=400&v=4" width="50px;" /><br /><sub><b>Ian Mackie</b></sub>](https://github.com/Kaffiend)<br /> | [<img src="https://avatars3.githubusercontent.com/u/2177810?s=400&v=4" width="50px;" /><br/><sub><b>Roman Ostolosh</b></sub>](https://github.com/knicefire)<br/> | [<img src="https://avatars1.githubusercontent.com/u/19175915?s=400&v=4" width="50px;" /><br/><sub><b>Keith Turley</b></sub>](https://github.com/keithturley)<br/> |
-| :-----------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [<img src="https://avatars2.githubusercontent.com/u/35845425?v=4" width="50px;" /><br /><sub><b>Giorgio Boa</b></sub>](https://github.com/gioboa) | [<img src="https://avatars1.githubusercontent.com/u/4991612?v=4" width="50px;" /><br /><sub><b>jumpkick</b></sub>](https://github.com/jumpkick)<br /> | [<img src="https://avatars3.githubusercontent.com/u/25907722?v=4" width="50px;" /><br /><sub><b>tiago-pullup</b></sub>](https://github.com/tiago-pullup)<br /> | [<img src="https://avatars1.githubusercontent.com/u/29225316?v=4" width="50px;" /><br /><sub><b>MXM-7</b></sub>](https://github.com/MXM-7)<br /> | [<img src="https://avatars0.githubusercontent.com/u/40208329?v=4" width="50px;" /><br /><sub><b>Diogo Paschoal</b></sub>](https://github.com/diogogeru)<br /> | [<img src="https://avatars3.githubusercontent.com/u/7826229?s=400&v=4" width="50px;" /><br /><sub><b>Ian Mackie</b></sub>](https://github.com/Kaffiend)<br /> | [<img src="https://avatars3.githubusercontent.com/u/2177810?s=400&v=4" width="50px;" /><br/><sub><b>Roman Ostolosh</b></sub>](https://github.com/knicefire)<br/> | [<img src="https://avatars1.githubusercontent.com/u/19175915?s=400&v=4" width="50px;" /><br/><sub><b>Keith Turley</b></sub>](https://github.com/keithturley)<br/> | [<img src="https://avatars3.githubusercontent.com/u/4190560?s=400&v=4" width="50px;" /><br/><sub><b>jjongman</b></sub>](https://github.com/jjongman)<br/> |
+| :-----------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 
 ## License

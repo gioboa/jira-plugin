@@ -59,7 +59,8 @@ export default {
       registerCommand('jira-plugin.issueAddComment', (issue: IssueItem) => issueAddComment(issue, false)),
       registerCommand('jira-plugin.issueAddInternalComment', (issue: IssueItem) => issueAddComment(issue, true)),
       registerCommand('jira-plugin.openIssue', openIssue),
-      registerCommand('jira-plugin.copyJiraSummary', utilities.copyToClipboard),
+      registerCommand('jira-plugin.copyIssueKeySummary', utilities.copyIssueKeySummary),
+      registerCommand('jira-plugin.copyIssueRemoteUrl', utilities.copyIssueRemoteUrl),
 
       // auxilary commands
       registerCommand('jira-plugin.openGitHubRepo', openGitHubRepo),
