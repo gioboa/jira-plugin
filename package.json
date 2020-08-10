@@ -280,8 +280,13 @@
         "category": "Jira-plugin"
       },
       {
-        "command": "jira-plugin.copyJiraSummary",
-        "title": "Copy Jira Key+Summary",
+        "command": "jira-plugin.copyIssueKeySummary",
+        "title": "Copy Jira issue Key+Summary",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.copyIssueRemoteUrl",
+        "title": "Copy Jira issue remote url",
         "category": "Jira-plugin"
       },
       {
@@ -398,7 +403,12 @@
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },
         {
-          "command": "jira-plugin.copyJiraSummary",
+          "command": "jira-plugin.copyIssueKeySummary",
+          "group": "1_issue",
+          "when": "view == issuesExplorer && viewItem == IssueItem"
+        },
+        {
+          "command": "jira-plugin.copyIssueRemoteUrl",
           "group": "1_issue",
           "when": "view == issuesExplorer && viewItem == IssueItem"
         },

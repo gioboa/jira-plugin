@@ -1,3 +1,13 @@
+## 0.21.0
+
+### Features
+
+- copy Jira Issue remote url to clipboard
+
+### Bug Fixes
+
+- minor fixes
+
 ## 0.20.0
 
 ### Features

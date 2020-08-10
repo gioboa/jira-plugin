@@ -18,7 +18,8 @@
 - Change Jira issue status
 - Change Jira issue assignee
 - Add comment to Jira issue
-- Copy to clipboard Jira Key+Summary
+- Copy to clipboard Jira issue Key+Summary
+- Copy to clipboard Jira issue remote url
 - Checkout or create git branch
 - [Set current working project](#working-project)
 - [Set current working issue](#working-issue)
@@ -187,8 +188,10 @@ values:<br>
   With this command you can change an issue assignee.<br><br>
 - **Change issue status**<br>
   With this command you can change an issue status.<br><br>
-- **Copy Jira Key+Summary**<br>
-  With this command you can copy to clipboard Jira Key+Summary.<br><br>
+- **Copy Jira issue Key+Summary**<br>
+  With this command you can copy to clipboard Jira issue Key+Summary.<br><br>
+- **Copy Jira issue remote url**<br>
+  With this command you can copy to clipboard Jira issue remote url.<br><br>
 - **Checkout or create git branch**<br>
   Whit this command you can manage git from explorer.<br><br>
 
