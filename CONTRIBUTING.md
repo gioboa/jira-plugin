@@ -60,3 +60,28 @@ Must be one of the following:
 - **refactor**: A code change that neither fixes a bug nor adds a feature
 - **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
 - **test**: Adding missing tests or correcting existing tests
+
+## Building standalone local version
+
+To build a standalone local `vsix` file you can install into VSCode, perform the following:
+
+Install vsce:
+
+_Make sure you have Node.js installed. Then run:_
+
+```bash
+npm install -g vsce
+```
+
+Check out the GitHub repo/branch you want.
+
+Depending on the project, you may need to install its dependencies (npm install or whatever package manager you use). Some can be packaged without dependencies.
+
+Run the following in the root of the project (see the official docs for more detail about the process):
+
+```bash
+vsce package  # Generates a .vsix file
+code --install-extension my-extension-0.0.1.vsix
+```
+
+Note: The above instructions were found on [https://stackoverflow.com/a/54409592/5889983](https://stackoverflow.com/a/54409592/5889983)
