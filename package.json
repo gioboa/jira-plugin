@@ -279,6 +279,11 @@
         "category": "Jira-plugin"
       },
       {
+        "command": "jira-plugin.stopWorkingIssue",
+        "title": "Stop Working On Issue",
+        "category": "Jira-plugin"
+      },
+      {
         "command": "jira-plugin.changeIssueStatus",
         "title": "Change issue status",
         "category": "Jira-plugin"
