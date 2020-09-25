@@ -154,6 +154,15 @@
           "description": "Your Jira username or full email for OAuth",
           "default": ""
         },
+        "jira-plugin.workingIssueFilter": {
+          "type": "string",
+          "description": "Choose which internal filter constant is used for 'Select Working Issue' filter. Note: Requires reload on change",
+          "enum": [
+            "WORKING_ISSUES",
+            "ALL"
+          ],
+          "default": "WORKING_ISSUES"
+        },
         "jira-plugin.workingIssueAssignees": {
           "type": "string",
           "description": "Assignees used for extract working issue list (e.g. robert.smith, michael.jones) (n.b: CURRENT_USER is the placeholder for the current user)",
@@ -257,6 +266,21 @@
       {
         "command": "jira-plugin.favouritesFilters",
         "title": "8 - Favourites filters",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.setWorkingProject",
+        "title": "Set Working Project",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.setWorkingIssue",
+        "title": "Set Working Issue",
+        "category": "Jira-plugin"
+      },
+      {
+        "command": "jira-plugin.stopWorkingIssue",
+        "title": "Stop Working On Issue",
         "category": "Jira-plugin"
       },
       {

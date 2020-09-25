@@ -1,3 +1,14 @@
+## x.x.x
+
+### Features
+
+- Added settings option to choose filter for 'Set Working Issue' function to allow for switching to work on any issue in project. (WORKING_ISSUES (default) or ALL)
+- Added ability to stop working on issue and immediately add comment and submit, or quit.
+- Added Command Palette option to 'Set Working Project'
+- Added Command Palette option to 'Set Working Issue'
+- Added Command Palette option to 'Stop Working On Issue'
+- Added color to 'No Working Issue' text in status bar for better visibility
+
 ## 0.21.0
 
 ### Features
