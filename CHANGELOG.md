@@ -1,3 +1,9 @@
+## x.x.x
+
+### Features
+
+- Added settings option to choose filter for 'Set Working Issue' function to allow for switching to work on any issue in project. (WORKING_ISSUES (default) or ALL)
+
 ## 0.21.0
 
 ### Features

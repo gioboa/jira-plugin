@@ -28,7 +28,8 @@ export const CONFIG = {
   WORKING_ISSUE_SHOW_TIMER: 'workingIssueShowTimer',
   WORKING_ISSUE_STATUSES: 'workingIssueStatues',
   WORKING_PROJECT: 'workingProject',
-  WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime'
+  WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime',
+  WORKING_ISSUE_SEARCH_KEY: 'workingIssueFilter'
 };
 
 // all the tracking time mode

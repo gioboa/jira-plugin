@@ -244,8 +244,10 @@ export default class SelectValuesService {
     try {
       if (store.canExecuteJiraAPI()) {
         const project = configuration.get(CONFIG.WORKING_PROJECT);
+        const search_mode_filter = configuration.get(CONFIG.WORKING_ISSUE_SEARCH_KEY);
         if (store.verifyCurrentProject(project)) {
-          const [filter, jql] = await this.getFilterAndJQL(SEARCH_MODE.WORKING_ISSUES, project);
+          const [filter, jql] = await this.getFilterAndJQL(search_mode_filter, project);
+          vscode.window.setStatusBarMessage('Querying Jira for Issues', 3000);
           if (!!jql) {
             // call Jira API
             const issues = await store.state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
