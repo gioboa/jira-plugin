@@ -3,6 +3,8 @@
 ### Features
 
 - Added settings option to choose filter for 'Set Working Issue' function to allow for switching to work on any issue in project. (WORKING_ISSUES (default) or ALL)
+- Added Command Palette option to 'Set Working Project'
+- Added Command Palette option to 'Set Working Issue'
 - Added color to 'No Working Issue' text in status bar for better visibility
 
 ## 0.21.0
