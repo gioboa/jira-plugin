@@ -61,12 +61,14 @@ export default class StatusBarService {
   // setup working issue item
   public updateWorkingIssueItem(): void {
     this.clearWorkingIssueInterval();
+    this.workingIssueItem.color = undefined
     if (store.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
       if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER) {
         this.startWorkingIssueInterval();
       }
     } else {
       // if user select NO_WORKING_ISSUE clear the stored working issue
+      this.workingIssueItem.color = "#FF0000"
       configuration.setGlobalWorkingIssue(undefined);
     }
     this.workingIssueItem.tooltip = this.workingIssueItemTooltip(store.state.workingIssue);
