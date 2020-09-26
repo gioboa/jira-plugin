@@ -132,10 +132,7 @@ export default class GitIntegrationService {
   }
 
   private async findIssue(issue: string) {
-    return (
-      (await store.state.jira.getIssueByKey(issue.toUpperCase())) ||
-      (await store.state.jira.getIssueByKey(issue.toLocaleLowerCase()))
-    );
+    return (await store.state.jira.getIssueByKey(issue.toUpperCase())) || (await store.state.jira.getIssueByKey(issue.toLocaleLowerCase()));
   }
 
   private async onSwitchToWorkingTicketBranch(refs: any[]): Promise<string> {
