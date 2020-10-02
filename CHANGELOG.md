@@ -1,3 +1,9 @@
+## 0.22.x
+
+### Bug Fixes
+
+- Added work log time begins at submitted time
+
 ## 0.22.0
 
 ### Features

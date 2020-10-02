@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { logger, store } from '../services';
+import { logger, store, utilities } from '../services';
 import { NO_WORKING_ISSUE } from '../shared/constants';
 import openIssue from './open-issue';
 
@@ -8,10 +8,13 @@ export default async function issueAddWorklog(issueKey: string, timeSpentSeconds
     if (issueKey !== NO_WORKING_ISSUE.key) {
       if (store.canExecuteJiraAPI()) {
         // call Jira API
+        const actualTimeSpentSeconds = Math.ceil(timeSpentSeconds / 60) * 60;
+        const startedTime = new Date(Date.now() - actualTimeSpentSeconds * 1000);
         const response = await store.state.jira.addWorkLog({
           issueKey,
-          timeSpentSeconds: Math.ceil(timeSpentSeconds / 60) * 60,
-          comment
+          timeSpentSeconds: actualTimeSpentSeconds,
+          comment,
+          started: utilities.dateToLocalISO(startedTime),
         });
         const action = await vscode.window.showInformationMessage(`Worklog added`, 'Open in browser');
         if (action === 'Open in browser') {
