@@ -11,7 +11,7 @@ export default class UtilitiesService {
   addStatusIcon(status: string, withDescription: boolean): string {
     let icon = STATUS_ICONS.DEFAULT.icon;
     if (!!status) {
-      Object.values(STATUS_ICONS).forEach(value => {
+      Object.values(STATUS_ICONS).forEach((value) => {
         if (status.toUpperCase().indexOf(value.text.toUpperCase()) !== -1) {
           icon = value.icon;
         }
@@ -80,7 +80,7 @@ export default class UtilitiesService {
   insertWorkingIssueComment() {
     const editor = vscode.window.activeTextEditor;
     if (editor && store.state.workingIssue) {
-      editor.edit(edit => {
+      editor.edit((edit) => {
         const workingIssue = store.state.workingIssue;
         edit.insert(editor.selection.active, `// ${workingIssue.issue.key} - ${workingIssue.issue.fields.summary}`);
       });
@@ -112,5 +112,16 @@ export default class UtilitiesService {
       projects = projects.filter((project: IProject) => projectsToShow.includes(project.key));
     }
     return projects;
+  }
+
+  dateToLocalISO(date: Date): string {
+    const off = date.getTimezoneOffset();
+    const absoff = Math.abs(off);
+    return (
+      new Date(date.getTime() - off * 60 * 1000).toISOString().substr(0, 23) +
+      (off > 0 ? '-' : '+') +
+      (absoff / 60).toFixed(0).padStart(2, '0') +
+      (absoff % 60).toString().padStart(2, '0')
+    );
   }
 }

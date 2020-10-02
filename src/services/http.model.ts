@@ -113,6 +113,7 @@ export interface IAddWorkLog {
   issueKey: string;
   timeSpentSeconds: number;
   comment?: string;
+  started: string;
 }
 
 export interface IIssueType {
