@@ -39,7 +39,7 @@ class BranchWatcher extends EventEmitter {
 
 export default class GitIntegrationService {
   public EVENTS = {
-    BRANCH_CHANGED: 'branch:changed'
+    BRANCH_CHANGED: 'branch:changed',
   };
 
   private enabled = false;
@@ -82,7 +82,7 @@ export default class GitIntegrationService {
     const enum RefType {
       Head,
       RemoteHead,
-      Tag
+      Tag,
     }
     const activated = await this.gitExtension.activate();
     const api = activated.getAPI(1);
@@ -147,9 +147,12 @@ export default class GitIntegrationService {
       if (refs.length === 1) {
         newBranch = refs[0].name;
       } else {
-        const selected = await vscode.window.showQuickPick<CheckoutItem>(refs.map((ref: any) => new CheckoutItem(ref)), {
-          placeHolder: 'Select a branch'
-        });
+        const selected = await vscode.window.showQuickPick<CheckoutItem>(
+          refs.map((ref: any) => new CheckoutItem(ref)),
+          {
+            placeHolder: 'Select a branch',
+          }
+        );
         newBranch = selected ? selected.label : undefined;
       }
     }
@@ -161,7 +164,7 @@ export default class GitIntegrationService {
     return (
       matched && {
         project: this.mapProjectKeyIfNeeed(matched[1]),
-        issue: this.mapProjectKeyIfNeeed(matched[0])
+        issue: this.mapProjectKeyIfNeeed(matched[0]),
       }
     );
   }

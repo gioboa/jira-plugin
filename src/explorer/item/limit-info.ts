@@ -14,7 +14,7 @@ export class LimitInfoItem extends vscode.TreeItem {
   private icon(status: string): string {
     let icon = STATUS_ICONS.DEFAULT.file;
     if (!!status) {
-      Object.values(STATUS_ICONS).forEach(value => {
+      Object.values(STATUS_ICONS).forEach((value) => {
         if (status.toUpperCase().indexOf(value.text.toUpperCase()) !== -1) {
           icon = value.file;
         }
@@ -25,7 +25,7 @@ export class LimitInfoItem extends vscode.TreeItem {
 
   iconPath = {
     light: utilities.getIconsPath(`light/${STATUS_ICONS.DEFAULT.file}`),
-    dark: utilities.getIconsPath(`dark/${STATUS_ICONS.DEFAULT.file}`)
+    dark: utilities.getIconsPath(`dark/${STATUS_ICONS.DEFAULT.file}`),
   };
 
   contextValue = 'LimitInfoItem';

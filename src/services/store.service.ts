@@ -18,14 +18,14 @@ export default class StoreService {
     issues: [],
     currentSearch: {
       filter: LOADING.text,
-      jql: ''
+      jql: '',
     },
     workingIssue: {
       issue: new NoWorkingIssuePick().pickValue,
       trackingTime: 0,
       awayTime: 0,
-      stopped: false
-    }
+      stopped: false,
+    },
   };
 
   public async connectToJira(): Promise<void> {
@@ -118,10 +118,10 @@ export default class StoreService {
         const list = additionalStatuses.split(',');
         list.forEach((status: string) => {
           const newStatus = status.trim();
-          if (!!newStatus && !this.state.statuses.find(el => el.name.toLowerCase() === newStatus.toLowerCase())) {
+          if (!!newStatus && !this.state.statuses.find((el) => el.name.toLowerCase() === newStatus.toLowerCase())) {
             this.state.statuses.push({
               description: newStatus,
-              name: newStatus
+              name: newStatus,
             });
           }
         });

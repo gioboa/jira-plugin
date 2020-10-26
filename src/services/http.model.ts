@@ -96,6 +96,7 @@ export interface IAssignee {
 
 export interface IAddComment {
   body: string;
+  properties?: { key: string; value: any }[];
 }
 
 export interface IAddCommentResponse {

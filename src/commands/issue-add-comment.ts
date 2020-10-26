@@ -9,7 +9,7 @@ export default async function issueAddComment(issueItem: IssueItem, markAsIntern
       let issue = issueItem.issue;
       let text = await vscode.window.showInputBox({
         ignoreFocusOut: true,
-        placeHolder: 'Comment text...'
+        placeHolder: 'Comment text...',
       });
       if (!!text) {
         // ask for assignee if there is one or more [@] in the comment
@@ -32,10 +32,10 @@ export default async function issueAddComment(issueItem: IssueItem, markAsIntern
                 {
                   key: 'sd.public.comment',
                   value: {
-                    internal: true
-                  }
-                }
-              ]
+                    internal: true,
+                  },
+                },
+              ],
             };
         const response = await store.state.jira.addNewComment({ issueKey: issue.key, comment });
         await vscode.commands.executeCommand('jira-plugin.refresh');

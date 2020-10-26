@@ -18,14 +18,14 @@ export default class NoWorkingIssuePick implements QuickPickItem {
       fields: {
         summary: '',
         status: {
-          name: ''
+          name: '',
         },
         project: {
           id: '',
           key: '',
-          name: ''
-        }
-      }
+          name: '',
+        },
+      },
     };
   }
 }

@@ -68,7 +68,7 @@ export default {
       registerCommand('jira-plugin.openGitHubRepo', openGitHubRepo),
 
       // git integration commands
-      registerCommand('jira-plugin.checkoutGitBranch', gitIntegration.invokeCheckoutBranch)
+      registerCommand('jira-plugin.checkoutGitBranch', gitIntegration.invokeCheckoutBranch),
     ];
-  }
+  },
 };

@@ -29,7 +29,7 @@ export const CONFIG = {
   WORKING_ISSUE_STATUSES: 'workingIssueStatues',
   WORKING_PROJECT: 'workingProject',
   WORKLOG_MINIMUM_TRACKING_TIME: 'worklogMinimumTrackingTime',
-  WORKING_ISSUE_SEARCH_KEY: 'workingIssueFilter'
+  WORKING_ISSUE_SEARCH_KEY: 'workingIssueFilter',
 };
 
 // all the tracking time mode
@@ -37,7 +37,7 @@ export const TRACKING_TIME_MODE = {
   HYBRID: 'hybrid',
   ALWAYS: 'always',
   VSCODE_FOCUS: 'vsCodeFocus',
-  NEVER: 'never'
+  NEVER: 'never',
 };
 
 export const DEFAULT_WORKING_ISSUE_STATUS = 'In progress';
@@ -51,7 +51,7 @@ export const ACTIONS = {
   LATER: 'Later',
   CLOSE: 'Close',
   MARK_AS_READ: 'Mark as read',
-  OPEN_ISSUE: 'Open issue'
+  OPEN_ISSUE: 'Open issue',
 };
 
 // all the search types
@@ -67,7 +67,7 @@ export const SEARCH_MODE = {
   FAVOURITES_FILTERS: 'FAVOURITES_FILTERS',
   SUMMARY: 'SUMMARY',
   REFRESH: 'REFRESH',
-  AUTO_REFRESH: 'AUTO_REFRESH'
+  AUTO_REFRESH: 'AUTO_REFRESH',
 };
 
 // status icons, used for show the correct icon
@@ -82,7 +82,7 @@ export const STATUS_ICONS = {
   ESTIMATED: { text: 'ESTIMATED', icon: '$(book)', file: 'book.png' },
   REMARKED: { text: 'REMARKED', icon: '$(eye)', file: 'eye.png' },
   APPROVED: { text: 'APPROVED', icon: '$(thumbsup)', file: 'thumbsup.png' },
-  DEFAULT: { text: 'DEFAULT', icon: '$(info)', file: 'info.png' }
+  DEFAULT: { text: 'DEFAULT', icon: '$(info)', file: 'info.png' },
 };
 
 export const LOADING = { text: 'LOADING', file: 'cloud.png' };
@@ -99,5 +99,5 @@ export const GROUP_BY_FIELDS = {
   ASSIGNEE: { label: 'Assignee', value: 'assignee' },
   TYPE: { label: 'Type', value: 'issuetype' },
   PRIORITY: { label: 'Priority', value: 'priority' },
-  UPDATED: { label: 'Updated', value: 'updated' }
+  UPDATED: { label: 'Updated', value: 'updated' },
 };

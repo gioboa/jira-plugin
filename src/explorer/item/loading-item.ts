@@ -13,7 +13,7 @@ export class LoadingItem extends vscode.TreeItem {
 
   iconPath = {
     light: utilities.getIconsPath(`light/${LOADING.file}`),
-    dark: utilities.getIconsPath(`dark/${LOADING.file}`)
+    dark: utilities.getIconsPath(`dark/${LOADING.file}`),
   };
 
   contextValue = 'LoadingItem';

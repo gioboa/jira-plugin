@@ -11,7 +11,7 @@ import {
   NO_WORKING_ISSUE,
   SEARCH_MAX_RESULTS,
   SEARCH_MODE,
-  UNASSIGNED
+  UNASSIGNED,
 } from '../shared/constants';
 import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from './http.model';
 
@@ -26,10 +26,10 @@ export default class SelectValuesService {
           store.state.projects = utilities.hideProjects(utilities.projectsToShow(await store.state.jira.getProjects()));
           utilities.createDocumentLinkProvider(store.state.projects);
         }
-        const picks = store.state.projects.map(project => ({
+        const picks = store.state.projects.map((project) => ({
           pickValue: project.key,
           label: project.key,
-          description: project.name
+          description: project.name,
         }));
         const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Set working project`, matchOnDescription: true });
         return selected ? selected.pickValue : '';
@@ -43,10 +43,10 @@ export default class SelectValuesService {
   // selection for statuses
   public async selectStatus(): Promise<string> {
     if (store.canExecuteJiraAPI()) {
-      const picks = store.state.statuses.map(status => ({
+      const picks = store.state.statuses.map((status) => ({
         pickValue: status.name,
         label: utilities.addStatusIcon(status.name, true),
-        description: status.description
+        description: status.description,
       }));
       const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Filter by STATUS`, matchOnDescription: true });
       return selected ? selected.pickValue : '';
@@ -78,7 +78,7 @@ export default class SelectValuesService {
           configuration
             .get(CONFIG.DEFAULT_JQL_SEARCH)
             .toString()
-            .replace(/WORKING_PROJECT/g, project)
+            .replace(/WORKING_PROJECT/g, project),
         ];
       }
       case SEARCH_MODE.ALL: {
@@ -103,7 +103,7 @@ export default class SelectValuesService {
         if (!!status) {
           return [
             `STATUS: ${status} ASSIGNEE: you`,
-            `project = '${project}' AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`
+            `project = '${project}' AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`,
           ];
         }
         break;
@@ -115,7 +115,7 @@ export default class SelectValuesService {
             `STATUS: ${status} ASSIGNEE: ${assignee}`,
             `project = '${project}' AND status = '${status}' AND assignee = ${
               assignee !== UNASSIGNED ? `'${assignee}'` : `null`
-            } ORDER BY status ASC, updated DESC`
+            } ORDER BY status ASC, updated DESC`,
           ];
         }
         break;
@@ -136,13 +136,13 @@ export default class SelectValuesService {
         const assignees = configuration.workingIssueAssignees();
         return [
           `STATUS: ${statuses}, ASSIGNEES: ${assignees}`,
-          `project = '${project}' AND status in (${statuses}) AND assignee in (${assignees}) ORDER BY status ASC, updated DESC`
+          `project = '${project}' AND status in (${statuses}) AND assignee in (${assignees}) ORDER BY status ASC, updated DESC`,
         ];
       }
       case SEARCH_MODE.CURRENT_SPRINT: {
         return [
           `CURRENT SPRINT`,
-          `project = '${project}' AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`
+          `project = '${project}' AND sprint in openSprints() and sprint not in futureSprints() ORDER BY status ASC, updated ASC`,
         ];
       }
     }
@@ -186,7 +186,7 @@ export default class SelectValuesService {
             const maxResults = Math.min(configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST), SEARCH_MAX_RESULTS);
             const searchResult = await store.state.jira.search({
               jql,
-              maxResults
+              maxResults,
             });
             logger.jiraPluginDebugLog(`issues`, JSON.stringify(searchResult));
             if (this.isAutoRefreshEnabled) {
@@ -252,15 +252,15 @@ export default class SelectValuesService {
             // call Jira API
             const issues = await store.state.jira.search({ jql, maxResults: SEARCH_MAX_RESULTS });
             if (issues.issues && issues.issues.length > 0) {
-              const picks = issues.issues.map(issue => ({
+              const picks = issues.issues.map((issue) => ({
                 pickValue: issue,
                 label: utilities.addStatusIcon(issue.fields.status.name, false) + ` ${issue.key}`,
-                description: issue.fields.summary
+                description: issue.fields.summary,
               }));
               picks.unshift(new NoWorkingIssuePick());
               const selected = await vscode.window.showQuickPick(picks, {
                 placeHolder: `Your working issue list`,
-                matchOnDescription: true
+                matchOnDescription: true,
               });
               return selected ? selected.pickValue : undefined;
             } else {
@@ -270,7 +270,7 @@ export default class SelectValuesService {
                 const picks = [new NoWorkingIssuePick()];
                 const selected = await vscode.window.showQuickPick(picks, {
                   placeHolder: `Your working issue list`,
-                  matchOnDescription: true
+                  matchOnDescription: true,
                 });
                 return selected ? selected.pickValue : undefined;
               }
@@ -301,7 +301,7 @@ export default class SelectValuesService {
             return {
               pickValue: onlyKey ? assignee.key : assignee,
               label: assignee.key || assignee.displayName,
-              description: assignee.displayName
+              description: assignee.displayName,
             };
           });
         if (back) {
@@ -313,7 +313,7 @@ export default class SelectValuesService {
         const selected = await vscode.window.showQuickPick(picks, {
           matchOnDescription: true,
           matchOnDetail: true,
-          placeHolder: 'Select an assignee'
+          placeHolder: 'Select an assignee',
         });
         return selected ? selected.pickValue : '';
       } else {
@@ -329,15 +329,15 @@ export default class SelectValuesService {
   public async selectTransition(issueKey: string): Promise<string | null | undefined> {
     try {
       const transitions = await store.state.jira.getTransitions(issueKey);
-      const picks = transitions.transitions.map(transition => ({
+      const picks = transitions.transitions.map((transition) => ({
         pickValue: transition.id,
         label: transition.name,
         description: '',
-        transition
+        transition,
       }));
       const selected = await vscode.window.showQuickPick(picks, {
         placeHolder: `Select transition to execute for ${issueKey}`,
-        matchOnDescription: true
+        matchOnDescription: true,
       });
       return selected ? selected.pickValue : undefined;
     } catch (err) {
@@ -381,16 +381,16 @@ export default class SelectValuesService {
   public async selectIssueType(ignoreFocusOut: boolean, preLoadedPicks: IIssueType[]): Promise<IIssueType | undefined> {
     try {
       const types = preLoadedPicks || (await store.state.jira.getAllIssueTypes());
-      const picks = (types || []).map(type => ({
+      const picks = (types || []).map((type) => ({
         pickValue: type,
         label: type.name,
         description: '',
-        type
+        type,
       }));
       const selected = await vscode.window.showQuickPick(picks, {
         placeHolder: `Select type`,
         matchOnDescription: true,
-        ignoreFocusOut
+        ignoreFocusOut,
       });
       return selected ? selected.pickValue : undefined;
     } catch (err) {
@@ -408,16 +408,16 @@ export default class SelectValuesService {
           const favFilters = await store.state.jira.getFavoriteFilters();
           if (favFilters && favFilters.length > 0) {
             const selected = await vscode.window.showQuickPick(
-              favFilters.map(filter => {
+              favFilters.map((filter) => {
                 return {
                   label: filter.name,
                   description: filter.description,
-                  pickValue: filter
+                  pickValue: filter,
                 };
               }),
               {
                 placeHolder: `Select favourite filter`,
-                matchOnDescription: true
+                matchOnDescription: true,
               }
             );
             return selected ? selected.pickValue : undefined;
@@ -443,7 +443,7 @@ export default class SelectValuesService {
     picks.push({ ...GROUP_BY_FIELDS.UPDATED });
     const selected = await vscode.window.showQuickPick(picks, {
       placeHolder: `Select Group By field`,
-      matchOnDescription: true
+      matchOnDescription: true,
     });
     issuesExplorer.setGroupByField(selected || undefined);
     await vscode.commands.executeCommand('jira-plugin.refresh');
