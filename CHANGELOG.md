@@ -1,3 +1,9 @@
+## 0.22.2
+
+### Bug Fixes
+
+- Fixed add comment feature
+
 ## 0.22.1
 
 ### Bug Fixes
