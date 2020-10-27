@@ -50,7 +50,7 @@ export default async function setWorkingIssue(storedWorkingIssue: IWorkingIssue,
           action === ACTIONS.YES_WITH_COMMENT
             ? await vscode.window.showInputBox({
                 ignoreFocusOut: true,
-                placeHolder: 'Add worklog comment...'
+                placeHolder: 'Add worklog comment...',
               })
             : '';
         if (action === ACTIONS.YES || action === ACTIONS.YES_WITH_COMMENT) {

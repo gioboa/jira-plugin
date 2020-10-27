@@ -20,11 +20,11 @@ export default async function createIssue(issueItem: IssueItem): Promise<void> {
           // user cannot modify the values
           issueHelper.populateRequest({
             issuetype: {
-              id: issueHelper.issueTypeSelected.id
+              id: issueHelper.issueTypeSelected.id,
             },
             project: {
-              key: project
-            }
+              key: project,
+            },
           });
           let loopStatus = issueHelper.NEW_ISSUE_STATUS.CONTINUE;
           // this variable is used for retrieve only one time the available values inside the loop
@@ -54,7 +54,7 @@ export default async function createIssue(issueItem: IssueItem): Promise<void> {
                       ? issueHelper.newIssueIstance[fieldName].toString()
                       : `Insert ${field.name}`,
                     pickValue: field,
-                    fieldSchema: field.schema
+                    fieldSchema: field.schema,
                   });
                 }
               }
@@ -65,23 +65,23 @@ export default async function createIssue(issueItem: IssueItem): Promise<void> {
               {
                 field: issueHelper.NEW_ISSUE_FIELDS.DIVIDER.field,
                 label: issueHelper.NEW_ISSUE_FIELDS.DIVIDER.label,
-                description: issueHelper.NEW_ISSUE_FIELDS.DIVIDER.description
+                description: issueHelper.NEW_ISSUE_FIELDS.DIVIDER.description,
               },
               {
                 field: issueHelper.NEW_ISSUE_FIELDS.INSERT_ISSUE.field,
                 label: issueHelper.NEW_ISSUE_FIELDS.INSERT_ISSUE.label,
-                description: issueHelper.NEW_ISSUE_FIELDS.INSERT_ISSUE.description
+                description: issueHelper.NEW_ISSUE_FIELDS.INSERT_ISSUE.description,
               },
               {
                 field: issueHelper.NEW_ISSUE_FIELDS.EXIT.field,
                 label: issueHelper.NEW_ISSUE_FIELDS.EXIT.label,
-                description: issueHelper.NEW_ISSUE_FIELDS.EXIT.description
+                description: issueHelper.NEW_ISSUE_FIELDS.EXIT.description,
               }
             );
             // second selector with all the fields
             const fieldToModifySelection = await vscode.window.showQuickPick(newIssuePicks, {
               placeHolder: `Insert Jira issue`,
-              matchOnDescription: true
+              matchOnDescription: true,
             });
             // manage the selected field from selector
             if (!!fieldToModifySelection && fieldToModifySelection.field !== issueHelper.NEW_ISSUE_FIELDS.DIVIDER.field) {
@@ -116,11 +116,11 @@ export default async function createIssue(issueItem: IssueItem): Promise<void> {
 // from the preloaded values we generate selector items
 const generatePicks = (values: any[]) => {
   return values
-    .map(value => {
+    .map((value) => {
       return {
         pickValue: value,
         label: issueHelper.getPickValue(value),
-        description: value.description || value.summary || ''
+        description: value.description || value.summary || '',
       };
     })
     .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0));
@@ -138,7 +138,7 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
           value:
             fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}`
               ? fieldToModifySelection.description
-              : undefined
+              : undefined,
         });
         // update user choices
         issueHelper.newIssueIstance[fieldToModifySelection.field] = text;
@@ -146,12 +146,12 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
         if (issueHelper.isIssueTimetrackingOriginalEstimateField(fieldToModifySelection.field)) {
           issueHelper.requestJson[issueHelper.timetrakingJsonField] = {
             ...issueHelper.requestJson[issueHelper.timetrakingJsonField],
-            originalEstimate: text
+            originalEstimate: text,
           };
         } else if (issueHelper.isIssueTimetrackingRemainingEstimateField(fieldToModifySelection.field)) {
           issueHelper.requestJson[issueHelper.timetrakingJsonField] = {
             ...issueHelper.requestJson[issueHelper.timetrakingJsonField],
-            remainingEstimate: text
+            remainingEstimate: text,
           };
         } else {
           issueHelper.requestJson[fieldToModifySelection.field] = text;
@@ -167,7 +167,7 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
           value:
             fieldToModifySelection.description !== `Insert ${fieldToModifySelection.pickValue.name}`
               ? fieldToModifySelection.description
-              : undefined
+              : undefined,
         });
         if (!!text) {
           // update user choices
@@ -189,7 +189,7 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
           {
             placeHolder: `Insert value`,
             matchOnDescription: true,
-            canPickMany
+            canPickMany,
           }
         );
         // clear previous selection
@@ -238,9 +238,9 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
             const values = newValueSelected.map((value: any) => value.pickValue[jsonField]);
             issueHelper.requestJson[fieldToModifySelection.field] = !canPickMany
               ? {
-                  [jsonField]: values[0]
+                  [jsonField]: values[0],
                 }
-              : values.map(value => {
+              : values.map((value) => {
                   return { [jsonField]: value };
                 });
           }

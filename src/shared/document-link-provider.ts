@@ -23,7 +23,7 @@ export class IssueLinkProvider implements vscode.DocumentLinkProvider {
   }
 
   private getMatchesOnLine(baseUrl: string, line: string, lineNo: number, matches: vscode.DocumentLink[]): vscode.DocumentLink[] {
-    this.projects.forEach(project => {
+    this.projects.forEach((project) => {
       const expr = new RegExp(`${project.key}-\\d+`, 'gi');
       let match;
       while (true) {
@@ -37,7 +37,7 @@ export class IssueLinkProvider implements vscode.DocumentLinkProvider {
         );
         matches.push({
           range,
-          target: vscode.Uri.parse(`${baseUrl}/browse/${match[0]}`)
+          target: vscode.Uri.parse(`${baseUrl}/browse/${match[0]}`),
         });
       }
     });

@@ -10,7 +10,7 @@ export class IssueItem extends vscode.TreeItem {
     super(`${issue.key} - ${issue.fields.summary}`, vscode.TreeItemCollapsibleState.None);
     if (configuration.get(CONFIG.GROUP_TASK_AND_SUBTASKS) && this.isCollapsible(issue)) {
       this.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-      this.label += ' - subtasks: ' + (issue.fields.subtasks || []).map(issue => issue.key).join(', ');
+      this.label += ' - subtasks: ' + (issue.fields.subtasks || []).map((issue) => issue.key).join(', ');
     }
   }
 

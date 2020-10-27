@@ -18,7 +18,7 @@ export default async function stopWorkingIssue(storedWorkingIssue: IWorkingIssue
       // To re-implement being asked if you want to store a comment, remove the following let, uncomment until the if (!!comment) and replace it with the if (action...)
       let comment = await vscode.window.showInputBox({
         ignoreFocusOut: true,
-        placeHolder: 'Add worklog comment...'
+        placeHolder: 'Add worklog comment...',
       });
       // let action = await vscode.window.showInformationMessage(
       //   `Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${utilities.secondsToHHMMSS(

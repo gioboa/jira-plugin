@@ -13,9 +13,9 @@ export default async function changeIssueStatus(issueItem: IssueItem): Promise<v
           issueKey: issue.key,
           transition: {
             transition: {
-              id: newTransitionId
-            }
-          }
+              id: newTransitionId,
+            },
+          },
         });
         await vscode.commands.executeCommand('jira-plugin.refresh');
       }

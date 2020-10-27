@@ -7,7 +7,7 @@ import {
   CONFIG_WORKING_ISSUE,
   CREDENTIALS_SEPARATOR,
   DEFAULT_WORKING_ISSUE_ASSIGNEE,
-  DEFAULT_WORKING_ISSUE_STATUS
+  DEFAULT_WORKING_ISSUE_STATUS,
 } from '../shared/constants';
 import { IConfiguration } from './configuration.model';
 import { IStatus, IWorkingIssue } from './http.model';
@@ -118,7 +118,7 @@ export default class ConfigurationService {
       .split(',')
       .map((status: string) => status.trim())
       .filter((status: string) =>
-        (statuses || store.state.statuses).some(stateStatus => stateStatus.name.toLowerCase() === status.toLowerCase())
+        (statuses || store.state.statuses).some((stateStatus) => stateStatus.name.toLowerCase() === status.toLowerCase())
       );
     return statusList && statusList.length > 0
       ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')

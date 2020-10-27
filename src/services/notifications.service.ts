@@ -23,7 +23,7 @@ export default class NotificationService {
           if (!!response.data && !!response.data.length) {
             for (let notification of response.data) {
               // when I found the same notification id I assume that all notifications are already saved
-              const storedNotification = this.notifications.find(n => n.id === notification.id);
+              const storedNotification = this.notifications.find((n) => n.id === notification.id);
               if (!storedNotification) {
                 this.notifications.push(notification);
               } else {
@@ -49,7 +49,7 @@ export default class NotificationService {
   private parseTemplate(notification: INotification): string {
     const templateWords = (notification.template || '').split(' ');
     const words: string[] = [];
-    templateWords.forEach(word => {
+    templateWords.forEach((word) => {
       if (new RegExp(/{.*}/).test(word)) {
         word = word.replace(/[{}]/g, '');
         if (!!notification.metadata && !!(<any>notification.metadata)[word].name) {
@@ -68,10 +68,10 @@ export default class NotificationService {
 
   private showUnReadNotifications(notifications: INotification[]): void {
     notifications
-      .filter(notification => notification.readState.toUpperCase() === 'UNREAD')
-      .forEach(notification => {
+      .filter((notification) => notification.readState.toUpperCase() === 'UNREAD')
+      .forEach((notification) => {
         if (!!notification.template) {
-          if (!this.showedIds.some(id => id === notification.id)) {
+          if (!this.showedIds.some((id) => id === notification.id)) {
             const message = `${this.parseTemplate(notification)} - ${notification.title || ''}`;
             const issueKey =
               !!(<any>notification.metadata)['issue'] && !!(<any>notification.metadata)['issue'].issueKey
@@ -88,16 +88,16 @@ export default class NotificationService {
                 switch (action) {
                   case ACTIONS.OPEN_ISSUE:
                     openIssue(issueKey);
-                    this.showedIds = this.showedIds.filter(id => id !== notification.id);
+                    this.showedIds = this.showedIds.filter((id) => id !== notification.id);
                     break;
                   case ACTIONS.MARK_AS_READ:
                     const response = await store.state.jira.markNotificationsAsReadUnread({
                       ids: [notification.id],
-                      toState: 'READ'
+                      toState: 'READ',
                     });
                     if (response === '') {
                       notification.readState = 'read';
-                      this.showedIds = this.showedIds.filter(id => id !== notification.id);
+                      this.showedIds = this.showedIds.filter((id) => id !== notification.id);
                     }
                     break;
                 }

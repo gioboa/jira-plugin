@@ -23,7 +23,7 @@ import {
   ISetTransition,
   ISprint,
   IStatus,
-  ITransitions
+  ITransitions,
 } from './http.model';
 
 const jiraClient = require('jira-connector');
@@ -61,7 +61,7 @@ export class Jira implements IJira {
       protocol,
       basic_auth: configuration.credentials,
       timeout: configuration.get(CONFIG.REQUESTS_TIMEOUT) * 1000 * 60,
-      strictSSL: strictSSL !== '' ? strictSSL === 'true' : undefined
+      strictSSL: strictSSL !== '' ? strictSSL === 'true' : undefined,
     });
 
     patchJiraInstance(this.jiraInstance);
@@ -143,7 +143,7 @@ export class Jira implements IJira {
   }
 
   async addNewComment(params: { issueKey: string; comment: IAddComment }): Promise<IAddCommentResponse> {
-    return await this.jiraInstance.issue.addComment(params);
+    return await this.jiraInstance.issue.addComment({ ...params, body: params.comment.body, properties: params.comment.properties });
   }
 
   async addWorkLog(params: IAddWorkLog): Promise<void> {
@@ -165,7 +165,7 @@ export class Jira implements IJira {
   async getAllIssueTypesWithFields(project: string): Promise<IIssueType[]> {
     const response = await this.jiraInstance.issue.getCreateMetadata({
       projectKeys: project,
-      expand: 'projects.issuetypes.fields'
+      expand: 'projects.issuetypes.fields',
     } as ICreateMetadata);
     if (!!response.projects && response.projects.length > 0) {
       return response.projects[0].issuetypes;
@@ -205,7 +205,7 @@ export class Jira implements IJira {
         `/gateway/api/notification-log/api/2/notifications?direct=true&includeContent=false${!!lastId ? '&after=' + lastId : ''}`,
       {
         cookie: `${cloudSession.name}=${cloudSession.value}`,
-        deleteAuth: 'TRUE'
+        deleteAuth: 'TRUE',
       },
       {}
     );
@@ -219,7 +219,7 @@ export class Jira implements IJira {
       {
         cookie: `${cloudSession.name}=${cloudSession.value}`,
         deleteAuth: 'TRUE',
-        Origin: this.baseUrl
+        Origin: this.baseUrl,
       },
       payload
     );

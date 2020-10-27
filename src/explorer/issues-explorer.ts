@@ -55,7 +55,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
         const description = this.descPropertyFromField(item.issue.fields[field.value]);
         if (
           !groupItems.find(
-            el => el.item.contextValue === new GroupItem('', '').contextValue && this.getLabel(field.label, description) === el.item.label
+            (el) => el.item.contextValue === new GroupItem('', '').contextValue && this.getLabel(field.label, description) === el.item.label
           )
         ) {
           groupItems.push({ index, item: new GroupItem(this.getLabel(field.label, description), description) });
@@ -63,7 +63,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
       }
     });
     let pushed = 0;
-    groupItems.forEach(groupItem => {
+    groupItems.forEach((groupItem) => {
       items.splice(groupItem.index + pushed, 0, groupItem.item);
       pushed += 1;
     });
@@ -81,7 +81,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
         const subtasksKeysToRemove: string[] = [];
         // check if subtasks has same field group value
         for (let subtask of issue.fields.subtasks) {
-          const issuesElement = issues.find(issue => issue.key === subtask.key);
+          const issuesElement = issues.find((issue) => issue.key === subtask.key);
           // if isn't in issue list in not filter compliant
           if (!issuesElement) {
             subtasksKeysToRemove.push(subtask.key);
@@ -100,7 +100,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
         // if subtask has different group field value I will delete from subtasks list and I will change issue label
         issue.fields.subtasks = issue.fields.subtasks.filter((subtask: IIssue) => !subtasksKeysToRemove.includes(subtask.key));
         for (let subtaskKey of subtasksKeysToRemove) {
-          const element = issues.find(issue => issue.key === subtaskKey);
+          const element = issues.find((issue) => issue.key === subtaskKey);
           if (element) {
             element.fields.summary += ` - Parent Task: ${issue.key}`;
           }
@@ -117,7 +117,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
       let issues = store.state.issues;
       // generate all the item from issues saved in global state
       if (issues.length > 0) {
-        if (issues.some(issue => !issue.fields.hasOwnProperty(this.groupByField.value))) {
+        if (issues.some((issue) => !issue.fields.hasOwnProperty(this.groupByField.value))) {
           logger.printErrorMessageInOutputAndShowAlert(
             `Invalid grouping field: ${this.groupByField.value} - fallback is ${this.fallbackGroupByField.label}`
           );
@@ -131,11 +131,11 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
 
         const items: IssueItem[] = issues
           .map(
-            issue =>
+            (issue) =>
               new IssueItem(issue, {
                 command: 'jira-plugin.openIssue',
                 title: 'Open issue in the browser',
-                arguments: [`${issue.key}`]
+                arguments: [`${issue.key}`],
               })
           )
           .sort((itemA: IssueItem, itemB: IssueItem) => {
@@ -164,7 +164,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
         return [
           new FilterInfoItem(project, store.state.currentSearch.filter, issues.length),
           new DividerItem('------'),
-          new NoResultItem(project)
+          new NoResultItem(project),
         ];
       }
     } else {
@@ -174,7 +174,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
           new IssueItem(subtask, {
             command: 'jira-plugin.openIssue',
             title: 'Open issue in the browser',
-            arguments: [`${subtask.key}`]
+            arguments: [`${subtask.key}`],
           })
       );
     }

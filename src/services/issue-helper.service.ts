@@ -17,7 +17,7 @@ export default class IssueHelperService {
   public NEW_ISSUE_STATUS = {
     STOP: -1,
     CONTINUE: 0,
-    INSERT: 1
+    INSERT: 1,
   };
 
   // items available inside the selector
@@ -25,28 +25,28 @@ export default class IssueHelperService {
     ISSUE_LINKS: {
       field: 'issuelinks',
       label: 'Linked issues',
-      description: ''
+      description: '',
     },
     ISSUE_LINKS_TYPES: {
       field: 'issuelinksTypes',
       label: 'Linked issues type',
-      description: ''
+      description: '',
     },
     DIVIDER: {
       field: 'divider',
       label: '--- $(star) required ---',
-      description: ''
+      description: '',
     },
     INSERT_ISSUE: {
       field: 'insert_issue',
       label: 'Insert issue',
-      description: ''
+      description: '',
     },
     EXIT: {
       field: 'exit',
       label: 'Exit',
-      description: ''
-    }
+      description: '',
+    },
   };
 
   constructor() {}
@@ -66,13 +66,13 @@ export default class IssueHelperService {
           ...typeSelected.fields['timetracking'],
           key: 'timetracking_originalestimate',
           name: 'Original Estimate',
-          schema: { ...typeSelected.fields['timetracking'].schema, type: 'string' }
+          schema: { ...typeSelected.fields['timetracking'].schema, type: 'string' },
         };
         typeSelected.fields['timetracking_remainingestimate'] = {
           ...typeSelected.fields['timetracking'],
           key: 'timetracking_remainingestimate',
           name: 'Remaining Estimate',
-          schema: { ...typeSelected.fields['timetracking'].schema, type: 'string' }
+          schema: { ...typeSelected.fields['timetracking'].schema, type: 'string' },
         };
         delete typeSelected.fields['timetracking'];
       }
@@ -183,14 +183,14 @@ export default class IssueHelperService {
               fields: {
                 summary: '',
                 status: {
-                  name: ''
+                  name: '',
                 },
                 project: {
                   id: '',
                   key: '',
-                  name: ''
-                }
-              }
+                  name: '',
+                },
+              },
             });
           });
         });
@@ -233,7 +233,7 @@ export default class IssueHelperService {
       if (
         !this.isEpicLinkFieldSchema(field.schema) &&
         !this.isSprintFieldSchema(field.schema) &&
-        ((!!field.schema.custom && (!field.allowedValues && !field.autoCompleteUrl)) || field.schema.type === 'date')
+        ((!!field.schema.custom && !field.allowedValues && !field.autoCompleteUrl) || field.schema.type === 'date')
       ) {
         // output log useful for remote debug
         logger.jiraPluginDebugLog(`field`, JSON.stringify(field));
@@ -279,8 +279,8 @@ export default class IssueHelperService {
         label: this.NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.label,
         description: this.requestJson[field] || this.preloadedListValues[field][0].inward,
         fieldSchema: {
-          type: 'custom'
-        }
+          type: 'custom',
+        },
       });
       this.requestJson[field] = this.requestJson[field] || this.preloadedListValues[field][0].inward;
     }
@@ -302,7 +302,7 @@ export default class IssueHelperService {
         return undefined;
       }
       let res: any = {
-        issuelinks: []
+        issuelinks: [],
       };
       // only one issueLinks https://jira.atlassian.com/browse/JRASERVER-66329
       res.issuelinks.push({
@@ -310,12 +310,12 @@ export default class IssueHelperService {
           type: {
             name: type.name,
             inward: type.inward,
-            outward: type.outward
+            outward: type.outward,
           },
           outwardIssue: {
-            key: issueLink
-          }
-        }
+            key: issueLink,
+          },
+        },
       });
       return res;
     }

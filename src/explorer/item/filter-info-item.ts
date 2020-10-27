@@ -13,7 +13,7 @@ export class FilterInfoItem extends vscode.TreeItem {
 
   iconPath = {
     light: utilities.getIconsPath(`light/${STATUS_ICONS.DEFAULT.file}`),
-    dark: utilities.getIconsPath(`dark/${STATUS_ICONS.DEFAULT.file}`)
+    dark: utilities.getIconsPath(`dark/${STATUS_ICONS.DEFAULT.file}`),
   };
 
   contextValue = 'FilterInfoItem';
