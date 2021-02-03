@@ -41,23 +41,32 @@ export default async function setWorkingIssue(storedWorkingIssue: IWorkingIssue,
           `Add worklog for the previous working issue ${workingIssue.issue.key} | timeSpent: ${utilities.secondsToHHMMSS(
             workingIssue.trackingTime
           )} ?`,
+          ACTIONS.YES_WITH_COMMENT_AND_SEC_SPENT,
           ACTIONS.YES_WITH_COMMENT,
           ACTIONS.YES,
           ACTIONS.NO
         );
         // menage response
         let comment =
-          action === ACTIONS.YES_WITH_COMMENT
+          action === ACTIONS.YES_WITH_COMMENT || action === ACTIONS.YES_WITH_COMMENT_AND_SEC_SPENT
             ? await vscode.window.showInputBox({
                 ignoreFocusOut: true,
                 placeHolder: 'Add worklog comment...',
               })
             : '';
-        if (action === ACTIONS.YES || action === ACTIONS.YES_WITH_COMMENT) {
+        let secSpent =
+          action === ACTIONS.YES_WITH_COMMENT_AND_SEC_SPENT
+            ? await vscode.window.showInputBox({
+                ignoreFocusOut: true,
+                placeHolder: 'Overwrite seconds spent...',
+                value: `${store.state.workingIssue.trackingTime}`,
+              })
+            : '';
+        if (action === ACTIONS.YES || action === ACTIONS.YES_WITH_COMMENT || action === ACTIONS.YES_WITH_COMMENT_AND_SEC_SPENT) {
           await vscode.commands.executeCommand(
             'jira-plugin.issueAddWorklog',
             store.state.workingIssue.issue.key,
-            store.state.workingIssue.trackingTime,
+            !!secSpent ? parseInt(secSpent, 10) : store.state.workingIssue.trackingTime,
             comment || ''
           );
         }

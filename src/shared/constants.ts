@@ -47,6 +47,7 @@ export const DEFAULT_WORKING_ISSUE_ASSIGNEE = 'currentUser()';
 export const ACTIONS = {
   YES: 'Yes',
   YES_WITH_COMMENT: 'Yes with comment',
+  YES_WITH_COMMENT_AND_SEC_SPENT: 'Yes with comment and sec. spent',
   NO: 'No',
   LATER: 'Later',
   CLOSE: 'Close',
