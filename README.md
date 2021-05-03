@@ -177,7 +177,7 @@ values:<br>
   With this command you can search your issues with a particular status.<br>
   `project = '${project}' AND status = '${status}' AND assignee in (currentUser()) ORDER BY status ASC, updated DESC`<br><br>
 - **Favourites filters**<br>
-  With this command you can use your favoutite filters for search your issues.<br>
+  With this command you can search issues by using your Jira favoutite filters (create in `BASE_URL/issues/?jql=`).<br>
   `only coherent "favorites filters" for the working project`<br><br>
 
 ## Issue commands (right click on issue in explorer)
