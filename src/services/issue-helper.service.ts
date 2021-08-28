@@ -101,7 +101,7 @@ export default class IssueHelperService {
   }
 
   public getPickValue(value: any): string {
-    return value.inward || value.name || value.value || value.key || value.label || Object.values(value)[0]; // do not change order
+    return value.inward || value.displayName || value.name || value.value || value.key || value.label || Object.values(value)[0]; // do not change order
   }
 
   // define if the selector can have multiple choices
