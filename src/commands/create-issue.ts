@@ -202,8 +202,8 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
           issueHelper.newIssueIstance[fieldToModifySelection.field] = newValueSelected.map((value: any) => value.label).join(' ');
           // assignee/reporter want a name prop and NOT id or key
           if (issueHelper.isAssigneeOrReporterField(fieldToModifySelection.field)) {
-            const values = newValueSelected.map((value: any) => value.pickValue.name);
-            issueHelper.requestJson[fieldToModifySelection.field] = { name: !canPickMany ? values[0] : values };
+            const values = newValueSelected.map((value: any) => value.pickValue.accountId);
+            issueHelper.requestJson[fieldToModifySelection.field] = { accountId: !canPickMany ? values[0] : values };
           }
           // straight string or string[]
           if (
