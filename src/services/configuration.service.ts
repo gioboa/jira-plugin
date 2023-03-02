@@ -51,7 +51,7 @@ export default class ConfigurationService {
   }
 
   // used for get only one setting
-  public get(entry: string, fallbackValue?: any): any {
+  public get(entry: string, fallbackValue = ''): any {
     if (!this.settings) {
       return fallbackValue;
     }

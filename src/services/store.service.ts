@@ -50,7 +50,6 @@ export default class StoreService {
         // vscode.window.showWarningMessage("Working project isn't set.");
       }
     } catch (err) {
-      configuration.set(CONFIG.WORKING_PROJECT, '');
       setTimeout(() => {
         statusBar.updateWorkingProjectItem('', true);
       }, 1000);
