@@ -1,5 +1,6 @@
 allowBuilds:
   husky: true
+  '@vscode/vsce-sign': true
 minimumReleaseAgeExclude:
   - '@vitest/mocker@5.0.3'
   - '@vitest/spy@5.0.3'

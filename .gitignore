@@ -68,3 +68,4 @@ out/
 
 # settings
 test/utils/settings.ts
+*.vsix

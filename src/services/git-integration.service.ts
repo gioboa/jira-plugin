@@ -54,7 +54,12 @@ export default class GitIntegrationService {
   constructor() {
     this.gitExtension = vscode.extensions.getExtension('vscode.git') || (undefined as any);
     vscode.commands.executeCommand('setContext', 'gitEnabled', '0');
-    if (!!this.gitExtension) {
+  }
+
+  // called from extension.ts activate(): reads the configuration, so it can't run in the constructor
+  // (services are instantiated by services/index.ts, which the configuration service is part of)
+  public activate(): void {
+    if (!!this.gitExtension && !this.configWatcher) {
       this.configWatcher = vscode.workspace.onDidChangeConfiguration(() => this.toggleWatcher());
       this.toggleWatcher();
     }
