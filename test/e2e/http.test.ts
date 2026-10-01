@@ -1,4 +1,5 @@
-import * as assert from 'assert';
+import * as assert from 'node:assert';
+import { describe, it } from 'vitest';
 import NoWorkingIssuePick from '../../src/picks/no-working-issue-pick';
 import ConfigurationService from '../../src/services/configuration.service';
 import { IIssue, INotification, ISetTransition } from '../../src/services/http.model';
@@ -8,7 +9,7 @@ import { LOADING } from '../../src/shared/constants';
 import { settings } from '../utils/settings';
 import { backupSettings, restoreSettings } from '../utils/utils';
 
-suite('Jira API', () => {
+describe.skipIf(settings.baseUrl === 'xxx')('Jira API', () => {
   const configurationService = new ConfigurationService();
   const store = new StoreService();
   store.state = {
@@ -74,12 +75,12 @@ suite('Jira API', () => {
   let issueTypeId = '';
   let settingsBkp = <any>{};
 
-  test(`Backup Settings`, async () => {
+  it(`Backup Settings`, async () => {
     await backupSettings(configurationService, settingsBkp);
     assert.strictEqual(1, 1);
   });
 
-  test(`Setup Test Settings`, async () => {
+  it(`Setup Test Settings`, async () => {
     await restoreSettings(configurationService, settings);
     project = settings.workingProject;
     store.state.jira = new Jira();
@@ -165,14 +166,14 @@ suite('Jira API', () => {
   ];
 
   tests.forEach((t) => {
-    test(t.name, async function () {
+    it(t.name, async (ctx) => {
       if (t.name !== 'markNotificationsAsReadUnread' || !!notification) {
         let response;
         try {
           response = await (<any>store.state.jira)[t.name](preparePaylod(t));
         } catch (err: any) {
           if (cloudSessionTests.includes(t.name) && !!err && err.status === 401) {
-            this.skip();
+            ctx.skip();
           }
           throw err;
         }
@@ -191,7 +192,7 @@ suite('Jira API', () => {
     });
   });
 
-  test(`Restore Settings Backup`, async () => {
+  it(`Restore Settings Backup`, async () => {
     await restoreSettings(configurationService, settingsBkp);
     assert.strictEqual(1, 1);
   });

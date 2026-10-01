@@ -1,8 +1,9 @@
-import * as assert from 'assert';
+import * as assert from 'node:assert';
+import { describe, it } from 'vitest';
 import * as vscode from 'vscode';
 import { IssueLinkProvider } from '../../src/shared/document-link-provider';
 
-suite(`Issue Document Link`, () => {
+describe(`Issue Document Link`, () => {
   const linkProvider = new IssueLinkProvider([
     {
       key: 'projectA',
@@ -70,7 +71,7 @@ suite(`Issue Document Link`, () => {
     },
   ];
   tests.forEach((entry) => {
-    test(entry.title, async () => {
+    it(entry.title, async () => {
       const document = await vscode.workspace.openTextDocument({
         language: 'text',
         content: entry.text,

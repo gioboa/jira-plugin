@@ -1,4 +1,4 @@
-name: PR Format Check
+name: Unit Test Check
 
 on:
   pull_request:
@@ -13,9 +13,9 @@ permissions:
   pull-requests: read
 
 jobs:
-  ########### LINT PACKAGE ############
-  lint-package:
-    name: Lint Package
+  ########### UNIT TEST PACKAGE ############
+  unit-test-package:
+    name: Unit Test Package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,6 +39,6 @@ jobs:
       - name: Install NPM Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Format Check
+      - name: Unit Test Check
         if: ${{ always() }}
-        run: pnpm fmt.check
+        run: pnpm test
