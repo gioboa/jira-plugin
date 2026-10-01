@@ -7,4 +7,10 @@ src/**
 .gitignore
 tsconfig.json
 vsc-extension-quickstart.md
-scripts/**
+scripts/**vitest.config.ts
+.husky/**
+.oxfmtrc.jsonc
+.github/**
+.nvmrc
+pnpm-lock.yaml
+pnpm-workspace.yaml

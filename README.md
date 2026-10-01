@@ -43,7 +43,7 @@
 <a href="https://opencollective.com/jira-plugin#backers" target="_blank"><img src="https://opencollective.com/jira-plugin/backers.svg?width=890"></a><br><br>
 Your logo will show up here with a link to your website.
 <br><br>
-[<img src="https://raw.githubusercontent.com/gioboa/jira-plugin/develop/images/readme/DuMont_logo.jpg" width="160">](https://www.dumont.de/)
+[<img src="https://raw.githubusercontent.com/gioboa/jira-plugin/main/images/readme/DuMont_logo.jpg" width="160">](https://www.dumont.de/)
 
 ## Installation
 
@@ -231,7 +231,7 @@ If you want to file a bug, contribute some code or improve documentation, read u
 
 ## License
 
-[![Version](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/gioboa/jira-plugin/blob/master/LICENSE)
+[![Version](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/gioboa/jira-plugin/blob/main/LICENSE)
 
 ## Versioning
 

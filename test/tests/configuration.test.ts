@@ -1,11 +1,12 @@
-import * as assert from 'assert';
+import * as assert from 'node:assert';
+import { describe, it } from 'vitest';
 import ConfigurationService from '../../src/services/configuration.service';
 import { IWorkingIssue } from '../../src/services/http.model';
 import StoreService from '../../src/services/store.service';
 import { CONFIG, DEFAULT_WORKING_ISSUE_STATUS } from '../../src/shared/constants';
 import { backupSettings, restoreSettings } from '../utils/utils';
 
-suite('Configuration', () => {
+describe('Configuration', () => {
   const configurationService = new ConfigurationService();
   const store = new StoreService();
   const tests = [
@@ -54,13 +55,13 @@ suite('Configuration', () => {
   ];
   let settingsBkp = <any>{};
 
-  test(`Backup Settings`, async () => {
+  it(`Backup Settings`, async () => {
     await backupSettings(configurationService, settingsBkp);
     assert.strictEqual(1, 1);
   });
 
   tests.forEach((entry) => {
-    test(`${entry.title} config`, async () => {
+    it(`${entry.title} config`, async () => {
       await configurationService.set(entry.config, entry.value);
       const actual = await configurationService.get(entry.config);
       if (entry.equal) {
@@ -71,34 +72,34 @@ suite('Configuration', () => {
     });
   });
 
-  test(`Password config`, async () => {
+  it(`Password config`, async () => {
     const password = 'my_password';
     await configurationService.setPassword(password);
     const { password: result } = configurationService.credentials;
     assert.strictEqual(password, result);
   });
 
-  test(`Valid config`, async () => {
+  it(`Valid config`, async () => {
     await configurationService.set(CONFIG.BASE_URL, 'baseUrl');
     await configurationService.set(CONFIG.USERNAME, 'my_username');
     await configurationService.setPassword('my_password');
     assert.strictEqual(configurationService.isValid(), true);
   });
 
-  test(`NOT valid config`, async () => {
+  it(`NOT valid config`, async () => {
     await configurationService.set(CONFIG.BASE_URL, 'baseUrl');
     await configurationService.set(CONFIG.USERNAME, undefined);
     await configurationService.setPassword('my_password');
     assert.strictEqual(configurationService.isValid(), false);
   });
 
-  test(`Global counter config`, async () => {
+  it(`Global counter config`, async () => {
     await configurationService.setGlobalCounter(0);
     await configurationService.setGlobalCounter(1);
     assert.strictEqual(configurationService.getGlobalCounter(), 1);
   });
 
-  test(`Global working issue`, async () => {
+  it(`Global working issue`, async () => {
     const workingIssue: IWorkingIssue = {
       issue: {
         id: '',
@@ -124,7 +125,7 @@ suite('Configuration', () => {
     assert.strictEqual(storedWOrkingIssue, JSON.stringify(workingIssue));
   });
 
-  test(`WorkingIssueStatuses in statuses list`, async () => {
+  it(`WorkingIssueStatuses in statuses list`, async () => {
     await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Closed');
     const statuses = configurationService.workingIssueStatuses([
       { description: 'In Progress', name: 'In Progress' },
@@ -133,7 +134,7 @@ suite('Configuration', () => {
     assert.strictEqual(statuses, `'In Progress','Closed'`);
   });
 
-  test(`WorkingIssueStatuses only one in statuses list`, async () => {
+  it(`WorkingIssueStatuses only one in statuses list`, async () => {
     await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Abc');
     const statuses = configurationService.workingIssueStatuses([
       { description: 'In Progress', name: 'In Progress' },
@@ -142,7 +143,7 @@ suite('Configuration', () => {
     assert.strictEqual(statuses, `'In Progress'`);
   });
 
-  test(`WorkingIssueStatuses not in statuses list`, async () => {
+  it(`WorkingIssueStatuses not in statuses list`, async () => {
     await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'Abc');
     const statuses = configurationService.workingIssueStatuses([
       { description: 'In Progress', name: 'In Progress' },
@@ -151,7 +152,7 @@ suite('Configuration', () => {
     assert.strictEqual(statuses, `'${DEFAULT_WORKING_ISSUE_STATUS}'`);
   });
 
-  test(`Restore Settings Backup`, async () => {
+  it(`Restore Settings Backup`, async () => {
     await restoreSettings(configurationService, settingsBkp);
     assert.strictEqual(1, 1);
   });

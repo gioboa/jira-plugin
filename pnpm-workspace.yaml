@@ -1,4 +1,6 @@
 allowBuilds:
   husky: true
 minimumReleaseAgeExclude:
-  - mocha@12.0.3
+  - '@vitest/mocker@5.0.3'
+  - '@vitest/spy@5.0.3'
+  - vitest@5.0.3

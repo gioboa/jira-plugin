@@ -39,14 +39,13 @@
     "vscode:prepublish": "pnpm run compile",
     "compile": "pnpm run clean && tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "postinstall": "git update-index --skip-worktree ./test/utils/settings.ts && node ./node_modules/vscode/bin/install",
-    "test": "pnpm run compile && TYPE=1 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=2 node ./scripts/rename-files.js",
-    "setup:settings": "pnpm run compile && TYPE=3 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
-    "setup:settings:insiders": "pnpm run compile && TYPE=3 node ./scripts/rename-files.js && CODE_VERSION='insiders' node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
+    "postinstall": "git update-index --skip-worktree ./test/utils/settings.ts",
+    "test": "vitest run",
     "prepare": "husky",
     "fmt": "oxfmt src test",
     "fmt.check": "oxfmt --check src test",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:e2e": "E2E=1 vitest run"
   },
   "contributes": {
     "configuration": {
@@ -443,13 +442,12 @@
     }
   },
   "devDependencies": {
-    "@types/mocha": "8.2.3",
     "@types/node": "24.19.0",
+    "@types/vscode": "1.31.0",
     "husky": "9.1.7",
-    "mocha": "12.0.3",
     "oxfmt": "0.61.0",
     "typescript": "5.9.3",
-    "vscode": "1.1.37"
+    "vitest": "5.0.3"
   },
   "dependencies": {
     "jira.js": "5.4.0"
