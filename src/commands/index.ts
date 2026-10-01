@@ -45,21 +45,37 @@ export default {
 
       // explorer filters
       registerCommand('jira-plugin.refresh', () => selectValues.selectIssue(SEARCH_MODE.REFRESH)),
-      registerCommand('jira-plugin.defaultIssues', () => selectValues.selectIssue(SEARCH_MODE.DEFAULT)),
+      registerCommand('jira-plugin.defaultIssues', () =>
+        selectValues.selectIssue(SEARCH_MODE.DEFAULT)
+      ),
       registerCommand('jira-plugin.allIssues', () => selectValues.selectIssue(SEARCH_MODE.ALL)),
-      registerCommand('jira-plugin.currentSprint', () => selectValues.selectIssue(SEARCH_MODE.CURRENT_SPRINT)),
-      registerCommand('jira-plugin.myIssuesByStatus', () => selectValues.selectIssue(SEARCH_MODE.MY_STATUS)),
-      registerCommand('jira-plugin.issuesByStatusAssignee', () => selectValues.selectIssue(SEARCH_MODE.STATUS_ASSIGNEE)),
-      registerCommand('jira-plugin.issuesByStatus', () => selectValues.selectIssue(SEARCH_MODE.STATUS)),
+      registerCommand('jira-plugin.currentSprint', () =>
+        selectValues.selectIssue(SEARCH_MODE.CURRENT_SPRINT)
+      ),
+      registerCommand('jira-plugin.myIssuesByStatus', () =>
+        selectValues.selectIssue(SEARCH_MODE.MY_STATUS)
+      ),
+      registerCommand('jira-plugin.issuesByStatusAssignee', () =>
+        selectValues.selectIssue(SEARCH_MODE.STATUS_ASSIGNEE)
+      ),
+      registerCommand('jira-plugin.issuesByStatus', () =>
+        selectValues.selectIssue(SEARCH_MODE.STATUS)
+      ),
       registerCommand('jira-plugin.issueById', () => selectValues.selectIssue(SEARCH_MODE.ID)),
-      registerCommand('jira-plugin.issuesBySummary', () => selectValues.selectIssue(SEARCH_MODE.SUMMARY)),
+      registerCommand('jira-plugin.issuesBySummary', () =>
+        selectValues.selectIssue(SEARCH_MODE.SUMMARY)
+      ),
       registerCommand('jira-plugin.favouritesFilters', favouritesFilters),
 
       // explorer issue
       registerCommand('jira-plugin.changeIssueStatus', changeIssueStatus),
       registerCommand('jira-plugin.changeIssueAssignee', changeIssueAssignee),
-      registerCommand('jira-plugin.issueAddComment', (issue: IssueItem) => issueAddComment(issue, false)),
-      registerCommand('jira-plugin.issueAddInternalComment', (issue: IssueItem) => issueAddComment(issue, true)),
+      registerCommand('jira-plugin.issueAddComment', (issue: IssueItem) =>
+        issueAddComment(issue, false)
+      ),
+      registerCommand('jira-plugin.issueAddInternalComment', (issue: IssueItem) =>
+        issueAddComment(issue, true)
+      ),
       registerCommand('jira-plugin.openIssue', openIssue),
       registerCommand('jira-plugin.copyIssueKeySummary', utilities.copyIssueKeySummary),
       registerCommand('jira-plugin.copyIssueRemoteUrl', utilities.copyIssueRemoteUrl),

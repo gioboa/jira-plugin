@@ -12,20 +12,30 @@ export default class StatusBarService {
   private intervalId: NodeJS.Timeout | undefined;
   private awayTimeout = 30 * 60; // Default to 30 minutes
   constructor() {
-    this.toggleWorkingIssueTimerItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    this.toggleWorkingIssueTimerItem = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left,
+      100
+    );
     this.workingIssueItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 200);
-    this.workingProjectItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 300);
+    this.workingProjectItem = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left,
+      300
+    );
     this.awayTimeout = configuration.get(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) * 60;
   }
 
   // setup working project item
-  public async updateWorkingProjectItem(project: string, verifyStoredWorkingIssue: boolean): Promise<void> {
+  public async updateWorkingProjectItem(
+    project: string,
+    verifyStoredWorkingIssue: boolean
+  ): Promise<void> {
     if (!store.state.jira) {
       return;
     }
     this.workingProjectItem.tooltip = 'Set working project';
     this.workingProjectItem.command = 'jira-plugin.setWorkingProject';
-    this.workingProjectItem.text = `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
+    this.workingProjectItem.text =
+      `$(clippy) ` + (!!project ? `Project: ${project}` : `Project: NONE`);
     this.workingProjectItem.show();
     if (configuration.get(CONFIG.ENABLE_WORKING_ISSUE) && !!verifyStoredWorkingIssue) {
       this.verifyStoredWorkingIssue();
@@ -33,7 +43,9 @@ export default class StatusBarService {
   }
 
   private workingIssueItemTooltip(workingIssue: IWorkingIssue): string {
-    return workingIssue.issue.key !== NO_WORKING_ISSUE.key ? workingIssue.issue.fields.summary : 'Set working issue';
+    return workingIssue.issue.key !== NO_WORKING_ISSUE.key
+      ? workingIssue.issue.fields.summary
+      : 'Set working issue';
   }
 
   private workingIssueItemText(workingIssue: IWorkingIssue): string {
@@ -98,11 +110,18 @@ export default class StatusBarService {
     this.clearWorkingIssueInterval();
     this.updateToggleWorkingIssueTimerItem();
     this.intervalId = setInterval(() => {
-      if (vscode.window.state.focused || configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.ALWAYS) {
+      if (
+        vscode.window.state.focused ||
+        configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.ALWAYS
+      ) {
         if (configuration.get(CONFIG.TRACKING_TIME_MODE) === TRACKING_TIME_MODE.HYBRID) {
           // If we are coming back from an away period catch up our logging time
           // If the away time was > awayTimeout, workingIssue.awayTime will be -1, so we won't log the away time.
-          if (store.state.workingIssue.awayTime && store.state.workingIssue.awayTime > 0 && !store.state.workingIssue.stopped) {
+          if (
+            store.state.workingIssue.awayTime &&
+            store.state.workingIssue.awayTime > 0 &&
+            !store.state.workingIssue.stopped
+          ) {
             store.state.workingIssue.trackingTime += store.state.workingIssue.awayTime;
           }
           // Clear the away timer
@@ -122,15 +141,23 @@ export default class StatusBarService {
           }
         }
       }
-      this.toggleWorkingIssueTimerItem.text = this.toggleWorkingIssueTimerItemText(store.state.workingIssue);
+      this.toggleWorkingIssueTimerItem.text = this.toggleWorkingIssueTimerItemText(
+        store.state.workingIssue
+      );
     }, 1000);
   }
 
   public updateToggleWorkingIssueTimerItem(): void {
-    this.toggleWorkingIssueTimerItem.tooltip = (store.state.workingIssue.stopped ? 'Play' : 'Stop') + ' working issue timer';
+    this.toggleWorkingIssueTimerItem.tooltip =
+      (store.state.workingIssue.stopped ? 'Play' : 'Stop') + ' working issue timer';
     this.toggleWorkingIssueTimerItem.command = 'jira-plugin.toggleWorkingIssueTimer';
-    this.toggleWorkingIssueTimerItem.text = this.toggleWorkingIssueTimerItemText(store.state.workingIssue);
-    if (configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER && !!configuration.get(CONFIG.WORKING_ISSUE_SHOW_TIMER)) {
+    this.toggleWorkingIssueTimerItem.text = this.toggleWorkingIssueTimerItemText(
+      store.state.workingIssue
+    );
+    if (
+      configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER &&
+      !!configuration.get(CONFIG.WORKING_ISSUE_SHOW_TIMER)
+    ) {
       this.toggleWorkingIssueTimerItem.show();
     } else {
       this.toggleWorkingIssueTimerItem.hide();
@@ -143,8 +170,8 @@ export default class StatusBarService {
       (workingIssue.awayTime === 0
         ? ``
         : workingIssue.awayTime > 0
-        ? ` $(history) ${utilities.secondsToHHMMSS(this.awayTimeout - workingIssue.awayTime)}`
-        : ` $(history) Away too long, issue timer paused`);
+          ? ` $(history) ${utilities.secondsToHHMMSS(this.awayTimeout - workingIssue.awayTime)}`
+          : ` $(history) Away too long, issue timer paused`);
     text += store.state.workingIssue.stopped ? ` $(play)` : ` $(primitive-square)`;
     return text;
   }

@@ -6,9 +6,9 @@ export const mockIssues = [
       description: 'ABC 1 Long description issue ',
       summary: 'ABC 1 Summary issue',
       status: {
-        name: 'In Progress'
-      }
-    }
+        name: 'In Progress',
+      },
+    },
   },
   {
     id: '2',
@@ -17,9 +17,9 @@ export const mockIssues = [
       description: 'ABC 2 Long description issue',
       summary: 'ABC 2 Summary issue',
       status: {
-        name: 'Open'
-      }
-    }
+        name: 'Open',
+      },
+    },
   },
   {
     id: '3',
@@ -28,9 +28,9 @@ export const mockIssues = [
       description: 'ABC 3 Long description issue',
       summary: 'ABC 3 Summary issue',
       status: {
-        name: 'Reopened'
-      }
-    }
+        name: 'Reopened',
+      },
+    },
   },
   {
     id: '4',
@@ -39,9 +39,9 @@ export const mockIssues = [
       description: 'ABC 4 Long description issue',
       summary: 'ABC 4 Summary issue',
       status: {
-        name: 'Resolved'
-      }
-    }
+        name: 'Resolved',
+      },
+    },
   },
   {
     id: '5',
@@ -50,9 +50,9 @@ export const mockIssues = [
       description: 'ABC 5 Long description issue',
       summary: 'Summary issue ABC 5',
       status: {
-        name: 'Closed'
-      }
-    }
+        name: 'Closed',
+      },
+    },
   },
   {
     id: '6',
@@ -61,9 +61,9 @@ export const mockIssues = [
       description: 'ABC-6 Long description issue',
       summary: 'Summary issue ABC 6',
       status: {
-        name: 'Detailing'
-      }
-    }
+        name: 'Detailing',
+      },
+    },
   },
   {
     id: '7',
@@ -72,9 +72,9 @@ export const mockIssues = [
       description: 'ABC-7 Long description issue',
       summary: 'Summary issue ABC 7',
       status: {
-        name: 'Estimating'
-      }
-    }
+        name: 'Estimating',
+      },
+    },
   },
   {
     id: '8',
@@ -83,9 +83,9 @@ export const mockIssues = [
       description: 'ABC-8 Long description issue',
       summary: 'Summary issue ABC 8',
       status: {
-        name: 'Remarked'
-      }
-    }
+        name: 'Remarked',
+      },
+    },
   },
   {
     id: '9',
@@ -94,9 +94,9 @@ export const mockIssues = [
       description: 'ABC-9 Long description issue',
       summary: 'Summary issue ABC 9',
       status: {
-        name: 'Approved'
-      }
-    }
+        name: 'Approved',
+      },
+    },
   },
   {
     id: '10',
@@ -105,9 +105,9 @@ export const mockIssues = [
       description: 'ABC-10 Long description issue',
       summary: 'Summary issue ABC 10',
       status: {
-        name: 'Suspended'
-      }
-    }
+        name: 'Suspended',
+      },
+    },
   },
   {
     id: '11',
@@ -116,8 +116,8 @@ export const mockIssues = [
       description: 'ABC-11 Long description issue',
       summary: 'Summary issue ABC 11',
       status: {
-        name: 'Estimated'
-      }
-    }
-  }
+        name: 'Estimated',
+      },
+    },
+  },
 ];

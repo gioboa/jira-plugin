@@ -3,7 +3,10 @@ import { IssueItem } from '../explorer/item/issue-item';
 import { configuration, logger, selectValues, store } from '../services';
 import { CONFIG } from '../shared/constants';
 
-export default async function issueAddComment(issueItem: IssueItem, markAsInternal: boolean): Promise<void> {
+export default async function issueAddComment(
+  issueItem: IssueItem,
+  markAsInternal: boolean
+): Promise<void> {
   try {
     if (issueItem && issueItem.issue && store.canExecuteJiraAPI()) {
       let issue = issueItem.issue;
@@ -40,7 +43,10 @@ export default async function issueAddComment(issueItem: IssueItem, markAsIntern
         const response = await store.state.jira.addNewComment({ issueKey: issue.key, comment });
         await vscode.commands.executeCommand('jira-plugin.refresh');
         // modal
-        const action = await vscode.window.showInformationMessage('Comment created', 'Open in browser');
+        const action = await vscode.window.showInformationMessage(
+          'Comment created',
+          'Open in browser'
+        );
         if (action === 'Open in browser') {
           const baseUrl = configuration.get(CONFIG.BASE_URL);
           const url =

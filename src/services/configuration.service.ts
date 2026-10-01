@@ -29,7 +29,8 @@ export default class ConfigurationService {
 
   public get credentials(): { username: string; password: string } {
     const config = this.settings;
-    const credentials: string = (config && this.globalState.get(`${CONFIG_NAME}:${config.baseUrl}`)) || '';
+    const credentials: string =
+      (config && this.globalState.get(`${CONFIG_NAME}:${config.baseUrl}`)) || '';
     let jsonCredentials = undefined;
     try {
       jsonCredentials = JSON.parse(credentials);
@@ -45,7 +46,8 @@ export default class ConfigurationService {
   // DEPRECATED
   public get OLD_credentials(): { username: string; password: string } {
     const config = this.settings;
-    const credentials: string = (config && this.globalState.get(`${CONFIG_NAME}:${config.baseUrl}`)) || '';
+    const credentials: string =
+      (config && this.globalState.get(`${CONFIG_NAME}:${config.baseUrl}`)) || '';
     const [username = '', password = ''] = credentials.split(CREDENTIALS_SEPARATOR);
     return { username, password };
   }
@@ -55,7 +57,9 @@ export default class ConfigurationService {
     if (!this.settings) {
       return fallbackValue;
     }
-    return this.settings.hasOwnProperty(entry) && this.settings[entry] !== undefined ? this.settings[entry] : fallbackValue;
+    return this.settings.hasOwnProperty(entry) && this.settings[entry] !== undefined
+      ? this.settings[entry]
+      : fallbackValue;
   }
 
   // used for set only one setting
@@ -68,7 +72,8 @@ export default class ConfigurationService {
     (<any>this.settings)[entry] = value;
     // update VsCode settings
     // save inside workspace folder if exist - Close #98
-    const globalConfigurationTarget = entry !== CONFIG.WORKING_PROJECT || !vscode.workspace.workspaceFolders;
+    const globalConfigurationTarget =
+      entry !== CONFIG.WORKING_PROJECT || !vscode.workspace.workspaceFolders;
     return this.settings && this.settings.update(entry, value, globalConfigurationTarget);
   }
 
@@ -77,7 +82,10 @@ export default class ConfigurationService {
     const config = this.settings;
     return (
       config &&
-      this.globalState.update(`${CONFIG_NAME}:${config.baseUrl}`, JSON.stringify({ username: config.username, password: password || '' }))
+      this.globalState.update(
+        `${CONFIG_NAME}:${config.baseUrl}`,
+        JSON.stringify({ username: config.username, password: password || '' })
+      )
     );
   }
 
@@ -102,7 +110,12 @@ export default class ConfigurationService {
   // get inside VS Code local storage the last working issue
   public getGlobalWorkingIssue(): any {
     const config = this.settings;
-    return config && this.globalState.get(`${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`);
+    return (
+      config &&
+      this.globalState.get(
+        `${CONFIG_NAME}:${config.baseUrl}:${CONFIG_WORKING_ISSUE}:${config.workingProject}`
+      )
+    );
   }
 
   public setGlobalCounter(count: number): Thenable<void> {
@@ -118,7 +131,9 @@ export default class ConfigurationService {
       .split(',')
       .map((status: string) => status.trim())
       .filter((status: string) =>
-        (statuses || store.state.statuses).some((stateStatus) => stateStatus.name.toLowerCase() === status.toLowerCase())
+        (statuses || store.state.statuses).some(
+          (stateStatus) => stateStatus.name.toLowerCase() === status.toLowerCase()
+        )
       );
     return statusList && statusList.length > 0
       ? statusList.reduce((a: string, b: string) => (a === '' ? a + `'${b}'` : `${a},'${b}'`), '')
@@ -131,7 +146,9 @@ export default class ConfigurationService {
   }
 
   public workingIssueAssignees(): string {
-    let assignees = (this.get(CONFIG.WORKING_ISSUE_ASSIGNEES).toString() || DEFAULT_WORKING_ISSUE_ASSIGNEE)
+    let assignees = (
+      this.get(CONFIG.WORKING_ISSUE_ASSIGNEES).toString() || DEFAULT_WORKING_ISSUE_ASSIGNEE
+    )
       .split(',')
       .map((status: string) => status.replace(/CURRENT_USER/g, 'currentUser()').trim());
 

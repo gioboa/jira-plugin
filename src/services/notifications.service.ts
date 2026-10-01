@@ -30,7 +30,10 @@ export default class NotificationService {
                 storedNotification.readState = notification.readState;
               }
             }
-            lastId = goOn && !!response.pageInfo && !!response.pageInfo.lastId ? response.pageInfo.lastId : '';
+            lastId =
+              goOn && !!response.pageInfo && !!response.pageInfo.lastId
+                ? response.pageInfo.lastId
+                : '';
           } else {
             goOn = false;
           }
@@ -53,7 +56,9 @@ export default class NotificationService {
         if (!!notification.metadata && !!(<any>notification.metadata)[word].name) {
           word = (<any>notification.metadata)[word].name;
         } else {
-          logger.printErrorMessageInOutput(`Error Notification metadata ${word} -> ${JSON.stringify((<any>notification.metadata)[word])}`);
+          logger.printErrorMessageInOutput(
+            `Error Notification metadata ${word} -> ${JSON.stringify((<any>notification.metadata)[word])}`
+          );
           word = `error_${word}`;
         }
         words.push(word);
@@ -72,7 +77,8 @@ export default class NotificationService {
           if (!this.showedIds.some((id) => id === notification.id)) {
             const message = `${this.parseTemplate(notification)} - ${notification.title || ''}`;
             const issueKey =
-              !!(<any>notification.metadata)['issue'] && !!(<any>notification.metadata)['issue'].issueKey
+              !!(<any>notification.metadata)['issue'] &&
+              !!(<any>notification.metadata)['issue'].issueKey
                 ? (<any>notification.metadata)['issue'].issueKey
                 : undefined;
             if (!!issueKey) {

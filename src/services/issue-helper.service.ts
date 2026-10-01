@@ -2,7 +2,14 @@ import * as vscode from 'vscode';
 import { configuration, logger, store } from '.';
 import openIssue from '../commands/open-issue';
 import { CONFIG, SEARCH_MAX_RESULTS } from '../shared/constants';
-import { ICreateIssueEpicList, IField, IFieldSchema, IIssue, IIssueType, ILabel } from './http.model';
+import {
+  ICreateIssueEpicList,
+  IField,
+  IFieldSchema,
+  IIssue,
+  IIssueType,
+  ILabel,
+} from './http.model';
 
 export default class IssueHelperService {
   // this object store all user choices
@@ -101,12 +108,24 @@ export default class IssueHelperService {
   }
 
   public getPickValue(value: any): string {
-    return value.inward || value.displayName || value.name || value.value || value.key || value.label || Object.values(value)[0]; // do not change order
+    return (
+      value.inward ||
+      value.displayName ||
+      value.name ||
+      value.value ||
+      value.key ||
+      value.label ||
+      Object.values(value)[0]
+    ); // do not change order
   }
 
   // define if the selector can have multiple choices
   public isCanPickMany(field: any) {
-    return this.isArrayType(field.fieldSchema.type) && !this.isIssuelinksField(field.field) && !this.isSprintFieldSchema(field.fieldSchema);
+    return (
+      this.isArrayType(field.fieldSchema.type) &&
+      !this.isIssuelinksField(field.field) &&
+      !this.isSprintFieldSchema(field.fieldSchema)
+    );
   }
 
   public isAssigneeOrReporterField(fieldName: string) {
@@ -114,11 +133,17 @@ export default class IssueHelperService {
   }
 
   public isEpicLinkFieldSchema(fieldSchema: IFieldSchema) {
-    return !!fieldSchema.custom && fieldSchema.custom.toLowerCase() === 'com.pyxis.greenhopper.jira:gh-epic-link';
+    return (
+      !!fieldSchema.custom &&
+      fieldSchema.custom.toLowerCase() === 'com.pyxis.greenhopper.jira:gh-epic-link'
+    );
   }
 
   public isSprintFieldSchema(fieldSchema: IFieldSchema) {
-    return !!fieldSchema.custom && fieldSchema.custom.toLowerCase() === 'com.pyxis.greenhopper.jira:gh-sprint';
+    return (
+      !!fieldSchema.custom &&
+      fieldSchema.custom.toLowerCase() === 'com.pyxis.greenhopper.jira:gh-sprint'
+    );
   }
 
   public isLabelsField(fieldName: string) {
@@ -126,7 +151,9 @@ export default class IssueHelperService {
   }
 
   public isArrayOfStringField(fieldSchema: IFieldSchema) {
-    return this.isArrayType(fieldSchema.type) && (fieldSchema.items || '').toLowerCase() === 'string';
+    return (
+      this.isArrayType(fieldSchema.type) && (fieldSchema.items || '').toLowerCase() === 'string'
+    );
   }
 
   public isIssuelinksTypeField(fieldName: string) {
@@ -170,7 +197,10 @@ export default class IssueHelperService {
       this.preloadedListValues[fieldName] = await store.state.jira.getAssignees(this.project);
     }
     if (this.isEpicLinkFieldSchema(field.schema)) {
-      const response = await store.state.jira.getCreateIssueEpics(configuration.get(CONFIG.WORKING_PROJECT), SEARCH_MAX_RESULTS);
+      const response = await store.state.jira.getCreateIssueEpics(
+        configuration.get(CONFIG.WORKING_PROJECT),
+        SEARCH_MAX_RESULTS
+      );
       // format issues in standard way
       if (!!response && !!response.epicLists) {
         const list: IIssue[] = [];
@@ -221,7 +251,8 @@ export default class IssueHelperService {
       if (!!this.preloadedListValues[fieldName]) {
         // issueLinkedType field
         const types = await store.state.jira.getAvailableLinkIssuesType();
-        this.preloadedListValues[this.NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field] = types.issueLinkTypes || [];
+        this.preloadedListValues[this.NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field] =
+          types.issueLinkTypes || [];
       }
     }
   }
@@ -233,7 +264,8 @@ export default class IssueHelperService {
       if (
         !this.isEpicLinkFieldSchema(field.schema) &&
         !this.isSprintFieldSchema(field.schema) &&
-        ((!!field.schema.custom && !field.allowedValues && !field.autoCompleteUrl) || field.schema.type === 'date')
+        ((!!field.schema.custom && !field.allowedValues && !field.autoCompleteUrl) ||
+          field.schema.type === 'date')
       ) {
         // output log useful for remote debug
         logger.jiraPluginDebugLog(`field`, JSON.stringify(field));
@@ -261,7 +293,10 @@ export default class IssueHelperService {
           this.preloadedListValues[fieldName] = field.allowedValues;
         }
         // hide field if there aren't values
-        if (!this.preloadedListValues[fieldName] || this.preloadedListValues[fieldName].length === 0) {
+        if (
+          !this.preloadedListValues[fieldName] ||
+          this.preloadedListValues[fieldName].length === 0
+        ) {
           field.hideField = true;
         }
       }
@@ -282,7 +317,8 @@ export default class IssueHelperService {
           type: 'custom',
         },
       });
-      this.requestJson[field] = this.requestJson[field] || this.preloadedListValues[field][0].inward;
+      this.requestJson[field] =
+        this.requestJson[field] || this.preloadedListValues[field][0].inward;
     }
   }
 
@@ -292,7 +328,8 @@ export default class IssueHelperService {
     if (this.requestJson[this.NEW_ISSUE_FIELDS.ISSUE_LINKS.field]) {
       // find the whole type from user field selection
       const type = this.preloadedListValues[this.NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field].find(
-        (type: any) => type.inward === this.requestJson[this.NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field]
+        (type: any) =>
+          type.inward === this.requestJson[this.NEW_ISSUE_FIELDS.ISSUE_LINKS_TYPES.field]
       );
       if (!type) {
         return undefined;

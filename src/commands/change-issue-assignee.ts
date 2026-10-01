@@ -9,7 +9,10 @@ export default async function changeIssueAssignee(issueItem: IssueItem): Promise
       let assignee = await selectValues.selectAssignee(false, false, true, undefined);
       if (!!assignee) {
         // call Jira API
-        const res = await store.state.jira.setAssignIssue({ issueKey: issue.key, assignee: <string>assignee });
+        const res = await store.state.jira.setAssignIssue({
+          issueKey: issue.key,
+          assignee: <string>assignee,
+        });
         await vscode.commands.executeCommand('jira-plugin.refresh');
       }
     } else {

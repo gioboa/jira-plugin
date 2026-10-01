@@ -24,8 +24,8 @@ suite('Jira API', () => {
       issue: new NoWorkingIssuePick().pickValue,
       trackingTime: 0,
       awayTime: 0,
-      stopped: false
-    }
+      stopped: false,
+    },
   };
   interface ITest {
     name: string;
@@ -63,7 +63,7 @@ suite('Jira API', () => {
     { name: 'addNewComment', type: 'addNewComment' },
     { name: 'addWorkLog', type: 'addWorkLog' },
     { name: 'getNotifications', type: 'none' },
-    { name: 'markNotificationsAsReadUnread', type: 'markNotificationsAsReadUnread' }
+    { name: 'markNotificationsAsReadUnread', type: 'markNotificationsAsReadUnread' },
   ];
 
   let project = '';
@@ -99,14 +99,14 @@ suite('Jira API', () => {
         return {
           fields: {
             project: {
-              key: project
+              key: project,
             },
             issuetype: {
-              id: issueTypeId
+              id: issueTypeId,
             },
             summary: 'VsCode npm test',
-            description: 'created by VsCode npm test'
-          }
+            description: 'created by VsCode npm test',
+          },
         };
       case 'setTransition':
         return { issueKey, transition: { transition: { id: transitionId } } };
@@ -116,9 +116,17 @@ suite('Jira API', () => {
       case 'addNewComment':
         return { issueKey, comment: { body: 'New comment created by VsCode' } };
       case 'addWorkLog':
-        return { issueKey, timeSpentSeconds: 180, comment: 'New worklog created by VsCode', started: new Date().toISOString().replace('Z', '+0000') };
+        return {
+          issueKey,
+          timeSpentSeconds: 180,
+          comment: 'New worklog created by VsCode',
+          started: new Date().toISOString().replace('Z', '+0000'),
+        };
       case 'markNotificationsAsReadUnread':
-        return { ids: [notification.id], toState: notification.readState.toUpperCase() === 'READ' ? 'UNREAD' : 'READ' };
+        return {
+          ids: [notification.id],
+          toState: notification.readState.toUpperCase() === 'READ' ? 'UNREAD' : 'READ',
+        };
       default:
         return payload;
     }
@@ -150,10 +158,14 @@ suite('Jira API', () => {
   };
 
   // Jira Cloud rejects cookie sessions opened with an API token: notifications are not available there
-  const cloudSessionTests = ['getCloudSession', 'getNotifications', 'markNotificationsAsReadUnread'];
+  const cloudSessionTests = [
+    'getCloudSession',
+    'getNotifications',
+    'markNotificationsAsReadUnread',
+  ];
 
-  tests.forEach(t => {
-    test(t.name, async function() {
+  tests.forEach((t) => {
+    test(t.name, async function () {
       if (t.name !== 'markNotificationsAsReadUnread' || !!notification) {
         let response;
         try {
