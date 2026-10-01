@@ -24,19 +24,19 @@
   },
   "homepage": "https://github.com/gioboa/jira-plugin#readme",
   "engines": {
-    "vscode": "^1.31.0",
+    "vscode": "^1.47.0",
     "node": ">=24"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onStartupFinished"
   ],
   "main": "./out/src/extension",
   "scripts": {
     "clean": "rm -rf ./out",
-    "vscode:prepublish": "pnpm run compile",
+    "vscode:prepublish": "NODE_ENV=production pnpm run compile",
     "compile": "pnpm run clean && tsdown",
     "watch": "tsdown --watch",
     "postinstall": "git update-index --skip-worktree ./test/utils/settings.ts",
@@ -444,7 +444,7 @@
   },
   "devDependencies": {
     "@types/node": "24.19.0",
-    "@types/vscode": "1.31.0",
+    "@types/vscode": "1.47.0",
     "@vscode/vsce": "4.0.0",
     "husky": "9.1.7",
     "jira.js": "5.4.0",

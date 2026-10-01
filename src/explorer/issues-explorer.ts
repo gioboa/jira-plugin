@@ -22,7 +22,7 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
   constructor() {}
 
   async refresh(): Promise<void> {
-    this._onDidChangeTreeData.fire();
+    this._onDidChangeTreeData.fire(undefined);
   }
 
   setGroupByField(field: { label: string; value: string } | undefined): void {
