@@ -5,10 +5,7 @@ import { STATUS_ICONS } from '../../shared/constants';
 export class GroupItem extends vscode.TreeItem {
   constructor(label: string, public fileName: string) {
     super(label, vscode.TreeItemCollapsibleState.None);
-  }
-
-  get tooltip(): string {
-    return '';
+    this.tooltip = '';
   }
 
   private icon(status: string): string {

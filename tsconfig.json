@@ -3,7 +3,10 @@
     "module": "commonjs",
     "target": "es6",
     "outDir": "out",
-    "lib": ["dom", "es2017"],
+    "lib": [
+      "dom",
+      "es2017"
+    ],
     "sourceMap": true,
     "rootDir": ".",
     "strict": true,
@@ -13,7 +16,13 @@
     "allowUnusedLabels": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true
+    "noImplicitThis": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node"
   },
-  "exclude": ["node_modules", ".vscode-test"]
+  "exclude": [
+    "node_modules",
+    ".vscode-test"
+  ]
 }

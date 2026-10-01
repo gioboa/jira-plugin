@@ -9,7 +9,7 @@ export default class StatusBarService {
   private workingProjectItem: vscode.StatusBarItem;
   private workingIssueItem: vscode.StatusBarItem;
   private toggleWorkingIssueTimerItem: vscode.StatusBarItem;
-  private intervalId: NodeJS.Timer | undefined;
+  private intervalId: NodeJS.Timeout | undefined;
   private awayTimeout = 30 * 60; // Default to 30 minutes
   constructor() {
     this.toggleWorkingIssueTimerItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);

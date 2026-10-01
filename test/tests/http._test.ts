@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import NoWorkingIssuePick from '../../src/picks/no-working-issue-pick';
 import ConfigurationService from '../../src/services/configuration.service';
-import { IAssignee, IIssue, INotification, ISetTransition } from '../../src/services/http.model';
+import { IIssue, INotification, ISetTransition } from '../../src/services/http.model';
 import { Jira } from '../../src/services/http.service';
 import StoreService from '../../src/services/store.service';
 import { LOADING } from '../../src/shared/constants';
@@ -70,7 +70,8 @@ suite('Jira API', () => {
   let issueKey: IIssue;
   let transitionId: ISetTransition;
   let notification: INotification;
-  let assigneeKey: IAssignee;
+  let assigneeKey: string;
+  let issueTypeId = '';
   let settingsBkp = <any>{};
 
   test(`Backup Settings`, async () => {
@@ -101,7 +102,7 @@ suite('Jira API', () => {
               key: project
             },
             issuetype: {
-              id: '10004'
+              id: issueTypeId
             },
             summary: 'VsCode npm test',
             description: 'created by VsCode npm test'
@@ -115,7 +116,7 @@ suite('Jira API', () => {
       case 'addNewComment':
         return { issueKey, comment: { body: 'New comment created by VsCode' } };
       case 'addWorkLog':
-        return { issueKey, worklog: { timeSpentSeconds: 180, comment: 'New worklog created by VsCode' } };
+        return { issueKey, timeSpentSeconds: 180, comment: 'New worklog created by VsCode', started: new Date().toISOString().replace('Z', '+0000') };
       case 'markNotificationsAsReadUnread':
         return { ids: [notification.id], toState: notification.readState.toUpperCase() === 'READ' ? 'UNREAD' : 'READ' };
       default:
@@ -134,7 +135,11 @@ suite('Jira API', () => {
         break;
       }
       case 'getAssignees': {
-        assigneeKey = response[0].key;
+        assigneeKey = response[0].key || response[0].accountId;
+        break;
+      }
+      case 'getAllIssueTypesWithFields': {
+        issueTypeId = response.filter((type: any) => !type.subtask)[0].id;
         break;
       }
       case 'getNotifications': {
@@ -144,13 +149,25 @@ suite('Jira API', () => {
     }
   };
 
+  // Jira Cloud rejects cookie sessions opened with an API token: notifications are not available there
+  const cloudSessionTests = ['getCloudSession', 'getNotifications', 'markNotificationsAsReadUnread'];
+
   tests.forEach(t => {
-    test(t.name, async () => {
+    test(t.name, async function() {
       if (t.name !== 'markNotificationsAsReadUnread' || !!notification) {
-        const response = await (<any>store.state.jira)[t.name](preparePaylod(t));
+        let response;
+        try {
+          response = await (<any>store.state.jira)[t.name](preparePaylod(t));
+        } catch (err: any) {
+          if (cloudSessionTests.includes(t.name) && !!err && err.status === 401) {
+            this.skip();
+          }
+          throw err;
+        }
         storeResponse(t.name, response);
         if (t.name === 'getIssueByKey') {
-          if (response.key !== issueKey || response.fields.assignee.key !== assigneeKey) {
+          const assignee = response.fields.assignee || {};
+          if (response.key !== issueKey || (assignee.key || assignee.accountId) !== assigneeKey) {
             throw new Error('getIssueByKey -> issue not correct');
           }
         }

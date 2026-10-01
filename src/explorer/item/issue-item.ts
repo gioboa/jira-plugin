@@ -12,10 +12,7 @@ export class IssueItem extends vscode.TreeItem {
       this.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
       this.label += ' - subtasks: ' + (issue.fields.subtasks || []).map((issue) => issue.key).join(', ');
     }
-  }
-
-  get tooltip(): string {
-    return `(${this.issue.fields.status.name}) ${this.label}`;
+    this.tooltip = `(${this.issue.fields.status.name}) ${this.label}`;
   }
 
   contextValue = 'IssueItem';

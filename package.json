@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/gioboa/jira-plugin#readme",
   "engines": {
-    "vscode": "^1.31.0"
+    "vscode": "^1.31.0",
+    "node": ">=24"
   },
   "categories": [
     "Other"
@@ -35,19 +36,19 @@
   "main": "./out/src/extension",
   "scripts": {
     "clean": "rm -rf ./out",
-    "vscode:prepublish": "npm run compile",
-    "compile": "npm run clean && tsc -p ./",
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "pnpm run clean && tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "git update-index --skip-worktree ./test/utils/settings.ts && node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && TYPE=1 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=2 node ./scripts/rename-files.js",
-    "setup:settings": "npm run compile && TYPE=3 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
-    "setup:settings:insiders": "npm run compile && TYPE=3 node ./scripts/rename-files.js && CODE_VERSION='insiders' node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
+    "test": "pnpm run compile && TYPE=1 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=2 node ./scripts/rename-files.js",
+    "setup:settings": "pnpm run compile && TYPE=3 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
+    "setup:settings:insiders": "pnpm run compile && TYPE=3 node ./scripts/rename-files.js && CODE_VERSION='insiders' node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
     "prelint": "prettier --write 'src/**/*.ts'",
     "lint": "tslint 'src/**/*.ts' --format stylish --fix"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "git stash -q --keep-index && npm run lint && npm run test && git add -u && git stash pop -q"
+      "pre-commit": "git stash -q --keep-index && pnpm run lint && pnpm run test && git add -u && git stash pop -q"
     }
   },
   "contributes": {
@@ -445,16 +446,17 @@
     }
   },
   "devDependencies": {
-    "@types/mocha": "^8.0.3",
-    "@types/node": "^14.11.2",
-    "husky": "^4.3.0",
-    "mocha": "^12.0.1",
-    "prettier": "^2.1.2",
-    "tslint": "^6.1.3",
-    "typescript": "^3.9.7",
-    "vscode": "^1.1.37"
+    "@types/mocha": "8.2.3",
+    "@types/node": "24.19.0",
+    "husky": "4.3.8",
+    "mocha": "12.0.3",
+    "prettier": "2.8.8",
+    "tslint": "6.1.3",
+    "typescript": "5.9.3",
+    "vscode": "1.1.37"
   },
   "dependencies": {
-    "jira-connector": "^3.1.0"
-  }
+    "jira.js": "5.4.0"
+  },
+  "packageManager": "pnpm@11.23.0"
 }

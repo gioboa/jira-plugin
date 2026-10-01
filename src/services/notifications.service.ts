@@ -39,9 +39,7 @@ export default class NotificationService {
         const ms = 1000 * 60 * 2;
         setTimeout(() => this.startNotificationsWatcher(), ms);
       } catch (err) {
-        if (!!err && JSON.parse(err).statusCode === '404') {
-          // not available
-        }
+        // notifications not available (e.g. Jira Server returns 404)
       }
     }
   }

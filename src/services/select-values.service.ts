@@ -16,7 +16,7 @@ import {
 import { IAssignee, IFavouriteFilter, IIssue, IIssueType } from './http.model';
 
 export default class SelectValuesService {
-  private intervalInstance: NodeJS.Timer | undefined;
+  private intervalInstance: NodeJS.Timeout | undefined;
 
   // selection for projects
   public async selectProject(): Promise<string> {
@@ -299,7 +299,7 @@ export default class SelectValuesService {
           .filter((assignee: IAssignee) => assignee.active === true)
           .map((assignee: IAssignee) => {
             return {
-              pickValue: onlyKey ? assignee.key : assignee,
+              pickValue: onlyKey ? assignee.key || assignee.accountId : assignee,
               label: assignee.key || assignee.displayName,
               description: assignee.displayName,
             };
@@ -315,7 +315,7 @@ export default class SelectValuesService {
           matchOnDetail: true,
           placeHolder: 'Select an assignee',
         });
-        return selected ? selected.pickValue : '';
+        return selected ? selected.pickValue || '' : '';
       } else {
         throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
       }

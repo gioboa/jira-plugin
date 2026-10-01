@@ -5,7 +5,7 @@ import { restoreSettings } from './utils';
 
 suite('Setup settings', () => {
   test(`Restore Settings Backup`, async () => {
-    restoreSettings(new ConfigurationService(), settings);
+    await restoreSettings(new ConfigurationService(), settings);
     assert.strictEqual(1, 1);
   });
 });

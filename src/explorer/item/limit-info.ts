@@ -5,10 +5,7 @@ import { utilities } from '../../services';
 export class LimitInfoItem extends vscode.TreeItem {
   constructor() {
     super(`Viewable rows maximum has been reached. Modify filters to narrow search`, vscode.TreeItemCollapsibleState.None);
-  }
-
-  get tooltip(): string {
-    return this.label || '';
+    this.tooltip = this.label || '';
   }
 
   private icon(status: string): string {
