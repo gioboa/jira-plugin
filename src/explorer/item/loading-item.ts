@@ -5,10 +5,7 @@ import { utilities } from '../../services';
 export class LoadingItem extends vscode.TreeItem {
   constructor() {
     super('LOADING...', vscode.TreeItemCollapsibleState.None);
-  }
-
-  get tooltip(): string {
-    return '';
+    this.tooltip = '';
   }
 
   iconPath = {

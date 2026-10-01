@@ -89,6 +89,7 @@ export interface ISetTransition {
 
 export interface IAssignee {
   key: string;
+  accountId?: string;
   name: string;
   displayName: string;
   active: boolean;
@@ -185,12 +186,6 @@ export interface IPriority {
   name: string;
   self: string;
   statusColor: string;
-}
-
-export interface ICreateMetadata {
-  projectKeys: string;
-  issuetypeIds?: string[];
-  expand: string;
 }
 
 export interface IFavouriteFilter {

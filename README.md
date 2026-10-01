@@ -33,7 +33,7 @@
 
 [Learn about the latest improvements][changelog].
 
-[changelog]: https://github.com/gioboa/jira-plugin/blob/master/CHANGELOG.md
+[changelog]: https://github.com/gioboa/jira-plugin/releases
 
 ## Support
 

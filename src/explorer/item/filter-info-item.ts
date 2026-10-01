@@ -5,10 +5,7 @@ import { utilities } from '../../services';
 export class FilterInfoItem extends vscode.TreeItem {
   constructor(project: string, filter: string, issueCounter: number) {
     super(`${project} - ${filter} - COUNT: ${issueCounter}`, vscode.TreeItemCollapsibleState.None);
-  }
-
-  get tooltip(): string {
-    return '';
+    this.tooltip = '';
   }
 
   iconPath = {

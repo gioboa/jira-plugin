@@ -5,10 +5,7 @@ import { utilities } from '../../services';
 export class NoResultItem extends vscode.TreeItem {
   constructor(project: string) {
     super(`${project} - NO ISSUES`, vscode.TreeItemCollapsibleState.None);
-  }
-
-  get tooltip(): string {
-    return '';
+    this.tooltip = '';
   }
 
   iconPath = {

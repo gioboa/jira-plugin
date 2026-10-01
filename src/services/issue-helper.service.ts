@@ -126,7 +126,7 @@ export default class IssueHelperService {
   }
 
   public isArrayOfStringField(fieldSchema: IFieldSchema) {
-    return this.isArrayType && (fieldSchema.items || '').toLowerCase() === 'string';
+    return this.isArrayType(fieldSchema.type) && (fieldSchema.items || '').toLowerCase() === 'string';
   }
 
   public isIssuelinksTypeField(fieldName: string) {
