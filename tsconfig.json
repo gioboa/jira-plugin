@@ -24,6 +24,7 @@
   "exclude": [
     "node_modules",
     "out",
-    "vitest.config.mts"
+    "vitest.config.mts",
+    "tsdown.config.mts"
   ]
 }

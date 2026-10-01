@@ -10,7 +10,6 @@ export default class StatusBarService {
   private workingIssueItem: vscode.StatusBarItem;
   private toggleWorkingIssueTimerItem: vscode.StatusBarItem;
   private intervalId: NodeJS.Timeout | undefined;
-  private awayTimeout = 30 * 60; // Default to 30 minutes
   constructor() {
     this.toggleWorkingIssueTimerItem = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Left,
@@ -21,7 +20,11 @@ export default class StatusBarService {
       vscode.StatusBarAlignment.Left,
       300
     );
-    this.awayTimeout = configuration.get(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) * 60;
+  }
+
+  // seconds; read lazily so the constructor doesn't depend on sibling services
+  private get awayTimeout(): number {
+    return configuration.get(CONFIG.TRACKING_TIME_MODE_HYBRID_TIMEOUT) * 60;
   }
 
   // setup working project item

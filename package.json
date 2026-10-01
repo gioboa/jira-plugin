@@ -37,15 +37,16 @@
   "scripts": {
     "clean": "rm -rf ./out",
     "vscode:prepublish": "pnpm run compile",
-    "compile": "pnpm run clean && tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "pnpm run clean && tsdown",
+    "watch": "tsdown --watch",
     "postinstall": "git update-index --skip-worktree ./test/utils/settings.ts",
     "test": "vitest run",
     "prepare": "husky",
     "fmt": "oxfmt src test",
     "fmt.check": "oxfmt --check src test",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test:e2e": "E2E=1 vitest run"
+    "test:e2e": "E2E=1 vitest run",
+    "package": "vsce package --no-dependencies"
   },
   "contributes": {
     "configuration": {
@@ -444,13 +445,13 @@
   "devDependencies": {
     "@types/node": "24.19.0",
     "@types/vscode": "1.31.0",
+    "@vscode/vsce": "4.0.0",
     "husky": "9.1.7",
+    "jira.js": "5.4.0",
     "oxfmt": "0.61.0",
+    "tsdown": "0.23.0",
     "typescript": "5.9.3",
     "vitest": "5.0.3"
-  },
-  "dependencies": {
-    "jira.js": "5.4.0"
   },
   "packageManager": "pnpm@11.23.0"
 }

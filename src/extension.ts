@@ -15,6 +15,7 @@ export const activate = async (context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(statusBar);
   context.subscriptions.push(gitIntegration);
   context.subscriptions.push(...commands.register());
+  gitIntegration.activate();
   // create Jira Instance and try to connect
   await store.connectToJira();
 };
