@@ -2,7 +2,10 @@ import ConfigurationService from '../../src/services/configuration.service';
 import { CONFIG } from '../../src/shared/constants';
 import { ISettings } from './settings.model';
 
-export const backupSettings = async (configurationService: ConfigurationService, settings: ISettings) => {
+export const backupSettings = async (
+  configurationService: ConfigurationService,
+  settings: ISettings
+) => {
   settings.baseUrl = await configurationService.get(CONFIG.BASE_URL);
   settings.username = await configurationService.get(CONFIG.USERNAME);
   settings.workingProject = await configurationService.get(CONFIG.WORKING_PROJECT);
@@ -13,7 +16,10 @@ export const backupSettings = async (configurationService: ConfigurationService,
   settings.workingIssue = await configurationService.getGlobalWorkingIssue();
 };
 
-export const restoreSettings = async (configurationService: ConfigurationService, settings: ISettings) => {
+export const restoreSettings = async (
+  configurationService: ConfigurationService,
+  settings: ISettings
+) => {
   await configurationService.set(CONFIG.BASE_URL, settings.baseUrl);
   await configurationService.set(CONFIG.USERNAME, settings.username);
   await configurationService.set(CONFIG.WORKING_PROJECT, settings.workingProject);

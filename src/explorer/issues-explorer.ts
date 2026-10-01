@@ -11,8 +11,10 @@ import { NoResultItem } from './item/no-result-item';
 import { GroupItem } from './item/status-item';
 
 export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem> {
-  private _onDidChangeTreeData: vscode.EventEmitter<IssueItem | undefined> = new vscode.EventEmitter<IssueItem | undefined>();
-  readonly onDidChangeTreeData: vscode.Event<IssueItem | undefined> = this._onDidChangeTreeData.event;
+  private _onDidChangeTreeData: vscode.EventEmitter<IssueItem | undefined> =
+    new vscode.EventEmitter<IssueItem | undefined>();
+  readonly onDidChangeTreeData: vscode.Event<IssueItem | undefined> =
+    this._onDidChangeTreeData.event;
 
   private groupByField = { ...GROUP_BY_FIELDS.STATUS };
   private fallbackGroupByField = { ...GROUP_BY_FIELDS.STATUS };
@@ -55,10 +57,15 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
         const description = this.descPropertyFromField(item.issue.fields[field.value]);
         if (
           !groupItems.find(
-            (el) => el.item.contextValue === new GroupItem('', '').contextValue && this.getLabel(field.label, description) === el.item.label
+            (el) =>
+              el.item.contextValue === new GroupItem('', '').contextValue &&
+              this.getLabel(field.label, description) === el.item.label
           )
         ) {
-          groupItems.push({ index, item: new GroupItem(this.getLabel(field.label, description), description) });
+          groupItems.push({
+            index,
+            item: new GroupItem(this.getLabel(field.label, description), description),
+          });
         }
       }
     });
@@ -98,7 +105,9 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
           }
         }
         // if subtask has different group field value I will delete from subtasks list and I will change issue label
-        issue.fields.subtasks = issue.fields.subtasks.filter((subtask: IIssue) => !subtasksKeysToRemove.includes(subtask.key));
+        issue.fields.subtasks = issue.fields.subtasks.filter(
+          (subtask: IIssue) => !subtasksKeysToRemove.includes(subtask.key)
+        );
         for (let subtaskKey of subtasksKeysToRemove) {
           const element = issues.find((issue) => issue.key === subtaskKey);
           if (element) {
@@ -139,15 +148,24 @@ export default class IssuesExplorer implements vscode.TreeDataProvider<IssueItem
               })
           )
           .sort((itemA: IssueItem, itemB: IssueItem) => {
-            const descA = this.descPropertyFromField((<any>itemA.issue.fields)[this.groupByField.value], true);
-            const descB = this.descPropertyFromField((<any>itemB.issue.fields)[this.groupByField.value], true);
+            const descA = this.descPropertyFromField(
+              (<any>itemA.issue.fields)[this.groupByField.value],
+              true
+            );
+            const descB = this.descPropertyFromField(
+              (<any>itemB.issue.fields)[this.groupByField.value],
+              true
+            );
             if (this.groupByField.value === GROUP_BY_FIELDS.UPDATED.value) {
               return descA < descB ? 1 : descA > descB ? -1 : 0;
             }
             return descA < descB ? -1 : descA > descB ? 1 : 0;
           });
         // add in the firt possition 'filter-info-item' and then the 'divider-item'
-        items.unshift(<any>new FilterInfoItem(project, store.state.currentSearch.filter, issues.length), <any>new DividerItem('------'));
+        items.unshift(
+          <any>new FilterInfoItem(project, store.state.currentSearch.filter, issues.length),
+          <any>new DividerItem('------')
+        );
         // loop items and insert a separator when field value change
         this.addSeparators(items, this.groupByField);
         if (issues.length === configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST)) {

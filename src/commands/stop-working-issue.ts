@@ -4,13 +4,17 @@ import { configuration, statusBar, store, utilities } from '../services';
 import { IIssue, IWorkingIssue } from '../services/http.model';
 import { CONFIG, NO_WORKING_ISSUE, TRACKING_TIME_MODE } from '../shared/constants';
 
-export default async function stopWorkingIssue(storedWorkingIssue: IWorkingIssue, preloadedIssue: IIssue): Promise<void> {
+export default async function stopWorkingIssue(
+  storedWorkingIssue: IWorkingIssue,
+  preloadedIssue: IIssue
+): Promise<void> {
   const workingIssue = store.state.workingIssue || new NoWorkingIssuePick().pickValue;
   if (!!workingIssue.issue.key && workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
     if (
       workingIssue.issue.key !== NO_WORKING_ISSUE.key &&
       configuration.get(CONFIG.TRACKING_TIME_MODE) !== TRACKING_TIME_MODE.NEVER &&
-      utilities.floorSecondsToMinutes(workingIssue.trackingTime) >= configuration.get(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME)
+      utilities.floorSecondsToMinutes(workingIssue.trackingTime) >=
+        configuration.get(CONFIG.WORKLOG_MINIMUM_TRACKING_TIME)
     ) {
       // old working issue has trackingTime and it's equal or bigger then WORKLOG_MINIMUM_TRACKING_TIME setting
       statusBar.clearWorkingIssueInterval();

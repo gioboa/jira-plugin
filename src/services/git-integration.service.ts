@@ -93,7 +93,9 @@ export default class GitIntegrationService {
       const checkoutType = config.get<string>('checkoutType') || 'all';
       const includeRemotes = checkoutType === 'all' || checkoutType === 'remote';
       const heads = repository.refs.filter((ref: any) => ref.type === RefType.Head);
-      const remoteHeads = includeRemotes ? repository.refs.filter((ref: any) => ref.type === RefType.RemoteHead) : [];
+      const remoteHeads = includeRemotes
+        ? repository.refs.filter((ref: any) => ref.type === RefType.RemoteHead)
+        : [];
       // const includeTags = checkoutType === 'all' || checkoutType === 'tags';
       // const tags = includeTags ? repository.refs.filter((ref: any) => ref.type === RefType.Tag) : [];
       return [...heads, ...remoteHeads];
@@ -132,7 +134,10 @@ export default class GitIntegrationService {
   }
 
   private async findIssue(issue: string) {
-    return (await store.state.jira.getIssueByKey(issue.toUpperCase())) || (await store.state.jira.getIssueByKey(issue.toLocaleLowerCase()));
+    return (
+      (await store.state.jira.getIssueByKey(issue.toUpperCase())) ||
+      (await store.state.jira.getIssueByKey(issue.toLocaleLowerCase()))
+    );
   }
 
   private async onSwitchToWorkingTicketBranch(refs: any[]): Promise<string> {
@@ -180,7 +185,10 @@ export default class GitIntegrationService {
     return value;
   }
 
-  private async setCurrentWorkingProjectAndIssue(ticket: { project: string; issue: string }, issue: IIssue): Promise<void> {
+  private async setCurrentWorkingProjectAndIssue(
+    ticket: { project: string; issue: string },
+    issue: IIssue
+  ): Promise<void> {
     try {
       store.changeStateProject(ticket.project, false);
       vscode.commands.executeCommand('jira-plugin.setWorkingIssue', undefined, issue);

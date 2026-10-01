@@ -14,43 +14,43 @@ suite('Configuration', () => {
       config: CONFIG.BASE_URL,
       value: `${CONFIG.BASE_URL}_test_value`,
       expected: `${CONFIG.BASE_URL}_test_value`,
-      equal: true
+      equal: true,
     },
     {
       title: `${CONFIG.BASE_URL} 2`,
       config: CONFIG.BASE_URL,
       value: `${CONFIG.BASE_URL}_test2_value/`,
       expected: `${CONFIG.BASE_URL}_test2_value/`,
-      equal: false
+      equal: false,
     },
     {
       title: `${CONFIG.USERNAME} 1`,
       config: CONFIG.USERNAME,
       value: `${CONFIG.USERNAME}_test_value`,
       expected: `${CONFIG.USERNAME}_test_value`,
-      equal: true
+      equal: true,
     },
     {
       title: `${CONFIG.WORKING_PROJECT} 1`,
       config: CONFIG.WORKING_PROJECT,
       value: `${CONFIG.WORKING_PROJECT}_test_value`,
       expected: `${CONFIG.WORKING_PROJECT}_test_value`,
-      equal: true
+      equal: true,
     },
     {
       title: `${CONFIG.ENABLE_WORKING_ISSUE} 1`,
       config: CONFIG.ENABLE_WORKING_ISSUE,
       value: `${CONFIG.ENABLE_WORKING_ISSUE}_test_value`,
       expected: `${CONFIG.ENABLE_WORKING_ISSUE}_test_value`,
-      equal: true
+      equal: true,
     },
     {
       title: `${CONFIG.WORKING_ISSUE_STATUSES}`,
       config: CONFIG.WORKING_ISSUE_STATUSES,
       value: `In Progess, Closed`,
       expected: `In Progess, Closed`,
-      equal: true
-    }
+      equal: true,
+    },
   ];
   let settingsBkp = <any>{};
 
@@ -59,7 +59,7 @@ suite('Configuration', () => {
     assert.strictEqual(1, 1);
   });
 
-  tests.forEach(entry => {
+  tests.forEach((entry) => {
     test(`${entry.title} config`, async () => {
       await configurationService.set(entry.config, entry.value);
       const actual = await configurationService.get(entry.config);
@@ -106,18 +106,18 @@ suite('Configuration', () => {
         fields: {
           summary: '',
           status: {
-            name: ''
+            name: '',
           },
           project: {
             id: '',
             key: '',
-            name: ''
-          }
-        }
+            name: '',
+          },
+        },
       },
       trackingTime: 0,
       awayTime: 0,
-      stopped: false
+      stopped: false,
     };
     await configurationService.setGlobalWorkingIssue(workingIssue);
     const storedWOrkingIssue = await configurationService.getGlobalWorkingIssue();
@@ -128,7 +128,7 @@ suite('Configuration', () => {
     await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Closed');
     const statuses = configurationService.workingIssueStatuses([
       { description: 'In Progress', name: 'In Progress' },
-      { description: 'Closed', name: 'Closed' }
+      { description: 'Closed', name: 'Closed' },
     ]);
     assert.strictEqual(statuses, `'In Progress','Closed'`);
   });
@@ -137,7 +137,7 @@ suite('Configuration', () => {
     await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'In Progress, Abc');
     const statuses = configurationService.workingIssueStatuses([
       { description: 'In Progress', name: 'In Progress' },
-      { description: 'Closed', name: 'Closed' }
+      { description: 'Closed', name: 'Closed' },
     ]);
     assert.strictEqual(statuses, `'In Progress'`);
   });
@@ -146,7 +146,7 @@ suite('Configuration', () => {
     await configurationService.set(CONFIG.WORKING_ISSUE_STATUSES, 'Abc');
     const statuses = configurationService.workingIssueStatuses([
       { description: 'In Progress', name: 'In Progress' },
-      { description: 'Closed', name: 'Closed' }
+      { description: 'Closed', name: 'Closed' },
     ]);
     assert.strictEqual(statuses, `'${DEFAULT_WORKING_ISSUE_STATUS}'`);
   });

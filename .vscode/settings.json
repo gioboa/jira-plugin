@@ -1,8 +1,10 @@
 // Place your settings in this file to overwrite default and user settings.
 {
   "editor.codeActionsOnSave": {
-    "source.organizeImports": "explicit"
+    "source.organizeImports": "always",
+    "source.fixAll": "always"
   },
+  "editor.formatOnSave": true,
   "files.exclude": {
     "out": false // set this to true to hide the "out" folder with the compiled JS files
   },

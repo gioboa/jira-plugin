@@ -1,7 +1,12 @@
 import * as https from 'https';
 import { Version2Client } from 'jira.js';
 import { configuration, logger } from '.';
-import { ASSIGNEES_MAX_RESULTS, CONFIG, ERROR_WRONG_CONFIGURATION, UNASSIGNED } from '../shared/constants';
+import {
+  ASSIGNEES_MAX_RESULTS,
+  CONFIG,
+  ERROR_WRONG_CONFIGURATION,
+  UNASSIGNED,
+} from '../shared/constants';
 import {
   IAddComment,
   IAddCommentResponse,
@@ -31,7 +36,8 @@ const ENHANCED_SEARCH_PAGE_SIZE = 100;
 // Jira Cloud account ids look like "712020:uuid" or 24 hex chars; Jira Server uses usernames
 const ACCOUNT_ID_REGEXP = /^([0-9a-f]{24}|[0-9a-z]+:[0-9a-f-]{36})$/i;
 
-const errorStatus = (err: any): number | undefined => (!!err && typeof err === 'object' ? err.status || err.statusCode : undefined);
+const errorStatus = (err: any): number | undefined =>
+  !!err && typeof err === 'object' ? err.status || err.statusCode : undefined;
 
 const errorText = (err: any): string => {
   if (!err) {
@@ -49,7 +55,8 @@ const errorText = (err: any): string => {
 
 // Jira Cloud removed POST /rest/api/2/search (CHANGE-2046) -> use /rest/api/2/search/jql
 // https://developer.atlassian.com/changelog/#CHANGE-2046
-const isSearchApiRemoved = (err: any): boolean => errorStatus(err) === 410 || errorText(err).indexOf('search/jql') !== -1;
+const isSearchApiRemoved = (err: any): boolean =>
+  errorStatus(err) === 410 || errorText(err).indexOf('search/jql') !== -1;
 
 export class Jira implements IJira {
   client: Version2Client;
@@ -59,7 +66,11 @@ export class Jira implements IJira {
 
   constructor() {
     if (!configuration.isValid()) {
-      if (!!configuration.get(CONFIG.BASE_URL) && !!configuration.credentials.username && !!configuration.credentials.password) {
+      if (
+        !!configuration.get(CONFIG.BASE_URL) &&
+        !!configuration.credentials.username &&
+        !!configuration.credentials.password
+      ) {
         logger.printErrorMessageInOutputAndShowAlert('Check Jira Plugin settings in VSCode.');
       }
       this.baseUrl = '';
@@ -78,7 +89,8 @@ export class Jira implements IJira {
       authentication: { basic: { email: username, apiToken: password } },
       baseRequestConfig: {
         timeout: configuration.get(CONFIG.REQUESTS_TIMEOUT) * 1000 * 60,
-        httpsAgent: strictSSL === 'false' ? new https.Agent({ rejectUnauthorized: false }) : undefined,
+        httpsAgent:
+          strictSSL === 'false' ? new https.Agent({ rejectUnauthorized: false }) : undefined,
       },
     });
   }
@@ -150,7 +162,10 @@ export class Jira implements IJira {
         throw err;
       }
     }
-    return this.client.sendRequest<IProject[]>({ url: '/rest/api/2/project', method: 'GET' }, undefined as never);
+    return this.client.sendRequest<IProject[]>(
+      { url: '/rest/api/2/project', method: 'GET' },
+      undefined as never
+    );
   }
 
   async getIssueByKey(issueKey: string): Promise<IIssue> {
@@ -163,7 +178,11 @@ export class Jira implements IJira {
     let startAt = 0;
     let goOn = true;
     while (goOn) {
-      const response = (await this.client.userSearch.findAssignableUsers({ project, maxResults, startAt })) as any[];
+      const response = (await this.client.userSearch.findAssignableUsers({
+        project,
+        maxResults,
+        startAt,
+      })) as any[];
       assignees.push(...response);
       if ((response || []).length < maxResults) {
         goOn = false;
@@ -179,7 +198,10 @@ export class Jira implements IJira {
   }
 
   async setTransition(params: { issueKey: string; transition: ISetTransition }): Promise<void> {
-    return this.client.issues.doTransition({ issueIdOrKey: params.issueKey, transition: params.transition.transition });
+    return this.client.issues.doTransition({
+      issueIdOrKey: params.issueKey,
+      transition: params.transition.transition,
+    });
   }
 
   async setAssignIssue(params: { issueKey: string; assignee: string }): Promise<void> {
@@ -192,10 +214,16 @@ export class Jira implements IJira {
     } else {
       data = { name: assignee }; // Jira Server / Data Center
     }
-    return this.client.sendRequest<void>({ url: `/rest/api/2/issue/${params.issueKey}/assignee`, method: 'PUT', data }, undefined as never);
+    return this.client.sendRequest<void>(
+      { url: `/rest/api/2/issue/${params.issueKey}/assignee`, method: 'PUT', data },
+      undefined as never
+    );
   }
 
-  async addNewComment(params: { issueKey: string; comment: IAddComment }): Promise<IAddCommentResponse> {
+  async addNewComment(params: {
+    issueKey: string;
+    comment: IAddComment;
+  }): Promise<IAddCommentResponse> {
     return (await this.client.issueComments.addComment({
       issueIdOrKey: params.issueKey,
       comment: params.comment.body,
@@ -227,8 +255,13 @@ export class Jira implements IJira {
   async getAllIssueTypesWithFields(project: string): Promise<IIssueType[]> {
     // legacy endpoint: one call with the fields expanded (Jira Server and old Jira Cloud)
     try {
-      const response = await this.client.issues.getCreateIssueMeta({ projectKeys: [project], expand: 'projects.issuetypes.fields' });
-      const issueTypes: any[] = (!!response.projects && response.projects.length > 0 && response.projects[0].issuetypes) || [];
+      const response = await this.client.issues.getCreateIssueMeta({
+        projectKeys: [project],
+        expand: 'projects.issuetypes.fields',
+      });
+      const issueTypes: any[] =
+        (!!response.projects && response.projects.length > 0 && response.projects[0].issuetypes) ||
+        [];
       if (issueTypes.length > 0 && issueTypes.every((type) => !!type.fields)) {
         return issueTypes;
       }
@@ -238,7 +271,10 @@ export class Jira implements IJira {
       }
     }
     // Jira Cloud: expand has been removed, fields must be fetched per issue type
-    const page = await this.client.issues.getCreateIssueMetaIssueTypes({ projectIdOrKey: project, maxResults: 200 });
+    const page = await this.client.issues.getCreateIssueMetaIssueTypes({
+      projectIdOrKey: project,
+      maxResults: 200,
+    });
     const issueTypes: IIssueType[] = [];
     for (const type of page.issueTypes || []) {
       const fieldsPage = await this.client.issues.getCreateIssueMetaIssueTypeId({
@@ -263,7 +299,12 @@ export class Jira implements IJira {
       requestHeaders.Authorization = undefined;
     }
     return this.client.sendRequest<any>(
-      { url: uri, method, headers: requestHeaders, data: !!body && Object.keys(body).length > 0 ? body : undefined },
+      {
+        url: uri,
+        method,
+        headers: requestHeaders,
+        data: !!body && Object.keys(body).length > 0 ? body : undefined,
+      },
       undefined as never
     );
   }

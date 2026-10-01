@@ -23,7 +23,9 @@ export default class SelectValuesService {
     try {
       if (store.canExecuteJiraAPI()) {
         if (store.state.projects.length === 0) {
-          store.state.projects = utilities.hideProjects(utilities.projectsToShow(await store.state.jira.getProjects()));
+          store.state.projects = utilities.hideProjects(
+            utilities.projectsToShow(await store.state.jira.getProjects())
+          );
           utilities.createDocumentLinkProvider(store.state.projects);
         }
         const picks = store.state.projects.map((project) => ({
@@ -31,7 +33,10 @@ export default class SelectValuesService {
           label: project.key,
           description: project.name,
         }));
-        const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Set working project`, matchOnDescription: true });
+        const selected = await vscode.window.showQuickPick(picks, {
+          placeHolder: `Set working project`,
+          matchOnDescription: true,
+        });
         return selected ? selected.pickValue : '';
       }
     } catch (err) {
@@ -48,7 +53,10 @@ export default class SelectValuesService {
         label: utilities.addStatusIcon(status.name, true),
         description: status.description,
       }));
-      const selected = await vscode.window.showQuickPick(picks, { placeHolder: `Filter by STATUS`, matchOnDescription: true });
+      const selected = await vscode.window.showQuickPick(picks, {
+        placeHolder: `Filter by STATUS`,
+        matchOnDescription: true,
+      });
       return selected ? selected.pickValue : '';
     }
     return '';
@@ -56,13 +64,21 @@ export default class SelectValuesService {
 
   // input for id
   public async selectID(): Promise<string | undefined> {
-    const id = await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert Jira ID (only the number)' });
+    const id = await vscode.window.showInputBox({
+      ignoreFocusOut: true,
+      password: false,
+      placeHolder: 'Insert Jira ID (only the number)',
+    });
     return id && !isNaN(parseInt(id)) ? parseInt(id).toString() : undefined;
   }
 
   // input for summary
   public async selectSummary(): Promise<string | undefined> {
-    return await vscode.window.showInputBox({ ignoreFocusOut: true, password: false, placeHolder: 'Insert Jira Summary' });
+    return await vscode.window.showInputBox({
+      ignoreFocusOut: true,
+      password: false,
+      placeHolder: 'Insert Jira Summary',
+    });
   }
 
   // return the filter (used in filter-info-item) and the JQL
@@ -94,7 +110,10 @@ export default class SelectValuesService {
       case SEARCH_MODE.STATUS: {
         const status = await this.selectStatus();
         if (!!status) {
-          return [`STATUS: ${status}`, `project = '${project}' AND status = '${status}' ORDER BY status ASC, updated DESC`];
+          return [
+            `STATUS: ${status}`,
+            `project = '${project}' AND status = '${status}' ORDER BY status ASC, updated DESC`,
+          ];
         }
         break;
       }
@@ -123,7 +142,10 @@ export default class SelectValuesService {
       case SEARCH_MODE.SUMMARY: {
         const summary = await this.selectSummary();
         if (!!summary) {
-          return [`SUMMARY: ${summary}`, `project = '${project}' AND summary ~ '${summary}' ORDER BY status ASC, updated DESC`];
+          return [
+            `SUMMARY: ${summary}`,
+            `project = '${project}' AND summary ~ '${summary}' ORDER BY status ASC, updated DESC`,
+          ];
         }
         break;
       }
@@ -166,7 +188,10 @@ export default class SelectValuesService {
 
   private startTimeout(): void {
     this.stopTimeout();
-    this.intervalInstance = setTimeout(() => this.selectIssue(SEARCH_MODE.AUTO_REFRESH), this.autoRefreshValue * 1000 * 60);
+    this.intervalInstance = setTimeout(
+      () => this.selectIssue(SEARCH_MODE.AUTO_REFRESH),
+      this.autoRefreshValue * 1000 * 60
+    );
   }
 
   // perform the search calling Jira API
@@ -183,7 +208,10 @@ export default class SelectValuesService {
           if (!!jql) {
             logger.jiraPluginDebugLog(`${filter} jql`, jql);
             // call Jira API with the generated JQL
-            const maxResults = Math.min(configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST), SEARCH_MAX_RESULTS);
+            const maxResults = Math.min(
+              configuration.get(CONFIG.NUMBER_ISSUES_IN_LIST),
+              SEARCH_MAX_RESULTS
+            );
             const searchResult = await store.state.jira.search({
               jql,
               maxResults,
@@ -194,7 +222,9 @@ export default class SelectValuesService {
             }
             if (!!searchResult && !!searchResult.issues && searchResult.issues.length > 0) {
               // exclude issues with project key different from current working project
-              searchResult.issues = searchResult.issues.filter((issue: IIssue) => (issue.fields.project.key || '') === project);
+              searchResult.issues = searchResult.issues.filter(
+                (issue: IIssue) => (issue.fields.project.key || '') === project
+              );
               store.changeStateIssues(filter, jql, searchResult.issues);
             } else {
               store.changeStateIssues(filter, jql, []);
@@ -264,7 +294,9 @@ export default class SelectValuesService {
               });
               return selected ? selected.pickValue : undefined;
             } else {
-              vscode.window.showInformationMessage(`No ${filter} issues found in ${project} project`);
+              vscode.window.showInformationMessage(
+                `No ${filter} issues found in ${project} project`
+              );
               // limit case, there is a working issue selected but the user has no more ${filter} issue. i.e: change of status of the working issue
               if (store.state.workingIssue.issue.key !== NO_WORKING_ISSUE.key) {
                 const picks = [new NoWorkingIssuePick()];
@@ -317,7 +349,9 @@ export default class SelectValuesService {
         });
         return selected ? selected.pickValue || '' : '';
       } else {
-        throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
+        throw new Error(
+          `Working project not correct, please select one valid project. ("Set working project" command)`
+        );
       }
     } catch (err) {
       logger.printErrorMessageInOutputAndShowAlert(err);
@@ -374,11 +408,16 @@ export default class SelectValuesService {
       );
       return { status: firstChoise, assignee: (<IAssignee>secondChoise).name };
     } else {
-      throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
+      throw new Error(
+        `Working project not correct, please select one valid project. ("Set working project" command)`
+      );
     }
   }
 
-  public async selectIssueType(ignoreFocusOut: boolean, preLoadedPicks: IIssueType[]): Promise<IIssueType | undefined> {
+  public async selectIssueType(
+    ignoreFocusOut: boolean,
+    preLoadedPicks: IIssueType[]
+  ): Promise<IIssueType | undefined> {
     try {
       const types = preLoadedPicks || (await store.state.jira.getAllIssueTypes());
       const picks = (types || []).map((type) => ({
@@ -425,7 +464,9 @@ export default class SelectValuesService {
             vscode.window.showInformationMessage('No favourites filters found');
           }
         } else {
-          throw new Error(`Working project not correct, please select one valid project. ("Set working project" command)`);
+          throw new Error(
+            `Working project not correct, please select one valid project. ("Set working project" command)`
+          );
         }
       }
     } catch (err) {

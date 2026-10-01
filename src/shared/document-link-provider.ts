@@ -11,7 +11,9 @@ export class IssueLinkProvider implements vscode.DocumentLinkProvider {
     return configuration.get(CONFIG.BASE_URL);
   }
 
-  public provideDocumentLinks(document: vscode.TextDocument): vscode.ProviderResult<vscode.DocumentLink[]> {
+  public provideDocumentLinks(
+    document: vscode.TextDocument
+  ): vscode.ProviderResult<vscode.DocumentLink[]> {
     const baseUrl = this.baseUrl;
     if (!baseUrl || !this.projects) {
       return null;
@@ -19,10 +21,18 @@ export class IssueLinkProvider implements vscode.DocumentLinkProvider {
     return document
       .getText()
       .split('\n')
-      .reduce((matches, line, no) => this.getMatchesOnLine(baseUrl, line, no, matches), [] as vscode.DocumentLink[]);
+      .reduce(
+        (matches, line, no) => this.getMatchesOnLine(baseUrl, line, no, matches),
+        [] as vscode.DocumentLink[]
+      );
   }
 
-  private getMatchesOnLine(baseUrl: string, line: string, lineNo: number, matches: vscode.DocumentLink[]): vscode.DocumentLink[] {
+  private getMatchesOnLine(
+    baseUrl: string,
+    line: string,
+    lineNo: number,
+    matches: vscode.DocumentLink[]
+  ): vscode.DocumentLink[] {
     this.projects.forEach((project) => {
       const expr = new RegExp(`${project.key}-\\d+`, 'gi');
       let match;

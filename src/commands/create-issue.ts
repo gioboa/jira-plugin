@@ -84,11 +84,16 @@ export default async function createIssue(issueItem: IssueItem): Promise<void> {
               matchOnDescription: true,
             });
             // manage the selected field from selector
-            if (!!fieldToModifySelection && fieldToModifySelection.field !== issueHelper.NEW_ISSUE_FIELDS.DIVIDER.field) {
+            if (
+              !!fieldToModifySelection &&
+              fieldToModifySelection.field !== issueHelper.NEW_ISSUE_FIELDS.DIVIDER.field
+            ) {
               switch (fieldToModifySelection.field) {
                 case issueHelper.NEW_ISSUE_FIELDS.INSERT_ISSUE.field:
                   // check if the mandatory field are populated, if not, we go on
-                  loopStatus = issueHelper.mandatoryFieldsOk ? issueHelper.NEW_ISSUE_STATUS.INSERT : loopStatus;
+                  loopStatus = issueHelper.mandatoryFieldsOk
+                    ? issueHelper.NEW_ISSUE_STATUS.INSERT
+                    : loopStatus;
                   break;
                 case issueHelper.NEW_ISSUE_FIELDS.EXIT.field:
                   loopStatus = issueHelper.NEW_ISSUE_STATUS.STOP;
@@ -148,7 +153,9 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
             ...issueHelper.requestJson[issueHelper.timetrakingJsonField],
             originalEstimate: text,
           };
-        } else if (issueHelper.isIssueTimetrackingRemainingEstimateField(fieldToModifySelection.field)) {
+        } else if (
+          issueHelper.isIssueTimetrackingRemainingEstimateField(fieldToModifySelection.field)
+        ) {
           issueHelper.requestJson[issueHelper.timetrakingJsonField] = {
             ...issueHelper.requestJson[issueHelper.timetrakingJsonField],
             remainingEstimate: text,
@@ -199,11 +206,15 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
         if (!canPickMany ? !!selected : !!selected && selected.length > 0) {
           // update user choices
           const newValueSelected: IPickValue[] = !canPickMany ? [selected] : [...selected];
-          issueHelper.newIssueIstance[fieldToModifySelection.field] = newValueSelected.map((value: any) => value.label).join(' ');
+          issueHelper.newIssueIstance[fieldToModifySelection.field] = newValueSelected
+            .map((value: any) => value.label)
+            .join(' ');
           // assignee/reporter want a name prop and NOT id or key
           if (issueHelper.isAssigneeOrReporterField(fieldToModifySelection.field)) {
             const values = newValueSelected.map((value: any) => value.pickValue.accountId);
-            issueHelper.requestJson[fieldToModifySelection.field] = { accountId: !canPickMany ? values[0] : values };
+            issueHelper.requestJson[fieldToModifySelection.field] = {
+              accountId: !canPickMany ? values[0] : values,
+            };
           }
           // straight string or string[]
           if (
@@ -213,14 +224,20 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
             issueHelper.isIssuelinksField(fieldToModifySelection.field) ||
             issueHelper.isArrayOfStringField(fieldToModifySelection.fieldSchema)
           ) {
-            const values = newValueSelected.map((value: any) => value.pickValue.id || value.pickValue.key || value.pickValue.label);
-            issueHelper.requestJson[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
+            const values = newValueSelected.map(
+              (value: any) => value.pickValue.id || value.pickValue.key || value.pickValue.label
+            );
+            issueHelper.requestJson[fieldToModifySelection.field] = !canPickMany
+              ? values[0]
+              : values;
           }
 
           // save inward for issuelinksType
           if (issueHelper.isIssuelinksTypeField(fieldToModifySelection.field)) {
             const values = newValueSelected.map((value: any) => value.pickValue.inward);
-            issueHelper.requestJson[fieldToModifySelection.field] = !canPickMany ? values[0] : values;
+            issueHelper.requestJson[fieldToModifySelection.field] = !canPickMany
+              ? values[0]
+              : values;
           }
           // update payload statndard way use id or key
           if (!issueHelper.requestJson[fieldToModifySelection.field]) {
@@ -246,7 +263,9 @@ const manageSelectedField = async (fieldToModifySelection: any): Promise<void> =
           }
         }
       } else {
-        vscode.window.showErrorMessage(`Debug msg - type not managed ${fieldToModifySelection.fieldSchema.type}`);
+        vscode.window.showErrorMessage(
+          `Debug msg - type not managed ${fieldToModifySelection.fieldSchema.type}`
+        );
       }
     }
   }

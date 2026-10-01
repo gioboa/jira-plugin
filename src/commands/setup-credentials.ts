@@ -7,7 +7,9 @@ export default async function setupCredentials(): Promise<void> {
 
   if (baseUrl) {
     // ask for reset prev configuration
-    const res = await vscode.window.showQuickPick(['Yes', 'No'], { placeHolder: 'Config already exist. Reset config?' });
+    const res = await vscode.window.showQuickPick(['Yes', 'No'], {
+      placeHolder: 'Config already exist. Reset config?',
+    });
     if (res === 'No') {
       return;
     }

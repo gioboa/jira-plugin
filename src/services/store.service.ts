@@ -1,5 +1,13 @@
 import * as vscode from 'vscode';
-import { configuration, gitIntegration, issuesExplorer, logger, notifications, statusBar, utilities } from '.';
+import {
+  configuration,
+  gitIntegration,
+  issuesExplorer,
+  logger,
+  notifications,
+  statusBar,
+  utilities,
+} from '.';
 import NoWorkingIssuePick from '../picks/no-working-issue-pick';
 import { CONFIG, LOADING, NO_WORKING_ISSUE } from '../shared/constants';
 import { IIssue, IProject } from './http.model';
@@ -36,7 +44,9 @@ export default class StoreService {
       this.addAdditionalStatuses();
       this.state.statuses.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
-      this.state.projects = utilities.hideProjects(utilities.projectsToShow(await this.state.jira.getProjects()));
+      this.state.projects = utilities.hideProjects(
+        utilities.projectsToShow(await this.state.jira.getProjects())
+      );
       utilities.createDocumentLinkProvider(this.state.projects);
 
       const project = configuration.get(CONFIG.WORKING_PROJECT);
@@ -63,7 +73,9 @@ export default class StoreService {
   }
 
   public verifyCurrentProject(project: string | undefined): boolean {
-    return !!project && this.state.projects.filter((prj: IProject) => prj.key === project).length > 0;
+    return (
+      !!project && this.state.projects.filter((prj: IProject) => prj.key === project).length > 0
+    );
   }
 
   public changeStateProject(project: string, checkGlobalStore: boolean): void {
@@ -117,7 +129,10 @@ export default class StoreService {
         const list = additionalStatuses.split(',');
         list.forEach((status: string) => {
           const newStatus = status.trim();
-          if (!!newStatus && !this.state.statuses.find((el) => el.name.toLowerCase() === newStatus.toLowerCase())) {
+          if (
+            !!newStatus &&
+            !this.state.statuses.find((el) => el.name.toLowerCase() === newStatus.toLowerCase())
+          ) {
             this.state.statuses.push({
               description: newStatus,
               name: newStatus,

@@ -3,7 +3,10 @@ import { utilities } from '../../services';
 import { STATUS_ICONS } from '../../shared/constants';
 
 export class GroupItem extends vscode.TreeItem {
-  constructor(label: string, public fileName: string) {
+  constructor(
+    label: string,
+    public fileName: string
+  ) {
     super(label, vscode.TreeItemCollapsibleState.None);
     this.tooltip = '';
   }

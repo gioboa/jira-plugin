@@ -39,7 +39,12 @@ export default class UtilitiesService {
     const count = configuration.getGlobalCounter() || 0;
     if (count !== -1) {
       if (count % 20 === 0 && count > 0) {
-        let action = await vscode.window.showInformationMessage(`Star Jira Plugin on GitHub?`, ACTIONS.YES, ACTIONS.LATER, ACTIONS.NO);
+        let action = await vscode.window.showInformationMessage(
+          `Star Jira Plugin on GitHub?`,
+          ACTIONS.YES,
+          ACTIONS.LATER,
+          ACTIONS.NO
+        );
         switch (action) {
           case ACTIONS.NO: {
             configuration.setGlobalCounter(-1);
@@ -70,7 +75,9 @@ export default class UtilitiesService {
 
   copyIssueRemoteUrl(issueItem: IssueItem) {
     if (issueItem) {
-      vscode.env.clipboard.writeText(`${configuration.get(CONFIG.BASE_URL)}/browse/${issueItem.issue.key}` || '');
+      vscode.env.clipboard.writeText(
+        `${configuration.get(CONFIG.BASE_URL)}/browse/${issueItem.issue.key}` || ''
+      );
       vscode.window.showInformationMessage('Jira Plugin - Copied to clipboard');
     } else {
       logger.printErrorMessageInOutputAndShowAlert('Use this command from Jira Plugin EXPLORER');
@@ -82,7 +89,10 @@ export default class UtilitiesService {
     if (editor && store.state.workingIssue) {
       editor.edit((edit) => {
         const workingIssue = store.state.workingIssue;
-        edit.insert(editor.selection.active, `// ${workingIssue.issue.key} - ${workingIssue.issue.fields.summary}`);
+        edit.insert(
+          editor.selection.active,
+          `// ${workingIssue.issue.key} - ${workingIssue.issue.fields.summary}`
+        );
       });
     } else {
       vscode.window.showInformationMessage('No working issue');
@@ -93,7 +103,10 @@ export default class UtilitiesService {
     if (!!store.state.documentLinkDisposable) {
       store.state.documentLinkDisposable.dispose();
     }
-    store.state.documentLinkDisposable = vscode.languages.registerDocumentLinkProvider({ scheme: '*' }, new IssueLinkProvider(projects));
+    store.state.documentLinkDisposable = vscode.languages.registerDocumentLinkProvider(
+      { scheme: '*' },
+      new IssueLinkProvider(projects)
+    );
   }
 
   hideProjects(projects: IProject[]): IProject[] {

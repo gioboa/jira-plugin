@@ -8,5 +8,5 @@ export const settings: ISettings = {
   enableWorkingIssue: false,
   workingIssueStatues: 'In progress',
   counter: 0,
-  workingIssue: undefined
+  workingIssue: undefined,
 };

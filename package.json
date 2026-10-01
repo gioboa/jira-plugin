@@ -43,13 +43,10 @@
     "test": "pnpm run compile && TYPE=1 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=2 node ./scripts/rename-files.js",
     "setup:settings": "pnpm run compile && TYPE=3 node ./scripts/rename-files.js && node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
     "setup:settings:insiders": "pnpm run compile && TYPE=3 node ./scripts/rename-files.js && CODE_VERSION='insiders' node ./node_modules/vscode/bin/test && TYPE=4 node ./scripts/rename-files.js",
-    "prelint": "prettier --write 'src/**/*.ts'",
-    "lint": "tslint 'src/**/*.ts' --format stylish --fix"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "git stash -q --keep-index && pnpm run lint && pnpm run test && git add -u && git stash pop -q"
-    }
+    "prepare": "husky",
+    "fmt": "oxfmt src test",
+    "fmt.check": "oxfmt --check src test",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "contributes": {
     "configuration": {
@@ -448,10 +445,9 @@
   "devDependencies": {
     "@types/mocha": "8.2.3",
     "@types/node": "24.19.0",
-    "husky": "4.3.8",
+    "husky": "9.1.7",
     "mocha": "12.0.3",
-    "prettier": "2.8.8",
-    "tslint": "6.1.3",
+    "oxfmt": "0.61.0",
     "typescript": "5.9.3",
     "vscode": "1.1.37"
   },
